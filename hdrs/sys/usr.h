@@ -14,14 +14,14 @@
 struct dentry {
 	INUM e_ino;
 	char e_name[DIRSIZ];
-	};
+};
 
 #define HEADER	struct header
 struct header	{
 	UCOUNT hd_fmt, hd_ss;
 	BYTES hd_ts, hd_ds, hd_bs, hd_hs;
 	BYTES hd_tb, hd_db;
-	};
+};
 
 #define PROF	struct prof
 struct prof {
@@ -29,7 +29,7 @@ struct prof {
 	BYTES pr_size;
 	BYTES pr_off;
 	BYTES pr_scale;
-	};
+};
 
 #define TIMES	struct times
 struct times {
@@ -37,14 +37,14 @@ struct times {
 	ULONG ti_s;
 	ULONG ti_cu;
 	ULONG ti_cs;
-	};
+};
 
 struct user {
 	/*   0 */ BYTES u_savsp;
 	/*   4 */ BYTES u_senv;
 	/*   8 */ BYTES u_ofp;
 	/*  12 */ BYTES u_nfp;
-	/*  16 */ PROC *u_proc;
+	/*  16 */ struct proc *u_proc;
 	/*  20 */ BYTES u_dbrk;
 	/*  24 */ BYTES u_tb;
 	/*  28 */ BYTES u_ts;

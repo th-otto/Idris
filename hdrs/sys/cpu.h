@@ -48,10 +48,10 @@ struct proc {
 	/* end of shared part */
 	union {
 		struct {
-			PROC *textp;
+			struct proc *textp;
 			ZLIST *zlist;
-			PROC *nextrun;
-			PROC *nextwake;
+			struct proc *nextrun;
+			struct proc *nextwake;
 			BYTES alarm;
 			BYTES freeheap;
 			ULONG sigf;
@@ -59,7 +59,7 @@ struct proc {
 			UID ruid;
 			UTINY slice;
 			UTINY sig;
-			} p;
+		} p;
 		struct {
 			DEV idev;
 			INUM inum;
@@ -67,9 +67,9 @@ struct proc {
 			COUNT refs;
 			COUNT coreref;
 			ULONG rboff;
-			} t;
-		} v;
-	};
+		} t;
+	} v;
+};
 
 /*	the zombie control structure
  */
@@ -81,7 +81,7 @@ struct zlist {
 	COUNT z_stat;
 	PID z_pid;
 	TEXT z_name[MAXPN];
-	};
+};
 
 /*	abbreviation macros
  */

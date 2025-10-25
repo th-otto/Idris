@@ -13,6 +13,6 @@ typedef struct {
 	ULONG pa_pc;
 	ULONG pa_sr;
 	TEXT pa_pname[MAXPN];
-	} PANEL;
+} PANEL;
 
 #endif

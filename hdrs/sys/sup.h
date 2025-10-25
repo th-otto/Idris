@@ -8,38 +8,41 @@
 /*	the filesystem superblock
  */
 typedef struct {
-	BLOCK s_isize;
-	BLOCK s_fsize;
-	UCOUNT s_nfree;
-	BLOCK s_free[100];
-	UCOUNT s_ninode;
-	INUM s_inode[100];
-	ULONG s_pad0;
-	ULONG s_mtime;			/* end of old superblock */
-	ULONG s_dtime;
-	ULONG s_fsize1;
-	ULONG s_tfree;			/* returned by ustat */
-	UCOUNT s_tinode;		/* returned by ustat */
-	TEXT s_fsname[6];		/* returned by ustat */
-	TEXT s_pkname[6];		/* returned by ustat */
-	TEXT s_pad1[62];
-	ULONG s_magic;
-	ULONG s_type;
-	} FILSYS;
+	/*   0 */ BLOCK s_isize;
+	/*   2 */ BLOCK s_fsize;
+	/*   4 */ UCOUNT s_nfree;
+	/*   6 */ BLOCK s_free[100];
+	/* 206 */ UCOUNT s_ninode;
+	/* 208 */ INUM s_inode[100];
+	/* 408 */ ULONG s_pad0;
+	/* 412 */ ULONG s_mtime;			/* end of old superblock */
+	/* 416 */ ULONG s_dtime;
+	/* 420 */ ULONG s_fsize1;
+	/* 424 */ ULONG s_tfree;			/* returned by ustat */
+	/* 428 */ UCOUNT s_tinode;		/* returned by ustat */
+	/* 430 */ TEXT s_fsname[6];		/* returned by ustat */
+	/* 436 */ TEXT s_pkname[6];		/* returned by ustat */
+	/* 442 */ TEXT s_pad1[62];
+	/* 504 */ ULONG s_magic;
+	/* 508 */ ULONG s_type;
+	/* 512 */ 
+} FILSYS;
 
 /*	the filesystem inode
  */
 typedef struct {
-	BITS n_mode;
-	UTINY n_link;
-	UID n_uid;
-	UID n_gid;
-	UTINY n_size0;
-	UCOUNT n_size1;
-	BLOCK n_addr[8];
-	ULONG n_tmake;
-	ULONG n_tdump;
-	} FINODE;
+	/*  0 */ BITS n_mode;
+	/*  2 */ UTINY n_link;
+	/*  3 */ UID n_uid;
+	/*  4 */ UID n_gid;
+	/*  5 */ UTINY n_size0;
+	/*  6 */ UCOUNT n_size1;
+	/*  8 */ BLOCK n_addr[8];
+	/* 24 */ ULONG n_tmake;
+	/* 28 */ ULONG n_tdump;
+	/* 32 */
+} FINODE;
+
 #define n_actime n_tmake
 #define n_uptime n_tdump
 #define _lsize(pi) (((LONG)(pi)->n_size0 << 16) | ((pi)->n_size1))

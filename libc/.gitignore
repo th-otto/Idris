@@ -12,7 +12,6 @@ Ddbsubs.s
 Ddbtab.s
 Ddbusr.s
 Ddbvar.s
-abort.s
 abs.s
 acos.s
 addexp.s
@@ -37,7 +36,6 @@ cgetf.s
 chdir.s
 chkio.s
 cleare.s
-clock.s
 close.s
 cmain.s
 cmpbuf.s

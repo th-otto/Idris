@@ -31,8 +31,8 @@ typedef struct tcon TCON;
  */
 struct chan {
 	MCON *ch_mcon;
-	PROC *ch_wlist;
-	};
+	struct proc *ch_wlist;
+};
 
 /*	monitor per event per channel
  */
@@ -41,14 +41,14 @@ struct emon {
 	COUNT em_chan;
 	BITS em_mask;
 	BITS em_mode;
-	};
+};
 
 /*	event header
  */
 struct event {
 	EMON *ev_emon;
 	BITS ev_word;
-	};
+};
 
 /*	memory buffer controller
  */
@@ -57,7 +57,7 @@ struct mbmap {
 	PHYS mb_phys;
 	BYTES mb_size;
 	PID mb_pid;
-	};
+};
 
 /*	connection controller per mproc per channel
  */
@@ -67,7 +67,7 @@ struct mcon {
 	UCOUNT mc_nmsg;
 	UCOUNT mc_maxmsg;
 	COUNT mc_chan;
-	};
+};
 
 /*	message list head per receiving process
  */
@@ -75,12 +75,12 @@ struct mproc {
 	MPROC *mp_next;
 	MSG *mp_top;
 	MSG *mp_bot;
-	PROC *mp_wlist;
+	struct proc *mp_wlist;
 	PID mp_pid;
 	UCOUNT mp_conref;
 	TINY mp_stat;
 	TBOOL mp_sleep;
-	};
+};
 
 /*	message controller
  */
@@ -90,14 +90,14 @@ struct msg {
 	BYTES ms_buf;
 	BYTES ms_size;
 	MCON *ms_mcon;
-	};
+};
 
 /*	message system controller per msg device
  */
 struct msgd {
 	COUNT msg_open;
 	MSGHDR *msg_base;
-	};
+};
 
 /*	message system header
  */
@@ -107,7 +107,7 @@ struct msghdr {
 	BYTES mh_msize;
 	MBMAP *mh_mblist;
 	MPROC *mh_plist;
-	PROC *mh_wlist;
+	struct proc *mh_wlist;
 	BYTES mh_gran;
 	CHAN *mh_chantab;
 	EVENT *mh_evtab;
@@ -123,7 +123,7 @@ struct msghdr {
 	UCOUNT mh_nevent;
 	UCOUNT mh_maxque;
 	BITS mh_flags;
-	};
+};
 
 /*	header for msgread()
  */
@@ -133,14 +133,14 @@ struct mstat {
 	BYTES mstat_vers;
 	BYTES mstat_open;
 	BYTES mstat_total;
-	};
+};
 
 /*	resgistration per sending process waiting
  */
 struct snwait {
-	PROC *sw_wlist;
+	struct proc *sw_wlist;
 	UCOUNT sw_ref;
-    };
+};
 
 /*	timer registration per channel (pointed to by onunit)
  */
@@ -149,4 +149,4 @@ struct tcon {
 	LONG tc_count;
 	LONG tc_freq;
 	COUNT tc_chan;
-	};
+};

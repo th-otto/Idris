@@ -36,13 +36,16 @@
 
 /*	file types
  */
+#ifndef S_ISDIR
 #define S_ISDIR(m)	(((BITS) (m) & I_TYPE) == I_DIR)
 #define S_ISCHR(m)	(((BITS) (m) & I_TYPE) == I_CHR)
 #define S_ISBLK(m)	(((BITS) (m) & I_TYPE) == I_BLK)
 #define S_ISREG(m)	(((BITS) (m) & I_TYPE) == I_REG)
 #define S_ISFIFO(m)	(((BITS) (m) & (I_TYPE|I_FIFO|0111)) == (I_REG|I_FIFO))
 #define S_ISAUTO(m)	(((BITS) (m) & (I_TYPE|I_AUTO)) == (I_BLK|I_AUTO))
+/* BUG? returns true also for directories */
 #define S_ISDEV(m)	(((BITS) (m) & (I_CHR&I_BLK)))
+#endif
 #define S_ISLOCK(m)	(((BITS) (m) & (I_SGID|0111)) == I_SGID)
 #define FCHR_MAX	0x01000000L
 
@@ -84,23 +87,23 @@
  */
 struct flock {
 	FLOCK	*l_next;
-	PROC	*l_proc;
+	struct proc	*l_proc;
 	ULONG	l_start;
 	ULONG	l_len;
 	UTINY	l_type;
 	UTINY	l_whence;
 	COUNT	l_pid;
-	};
+};
 #define l_sysid l_next
 
 /*	the file control structure
  */
 struct fvar {
-	INODE *f_inode;
+	struct inode *f_inode;
 	LONG f_offset;
 	UTINY f_flag;
 	UTINY f_refs;
-	};
+};
 
 /*	codes for i_wait
  */
@@ -113,24 +116,25 @@ struct fvar {
 /*	the in core inode control structure
  */
 struct inode {
-	TEXT *next;
-	FLOCK *i_flock;
-	BYTES i_wait;
-	BITS i_flag;
-	UCOUNT i_refs;
-	UCOUNT i_rdoff;
-	UCOUNT i_rdrefs;
-	BLOCK i_blast;
-	DEV i_dev;			/* getstat returns from here */
-	INUM i_ino;
-	BITS i_mode;		/* same as disk copy from here */
-	UTINY i_nlink;
-	UID i_uid;
-	UID i_gid;
-	UTINY i_size0;
-	UCOUNT i_size1;
-	BLOCK i_addr[8];
-	};
+	/*  0 */ TEXT *next;
+	/*  4 */ FLOCK *i_flock;
+	/*  8 */ BYTES i_wait;
+	/* 12 */ BITS i_flag;
+	/* 14 */ UCOUNT i_refs;
+	/* 16 */ UCOUNT i_rdoff;
+	/* 18 */ UCOUNT i_rdrefs;
+	/* 20 */ BLOCK i_blast;
+	/* 22 */ DEV i_dev;			/* getstat returns from here */
+	/* 24 */ INUM i_ino;
+	/* 26 */ BITS i_mode;		/* same as disk copy from here */
+	/* 28 */ UTINY i_nlink;
+	/* 29 */ UID i_uid;
+	/* 30 */ UID i_gid;
+	/* 31 */ UTINY i_size0;
+	/* 32 */ UCOUNT i_size1;
+	/* 34 */ BLOCK i_addr[8];
+	/* 50 */ 
+};
 
 #define MAXLINK	0377
 
@@ -144,6 +148,6 @@ struct mount {
 	DEV m_pdev;
 	INUM m_pino;
 	TBOOL m_ronly;
-	};
+};
 
 #endif

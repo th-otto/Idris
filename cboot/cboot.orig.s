@@ -149,7 +149,7 @@ cmd_cd:
 [00040182] 3d47 fffe                 move.w     d7,-2(a6)
 [00040186] 6710                      beq.s      $00040198
 [00040188] 2ebc 0004 1f4c            move.l     #$00041F4C,(a7)
-[0004018e] 4eb9 0004 0424            jsr        $00040424
+[0004018e] 4eb9 0004 0424            jsr        _isdir
 [00040194] 4a87                      tst.l      d7
 [00040196] 661a                      bne.s      $000401B2
 [00040198] 2eae 0008                 move.l     8(a6),(a7)
@@ -187,6 +187,7 @@ cmd_cd:
 [000401fa] 60e8                      bra.s      $000401E4
 [000401fc] 33ee fffe 0004 1cd0       move.w     -2(a6),$00041CD0
 [00040204] 60a4                      bra.s      $000401AA
+
 [00040206] 4e56 fff0                 link       a6,#-16
 [0004020a] 48e7 840c                 movem.l    d0/d5/a4-a5,-(a7)
 [0004020e] 226e 0008                 movea.l    8(a6),a1
@@ -219,7 +220,7 @@ cmd_cd:
 [00040268] 4e75                      rts
 
 [0004026a] 2e8d                      move.l     a5,(a7)
-[0004026c] 4eb9 0004 0424            jsr        $00040424
+[0004026c] 4eb9 0004 0424            jsr        _isdir
 [00040272] 4a87                      tst.l      d7
 [00040274] 6770                      beq.s      $000402E6
 [00040276] 7a00                      moveq.l    #0,d5
@@ -271,6 +272,7 @@ cmd_cd:
 [00040304] 588f                      addq.l     #4,a7
 [00040306] 2a47                      movea.l    d7,a5
 [00040308] 6000 ff4c                 bra        $00040256
+
 [0004030c] 4e56 0000                 link       a6,#0
 [00040310] 48e7 840c                 movem.l    d0/d5/a4-a5,-(a7)
 [00040314] 2a6e 000c                 movea.l    12(a6),a5
@@ -358,6 +360,7 @@ cmd_cd:
 [00040420] 4e5e                      unlk       a6
 [00040422] 4e75                      rts
 
+_isdir:
 [00040424] 4e56 0000                 link       a6,#0
 [00040428] 226e 0008                 movea.l    8(a6),a1
 [0004042c] 7e00                      moveq.l    #0,d7
@@ -529,7 +532,7 @@ cmd_ls:
 [00040652] 4eb9 0004 0b76            jsr        $00040B76
 [00040658] 588f                      addq.l     #4,a7
 [0004065a] 2ebc 0004 1f4c            move.l     #$00041F4C,(a7)
-[00040660] 4eba fdc2                 jsr        $00040424(pc)
+[00040660] 4eba fdc2                 jsr        _isdir(pc)
 [00040664] 4a87                      tst.l      d7
 [00040666] 6776                      beq.s      $000406DE
 [00040668] 7a00                      moveq.l    #0,d5
@@ -669,6 +672,7 @@ cmd_ls:
 [00040808] 6700 ff16                 beq        $00040720
 [0004080c] 4eb9 0004 0c68            jsr        $00040C68
 [00040812] 6000 ff0c                 bra        $00040720
+
 [00040816] 4e56 0000                 link       a6,#0
 [0004081a] 48e7 8c04                 movem.l    d0/d4-d5/a5,-(a7)
 [0004081e] 2a6e 0008                 movea.l    8(a6),a5
@@ -982,6 +986,7 @@ cmd_od:
 [00040c02] 588d                      addq.l     #4,a5
 [00040c04] 52ae 0008                 addq.l     #1,8(a6)
 [00040c08] 6000 ff7a                 bra        $00040B84
+
 [00040c0c] 4e56 0000                 link       a6,#0
 [00040c10] 48e7 8c00                 movem.l    d0/d4-d5,-(a7)
 [00040c14] 2eae 0008                 move.l     8(a6),(a7)
@@ -1490,6 +1495,7 @@ kbgetc:
 [000412dc] 4eb9 0004 156a            jsr        $0004156A
 [000412e2] 7eff                      moveq.l    #-1,d7
 [000412e4] 6086                      bra.s      $0004126C
+
 [000412e6] 4e56 0000                 link       a6,#0
 [000412ea] 48e7 8400                 movem.l    d0/d5,-(a7)
 [000412ee] 2eae 0018                 move.l     24(a6),(a7)
@@ -1546,6 +1552,7 @@ kbgetc:
 [00041396] 4eb9 0004 156a            jsr        $0004156A
 [0004139c] 7eff                      moveq.l    #-1,d7
 [0004139e] 6086                      bra.s      $00041326
+
 [000413a0] 4e56 fffc                 link       a6,#-4
 [000413a4] 2e2e 0008                 move.l     8(a6),d7
 [000413a8] 5287                      addq.l     #1,d7
@@ -1632,7 +1639,6 @@ kbgetc:
 [000414a2] 4cdf 0021                 movem.l    (a7)+,d0/d5
 [000414a6] 4e5e                      unlk       a6
 [000414a8] 4e75                      rts
-
 [000414aa] 2e2e 0008                 move.l     8(a6),d7
 [000414ae] e587                      asl.l      #2,d7
 [000414b0] 2247                      movea.l    d7,a1
@@ -1640,6 +1646,7 @@ kbgetc:
 [000414b8] 22ae 000c                 move.l     12(a6),(a1)
 [000414bc] 7e00                      moveq.l    #0,d7
 [000414be] 60e2                      bra.s      $000414A2
+
 [000414c0] 4e56 0000                 link       a6,#0
 [000414c4] 48e7 8400                 movem.l    d0/d5,-(a7)
 [000414c8] 4297                      clr.l      (a7)
@@ -1654,7 +1661,6 @@ kbgetc:
 [000414e0] 4cdf 0021                 movem.l    (a7)+,d0/d5
 [000414e4] 4e5e                      unlk       a6
 [000414e6] 4e75                      rts
-
 [000414e8] 2e2e 0008                 move.l     8(a6),d7
 [000414ec] e587                      asl.l      #2,d7
 [000414ee] 2247                      movea.l    d7,a1
@@ -1662,6 +1668,7 @@ kbgetc:
 [000414f6] 4291                      clr.l      (a1)
 [000414f8] 7e00                      moveq.l    #0,d7
 [000414fa] 60e4                      bra.s      $000414E0
+
 [000414fc] 4e56 fffc                 link       a6,#-4
 [00041500] 7e03                      moveq.l    #3,d7
 [00041502] 8eae 0008                 or.l       8(a6),d7
@@ -1865,6 +1872,7 @@ write_wdcwdl:
 [00041754] 2e2e fffc                 move.l     -4(a6),d7
 [00041758] de84                      add.l      d4,d7
 [0004175a] 609a                      bra.s      $000416F6
+
 [0004175c] 4e56 0000                 link       a6,#0
 [00041760] 48e7 9c04                 movem.l    d0/d3-d5/a5,-(a7)
 [00041764] 2e2e 0014                 move.l     20(a6),d7
@@ -2369,11 +2377,11 @@ a~jtab:
 [00041e68]                           dc.b 'IDR',0
 [00041e6c]                           dc.b $0a,'<<Error getting hard-disk info!>>',$0a,0
 [00041e90]                           dc.b $0a,'<<Error reading block (%i)!>>',$0a,0
-[00041eb0]                           dc.b $00
-[00041eb1]                           dc.b $04
-[00041eb2]                           dc.w $1eb4
+[00041eb0]                           dc.l $00041eb4
 [00041eb4]                           dc.b '<flop.c - Copyright (c) 1986/87 by Computer Tools, Int. - Ver. 1.0>',0
 [00041ef8]                           dc.b '<Can',$27,'t read BPB>',$0a,0
 [00041f0a]                           dc.b '<Bad disk format>',$0a,0
 [00041f1d]                           dc.b '<Block out of range>',$0a,0
 [00041f33]                           dc.b $00
+
+

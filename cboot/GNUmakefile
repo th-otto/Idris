@@ -7,7 +7,7 @@ OBJS = \
 CROSS=m68k-atari-mint-
 CC = $(CROSS)gcc
 AS = $(CROSS)as
-Ar = $(CROSS)ar
+AR = $(CROSS)ar
 
 CFLAGS = -Os \
 	-I. -I../hdrs -nostdinc -fno-builtin -D_PROTO=1 \

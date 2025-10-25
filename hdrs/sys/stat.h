@@ -6,33 +6,36 @@
 #define __STAT__ 1
 
 struct stat {
-	unsigned short st_dev;
-	unsigned short st_ino;
-	unsigned short st_mode;
-	unsigned char st_nlink;
-	unsigned char st_uid, st_gid;
-	unsigned char st_size0;
-	unsigned short st_size1;
+	/*  0 */ unsigned short st_dev;
+	/*  2 */ unsigned short st_ino;
+	/*  4 */ unsigned short st_mode;
+	/*  6 */ unsigned char st_nlink;
+	/*  7 */ unsigned char st_uid, st_gid;
+	/*  9 */ unsigned char st_size0;
+	/* 10 */ unsigned short st_size1;
 	union {
-		unsigned short _stU_addr[8];
+		/* 12 */ unsigned short _stU_addr[8];
 		struct {
 			unsigned short _stS_rdev;
 			unsigned short _stS_c1;
 			unsigned long _stS_lsize;
 			unsigned long _stS_l2;
 			unsigned long _stS_l3;
-			} _stS;
-		} _stU;
-	unsigned long st_tmake;
-	unsigned long st_tdump;
-	unsigned long st_resrvd;
+		} _stS;
+	} _stU;
+	/* 28 */ unsigned long st_tmake;
+	/* 32 */ unsigned long st_tdump;
+#ifndef __RES__ /* not in kernel */
+	/* 36 */ unsigned long st_resrvd;
+#endif
+	/* 40 */
 };
-
+  
 #define st_addr _stU._stU_addr
 #define st_rdev _stU._stS._stS_rdev
 #define st_size _stU._stS._stS_lsize
 #define st_atime st_tmake
-#define st_mtime st_tmake
+#define st_mtime st_tmake /* BUG? will report st_atime as modification time? */
 #define st_ctime st_tdump
 
 /*	codes for mode
@@ -70,9 +73,9 @@ struct stat {
 #define S_ISCHR(m)	(((unsigned short) (m) & I_TYPE) == I_CHR)
 #define S_ISBLK(m)	(((unsigned short) (m) & I_TYPE) == I_BLK)
 #define S_ISREG(m)	(((unsigned short) (m) & I_TYPE) == I_REG)
-#define S_ISFIFO(m)	(((unsigned short) (m) & (I_TYPE|I_FIFO|0111)) == \
-					(I_REG|I_FIFO))
+#define S_ISFIFO(m)	(((unsigned short) (m) & (I_TYPE|I_FIFO|0111)) == (I_REG|I_FIFO))
 #define S_ISAUTO(m)	(((unsigned short) (m) & (I_TYPE|I_AUTO)) == (I_BLK|I_AUTO))
+/* BUG? returns true also for directories */
 #define S_ISDEV(m)	(((unsigned short) (m) & (I_CHR&I_BLK)))
 #define S_IFIFO		(I_REG|I_FIFO|0666)
 #define S_IDIR		(I_DIR|0777)

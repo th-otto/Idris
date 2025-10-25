@@ -1,6 +1,8 @@
 # Note: you must increase heap size of make to use this long list
 LIBA_OBJS = \
 	clock.o \
+	perror.o \
+	abort.o \
 	$(empty)
 
 LIBB_OBJS = \

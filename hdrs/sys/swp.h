@@ -12,7 +12,7 @@ struct cout {
 	VOID (*c_pfn)();
 	BYTES c_arg;
 	COUNT c_t;
-	};
+};
 
 /*	the swap list
  */
@@ -21,6 +21,6 @@ struct map {
 	TEXT *next;
 	BLOCK m_size;
 	BLOCK m_addr;
-	};
+};
 
 #endif

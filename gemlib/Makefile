@@ -149,12 +149,16 @@ OBJS4 = \
 
 all: libgem.o
 
-objs1: $(OBJS1)
-objs2: $(OBJS2)
-objs3: $(OBJS3)
-objs4: $(OBJS4)
+.objs1: $(OBJS1)
+	@touch $@
+.objs2: $(OBJS2)
+	@touch $@
+.objs3: $(OBJS3)
+	@touch $@
+.objs4: $(OBJS4)
+	@touch $@
 
-libgem.o: objs1 objs2 objs3 objs4
+libgem.o: .objs1 .objs2 .objs3 .objs4
 	-rm $@
 	lib -c $@ $(OBJS1)
 	lib -r $@ $(OBJS2)
@@ -170,4 +174,4 @@ gemlinea.o: gemlinea.s
 vdi.o: vdi.s
 
 clean:
-	-rm *.o
+	-rm *.o .objs*

@@ -1,6 +1,7 @@
 LIBA_OBJS = \
 	clock.o \
 	perror.o \
+	abort.o \
 	$(empty)
 
 LIBB_OBJS = \
@@ -10,21 +11,23 @@ LIBB_OBJS = \
 CROSS=m68k-atari-mint-
 CC = $(CROSS)gcc
 AS = $(CROSS)as
-Ar = $(CROSS)ar
+AR = $(CROSS)ar
+
+SYSINC := -I$(dir $(shell $(CC) -print-prog-name=cc1))/include
 
 CFLAGS = -Os \
-	-I. -I../hdrs -nostdinc -fno-builtin -D_PROTO=1 \
+	-I. -I../hdrs -nostdinc -fno-builtin $(SYSINC) -D_PROTO=1 \
 	-Wstrict-prototypes -Wmissing-prototypes -Wall -W -Werror
 
 all: liba.68k libb.68k
 
 liba.68k: $(LIBA_OBJS)
 	rm -f $@
-	ar rcs $@ $(OBJS)
+	$(AR) rcs $@ $(OBJS)
 
 libb.68k: $(LIBB_OBJS)
 	rm -f $@
-	ar rcs $@ $(OBJS)
+	$(AR) rcs $@ $(OBJS)
 
 clean:
 	rm -f *.o *.68k

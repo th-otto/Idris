@@ -34,6 +34,6 @@ typedef struct {
 	/* BYTES */ BYTES xf_setb;
 	/* BITS */ BYTES xf_pcntl, xf_pri;
 	/* DEV */ BYTES xf_tty;
-	} XFLAGS;
+} XFLAGS;
 
 #endif

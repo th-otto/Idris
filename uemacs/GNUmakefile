@@ -12,8 +12,12 @@ CFILES=		ansi.c basic.c bind.c buffer.c display.c  file.c \
 
 HFILES=		estruct.h edef.h efunc.h epath.h
 
+all: emacs
+
 emacs:		$(OFILES)
-		$(CC) $(CFLAGS) -dtermcap -o$@ $(OFILES)
-		setb -b131072 $@
+		$(CC) $(CFLAGS) -o$@ $(OFILES) -lncurses
 
 $(OFILES):	$(HFILES)
+
+clean::
+	rm -f *.o emacs

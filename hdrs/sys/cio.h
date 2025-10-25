@@ -25,7 +25,7 @@
 struct clist {
 	CLIST *c_next;
 	TEXT c_info[16 - sizeof (BYTES)];
-	};
+};
 
 /*	the character queue structure
  */
@@ -34,7 +34,7 @@ struct chq {
 	UCOUNT c_num;
 	TEXT *c_first;
 	TEXT *c_last;
-	};
+};
 
 /*	the tty control structure
  */
@@ -61,6 +61,6 @@ struct tty {
 	COUNT t_open;
 	COUNT t_nin;
 	UTINY t_brktim;
-	};
+};
 
 #endif

@@ -18,7 +18,7 @@
 /*	set up types not already set up
  */
 #ifndef __STDARG__
-typedef char *va_list;
+#include <stdarg.h>
 #endif
 #ifndef __STDEFS__
 #ifndef __STDLIB__
@@ -31,7 +31,7 @@ typedef unsigned int size_t;
 /*	the FILE structure
  */
 typedef struct _file
-	{
+{
 	struct _file *flist;	/* chain used to flush buffers */
 	short fd;				/* file descriptor */
 	unsigned short flag;	/* flag bits */
@@ -41,7 +41,7 @@ typedef struct _file
 	long loff;				/* addr used by ftell (text files - read only) */
 	unsigned char *pnext;	/* ptr to next char to deliver */
 	unsigned char *buf;		/* ptr to allocated buffer */
-	} FILE;
+} FILE;
 
 /*	function declarations
  */
@@ -118,9 +118,9 @@ int fileno __((FILE *pf));
 #if 0
 int getw __((FILE *pf));
 int pclose __((FILE *pf));
-FILE *popen __((char *cmd, char *type));
+FILE *popen __((const char *cmd, const char *type));
 int putw __((int word, FILE *pf));
-char *tempnam __((char *dir, char *prefix));
+char *tempnam __((const char *dir, const char *prefix));
 #endif
 
 /*	global variable references

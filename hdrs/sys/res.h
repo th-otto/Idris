@@ -52,12 +52,13 @@ typedef unsigned int size_t;
 
 /*	the I/O device designator
  */
-#define dminor(dev)	((dev) & BYTMASK)
+#define dminor(dev)	((dev) & 0xff)
 #define dmajor(dev) ((DEV) (dev) >> 8)
+#define device(major, minor)	((DEV) (major) << 8 | (minor))
 struct _minmaj {
 	UTINY d_minor;
 	UTINY d_major;
-	};
+};
 
 /*	the block device switch table entry
  */
@@ -66,9 +67,9 @@ typedef struct {
 	BOOL (*d_open)(DEV dev, short rw);
 	VOID (*d_close)(DEV dev, short rw);
 	VOID (*d_strategy)(struct buf *bp);
-	DEVTAB *d_tab;
-	TEXT *d_bname;
-	} BDEVSW;
+	struct devtab *d_tab;
+	const char *d_bname;
+} BDEVSW;
 
 struct sgtty;
 
@@ -79,9 +80,9 @@ typedef struct {
 	VOID (*d_close)(DEV dev, short rw);
 	COUNT (*d_read)(DEV dev, short rw);
 	COUNT (*d_write)(DEV dev, short rw);
-	VOID (*d_sgtty)(struct sgtty *);
-	TEXT *d_cname;
-	} CDEVSW;
+	VOID (*d_sgtty)(DEV dev, void *arg);
+	const char *d_cname;
+} CDEVSW;
 
 /*	codes for u_error
  */
@@ -174,7 +175,7 @@ typedef struct {
 	TEXT *next;
 	VOID (*on_fn)(void);
 	BYTES on_a1, on_a2;
-	} ONUNIT;
+} ONUNIT;
 
 #endif
 #endif
