@@ -15,6 +15,10 @@ typedef unsigned int size_t;
 #endif
 #endif
 
+#ifndef _IDRIS_VERSION
+#define _IDRIS_VERSION 314
+#endif
+
 /*	basics
  */
 #define BLOCK	unsigned short
@@ -57,10 +61,11 @@ struct _minmaj {
 
 /*	the block device switch table entry
  */
+struct buf;
 typedef struct {
-	BOOL (*d_open)(const char *, int);
-	VOID (*d_close)(int);
-	VOID (*d_strat)(void);
+	BOOL (*d_open)(DEV dev, short rw);
+	VOID (*d_close)(DEV dev, short rw);
+	VOID (*d_strategy)(struct buf *bp);
 	DEVTAB *d_tab;
 	TEXT *d_bname;
 	} BDEVSW;
@@ -70,10 +75,10 @@ struct sgtty;
 /*	the character device switch table entry
  */
 typedef struct {
-	BOOL (*d_open)(const char *, int);
-	VOID (*d_close)(int);
-	COUNT (*d_read)(int fd, void *buff, size_t count);
-	COUNT (*d_write)(int fd, void *buff, size_t count);
+	BOOL (*d_open)(DEV dev, short rw);
+	VOID (*d_close)(DEV dev, short rw);
+	COUNT (*d_read)(DEV dev, short rw);
+	COUNT (*d_write)(DEV dev, short rw);
 	VOID (*d_sgtty)(struct sgtty *);
 	TEXT *d_cname;
 	} CDEVSW;
@@ -93,6 +98,7 @@ typedef struct {
 #define EAGAIN	11
 #define ENOMEM	12
 #define EACCES	13
+#define EFAULT	14
 #define ENOTBLK	15
 #define EBUSY	16
 #define EEXIST	17
@@ -111,10 +117,13 @@ typedef struct {
 #define EROFS	30
 #define EMLINK	31
 #define EPIPE	32
-#define EDEADLK	33
-#define ENOLCK	34
-#define ENOSYS	100
-#define EFAULT	106
+#define EDOM	33
+#define ERANGE	34
+#define ENOSYS	35
+#define EDEADLK	36
+#define ENOLCK	37
+#define ENAMETOOLONG	38
+#define ENOTEMPTY		39
 
 /*	priorities
  */
@@ -136,34 +145,23 @@ typedef struct {
  */
 #define SIGHUP	1
 #define SIGINT	2
-#define SIGQIT	3
-#define SIGINS	4
-#ifndef SIGTRC
-#define SIGTRC	5
-#endif
-#ifndef SIGRNG
-#define SIGRNG	6	/* IOT */
-#endif
-#ifndef SIGDOM
-#define SIGDOM	7	/* EMT */
-#endif
-#ifndef SIGFPT
-#define SIGFPT	8
-#endif
-#define SIGKIL	9
+#define SIGQUIT	3
+#define SIGILL		4		/* Illegal instruction trap */
+#define SIGTRAP		5		/* trace trap */
+#define SIGIOT		6		/* IOT instruction */
+#define SIGEMT		7		/* EMT instruction */
+#define SIGFPE		8		/* floating point exception */
+#define SIGKILL	9
 #define SIGBUS	10
-#ifndef SIGSEG
-#define SIGSEG	11
-#endif
+#define SIGSEGV	11
 #define SIGSYS	12
 #define SIGPIPE	13
 #define SIGALRM	14
 #define SIGTERM	15
-#ifndef SIGSVC
-#define SIGSVC	16
-#endif
-#define SIGUSR	17
-#define NSIG	18	/* must be last sig + 1 */
+#define SIGUSR1		16		/* user defined signal 1 */
+#define SIGUSR2	17
+#define SIGABRT		SIGBUS	/* signal returned by abort() */
+#define NSIG	19	/* must be last sig + 1 */
 
 /*	uname system call
  */

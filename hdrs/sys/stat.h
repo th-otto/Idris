@@ -26,7 +26,7 @@ struct stat {
 	unsigned long st_tmake;
 	unsigned long st_tdump;
 	unsigned long st_resrvd;
-	};
+};
 
 #define st_addr _stU._stU_addr
 #define st_rdev _stU._stS._stS_rdev

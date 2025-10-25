@@ -143,7 +143,7 @@ AS = $(CROSS)as
 AR = $(CROSS)ar
 
 CFLAGS = -Os \
-	-I. -I../linux -nostdinc -fno-builtin -D_PROTO=1 \
+	-I. -I../hdrs -nostdinc -fno-builtin -D_PROTO=1 \
 	-Wstrict-prototypes -Wmissing-prototypes -Wall -W -Werror
 
 all: libgem.o

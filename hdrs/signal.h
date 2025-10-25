@@ -54,7 +54,7 @@ typedef unsigned int sig_atomic_t;
 #define SIGUSR1		16		/* user defined signal 1 */
 #define SIGUSR2		17		/* user defined signal 2 */
 #define SIGABRT		SIGBUS	/* signal returned by abort() */
-#define NSIG		18
+#define NSIG		19
 
 /* old WSL signal names
  */
