@@ -11,6 +11,8 @@
 #endif
 #endif
 
+void crash_and_burn(const char *msg);
+
 int Get_Handle __((short *x_width, short *x_height, short *max_colors));
 void Close_Handle __((void));
 

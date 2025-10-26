@@ -8,7 +8,7 @@
 
 /*	the pseudo storage classes
  */
-#define FAST	
+#define FAST	register
 #define GLOBAL	extern
 #define IMPORT	extern
 #define INTERN	static

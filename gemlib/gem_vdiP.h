@@ -14,6 +14,12 @@
 
 extern VDIPB vdipb;
 
+#ifdef __GNUC__
+#define UNUSED(x) (void)(x)
+#else
+#define UNUSED(x)
+#endif
+
 void vdi(void);
 void i_lptr1(void *);
 void i_lptr2(void *);

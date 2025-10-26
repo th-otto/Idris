@@ -1,8 +1,9 @@
 #include <std.h>
 #include "osbind.h"
-#include "gembind.h"
+#include "gem_vdiP.h"
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <pcdecl.h>
  
 static short vdi_handle = -1;
@@ -10,8 +11,9 @@ static short workin[11];
 static short workout[57];
 static short palette[16];
 
-static void vdi_exit(void)
+static void vdi_exit(int sig)
 {
+	UNUSED(sig);
 	Close_Handle();
 	exit(0);
 }

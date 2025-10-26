@@ -1,4 +1,10 @@
+*	times(buf)
+*	copyright (c) 1981 by Whitesmiths, Ltd.
+*	get process times
+
 	.text
+	.globl _times
+_times:
 	.globl __times
 __times:
 	movea.l    (a7)+,a0

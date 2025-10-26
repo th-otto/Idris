@@ -5,6 +5,10 @@
 #ifndef __STAT__
 #define __STAT__ 1
 
+#ifndef __TYPES__
+#include <sys/types.h>
+#endif
+
 struct stat {
 	/*  0 */ unsigned short st_dev;
 	/*  2 */ unsigned short st_ino;
@@ -101,5 +105,8 @@ struct stat {
 
 int stat(const char *filename, struct stat *__st);
 int fstat(int fd, struct stat *__st);
+int mkdir(const char *pathname, mode_t mode);
+int mknod(const char *pathname, mode_t mode, dev_t dev);
+mode_t umask(mode_t mask);
 
 #endif

@@ -5,17 +5,7 @@
 #include <sys/stat.h>
 #include <sys/fio.h>
 #include <sys/sup.h>
-
-#ifdef _IDRIS
-#ifndef __STDEFS__
-#ifndef __STDLIB__
-#ifndef __STDIO__
-typedef unsigned int size_t;
-#endif
-#endif
-#endif
-#define offsetof(type, ident) ((size_t)&(((type *)0)->ident))
-#endif
+#include <stddef.h>
 
 /* MC68000 MACHINE INTERFACE
  */
@@ -23,7 +13,6 @@ typedef int _jmp_buf[9];
 
 #ifdef __GNUC__
 #define UNUSED(x) (void)(x)
-#define offsetof(type, ident) __builtin_offsetof(type, ident)
 #else
 #define UNUSED(x)
 #endif

@@ -83,32 +83,7 @@ void setbuf __((FILE *stream, char *buf));
 
 /*	include system dependent information
  */
-#ifdef _OS
-#include _OS
-#else
-#define _CASES		2
-#define _CLKTICK	60
-#define _EXLEN		127
-#define _MAXFILE	20
-#define _SLLEN		511
-#define _TMPMAX		25
-#define _TMPSIZ		14
-#define	FCHR_MAX	16777215	/* 2^25 - 1 */
-#define	CHILD_MAX	32767
-#define	LOCK_MAX	200
-#define	LINK_MAX	255
-#define	LONG_BIT	32
-#define	NAME_MAX	14
-#define	PASS_MAX	8
-#define	PID_MAX		32767
-#define	PATH_MAX	255
-#define	PIPE_BUF	512
-#define	PIPE_MAX	4096
-#define	PROC_MAX	32767
-#define	STD_BLK		512
-
-#define OPEN_MAX    _MAXFILE
-#endif
+#include <sys/os.h>
 
 char *ctermid __((char *s));
 char *cuserid __((char *s));

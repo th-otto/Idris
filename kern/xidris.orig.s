@@ -17220,13 +17220,13 @@ _syuname:
 [00016cfa] 4878 0028                 pea.l      ($00000028).w
 [00016cfe] 226e 0008                 movea.l    8(a6),a1
 [00016d02] 2f11                      move.l     (a1),-(a7)
-[00016d04] 2f3c 0001 fbca            move.l     #$0001FBCA,-(a7)
+[00016d04] 2f3c 0001 fbca            move.l     #_sysname,-(a7)
 [00016d0a] 4eb9 0000 bb8e            jsr        _outbuf
 [00016d10] 4fef 000c                 lea.l      12(a7),a7
 [00016d14] 4a87                      tst.l      d7
 [00016d16] 670c                      beq.s      _syuname_1
-[00016d18] 4878 000e                 pea.l      ($0000000E).w
-[00016d1c] 4eb9 0000 f792            jsr        $00019892
+[00016d18] 4878 000e                 pea.l      ($0000000E).w EFAULT
+[00016d1c] 4eb9 0000 f792            jsr        _uerror
 [00016d22] 588f                      addq.l     #4,a7
 _syuname_1:
 [00016d24] 4e5e                      unlk       a6
@@ -18356,7 +18356,7 @@ _syulink_3:
 [00017a34] be6c 0016                 cmp.w      22(a4),d7
 [00017a38] 670e                      beq.s      _syulink_5
 [00017a3a] 4878 0012                 pea.l      ($00000012).w
-[00017a3e] 4eb9 0000 f792            jsr        $00019892
+[00017a3e] 4eb9 0000 f792            jsr        _uerror
 [00017a44] 588f                      addq.l     #4,a7
 [00017a46] 6002                      bra.s      _syulink_6
 _syulink_5:
@@ -18996,7 +18996,7 @@ _mapmsd_4:
 [0001826e] 4a87                      tst.l      d7
 [00018270] 6716                      beq.s      _mapmsd_5
 [00018272] 4878 0019                 pea.l      ($00000019).w
-[00018276] 4eb9 0000 f792            jsr        $00019892
+[00018276] 4eb9 0000 f792            jsr        _uerror
 [0001827c] 588f                      addq.l     #4,a7
 [0001827e] 7e00                      moveq.l    #0,d7
 _mapmsd_2:
@@ -19933,7 +19933,7 @@ _symcreat:
 [00018d58] 082d 0000 00a7            btst       #0,167(a5)
 [00018d5e] 6714                      beq.s      _symcreat_2
 [00018d60] 4878 03ed                 pea.l      ($000003ED).w
-[00018d64] 4eb9 0000 f792            jsr        $00019892
+[00018d64] 4eb9 0000 f792            jsr        _uerror
 [00018d6a] 588f                      addq.l     #4,a7
 _symcreat_1:
 [00018d6c] 4cdf 3821                 movem.l    (a7)+,d0/d5/a3-a5
@@ -27306,7 +27306,7 @@ _ptsopen:
 [0001e634] 0c2e 0010 ffff            cmpi.b     #$10,-1(a6)
 [0001e63a] 650e                      bcs.s      _ptsopen_1
 [0001e63c] 4878 0006                 pea.l      ($00000006).w
-[0001e640] 4eb9 0000 f792            jsr        $00019892
+[0001e640] 4eb9 0000 f792            jsr        _uerror
 [0001e646] 588f                      addq.l     #4,a7
 [0001e648] 6024                      bra.s      _ptsopen_2
 _ptsopen_1:
@@ -29179,10 +29179,7 @@ _lops:
 __cpu:
 [0001f9a0] 00000000                  dc.l $00000000
 __vbr:
-[0001f9a4]                           dc.b $00
-[0001f9a5]                           dc.b $00
-[0001f9a6]                           dc.b $00
-[0001f9a7]                           dc.b $00
+[0001f9a4]                           dc.l 0
 _u0stack:
 [0001f9a8]                           dc.b $00
 [0001f9a9]                           dc.b $00

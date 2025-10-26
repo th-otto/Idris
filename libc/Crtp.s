@@ -1,75 +1,81 @@
-; a_magic   = 0x9928
-; a_text    = 0x0000005c
-; a_data    = 0x00000030
-; a_bss     = 0x00000000
-; a_syms    = 0x00000053
-; a_heap    = 0x00000000
-; a_textoff = 0x00000000
-; a_dataoff = 0x00000000
-; a_relocs  = 0x0000001d@0x000000fb
+ *
+ *	C runtime header for profiling
+ *	copyright (c) 1982, 1986 by Whitesmiths, Ltd.
+ *	MUST BE LOADED FIRST
+ *	MUST BE LOADED WITH LIBI (at the moment)
+ *
 
-[00000000] 4879 0000 0000            pea.l      __pheader
-[00000006] 4eb9 0000 0000            jsr        __profil
-[0000000c] 588f                      addq.l     #4,a7
-[0000000e] 4286                      clr.l      d6
-[00000010] 3c39 0000 0002            move.w     $0000005E,d6
-[00000016] 9db9 0000 0020            sub.l      d6,$0000007C
-[0000001c] 23c7 0000 0024            move.l     d7,$00000080
-[00000022] 6638                      bne.s      $0000005C
-[00000024] 4878 0000                 pea.l      ($00000000).w
-[00000028] 4eb9 0000 0000            jsr        _exit
+	.globl __penable
+	.globl __pheader
+	.globl __profil
+	.globl _exit
+	.globl a~count
+
+p_start:
+	pea		__pheader
+	jsr		__profil
+	addq.l	#4,sp
+	clr.l	d6
+	move.w	p_esize,d6
+	sub.l	d6,p_subidx
+	move.l	d7,p_buf
+	bne.s	p_onward
+	pea		0
+	jsr		_exit
+
 a~count:
-[0000002e] 4a39 0000 0000            tst.b      __penable
-[00000034] 6724                      beq.s      $0000005A
-[00000036] 2250                      movea.l    (a0),a1
-[00000038] 2009                      move.l     a1,d0
-[0000003a] 661c                      bne.s      $00000058
-[0000003c] 2279 0000 0020            movea.l    $0000007C,a1
-[00000042] 2009                      move.l     a1,d0
-[00000044] 6706                      beq.s      $0000004C
-[00000046] 50b9 0000 0020            addq.l     #8,$0000007C
-[0000004c] d3f9 0000 0024            adda.l     $00000080,a1
-[00000052] 2357 fff8                 move.l     (a7),-8(a1)
-[00000056] 2089                      move.l     a1,(a0)
-[00000058] 52a1                      addq.l     #1,-(a1)
-[0000005a] 4e75                      rts
+	* here on each function entry
+	tst.b	__penable
+	beq.s	3f
+	* we're counting entries
+	move.l	(a0),a1
+	move.l	a1,d0
+	bne.s	2f
+	* first time
+	move.l	p_subidx,a1
+	move.l	a1,d0
+	beq.s	1f
+	* entry count array not full
+	addq.l	#8,p_subidx
+1:
+	add.l	p_buf,a1
+	* record entry point
+	move.l	(sp),-8(a1)
+	move.l	a1,(a0)
+2:
+	* increment long count
+	addq.l	#1,-(a1)
+3:
+	rts
+p_onward:
 
 	.data
 __pheader:
-[0000005c]                           dc.w $9a2d
-[0000005e]                           dc.b $00
-[0000005f]                           dc.b $64
-[00000060]                           dc.b $00
-[00000061]                           dc.b $00
-[00000062]                           dc.b $00
-[00000063]                           dc.b $00
-[00000064] 00000000                  dc.l x__text__
-[00000068] 00000000                  dc.l $00000000
-[0000006c]                           dc.b $00
-[0000006d]                           dc.b $00
-[0000006e]                           dc.b $00
-[0000006f]                           dc.b $08
-[00000070] 00000000                  dc.l $00000000
-[00000074]                           dc.b $00
-[00000075]                           dc.b $00
-[00000076]                           dc.b $00
-[00000077]                           dc.b $0c
-[00000078] 00000028                  dc.l $00000028
-[0000007c]                           dc.b $00
-[0000007d]                           dc.b $00
-[0000007e]                           dc.b $00
-[0000007f]                           dc.b $08
-[00000080]                           dc.b $00
-[00000081]                           dc.b $00
-[00000082]                           dc.b $00
-[00000083]                           dc.b $00
-[00000084]                           dc.b 'profil',0
-[0000008b]                           dc.b $00
-;
-         U x__text__
-         U _exit
-         U __penable
-         U __profil
-0000002e T a~count
-0000005c D __pheader
-;
+	* header
+	.word	0x9a2d
+p_esize:
+	* # entries to count, then # bytes of counters
+	.word	100
+p_pbuf:
+	* time profile buffer
+	.long	0
+p_psize:
+	* size of text, then size of histogram
+	.long	x__text__
+	* start of profiling area
+	.long	p_start
+	* bytes per counter, then profil scale fraction
+	.long	8
+	* text bias
+	.long	p_start
+	* offset from start of functions
+	.long	12
+	.long	p_fname
+
+p_subidx:
+	.long	8
+p_buf:
+	.long	0
+p_fname:
+	.ascii "profil"
+	.byte 0

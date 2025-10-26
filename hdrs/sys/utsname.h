@@ -16,4 +16,7 @@ struct utsname
 	char version[SYS_NMLN];
 	char machine[SYS_NMLN];
 };
+
+int uname(struct utsname *buf);
+
 #endif

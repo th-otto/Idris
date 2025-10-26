@@ -71,7 +71,10 @@ struct flock {
 	unsigned char	l_type;
 	unsigned char	l_whence;
 	short			l_pid;
-	};
+};
 
 #endif
+
+int fcntl(int fd, int cmd, ...);
+
 #endif

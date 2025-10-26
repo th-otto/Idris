@@ -1,5 +1,19 @@
+/*	STRING TYPES HEADER
+ *	copyright (c) 1984, 1987 by Whitesmiths, Ltd.
+ */
+
 #ifndef __STRING__
 #define __STRING__	1
+
+/*	set up default compiler version if none given
+ */
+#ifndef _CVERSION
+#define _CVERSION	300
+#endif
+
+#if _CVERSION < 300
+#define void char
+#endif
 
 /*	set up prototyping
  */
@@ -28,16 +42,17 @@ void bzero(void *dst, register int count);
 int ffs(long val);
 
 char *strcat __((char *s1, const char *s2));
-char *strchr(const char *str, int c);
+char *strchr __((const char *s, int c));
+char *strcpy __((char *s1, const char *s2));
 char *strncat __((char *s1, const char *s2, size_t n));
 char *strncpy __((char *s1, const char *s2, size_t n));
 char *strpbrk __((const char *s1, const char *s2));
-char *strrchr(const char *str, int c);
+char *strrchr __((const char *s, int c));
 char *strtok __((char *s1, const char *s2));
 int strcmp __((const char *s1, const char *s2));
 int strncmp __((const char *s1, const char *s2, size_t n));
 size_t strcspn __((const char *s1, const char *s2));
-size_t strlen(const char *s);
+size_t strlen __((const char *s));
 size_t strspn __((const char *s1, const char *s2));
 
 char *index(const char *str, char c);

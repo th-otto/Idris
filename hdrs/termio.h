@@ -221,7 +221,7 @@ struct sgtty {
 	unsigned short t_speeds;
 	char t_erase, t_kill;
 	unsigned short t_mode;
-	};
+};
 
 #if 0	/* line discipline */
 
@@ -256,10 +256,12 @@ struct termcb {
 	char st_ccol;
 	char st_vrow;
 	char st_lrow;
-	};
+};
 
 #endif
 
 int ioctl(int fd, int cmd, void *arg);
+int gtty(int fd, struct sgtty *t);
+int stty(int fd, struct sgtty *t);
 
 #endif

@@ -10,21 +10,31 @@
 #ifndef __XECV__
 #define __XECV__ 1
 
-#define X_MODE	0003
-#define 	X_SYN	0000
-#define 	X_ASYN	0001
-#define 	X_OVLAY	0002
-#define	X_SYSIG 0004
-#define X_RID	0010
+/*	set up prototyping
+ */
+#ifndef __
+#ifdef _PROTO
+#define __(a)	a
+#else
+#define __(a)	()
+#endif
+#endif
+
+#define X_MODE	0x0003
+#define 	X_SYN	0x0000
+#define 	X_ASYN	0x0001
+#define 	X_OVLAY	0x0002
+#define	X_SYSIG 0x0004
+#define X_RID	0x0008
 #define X_RUID	X_RID
-#define X_EID	0020
+#define X_EID	0x0010
 #define X_EUID	X_EID
 #endif
 
-#define X_NEWIO	0040
-#define X_SETB	0100
-#define X_PCNTL	0200
-#define X_PGRP	0400
+#define X_NEWIO	0x0020
+#define X_SETB	0x0040
+#define X_PCNTL 0x0080
+#define X_PGRP	0x0100
 
 /*	xeq flags
  */
@@ -34,6 +44,8 @@ typedef struct {
 	/* BYTES */ BYTES xf_setb;
 	/* BITS */ BYTES xf_pcntl, xf_pri;
 	/* DEV */ BYTES xf_tty;
-} XFLAGS;
+	} XFLAGS;
+
+ERROR _xeq __((const char *path, const char **args, const char **env, BITS xf_flag, ... /* ARGINT xf_sin, ARGINT xf_sout, ARGINT xf_serr, BYTES xf_setb, BYTES xf_pcntl, BYTES xf_pri, BYTES xf_tty */));
 
 #endif

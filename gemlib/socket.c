@@ -6,12 +6,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
-#ifdef __GNUC__
-#define UNUSED(x) (void)(x)
-#else
-#define UNUSED(x)
-#endif
+#include "gem_vdiP.h"
 
 struct stat_has_wrong_size { unsigned int dummy: sizeof(struct stat) == 40 ? 1 : -1; };
 

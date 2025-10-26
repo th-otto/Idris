@@ -142,8 +142,10 @@ CC = $(CROSS)gcc
 AS = $(CROSS)as
 AR = $(CROSS)ar
 
+SYSINC := -I$(dir $(shell $(CC) -print-prog-name=cc1))/include
+
 CFLAGS = -Os \
-	-I. -I../hdrs -nostdinc -fno-builtin -D_PROTO=1 \
+	-I. -I../hdrs -nostdinc -fno-builtin $(SYSINC) -D_PROTO=1 \
 	-Wstrict-prototypes -Wmissing-prototypes -Wall -W -Werror
 
 all: libgem.o
