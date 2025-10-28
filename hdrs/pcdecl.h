@@ -77,5 +77,8 @@ VOID _putstr __((FD fd, ...));
 VOID sort __((ARGINT n, COUNT (*ordf)(void), VOID (*excf)(void), TEXT *base));
 void onintr __((void (*f)(int)));
 COUNT _rawmode __((FD fd, COUNT nmode));
+BOOL _devname __((char *s, UCOUNT mdev, BOOL cspec));
+
+int _btoi __((const char *s, int len, int *val, int base));
 
 #endif

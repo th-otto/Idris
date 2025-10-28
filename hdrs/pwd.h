@@ -5,6 +5,10 @@
 #ifndef __PWD__
 #define __PWD__ 1
 
+#ifndef __TYPES__
+#include <sys/types.h>
+#endif
+
 struct pwd {	/* obsolete */
 	char *pw_name;
 	char *pw_passwd;
@@ -24,5 +28,12 @@ struct passwd {
 	char *pw_dir;
 	char *pw_shell;
 };
+
+struct passwd *getpwent(void);
+struct passwd *getpwuid(uid_t uid);
+struct passwd *getpwgid(gid_t gid);
+struct passwd *getpwnam(const char *name);
+void endpwent(void);
+void setpwent(void);
 
 #endif

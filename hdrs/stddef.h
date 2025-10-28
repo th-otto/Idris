@@ -11,13 +11,7 @@ typedef long ptrdiff_t;
 
 /*	set up type not already set up
  */
-#ifndef __STDIO__
-#ifndef __STDLIB__
-#ifndef __STRING__
 typedef unsigned int size_t;
-#endif
-#endif
-#endif
 
 /*	global variable references
  */

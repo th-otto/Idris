@@ -29,10 +29,7 @@ struct stat {
 	} _stU;
 	/* 28 */ unsigned long st_tmake;
 	/* 32 */ unsigned long st_tdump;
-#ifndef __RES__ /* not in kernel */
-	/* 36 */ unsigned long st_resrvd;
-#endif
-	/* 40 */
+	/* 36 */
 };
   
 #define st_addr _stU._stU_addr

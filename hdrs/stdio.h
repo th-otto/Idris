@@ -21,11 +21,7 @@
 #include <stdarg.h>
 #endif
 #ifndef __STDEFS__
-#ifndef __STDLIB__
-#ifndef __STRING__
-typedef unsigned int size_t;
-#endif
-#endif
+#include <stddef.h>
 #endif
 
 /*	the FILE structure
@@ -112,11 +108,9 @@ extern FILE *stdout;
 #define BUFSIZ 		512
 #define EOF		 	-1
 #define L_tmpnam	_TMPSIZ
-#ifdef _IDRIS
-#define L_ctermid	10
+#define L_ctermid	20
 #define L_cuserid	20
 #define P_tmpdir	"/tmp/"
-#endif
 #ifndef __UNISTD__
 #define SEEK_SET	0
 #define	SEEK_CUR	1

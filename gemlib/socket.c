@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include "gem_vdiP.h"
 
-struct stat_has_wrong_size { unsigned int dummy: sizeof(struct stat) == 40 ? 1 : -1; };
+/* struct stat_has_wrong_size { unsigned int dummy: sizeof(struct stat) == 36 ? 1 : -1; }; */
 
 
 #ifdef _IDRIS

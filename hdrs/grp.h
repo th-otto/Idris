@@ -12,4 +12,10 @@ struct group {
 	char **gr_mem;
 };
 
+struct group *getgrent(void);
+void setgrent(void);
+void endgrent(void);
+struct group *getgrgid(gid_t gid);
+struct group *getgrnam(const char *name);
+
 #endif

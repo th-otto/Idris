@@ -6,11 +6,7 @@
 #define __SOCKET__ 1
 
 #ifndef __STDEFS__
-#ifndef __STDLIB__
-#ifndef __STRING__
-typedef unsigned int size_t;
-#endif
-#endif
+#include <stddef.h>
 #endif
 
 /*	set up prototyping

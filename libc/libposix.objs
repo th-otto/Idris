@@ -1,14 +1,7 @@
 crypt.o
-ctermid.o
-cuserid.o
 cwd.o
 devname.o
 dirstr.o
 getlinks.o
-getlogin.o
 getpass.o
-lockf.o
 parent.o
-pwdfil.o
-rmdir.o
-ttyname.o

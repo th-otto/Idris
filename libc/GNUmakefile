@@ -56,6 +56,8 @@ LIBPOSIX_OBJS = \
 	alarm.o \
 	chmod.o \
 	chown.o \
+	ctermid.o \
+	cuserid.o \
 	dup2.o \
 	execl.o \
 	execle.o \
@@ -72,13 +74,17 @@ LIBPOSIX_OBJS = \
 	getppid.o \
 	ioctl.o \
 	isatty.o \
+	lockf.o \
 	mkdir.o \
 	mknod.o \
 	pause.o \
 	pipe.o \
+	pwdfil.o \
+	rmdir.o \
 	setgid.o \
 	setpgrp.o \
 	sleep.o \
+	ttyname.o \
 	umask.o \
 	uname.o \
 	utime.o \

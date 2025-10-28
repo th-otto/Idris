@@ -15,6 +15,10 @@
 #define void char
 #endif
 
+#ifndef __STDEFS__
+#include <stddef.h>
+#endif
+
 /*	set up prototyping
  */
 #ifndef __
@@ -27,18 +31,8 @@
 
 /*	type declarations
  */
-typedef void (*(*onexit_t)(void))(void);
-#ifndef __STDEFS__
-#ifndef __STDIO__
-#ifndef __STRING__
-typedef unsigned int size_t;
-#endif
-#endif
-#endif
 
-#ifndef NULL
-#define NULL (void *)0
-#endif
+typedef void (*(*onexit_t)(void))(void);
 
 /*	function declarations
  */

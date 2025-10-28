@@ -33,9 +33,12 @@ typedef struct {
 
 DIR *opendir(const char *name);
 struct dirent *readdir(DIR *dirp);
-int closedir(DIR *dirp)
+int closedir(DIR *dirp);
 long telldir(DIR *dirp);
 void seekdir(DIR *dirp, long loc);
 void rewinddir(DIR *dirp);
+
+struct dirent *_getlinks(const char *pathname, unsigned int *nentries, long size);
+char *_parent(char *buf, const char *pathname);
 
 #endif

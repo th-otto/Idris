@@ -28,11 +28,7 @@
 /*	set up type not already set up
  */
 #ifndef __STDEFS__
-#ifndef __STDLIB__
-#ifndef __STDIO__
-typedef unsigned int size_t;
-#endif
-#endif
+#include <stddef.h>
 #endif
 
 int bcmp(const void *src, const void *dst, int count);

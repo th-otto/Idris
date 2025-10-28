@@ -20,11 +20,7 @@
 #endif
 
 #ifndef __STDEFS__
-#ifndef __STDLIB__
-#ifndef __STRING__
-typedef unsigned int size_t;
-#endif
-#endif
+#include <stddef.h>
 #endif
 
 /* CONSTANTS FOR THE LOCKF FUNCTION
@@ -122,6 +118,9 @@ gid_t getegid __((void));
 int pause __((void));
 int pipe __((int pipefd[2]));
 int setpgrp __((void));
+char *ttyname __((int fd));
+int lockf __((int fd, int cmd, off_t len));
+int rmdir __((const char *pathname));
 
 int _cwd __((char *tbuf));
 

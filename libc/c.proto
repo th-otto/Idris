@@ -19,7 +19,7 @@ c:/etc/bin/pp	-o (o) -x -i "|../hdrs/" \
 			{proto?-d_PROTO} {idris?-d_IDRIS} \
 			{listcs?-err} {lincl?+lincl} \
 			+std \
-			 /lib/hdrs/id68k{fpp?f:n}.h \
+			 ../hdrs/id68k{fpp?f:n}.h \
 			(i)
 1:/odd/p1		-o (o) -m -r6 -alu \
 			{nrf?:{debug?:-rf(r).rf}} \
