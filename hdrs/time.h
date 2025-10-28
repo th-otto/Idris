@@ -27,8 +27,7 @@
 
 /*	the asctime, ctime, gmtime and localtime structure
  */
-typedef struct tm
-	{
+struct tm {
 	int tm_sec;		/* seconds [0, 59] */
 	int tm_min;		/* minutes [0, 59] */
 	int tm_hour;	/* hours [0, 23] */
@@ -38,7 +37,7 @@ typedef struct tm
 	int tm_wday;	/* day of week, sunday = 0 [0, 6] */
 	int tm_yday;	/* day of year [0, 365] */
 	int tm_isdst;	/* non-zero if daylight savings time */
-	} _tm;
+};
 
 /*	type declarations
  */
@@ -64,8 +63,9 @@ time_t time __((time_t *timer));
 #define CLK_TCK		_CLKTICK
 
 #ifdef _IDRIS
+extern int _dst;
 #define daylight	_dst
-#define timezone	((long)_timezone)
+extern long _timezone;
 #define tzname		_tzname
 #endif
 

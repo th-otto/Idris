@@ -17,7 +17,6 @@ addexp.s
 alloc.s
 asctim.s
 asin.s
-astat.s
 atan.s
 atan2.s
 atof.s
@@ -47,7 +46,6 @@ cpybuf.s
 cpystr.s
 crypt.s
 cscan.s
-cstat.s
 ctime.s
 ctype.s
 diftim.s
@@ -113,7 +111,6 @@ ln.s
 loctim.s
 log.s
 log10.s
-lstat.s
 ltob.s
 malloc.s
 memchr.s

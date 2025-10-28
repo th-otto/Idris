@@ -14,7 +14,6 @@ Ddbusr.o
 Ddbvar.o
 addexp.o
 alloc.o
-astat.o
 atan2.o
 btod.o
 btoi.o
@@ -33,7 +32,6 @@ cputf.o
 cpybuf.o
 cpystr.o
 crypt.o
-cstat.o
 ctype.o
 doclos.o
 domain.o
@@ -60,7 +58,6 @@ itob.o
 jmp.o
 lenstr.o
 ln.o
-lstat.o
 ltob.o
 onlist.o
 partyp.o

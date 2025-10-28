@@ -2,7 +2,6 @@ abort.o
 acos.o
 asctim.o
 asin.o
-astat.o
 atan.o
 atan2.o
 atof.o

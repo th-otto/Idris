@@ -1,11 +1,14 @@
 LIBA_OBJS = \
 	abort.o \
+	a_astat.o \
 	clock.o \
 	perror.o \
 	$(empty)
 
 LIBB_OBJS = \
 	abs.o \
+	b_astat.o \
+	b_cstat.o \
 	brk.o \
 	chdir.o \
 	close.o \
@@ -24,6 +27,7 @@ LIBB_OBJS = \
 	kill.o \
 	link.o \
 	lseek.o \
+	lstat.o \
 	onintr.o \
 	open.o \
 	read.o \
@@ -48,6 +52,7 @@ LIBB_OBJS = \
 	$(empty)
 
 LIBC_OBJS = \
+	c_cstat.o \
 	fileno.o \
 	$(empty)
 
