@@ -1,7 +1,29 @@
+CROSS=m68k-atari-mint-
+CC = $(CROSS)gcc
+AS = $(CROSS)as
+AR = $(CROSS)ar
+
+SYSINC := -I$(dir $(shell $(CC) -print-prog-name=cc1))/include
+
+CFLAGS = -Os -fomit-frame-pointer \
+	-I. -I../hdrs -nostdinc -fno-builtin $(SYSINC) -D_PROTO=1 \
+	-Wstrict-prototypes -Wmissing-prototypes -Wall -W -Werror
+
 LIBA_OBJS = \
 	abort.o \
 	a_astat.o \
 	clock.o \
+	isspace.o \
+	isalnum.o \
+	isalpha.o \
+	iscntrl.o \
+	isdigit.o \
+	isgraph.o \
+	islower.o \
+	isprint.o \
+	ispunct.o \
+	isupper.o \
+	isxdigit.o \
 	perror.o \
 	$(empty)
 
@@ -94,17 +116,6 @@ LIBPOSIX_OBJS = \
 	uname.o \
 	utime.o \
 	$(empty)
-
-CROSS=m68k-atari-mint-
-CC = $(CROSS)gcc
-AS = $(CROSS)as
-AR = $(CROSS)ar
-
-SYSINC := -I$(dir $(shell $(CC) -print-prog-name=cc1))/include
-
-CFLAGS = -Os \
-	-I. -I../hdrs -nostdinc -fno-builtin $(SYSINC) -D_PROTO=1 \
-	-Wstrict-prototypes -Wmissing-prototypes -Wall -W -Werror
 
 all: liba.68k libb.68k libc.68k libposix.68k Crts.o Crtf.o
 # cannot be assembled by gas because of ~ in symbol names

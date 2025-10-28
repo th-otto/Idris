@@ -43,17 +43,6 @@ getc.o
 getchr.o
 gets.o
 gmtime.o
-isalnm.o
-isalph.o
-iscntr.o
-isdig.o
-isgraf.o
-islow.o
-isprnt.o
-ispunc.o
-isspac.o
-isup.o
-isxdig.o
 ldexp.o
 loctim.o
 log.o

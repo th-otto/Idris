@@ -92,17 +92,6 @@ gets.s
 getzon.s
 gmtime.s
 huge.s
-isalnm.s
-isalph.s
-iscntr.s
-isdig.s
-isgraf.s
-islow.s
-isprnt.s
-ispunc.s
-isspac.s
-isup.s
-isxdig.s
 itob.s
 jmp.s
 ldexp.s

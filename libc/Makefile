@@ -3,16 +3,71 @@ AS = as.68k
 AR = lib
 
 LIBA_OBJS = \
-	clock.o \
-	perror.o \
 	abort.o \
+	a_astat.o \
+	clock.o \
+	isspace.o \
+	isalnum.o \
+	isalpha.o \
+	iscntrl.o \
+	isdigit.o \
+	isgraph.o \
+	islower.o \
+	isprint.o \
+	ispunct.o \
+	isupper.o \
+	isxdigit.o \
+	perror.o \
 	$(empty)
 
 LIBB_OBJS = \
+	abs.o \
+	b_astat.o \
+	b_cstat.o \
+	brk.o \
+	chdir.o \
+	close.o \
+	cmain.o \
+	creat.o \
+	dup.o \
+	fabs.o \
+	fork.o \
+	fstat.o \
+	getmod.o \
+	getenv.o \
+	geteuid.o \
+	getpid.o \
+	getuid.o \
+	gtty.o \
+	kill.o \
+	link.o \
+	lseek.o \
+	lstat.o \
+	onintr.o \
+	open.o \
+	read.o \
+	rawmode.o \
+	remove.o \
+	rename.o \
+	sbreak.o \
+	setuid.o \
+	signal.o \
+	sstat.o \
+	stat.o \
+	stty.o \
+	system.o \
+	time.o \
 	times.o \
+	uniqnm.o \
+	unlink.o \
+	wait.o \
+	write.o \
+	xeq.o \
+	xecv.o \
 	$(empty)
 
 LIBC_OBJS = \
+	c_cstat.o \
 	fileno.o \
 	$(empty)
 
@@ -21,6 +76,8 @@ LIBPOSIX_OBJS = \
 	alarm.o \
 	chmod.o \
 	chown.o \
+	ctermid.o \
+	cuserid.o \
 	dup2.o \
 	execl.o \
 	execle.o \
@@ -37,14 +94,20 @@ LIBPOSIX_OBJS = \
 	getppid.o \
 	ioctl.o \
 	isatty.o \
+	lockf.o \
 	mkdir.o \
 	mknod.o \
 	pause.o \
 	pipe.o \
+	pwdfil.o \
+	rmdir.o \
 	setgid.o \
 	setpgrp.o \
 	sleep.o \
+	ttyname.o \
 	umask.o \
+	uname.o \
+	utime.o \
 	$(empty)
 
 all: liba.68k libb.68k libc.68k libposix.68k Crts.o Crtf.o Crtp.o

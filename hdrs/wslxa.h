@@ -124,18 +124,6 @@ struct _tvec *vtime __((struct _tvec *pv, ULONG lt));
 
 /*	macros
  */
-#ifndef _EBCDIC
-#define iswhite(c)	((c) <= ' ' || 0177 <= (c))
-#else
-IMPORT RDONLY UTINY _ctebc[];
-#define	_UC		0001	/* upper case */
-#define	_LC		0002	/* lower case */
-#define	_D		0004	/* decimal digit */
-#define	_P		0020	/* punctuation */
-
-#define isgraph(c) ((_ctype+1)[(unsigned char)(c)] & (_P|_D|_UC|_LC))
-#define iswhite(c)	(!(_isgraph(c)))
-#endif
 #define max(x, y)	(((x) < (y)) ? (y) : (x))
 #define min(x, y)	(((x) < (y)) ? (x) : (y))
 

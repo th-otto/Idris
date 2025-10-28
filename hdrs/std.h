@@ -73,7 +73,6 @@ typedef VOID (*(*FNPTR)(void))(void);	/* pseudo type for onexit */
 #define bndof(ty)	((unsigned int)&(((struct{char _c;ty _x;}*)0)->_x))
 #define bndup(ptr, ty)	((unsigned)(ptr) + (bndof(ty) - 1) & \
 						~(bndof(ty) - 1))
-#define iswhite(c)	((c) <= ' ' || 0177 <= (c))
 #define max(x, y)	(((x) < (y)) ? (y) : (x))
 #define min(x, y)	(((x) < (y)) ? (x) : (y))
 

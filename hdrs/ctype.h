@@ -72,6 +72,11 @@ int toupper __((int c));
 #define	_tolower(c)	((c) - 'A' + 'a')
 #define	isascii(c)	(!((c) & ~0177))
 #define	toascii(c)	((c) & 0177)
+#ifndef _EBCDIC
+#define iswhite(c)	((c) <= ' ' || 0177 <= (c))
+#else
+#define iswhite(c)	(!isgraph(c))
+#endif
 #endif
 
 #endif
