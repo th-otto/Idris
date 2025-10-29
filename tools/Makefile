@@ -1,6 +1,7 @@
 TOOLS = \
 	readclock \
 	date \
+	show0 \
 	settime \
 	$(empty)
 
@@ -14,6 +15,9 @@ date: date.o
 
 settime: settime.o
 	$(CC) -o$@ settime.o
+
+show0: show0.o
+	$(CC) -o$@ show0.o
 
 xbios.o: xbios.s
 	$(CC) +o xbios.s

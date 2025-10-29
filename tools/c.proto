@@ -1,0 +1,56 @@
+#	WHITESMITHS C ENVIRONMENT PROTOTYPE FILE
+#	CNIDR68K -- Native IDRIS 68k
+#	Programmable flag options:
+#
+#	20	: generate code that utilizes the 68020 processor
+#	debug	: load debugger with any C compile
+#	fpp	: use the floating point co-processor (68881)
+#	idris	: target has full Idris system call set
+#	lincl	: include header files in listing or diagnostic output
+#	listcs	: create c/assembler listing
+#	lo	: create a file (r).lis for listings (default to STDOUT)
+#	nostrict: allow more lenient type checking (except Whitesmith)
+#	proto	: enable prototype checking
+#	std	: force the input to conform to ANSI C standard
+#	strict	: enforce more stronger type checking
+#	singlep	: generate code for single-precison floating-point
+
+c:/etc/bin/pp	-o (o) -x -i "|../hdrs/" \
+			{proto?-d_PROTO} {idris?-d_IDRIS} \
+			{listcs?-err} {lincl?+lincl} \
+			+std \
+			 ../hdrs/id68k{fpp?f:n}.h \
+			(i)
+1:/odd/p1		-o (o) -m -r6 -alu \
+			{nrf?:{debug?:-rf(r).rf}} \
+			{nostrict?-strict:{strict?+strict}} \
+			{listcs?-err}  \
+			{debug?+debug} +std  (i)
+2:/odd/p2.68k	-o (o) -x4 {nobss?-bss} {fpp?-f} {listcs?+list -err} \
+			{nrf?:{debug?:-rf(r).rf}} \
+			{20?-20} {singlep?-sp} (i)
+			{nrf?:{debug?:rm (r).rf}}
+s:/etc/bin/as.68k	-o (o) -10 {20?-20}  {listcs?+list -err -lo (r).lis} \
+			{fpp?-f} (i)
+ {listcs?/etc/bin/lm	-o (r).asl -err -lt (r).lis}
+ {listcs?/etc/bin/pr	-err (r).asl >(r).lis}
+ {listcs?rm	(r).asl}
+o::/etc/bin/link	-o (o) \
+			-max 0xffffffff  \
+			+text -b0 -o0 -m0xffffffff  \
+			+data -r17 -m0xffffffff  \
+			+bss -b0  \
+			{prof?$c/lib/Crtp.68k} \
+			{f20?$c/lib/Crt20.68k $c/lib/Crtf.68k:{20?$c/lib/Crt20.68k}} \
+			$c/lib/Crts.68k \
+			(i) \
+			{posix?:$c/lib/libi{20?20}.68k} \
+			{curses?$c/lib/libcurse{20?20}.68k $c/lib/libtcap{20?20}.68k: \
+				{termcap?$c/lib/libtcap{20?20}.68k}} \
+			$c/lib/libposix{20?20}.68k \
+			$c/lib/libc{f20?f20:{20?20:{spf?spf}}}.68k \
+			$c/lib/liba{f20?f20:{20?20:{spf?spf}}}.68k \
+			$c/lib/libb{f20?f20:{20?20:{spf?spf}}}.68k \
+			$c/lib/libm{spf?spf}.68k \
+			$c/lib/libtpad.68k
+

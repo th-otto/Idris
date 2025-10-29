@@ -62,7 +62,7 @@ extern size_t _htop;
 const char *_domerr;
 const char *_memerr;
 const char *_ranerr;
-extern int _stop;
+extern void *_stop;
 extern int _fnext;
 extern int _tfile;
 extern char _rbuf[];

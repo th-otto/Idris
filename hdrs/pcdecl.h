@@ -80,5 +80,6 @@ COUNT _rawmode __((FD fd, COUNT nmode));
 BOOL _devname __((char *s, UCOUNT mdev, BOOL cspec));
 
 int _btoi __((const char *s, int len, int *val, int base));
+int _btol __((const char *s, int len, long *val, int base));
 
 #endif

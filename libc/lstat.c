@@ -16,7 +16,7 @@ FILE _stderr;
 int _tfile;
 int _fnext;
 FILE *_pfile;
-int _stop;
+void *_stop;
 const char *_ranerr;
 const char *_memerr;
 const char *_domerr;
@@ -38,7 +38,7 @@ void _lstat(void)
 	_domerr = "domain error";
 	_memerr = "no memory";
 	_ranerr = "range error";
-	_stop = 1;
+	_stop = (void *)1;
 	_pfile = &_stdout;
 
 	_stderr.flist = NULL;
