@@ -76,8 +76,7 @@ struct stat {
 #define S_ISREG(m)	(((unsigned short) (m) & I_TYPE) == I_REG)
 #define S_ISFIFO(m)	(((unsigned short) (m) & (I_TYPE|I_FIFO|0111)) == (I_REG|I_FIFO))
 #define S_ISAUTO(m)	(((unsigned short) (m) & (I_TYPE|I_AUTO)) == (I_BLK|I_AUTO))
-/* BUG? returns true also for directories */
-#define S_ISDEV(m)	(((unsigned short) (m) & (I_CHR&I_BLK)))
+#define S_ISDEV(m)	(S_ISCHR(m) || S_ISBLK(m))
 #define S_IFIFO		(I_REG|I_FIFO|0666)
 #define S_IDIR		(I_DIR|0777)
 

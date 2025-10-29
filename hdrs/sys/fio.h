@@ -43,11 +43,12 @@
 #define S_ISREG(m)	(((BITS) (m) & I_TYPE) == I_REG)
 #define S_ISFIFO(m)	(((BITS) (m) & (I_TYPE|I_FIFO|0111)) == (I_REG|I_FIFO))
 #define S_ISAUTO(m)	(((BITS) (m) & (I_TYPE|I_AUTO)) == (I_BLK|I_AUTO))
-/* BUG? returns true also for directories */
-#define S_ISDEV(m)	(((BITS) (m) & (I_CHR&I_BLK)))
+#define S_ISDEV(m)	(S_ISCHR(m) || S_ISBLK(m))
 #endif
 #define S_ISLOCK(m)	(((BITS) (m) & (I_SGID|0111)) == I_SGID)
-#define FCHR_MAX	0x01000000L
+#ifndef FCHR_MAX
+#define FCHR_MAX	0x00ffffffL
+#endif
 
 /*	codes for f_flag
  */
