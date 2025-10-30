@@ -57,7 +57,7 @@ typedef VOID (*(*FNPTR)(void))(void);	/* pseudo type for onexit */
 #endif
 #define FOREVER	for (;;)
 #define BUFSIZE	512
-#define BWRITE	-1
+#define BWRITE	(-1)
 #define READ	0
 #define WRITE	1
 #define UPDATE	2

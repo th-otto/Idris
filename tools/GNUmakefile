@@ -1,4 +1,4 @@
-#CROSS=m68k-atari-mint-
+CROSS=m68k-atari-mint-
 CC = $(CROSS)gcc
 AS = $(CROSS)as
 AR = $(CROSS)ar
@@ -11,6 +11,7 @@ CFLAGS = -Os -fomit-frame-pointer \
 
 TOOLS = \
 	show0 \
+	ps \
 	$(empty)
 
 all: $(TOOLS)
@@ -26,6 +27,9 @@ settime: settime.o
 
 show0: show0.o
 	$(CC) -o$@ show0.o
+
+ps: ps.o
+	$(CC) -o$@ ps.o
 
 xbios.o: xbios.s
 	$(CC) +o xbios.s

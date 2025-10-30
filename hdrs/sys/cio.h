@@ -53,7 +53,7 @@ struct tty {
 	CHQ t_rawq;
 	CHQ t_outq;
 	TTY *t_rdlist;
-	VOID (*t_go)();
+	VOID (*t_go)(void);
 	DEV t_dev;
 	COUNT t_ndel;
 	COUNT t_col;

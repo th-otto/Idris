@@ -52,7 +52,7 @@
  */
 struct flock {
 	unsigned int	l_sysid;
-	unsigned int	l_proc;
+	unsigned int	l_proc; /* struct proc * */
 	unsigned long	l_start;
 	unsigned long	l_len;
 	unsigned char	l_type;
@@ -60,7 +60,8 @@ struct flock {
 	short			l_pid;
 };
 
-#endif
+#endif /* __LOCKF__ */
+
 
 #ifndef __STDIO__
 /* constants for "lseek"

@@ -40,17 +40,17 @@ o::/etc/bin/link	-o (o) \
 			+text -b0 -o0 -m0xffffffff  \
 			+data -r17 -m0xffffffff  \
 			+bss -b0  \
-			{prof?$c/lib/Crtp.68k} \
-			{f20?$c/lib/Crt20.68k $c/lib/Crtf.68k:{20?$c/lib/Crt20.68k}} \
-			$c/lib/Crts.68k \
+			{prof?/lib/Crtp.68k} \
+			{f20?/lib/Crt20.68k /lib/Crtf.68k:{20?/lib/Crt20.68k}} \
+			/lib/Crts.68k \
 			(i) \
-			{posix?:$c/lib/libi{20?20}.68k} \
-			{curses?$c/lib/libcurse{20?20}.68k $c/lib/libtcap{20?20}.68k: \
-				{termcap?$c/lib/libtcap{20?20}.68k}} \
-			$c/lib/libposix{20?20}.68k \
-			$c/lib/libc{f20?f20:{20?20:{spf?spf}}}.68k \
-			$c/lib/liba{f20?f20:{20?20:{spf?spf}}}.68k \
-			$c/lib/libb{f20?f20:{20?20:{spf?spf}}}.68k \
-			$c/lib/libm{spf?spf}.68k \
-			$c/lib/libtpad.68k
+			{posix?:/lib/libi{20?20}.68k} \
+			{curses?/lib/libcurse{20?20}.68k /lib/libtcap{20?20}.68k: \
+				{termcap?/lib/libtcap{20?20}.68k}} \
+			/lib/libposix{20?20}.68k \
+			/lib/libc{f20?f20:{20?20:{spf?spf}}}.68k \
+			/lib/liba{f20?f20:{20?20:{spf?spf}}}.68k \
+			/lib/libb{f20?f20:{20?20:{spf?spf}}}.68k \
+			/lib/libm{spf?spf}.68k \
+			/lib/libtpad.68k
 

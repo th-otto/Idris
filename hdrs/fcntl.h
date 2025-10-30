@@ -65,7 +65,7 @@
  */
 struct flock {
 	unsigned int	l_sysid;
-	unsigned int	l_proc;
+	unsigned int	l_proc; /* struct proc * */
 	unsigned long	l_start;
 	unsigned long	l_len;
 	unsigned char	l_type;

@@ -34,6 +34,7 @@
 
 /*	the pseudo types
  */
+#ifndef __STD__
 typedef char TBOOL, TEXT;
 typedef double DOUBLE;
 typedef float FLOAT;
@@ -52,10 +53,16 @@ typedef char TINY;
 #else
 typedef signed char TINY;
 typedef void VOID;
+#ifndef RDONLY
 #define RDONLY const
+#endif
+#ifndef TOUCHY
 #define TOUCHY volatile
+#endif
 typedef VOID (*(*FNPTR)(void))(void);	/* pseudo type for onexit */
 #endif
+
+#endif /* __STD__ */
 
 /*	system parameters
  */
@@ -72,16 +79,20 @@ typedef VOID (*(*FNPTR)(void))(void);	/* pseudo type for onexit */
 #define FOREVER	for (;;)
 #define BYTMASK	0377
 #define CPERM	0666
+#ifndef R_QUERY
 #define R_RAW		1
 #define R_COOKED	0
 #define R_QUERY		(-1)
+#endif
 
 /*	being phased out when WSL library is phased out
  */
+#ifndef BWRITE
 #define READ	0
 #define WRITE	1
 #define UPDATE	2
-#define BWRITE	-1	
+#define BWRITE	(-1)
+#endif
 
 /*	declarations for libc functions returning pointers, longs or doubles
  */
@@ -97,7 +108,7 @@ TEXT *atime __((struct _tvec *pv, TEXT *s));
 TEXT *cpystr __((TEXT *dest, ...));
 TEXT *_decrypt __((TEXT data[8], TINY ks[16][8]));
 TEXT *_encrypt __((TEXT data[8], TINY ks[16][8]));
-TEXT *getflags __((BYTES *pac, TEXT ***pav, TEXT *fmt, ...));
+TEXT *getflags __((BYTES *pac, TEXT ***pav, const char *fmt, ...));
 TEXT *itols __((TEXT *s, COUNT n));
 TEXT *ltols __((TEXT *pl, LONG lo));
 TEXT *pathnm __((TEXT *buf, TEXT *n1, TEXT *n2));
@@ -111,7 +122,7 @@ VOID *frelst __((VOID *p, VOID *plast));
 VOID *lfree __((VOID *addr, VOID *link));
 VOID *nalloc __((BYTES need, VOID *link));
 VOID *sbreak __((BYTES size));
-struct _file *fdopen __((FD fd, TEXT *type));
+struct _file *fdopen __((FD fd, const char *type));
 struct _tvec *ltime __((struct _tvec *pv, ULONG lt));
 struct _tvec *vtime __((struct _tvec *pv, ULONG lt));
 #endif	/* EXECUTIVE */

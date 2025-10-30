@@ -20,7 +20,7 @@
 #define _TMPSIZ		14
 
 #define	ARG_MAX		10000
-#define	FCHR_MAX	16777215	/* 2^25 - 1 */
+#define	FCHR_MAX	16777215L	/* 2^24 - 1 */
 #define	CHILD_MAX	32767
 #define	LOCK_MAX	200
 #define	LINK_MAX	255

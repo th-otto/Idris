@@ -9,7 +9,7 @@
  */
 #define COUT	struct cout
 struct cout {
-	VOID (*c_pfn)();
+	VOID (*c_pfn)(void);
 	BYTES c_arg;
 	COUNT c_t;
 };

@@ -44,7 +44,7 @@ typedef struct {
 	/* BYTES */ BYTES xf_setb;
 	/* BITS */ BYTES xf_pcntl, xf_pri;
 	/* DEV */ BYTES xf_tty;
-	} XFLAGS;
+} XFLAGS;
 
 ERROR _xeq __((const char *path, const char **args, const char **env, BITS xf_flag, ... /* ARGINT xf_sin, ARGINT xf_sout, ARGINT xf_serr, BYTES xf_setb, BYTES xf_pcntl, BYTES xf_pri, BYTES xf_tty */));
 

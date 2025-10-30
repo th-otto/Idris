@@ -69,6 +69,7 @@
 
 /*	codes for fcntl
  */
+#ifndef F_SETLKW
 #define F_DUPFD		0
 #define F_GETFD 	1
 #define F_SETFD 	2
@@ -77,7 +78,10 @@
 #define F_GETLK		5
 #define F_SETLK		6
 #define F_SETLKW	7
+#endif
 
+#ifndef __LOCKF__
+#define __LOCKF__ 1
 /*	lock types
  */
 #define F_UNLCK		0
@@ -87,13 +91,13 @@
 /*	file lock structure
  */
 struct flock {
-	FLOCK	*l_next;
-	struct proc	*l_proc;
-	ULONG	l_start;
-	ULONG	l_len;
-	UTINY	l_type;
-	UTINY	l_whence;
-	COUNT	l_pid;
+	struct flock *l_next;
+	struct proc	 *l_proc;
+	unsigned long l_start;
+	unsigned long l_len;
+	unsigned char l_type;
+	unsigned char l_whence;
+	short         l_pid;
 };
 #define l_sysid l_next
 
@@ -105,6 +109,7 @@ struct fvar {
 	UTINY f_flag;
 	UTINY f_refs;
 };
+#endif /* __LOCKF__ */
 
 /*	codes for i_wait
  */
@@ -118,7 +123,7 @@ struct fvar {
  */
 struct inode {
 	/*  0 */ TEXT *next;
-	/*  4 */ FLOCK *i_flock;
+	/*  4 */ struct flock *i_flock;
 	/*  8 */ BYTES i_wait;
 	/* 12 */ BITS i_flag;
 	/* 14 */ UCOUNT i_refs;

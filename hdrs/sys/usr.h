@@ -17,7 +17,7 @@ struct dentry {
 };
 
 #define HEADER	struct header
-struct header	{
+struct header {
 	UCOUNT hd_fmt, hd_ss;
 	BYTES hd_ts, hd_ds, hd_bs, hd_hs;
 	BYTES hd_tb, hd_db;
@@ -75,8 +75,8 @@ struct user {
 	/* 323 */ TINY u_sysio;
 	/* 324 */ BYTES u_arg[4];
 	/* 340 */ union {
-		DENTRY u_d;
-		HEADER u_h;
+		struct dentry u_d;
+		struct header u_h;
 	} u;
 	/* 368 */
 };

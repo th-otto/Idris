@@ -33,9 +33,9 @@ typedef unsigned int sig_atomic_t;
 
 /*	SIGNAL NUMBERS
  */
-#define SIG_ERR		((void (*)())-1)	/* error */
-#define SIG_DFL		(void (*)())0		/* default */
-#define SIG_IGN		(void (*)())1		/* no signal */
+#define SIG_ERR		((void (*)(int))-1)	/* error */
+#define SIG_DFL		(void (*)(int))0		/* default */
+#define SIG_IGN		(void (*)(int))1		/* no signal */
 #define SIGHUP		1		/* hangup */
 #define SIGINT		2		/* interrupt */
 #define SIGQUIT		3		/* quit */

@@ -17,70 +17,73 @@
 
 /*	codes for p_flag
  */
-#define S_EXEC	0001
-#define S_FORK	0002	/* for runnables */
-#define S_STK	0002	/* for text segments */
-#define S_INMEM	0004
-#define S_LOCK	0010
-#define S_ABS	0020
-#define S_TXOUT	0040
-#define S_LOAD	0100
-#define S_WORK	0200
+#define S_EXEC	0x01
+#define S_FORK	0x02	/* for runnables */
+#define S_STK	0x02	/* for text segments */
+#define S_INMEM	0x04
+#define S_LOCK	0x08
+#define S_ABS	0x10
+#define S_TXOUT	0x20
+#define S_LOAD	0x40
+#define S_WORK	0x80
  
 /*	the process control structure
  */
 #define MAXPN	8
 struct proc {
-	TEXT *next;
-	TEXT *p_chan;
-	BLOCK p_base;
-	BLOCK p_size;
-	BLOCK p_addr;
-	BLOCK p_tsize;
-	UTINY p_flag;
-	UTINY p_stat;
-	TINY p_pri;
-	TINY p_bias;
-	TEXT p_name[MAXPN];
-	PID p_pid;
-	PID p_pgrp;
-	DEV p_typ;
+	/*   0 */ struct proc *next;
+	/*   4 */ TEXT *p_chan;
+	/*   8 */ BLOCK p_base;
+	/*  10 */ BLOCK p_wbase; /* new in 3.14 */
+	/*  12 */ BLOCK p_size;
+	/*  14 */ BLOCK p_addr;
+	/*  16 */ BLOCK p_tsize;
+	/*  18 */ UTINY p_flag;
+	/*  19 */ UTINY p_stat;
+	/*  20 */ TINY p_pri;
+	/*  21 */ TINY p_bias;
+	/*  22 */ TEXT p_name[MAXPN];
+	/*  30 */ PID p_pid;
+	/*  32 */ PID p_pgrp;
+	/*  34 */ DEV p_typ;
 	/* end of shared part */
-	union {
+	/*  36 */ union {
 		struct {
-			struct proc *textp;
-			ZLIST *zlist;
-			struct proc *nextrun;
-			struct proc *nextwake;
-			BYTES alarm;
-			BYTES freeheap;
-			ULONG sigf;
-			PID ppid;
-			UID ruid;
-			UTINY slice;
-			UTINY sig;
+			/*  36 */ struct proc *textp;
+			/*  40 */ struct zlist *zlist;
+			/*  44 */ struct proc *nextrun;
+			/*  48 */ struct proc *nextwake;
+			/*  52 */ BYTES alarm;
+			/*  56 */ BYTES freeheap;
+			/*  60 */ ULONG sigf;
+			/*  64 */ PID ppid;
+			/*  66 */ UID ruid;
+			/*  67 */ UTINY slice;
+			/*  68 */ UTINY sig;
 		} p;
 		struct {
-			DEV idev;
-			INUM inum;
-			ULONG uptime;
-			COUNT refs;
-			COUNT coreref;
-			ULONG rboff;
+			/*  36 */ DEV idev;
+			/*  38 */ INUM inum;
+			/*  40 */ ULONG uptime;
+			/*  44 */ COUNT refs;
+			/*  46 */ COUNT coreref;
+			/*  48 */ ULONG rboff;
 		} t;
 	} v;
+	/*  70 */
 };
 
 /*	the zombie control structure
  */
 struct zlist {
-	TEXT *next;
-	LONG z_cutime;
-	LONG z_cstime;
-	BYTES z_freeheap;
-	COUNT z_stat;
-	PID z_pid;
-	TEXT z_name[MAXPN];
+	/*  0 */ struct zlist *next;
+	/*  4 */ LONG z_cutime;
+	/*  8 */ LONG z_cstime;
+	/* 12 */ BYTES z_freeheap;
+	/* 16 */ COUNT z_stat;
+	/* 18 */ PID z_pid;
+	/* 20 */ char z_name[MAXPN];
+	/* 28 */
 };
 
 /*	abbreviation macros

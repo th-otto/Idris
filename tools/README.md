@@ -20,9 +20,12 @@ The tools for now are:
      address harddisks other than the first, encoded as
      [0-7][0-1] where the first digit specifies the ACSI drive number,
      and the second digit the LUN.
+   - ps  
+     Print process status.
+     This tool has been fixed to be able to work with either kernel version.
    - settime  
      New tool that reads the IKBD clock, and sets current system time
      from it. Only useful if it already contains a valid date, either after
      reboot, or when using Hatari with an option to set the IKBD clock
      to current local time.
-     Should be invoked from /adm/init, instead of Setdate
+     Should be invoked from /adm/init, instead of Setdate.

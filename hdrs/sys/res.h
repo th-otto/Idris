@@ -144,6 +144,10 @@ typedef struct {
 
 /*	signals
  */
+#ifndef NSIG
+#define SIG_ERR		((void (*)(int))-1)	/* error */
+#define SIG_DFL		(void (*)(int))0		/* default */
+#define SIG_IGN		(void (*)(int))1		/* no signal */
 #define SIGHUP	1
 #define SIGINT	2
 #define SIGQUIT	3
@@ -163,6 +167,7 @@ typedef struct {
 #define SIGUSR2	17
 #define SIGABRT		SIGBUS	/* signal returned by abort() */
 #define NSIG	19	/* must be last sig + 1 */
+#endif
 
 /*	uname system call
  */

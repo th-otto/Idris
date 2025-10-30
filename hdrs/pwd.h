@@ -36,4 +36,6 @@ struct passwd *getpwnam(const char *name);
 void endpwent(void);
 void setpwent(void);
 
+char *getpw(const char *matchstr, unsigned int matchfld, unsigned int wantfld);
+
 #endif

@@ -51,18 +51,16 @@ void *malloc __((size_t size));
 void *realloc __((void *ptr, size_t size));
 void abort __((void));
 void exit __((int status));
-#ifndef __WSLXA__
 void free __((void *ptr));
-#endif
 void srand __((unsigned int seed));
-void exit(int status);
-void abort(void);
+void exit __((int status));
+void abort __((void));
 
-long random(void);
-void srandom(unsigned int seed);
+long random __((void));
+void srandom __((unsigned int seed));
 
-int rand(void);
-void srand(unsigned int seed);
+int rand __((void));
+void srand __((unsigned int seed));
 
 #endif
 

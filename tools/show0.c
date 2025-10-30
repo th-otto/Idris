@@ -673,7 +673,7 @@ int main(int argc, char **argv)
 		}
 		if (argc == 4)
 		{
-			if (reserved >= part_size[part_num])
+			if ((uint32_t)reserved >= part_size[part_num])
 			{
 				print_str("specified offset too large!\n");
 				return 1;
