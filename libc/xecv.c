@@ -62,7 +62,7 @@ COUNT _xecv(const char *cmd, FD sin, FD sout, COUNT flags, const char **pargs)
 		flags |= X_NEWIO;
 	if (_setb)
 		flags |= X_SETB;
-	for (pp = (cmd[scnstr(cmd, '/')]) ? "|" : _paths; *pp; )
+	for (pp = (cmd[_scnstr(cmd, '/')]) ? "|" : _paths; *pp; )
 	{
 		for (s = pp, i = 0; *s && *s != '|' && *s != ':'; ++s)
 			if (i < (COUNT)sizeof (buf))
@@ -72,7 +72,7 @@ COUNT _xecv(const char *cmd, FD sin, FD sout, COUNT flags, const char **pargs)
 			;
 		if ((COUNT)sizeof (buf) <= i)
 		{
-			buf[scnstr(buf, ((scnstr(buf, '|')) ? '|' : ':'))] = '\0';
+			buf[_scnstr(buf, ((_scnstr(buf, '|')) ? '|' : ':'))] = '\0';
 			_error("exec name too long: ", buf);
 		}
 		/* BUG: pid (unsigned) always >= 0 */

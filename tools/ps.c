@@ -23,9 +23,9 @@
 /* for compile tests only */
 #define putfmt printf
 #define alloc(s, l) malloc(s)
-#define remark(s1, s2) fprintf(stderr, "%s%s\n", s1, s2)
+#define _remark(s1, s2) fprintf(stderr, "%s%s\n", s1, s2)
 #define getpw(str, match, want) getpwuid(uid)->pw_name
-#define cpybuf(d, s, n) memcpy(d, s, n)
+#define _cpybuf(d, s, n) memcpy(d, s, n)
 #define instr(s, p) strlen(s)
 #endif
 
@@ -64,7 +64,7 @@ static char *readfill(BYTES *psize, const char *filename, int fd)
 
 	if (filename != NULL && (fd = open(filename, O_RDONLY, 0)) < 0)
 	{
-		remark("can't open: ", filename);
+		_remark("can't open: ", filename);
 		return NULL;
 	}
 	size = 512;
@@ -74,7 +74,7 @@ static char *readfill(BYTES *psize, const char *filename, int fd)
 		/* BUG: no allocate check */
 		if ((nread = read(fd, buf, size)) < 0)
 		{
-			remark("device err ", filename);
+			_remark("device err ", filename);
 			free(buf);
 			nread = 0;
 			buf = NULL;
@@ -168,7 +168,7 @@ static const char *usernm(uid_t uid)
 		n = instr(name, ":\n");
 		if (n > sizeof(buf) - 1)
 			n = n > sizeof(buf) - 1;
-		cpybuf(buf, name, n);
+		_cpybuf(buf, name, n);
 		buf[n] = '\0';
 	}
 	return buf;
@@ -304,12 +304,12 @@ static void pps(const char *filename, BOOL not_all)
 			/*
 			 * adjust for new field p_wbase in 3.14
 			 */
-			cpybuf(&procbuf, p, offsetof(struct proc, p_wbase));
-			cpybuf(&procbuf.p_size, &p->p_wbase, SIZEOF_PROC_312 - offsetof(struct proc, p_size));
+			_cpybuf(&procbuf, p, offsetof(struct proc, p_wbase));
+			_cpybuf(&procbuf.p_size, &p->p_wbase, SIZEOF_PROC_312 - offsetof(struct proc, p_size));
 			procbuf.p_wbase = procbuf.p_base;
 		} else
 		{
-			cpybuf(&procbuf, p, sizeof(procbuf));
+			_cpybuf(&procbuf, p, sizeof(procbuf));
 		}
 		for (i = 0; i < 8; i++)
 		{

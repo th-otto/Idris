@@ -152,7 +152,7 @@ struct termio {
 	unsigned short	c_lflag;	/* line discipline modes */
 	unsigned char	c_line;		/* line discipline */
 	unsigned char	c_cc[NCC];	/* control chars */
-	};
+};
 
 /*	ioctl request codes
  */

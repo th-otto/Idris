@@ -7,16 +7,9 @@
 #include <errno.h>
 #include <unistd.h>
 #include "libc.h"
-
 #undef remove
-int remove(const char *f)
-{
-	FAST COUNT fm;
 
-	if (!(fm = _getmod(f)))
-		return (errno = ENOENT, -1);
-	else if (S_ISDIR(fm))
-		return (errno = EISDIR, -1);
-	else
-		return unlink(f);
+int _remove(const char *f)
+{
+	return remove(f);
 }

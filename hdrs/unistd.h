@@ -124,5 +124,6 @@ int lockf __((int fd, int cmd, off_t len));
 int rmdir __((const char *pathname));
 
 int _cwd __((char *tbuf));
+char *getpass __((const char *prompt));
 
 #endif /* __UNISTD__ */

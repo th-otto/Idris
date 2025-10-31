@@ -27,8 +27,3 @@ int rename(const char *from, const char *to)
 		return (0);
 	return (-1);
 }
-
-int _rename(const char *from, const char *to)
-{
-	return rename(from, to);
-}

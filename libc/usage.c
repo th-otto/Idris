@@ -1,3 +1,4 @@
+#include <std.h>
 #include <pcdecl.h>
 #include <stdlib.h>
 #include "libc.h"

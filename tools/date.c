@@ -167,9 +167,9 @@ int settime(time_t oldtime, time_t newtime)
 	{
 		cpystr(buf.w_tty, "?", NULL);
 	}
-	cpybuf(buf.w_uname, "old:time", 8);
-	cpybuf(&buf2, &buf, sizeof(buf));
-	cpybuf(buf2.w_uname, "new", 3);
+	_cpybuf(buf.w_uname, "old:time", 8);
+	_cpybuf(&buf2, &buf, sizeof(buf));
+	_cpybuf(buf2.w_uname, "new", 3);
 	buf.w_time = oldtime;
 	buf2.w_time = newtime;
 	if ((fd = open(HSTFILE, 1)) >= 0)
@@ -269,7 +269,7 @@ int main(unsigned int argc, char **argv)
 	{
 		if (!settime(oldtime, newtime))
 		{
-			remark("must be superuser to set date", NULL);
+			_remark("must be superuser to set date", NULL);
 			exit_code = 1;
 		}
 	}

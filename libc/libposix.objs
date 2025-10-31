@@ -1,7 +1,5 @@
 crypt.o
 cwd.o
-devname.o
 dirstr.o
 getlinks.o
-getpass.o
 parent.o

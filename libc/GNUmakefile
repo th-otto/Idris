@@ -42,6 +42,7 @@ LIBB_OBJS = \
 	fstat.o \
 	getmod.o \
 	getenv.o \
+	_getenv.o \
 	geteuid.o \
 	getpid.o \
 	getuid.o \
@@ -55,7 +56,9 @@ LIBB_OBJS = \
 	read.o \
 	rawmode.o \
 	remove.o \
+	_remove.o \
 	rename.o \
+	_rename.o \
 	sbreak.o \
 	setuid.o \
 	signal.o \
@@ -75,7 +78,12 @@ LIBB_OBJS = \
 
 LIBC_OBJS = \
 	c_cstat.o \
+	decode.o \
+	encode.o \
 	fileno.o \
+	lfree.o \
+	malloc.o \
+	usage.o \
 	$(empty)
 
 LIBPOSIX_OBJS = \
@@ -85,6 +93,7 @@ LIBPOSIX_OBJS = \
 	chown.o \
 	ctermid.o \
 	cuserid.o \
+	devname.o \
 	dup2.o \
 	execl.o \
 	execle.o \
@@ -97,6 +106,7 @@ LIBPOSIX_OBJS = \
 	getegid.o \
 	getgid.o \
 	getlogin.o \
+	getpass.o \
 	getpgrp.o \
 	getppid.o \
 	ioctl.o \

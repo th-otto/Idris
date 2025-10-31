@@ -69,6 +69,7 @@ LIBB_OBJS = \
 LIBC_OBJS = \
 	c_cstat.o \
 	fileno.o \
+	usage.o \
 	$(empty)
 
 LIBPOSIX_OBJS = \
@@ -78,6 +79,7 @@ LIBPOSIX_OBJS = \
 	chown.o \
 	ctermid.o \
 	cuserid.o \
+	devname.o \
 	dup2.o \
 	execl.o \
 	execle.o \
@@ -90,6 +92,7 @@ LIBPOSIX_OBJS = \
 	getegid.o \
 	getgid.o \
 	getlogin.o \
+	getpass.o \
 	getpgrp.o \
 	getppid.o \
 	ioctl.o \

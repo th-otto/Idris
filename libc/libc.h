@@ -1,3 +1,7 @@
+#ifndef __STDEFS__
+#include <stddef.h>
+#endif
+
 #ifdef __GNUC__
 #define UNUSED(x) (void)(x)
 #else
@@ -30,6 +34,14 @@ extern FILE _stdin;
 extern FILE _stdout;
 extern FILE _stderr;
 extern FILE *_pfile;
+#endif
+struct _mbuf {
+	char *s;
+	BYTES maxcount;
+	BYTES count;
+};
+#ifdef __STDARG__
+BYTES _putf(BYTES (*putf)(struct _mbuf *buf, const char *s, BYTES count), struct _mbuf *buf, const char *fmt, va_list args);
 #endif
 
 void _astat(void);
