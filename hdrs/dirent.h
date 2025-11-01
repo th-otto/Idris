@@ -8,18 +8,21 @@
 #ifndef __LIMITS__
 #include <limits.h>
 #endif
+#ifndef __TYPES__
+#include <sys/types.h>
+#endif
 
 /*	user directory entry structure
  */
 struct dirent {
-	unsigned short d_ino;
+	ino_t d_ino;
 	char d_name[NAME_MAX + 1];
 };
 
 /*	Idris filesystem directory entry
  */
 struct idir {
-	unsigned short d_ino;
+	ino_t d_ino;
 	char d_name[NAME_MAX];
 };
 
@@ -27,7 +30,8 @@ struct idir {
  */
 typedef struct {
 	int dir_fd;
-	unsigned short dir_ino;
+	/* must match struct dirent above */
+	ino_t dir_ino;
 	char dir_name[NAME_MAX + 1];
 } DIR;
 

@@ -60,4 +60,7 @@ extern double _huge;
 #define HUGE		HUGE_VAL
 #endif
 
+double _range __((const char *str));
+void _domain __((const char *str));
+
 #endif

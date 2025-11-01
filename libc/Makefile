@@ -18,6 +18,16 @@ LIBA_OBJS = \
 	isupper.o \
 	isxdigit.o \
 	perror.o \
+	fread.o \
+	fwrite.o \
+	toupper.o \
+	tolower.o \
+	atan2.o \
+	exp.o \
+	fmod.o \
+	raise.o \
+	sin.o \
+	sqrt.o \
 	$(empty)
 
 LIBB_OBJS = \
@@ -35,6 +45,7 @@ LIBB_OBJS = \
 	fstat.o \
 	getmod.o \
 	getenv.o \
+	_getenv.o \
 	geteuid.o \
 	getpid.o \
 	getuid.o \
@@ -48,7 +59,9 @@ LIBB_OBJS = \
 	read.o \
 	rawmode.o \
 	remove.o \
+	_remove.o \
 	rename.o \
+	_rename.o \
 	sbreak.o \
 	setuid.o \
 	signal.o \
@@ -68,7 +81,11 @@ LIBB_OBJS = \
 
 LIBC_OBJS = \
 	c_cstat.o \
+	decode.o \
+	encode.o \
 	fileno.o \
+	lfree.o \
+	malloc.o \
 	usage.o \
 	$(empty)
 
@@ -77,9 +94,12 @@ LIBPOSIX_OBJS = \
 	alarm.o \
 	chmod.o \
 	chown.o \
+	crypt.o \
 	ctermid.o \
 	cuserid.o \
+	cwd.o \
 	devname.o \
+	dirent.o \
 	dup2.o \
 	execl.o \
 	execle.o \
@@ -91,6 +111,7 @@ LIBPOSIX_OBJS = \
 	getcwd.o \
 	getegid.o \
 	getgid.o \
+	getlinks.o \
 	getlogin.o \
 	getpass.o \
 	getpgrp.o \
@@ -101,6 +122,7 @@ LIBPOSIX_OBJS = \
 	mkdir.o \
 	mknod.o \
 	pause.o \
+	parent.o \
 	pipe.o \
 	pwdfil.o \
 	rmdir.o \
@@ -113,7 +135,12 @@ LIBPOSIX_OBJS = \
 	utime.o \
 	$(empty)
 
-all: liba.68k libb.68k libc.68k libposix.68k Crts.o Crtf.o Crtp.o
+LIBM_OBJS = \
+	range.o \
+	domain.o \
+	$(empty)
+
+all: liba.68k libb.68k libc.68k libposix.68k libm.68k Crts.o Crtf.o Crtp.o
 
 liba.68k: $(LIBA_OBJS)
 	-rm $@
@@ -130,6 +157,10 @@ libc.68k: $(LIBC_OBJS)
 libposix.68k: $(LIBPOSIX_OBJS)
 	rm -f $@
 	$(AR) -c $@ $(LIBPOSIX_OBJS)
+
+libm.68k: $(LIBM_OBJS)
+	-rm $@
+	$(AR) -c $@ $(LIBM_OBJS)
 
 .s.o:
 	$(AS) -o $@ $<

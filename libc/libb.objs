@@ -34,7 +34,6 @@ cpystr.o
 crypt.o
 ctype.o
 doclos.o
-domain.o
 doread.o
 dowrit.o
 dtento.o
@@ -66,7 +65,6 @@ poly.o
 prefix.o
 putstr.o
 raise.o
-range.o
 reaerr.o
 remark.o
 remove.o

@@ -20,7 +20,7 @@ char *getcwd(char *buf, size_t size)
 	if (buf == NULL)
 		buf = malloc(size);
 	s = size < PATH_MAX ? cwdbuf : buf;
-	err = -_cwd(s);
+	err = _cwd(s); /* was negated in original code, but that is a bug */
 	if (size == 0)
 	{
 		err = EINVAL;

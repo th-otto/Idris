@@ -30,7 +30,7 @@ BOOL _devname(char *s, register UCOUNT mdev, register BOOL cspec)
 	const char *filename = cspec ? "/dev/cnames" : "/dev/bnames"; /* 84 */
 
 	memset(s, 0, NAME_MAX);
-	fd = open(filename, O_RDONLY, 1);
+	fd = open(filename, O_RDONLY, S_IXOTH);
 	if (fd >= 0)
 	{
 		major_num = 0;
@@ -77,7 +77,7 @@ BOOL _devname(char *s, register UCOUNT mdev, register BOOL cspec)
 		}
 	}
 
-	fd = open("/dev", O_RDONLY, 1);
+	fd = open("/dev", O_RDONLY, S_IXOTH);
 	if (fd < 0)
 	{
 		_putstr(STDERR, "can't open /dev\n", NULL);

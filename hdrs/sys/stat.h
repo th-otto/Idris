@@ -10,17 +10,18 @@
 #endif
 
 struct stat {
-	/*  0 */ unsigned short st_dev;
-	/*  2 */ unsigned short st_ino;
-	/*  4 */ unsigned short st_mode;
+	/*  0 */ dev_t st_dev;
+	/*  2 */ ino_t st_ino;
+	/*  4 */ mode_t st_mode;
 	/*  6 */ unsigned char st_nlink;
-	/*  7 */ unsigned char st_uid, st_gid;
+	/*  7 */ uid_t st_uid;
+	/*  8 */ gid_t st_gid;
 	/*  9 */ unsigned char st_size0;
 	/* 10 */ unsigned short st_size1;
 	union {
 		/* 12 */ unsigned short _stU_addr[8];
 		struct {
-			unsigned short _stS_rdev;
+			dev_t _stS_rdev;
 			unsigned short _stS_c1;
 			unsigned long _stS_lsize;
 			unsigned long _stS_l2;

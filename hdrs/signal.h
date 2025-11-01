@@ -72,4 +72,6 @@ typedef unsigned int sig_atomic_t;
 int kill __((int pid, int signo));
 void (*signal __((int signo, void (*pfunc)(int sig))))(int sig);
 
+void _raise __((int signo, void *arg));
+
 #endif

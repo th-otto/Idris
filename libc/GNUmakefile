@@ -25,6 +25,16 @@ LIBA_OBJS = \
 	isupper.o \
 	isxdigit.o \
 	perror.o \
+	fread.o \
+	fwrite.o \
+	toupper.o \
+	tolower.o \
+	atan2.o \
+	exp.o \
+	fmod.o \
+	raise.o \
+	sin.o \
+	sqrt.o \
 	$(empty)
 
 LIBB_OBJS = \
@@ -91,9 +101,12 @@ LIBPOSIX_OBJS = \
 	alarm.o \
 	chmod.o \
 	chown.o \
+	crypt.o \
 	ctermid.o \
 	cuserid.o \
+	cwd.o \
 	devname.o \
+	dirent.o \
 	dup2.o \
 	execl.o \
 	execle.o \
@@ -105,6 +118,7 @@ LIBPOSIX_OBJS = \
 	getcwd.o \
 	getegid.o \
 	getgid.o \
+	getlinks.o \
 	getlogin.o \
 	getpass.o \
 	getpgrp.o \
@@ -115,6 +129,7 @@ LIBPOSIX_OBJS = \
 	mkdir.o \
 	mknod.o \
 	pause.o \
+	parent.o \
 	pipe.o \
 	pwdfil.o \
 	rmdir.o \
@@ -127,7 +142,12 @@ LIBPOSIX_OBJS = \
 	utime.o \
 	$(empty)
 
-all: liba.68k libb.68k libc.68k libposix.68k Crts.o Crtf.o
+LIBM_OBJS = \
+	range.o \
+	domain.o \
+	$(empty)
+
+all: liba.68k libb.68k libc.68k libposix.68k libm.68k Crts.o Crtf.o
 # cannot be assembled by gas because of ~ in symbol names
 # Crtp.o
 
@@ -146,6 +166,10 @@ libc.68k: $(LIBC_OBJS)
 libposix.68k: $(LIBPOSIX_OBJS)
 	rm -f $@
 	$(AR) rcs $@ $(LIBPOSIX_OBJS)
+
+libm.68k: $(LIBM_OBJS)
+	rm -f $@
+	$(AR) rcs $@ $(LIBM_OBJS)
 
 clean:
 	rm -f *.o *.68k

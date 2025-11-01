@@ -53,7 +53,6 @@ memcmp.o
 memcpy.o
 memset.o
 modf.o
-perror.o
 pow.o
 printf.o
 putbuf.o
