@@ -13867,7 +13867,7 @@ _xreset:
 [000145bc] 4e56 fffc                 link       a6,#-4
 [000145c0] 48e7 801c                 movem.l    d0/a3-a5,-(a7)
 [000145c4] 2a6e 0008                 movea.l    8(a6),a5
-[000145c8] 2679 0002 0086            movea.l    $0003F7FE,a3
+[000145c8] 2679 0002 0086            movea.l    _pu,a3
 [000145ce] 7e18                      moveq.l    #24,d7
 [000145d0] ce95                      and.l      (a5),d7
 [000145d2] 6726                      beq.s      _xreset_1
@@ -14404,7 +14404,7 @@ _movein_9:
 [00014c06] 7e00                      moveq.l    #0,d7
 [00014c08] 3e29 000c                 move.w     12(a1),d7
 [00014c0c] 2f07                      move.l     d7,-(a7)
-[00014c0e] 2279 0002 0086            movea.l    $0003F7FE,a1
+[00014c0e] 2279 0002 0086            movea.l    _pu,a1
 [00014c14] 2269 0010                 movea.l    16(a1),a1
 [00014c18] 7e00                      moveq.l    #0,d7
 [00014c1a] 3e29 0008                 move.w     8(a1),d7
@@ -14487,7 +14487,7 @@ x14ca6_2:
 [00014d0c] 2e29 0010                 move.l     16(a1),d7
 [00014d10] be8c                      cmp.l      a4,d7
 [00014d12] 671a                      beq.s      x14ca6_5
-[00014d14] 2279 0002 0086            movea.l    $0003F7FE,a1
+[00014d14] 2279 0002 0086            movea.l    _pu,a1
 [00014d1a] 2e29 0010                 move.l     16(a1),d7
 [00014d1e] be8d                      cmp.l      a5,d7
 [00014d20] 670c                      beq.s      x14ca6_5
@@ -16079,7 +16079,7 @@ _ager_6:
 [00016004] 6748                      beq.s      _ager_4
 [00016006] 1b7c 0002 0013            move.b     #$02,19(a5)
 [0001600c] 2d6d 002c fffc            move.l     44(a5),-4(a6)
-[00016012] 2279 0002 0086            movea.l    $0003F7FE,a1
+[00016012] 2279 0002 0086            movea.l    _pu,a1
 [00016018] 2e29 0010                 move.l     16(a1),d7
 [0001601c] be8d                      cmp.l      a5,d7
 [0001601e] 671c                      beq.s      _ager_5
@@ -16977,10 +16977,11 @@ _sypgrp_1:
 [00016a4e] 4e5e                      unlk       a6
 [00016a50] 4e75                      rts
 
+; movbuf(args, &pu->u_prof, sizeof(pu->u_prof))
 _syprof:
 [00016a52] 4e56 0000                 link       a6,#0
 [00016a56] 4878 0010                 pea.l      ($00000010).w
-[00016a5a] 2e39 0002 0086            move.l     $0003F7FE,d7
+[00016a5a] 2e39 0002 0086            move.l     _pu,d7
 [00016a60] 2f07                      move.l     d7,-(a7)
 [00016a62] 0697 0000 0120            addi.l     #$00000120,(a7)
 [00016a68] 2f2e 0008                 move.l     8(a6),-(a7)
@@ -17018,7 +17019,7 @@ _sysig:
 [00016ac2] 48e7 841c                 movem.l    d0/d5/a3-a5,-(a7)
 [00016ac6] 226e 0008                 movea.l    8(a6),a1
 [00016aca] 2a11                      move.l     (a1),d5
-[00016acc] 2a79 0002 0086            movea.l    $0003F7FE,a5
+[00016acc] 2a79 0002 0086            movea.l    _pu,a5
 [00016ad2] 286d 0010                 movea.l    16(a5),a4
 [00016ad6] 226e 0008                 movea.l    8(a6),a1
 [00016ada] 2d69 0004 fffc            move.l     4(a1),-4(a6)
@@ -18421,7 +18422,7 @@ _syumount_6:
 [00017ada] 3e2d 0016                 move.w     22(a5),d7
 [00017ade] be85                      cmp.l      d5,d7
 [00017ae0] 6614                      bne.s      _syumount_5
-[00017ae2] 2279 0002 0086            movea.l    $0003F7FE,a1
+[00017ae2] 2279 0002 0086            movea.l    _pu,a1
 [00017ae8] 137c 0010 0142            move.b     #$10,322(a1)
 _syumount_3:
 [00017aee] 4cdf 3021                 movem.l    (a7)+,d0/d5/a4-a5
@@ -28417,7 +28418,7 @@ _socsgtty_21:
 [0001f2b0] 47f8 0002                 lea.l      ($00000002).w,a3
 [0001f2b4] 6000 01a2                 bra        _socsgtty_6
 _socsgtty_22:
-[0001f2b8] 2279 0002 0086            movea.l    $0003F7FE,a1
+[0001f2b8] 2279 0002 0086            movea.l    _pu,a1
 [0001f2be] 43e9 0044                 lea.l      68(a1),a1
 [0001f2c2] 2e0c                      move.l     a4,d7
 [0001f2c4] e587                      asl.l      #2,d7
@@ -30396,7 +30397,7 @@ _syfun:
 [00020400]                           dc.l $000192d8 _symevset
 [00020404]                           dc.l $00018b4a _symnone
 [00020408]                           dc.l $00018b4a _symnone
-[0002040c]                           dc.l $000000o00
+[0002040c]                           dc.l $00000000
 [00020410]                           dc.b 'undefined trap: d0 = %i',$0a,0
 [00020429]                           dc.b $0a,'signal %i',$0a,0
 [00020435]                           dc.b 'kernal trapped',0
@@ -47366,228 +47367,228 @@ _soccdev:
 0001f6f4 T a~pushstr
 00029878 T __etext
 
-0001f778 D __sdata
-0001f796 D _clk_flg
-0001f79e D _mid_dat
-0001f7a0 D _key_dat
-0001f7a6 D _sts_adr
-0001f7aa D _mos_adr
-0001f7ae D _clk_adr
-0001f7b2 D _joy_adr
-0001f7e2 D _bootflg
-0001f7ee D _nmfpp
-0001f7f2 D _onmrfpp
-0001f7f8 D _fpptab
-0001f80a D _fppbdev
-0001f81e D _fppcdev
-0001f836 D _rfppbuf
-0001f864 D _fppnm
-0001f868 D _fpproc
-0001f86c D __regs
-0001f98e D _mmupres
-0001f992 D _silent
-0001f996 D _smax
-0001f998 D _biops
-0001f99a D _ttyps
-0001f99c D _hips
-0001f99e D _lops
-0001f9a0 D __cpu
-0001f9a4 D __vbr
-0001f9a8 D _u0stack
-0001f9ac D _exuser
-0001f9b0 D __mdbase
-0001f9b4 D _mdpages
-0001f9b6 D _mdbase
-0001f9b8 D _ex20sz
-0001f9f8 D _rootdev
-0001f9fa D _pipedev
-0001f9fc D _swapdev
-0001f9fe D _swapadr
-0001fa00 D _swapsiz
-0001fa02 D _rootro
-0001fa06 D _blkdevs
-0001fa2a D _nblkdev
-0001fa2e D _chrdevs
-0001fa66 D _nchrdev
-0001fa6a D _in_max
-0001fa6c D _in_xoff
-0001fa6e D _in_xon
-0001fa70 D _in_lim
-0001fa72 D _out_hi
-0001fa74 D _out_lo
-0001fa76 D _syslock
-0001fa7e D _nsyslock
-0001fa82 D _nbufs
-0001fa86 D _nclist
-0001fa8a D __mdpages
-0001fa8e D _nheap
-0001fa92 D _u0stksz
-0001fa96 D _lit1
-0001fa9a D _lit16
-0001fa9e D _lit512
-0001faa2 D _num_sbufs
-0001faaa D _loc_sbufs
-0001faae D _svdnib
-0001fb5e D _tinc
-0001fb62 D _coremode
-0001fb66 D _fppres
-0001fb6a D _hi_chk
-0001fb6e D _sig_chk
-0001fb72 D _lo_chk
-0001fb76 D _maxargs
-0001fb7a D _maxpipe
-0001fb7e D _absok
-0001fb82 D _sharetext
-0001fb86 D _rahead
-0001fb8a D _sepid
-0001fb8e D _stdheap
-0001fb92 D _where
-0001fbca D _sysname
-0001fbd2 D _nodename
-0001fbda D _release
-0001fbe2 D _version
-0001fbea D _machine
-0001fc1e D _mdtab
-0001fc30 D _nmmd
-0001fc4e D _nmrmd
-0001fc74 D _mdbdev
-0001fc88 D _mdcdev
-0001fca0 D _rmdbuf
-0001fd66 D _paniccore
-0001fd6a D _debug_mode
-0001fd6e D _debug_char
-0001fd70 D _debug_console
-0001fe74 D erraddr
-0001fe78 D __pux
-0001fea4 D _contig
-0001fea6 D _hipage
-0001fea8 D _lopage
-0001feaa D _memsiz
-0001feac D _noswap
-0001feb0 D _romsys
-0001feb4 D _memtop
-0001feb8 D _sysbot
-0001febc D _systop
-0001fec0 D _root
-0001fec8 D _proc0
-0001ff0e D _pheap
-0001ff12 D _physbias
-0001ff16 D _u0
-00020086 D _pu
-000201c2 D _xaspc
-000201c6 D _xamagic
-000201c8 D _xamask
-000201ca D _xmagic
-000201cc D _xmask
-000201ce D _xmemall
-000201d0 D _xmemshft
-000201d2 D _xreloc
-000201d4 D _curbase
-000201d6 D _p1size
-000201da D _uiobase
-000201de D _utxtbase
-000201e2 D _usize
-000201e6 D _usersz
-000201ea D _uxsize
-000201ee D _map_ux
-000201f8 D _swapbuf
-00020254 D _sycount
-000202ac D _syfun
-000204fa D _clist
-000204fe D _pclist
-00020502 D _nclost
-0002050c D __i_tty
-00020554 D _cmaptab
-00020720 D _xputch
-000207bc D _ilist
-000207c0 D _mlist
-000207c4 D ___resvers
-000207c8 D _nobdev
-000207de D _nocdev
-000207f8 D _blist
-00020826 D _pbufs
-0002082a D _bufsiz
-0002082e D _nbufres
-00020832 D _buffers
-0002089f D _callno
-0002092c D _maxlock
-00020930 D _nlock
-0002095c D _nmmem
-0002099e D _memcdev
-00020a26 D _onfirst
-00020a2a D _onlast
-00020a2e D _onflag
-00020a30 D _maxctig
-00020a32 D _minctig
-00020a76 D _exproc
-00020a7a D _exbase
-00020b12 D _p0st
-00020b16 D _swflag
-00020b1a D _swlist
-00020b1e D _p0px
-00020be4 D _hiproc
-00020be8 D _outproc
-00020bec D _swpwait
-00020bf0 D _paniced
-00020bf4 D _hipri
-00020bf6 D _minquan
-00020bf8 D _maxquan
-00020bfa D _nrun
-00020bfc D _wakelist
-00020c00 D _plist
-00020c04 D _runlist
-00020c08 D _waitlist
-00020c0c D _psignal
-00020c12 D _coresig
-00020c74 D _alarmcb
-00020c84 D _agercb
-00020c94 D _schrate
-00020c96 D _ticking
-00020c9a D _lstime
-00020c9e D _time
-00020ca2 D _timeleft
-00020ca6 D _memlist
-00020caa D _slist
-00020cae D _cout
-00020dc6 D _stat_lo
-00020dca D _nlocb
-00020dce D _nlocbh
-00020dd2 D _nlocbs
-00020dd6 D _nlocbm
-00020dda D _nreadi
-00020dde D _nread0
-00020de2 D _nread1
-00020de6 D _nreadn
-00020dea D _nreadp
-00020dee D _stat_hi
-00020df2 D _lockcb
-00020e48 D __mdate
-00020e4c D __mversion
-00020e4e D _msgbdev
-00020e62 D _msgcdev
-00020e7a D _msgtab
-00020e8c D _nmmsg
-00020e9f D _nmrmsg
-00020f9e D _map_lo
-00020fa2 D _map_hi
-00020fa6 D _xpage
-00020faa D _tlistmax
-00020fac D _tlistnum
-00020fae D _curasn
-00020fb0 D _mmu
-000210e0 D _fdbdev
-000210f4 D _fdcdev
-000237c6 D _hdbdev
-000237da D _hdcdev
-00023b50 D _concdev
-00023c64 D _lpcdev
-00023d0a D _sercdev
-00024614 D _selcdev
-00024c5c D _ptmcdev
-000250d6 D _ptscdev
-000259d0 D _soccdev
+0001f778 0003eef0 D __sdata
+0001f796 0003ef0e D _clk_flg
+0001f79e 0003ef16 D _mid_dat
+0001f7a0 0003ef18 D _key_dat
+0001f7a6 0003ef1e D _sts_adr
+0001f7aa 0003ef22 D _mos_adr
+0001f7ae 0003ef26 D _clk_adr
+0001f7b2 0003ef2a D _joy_adr
+0001f7e2 0003ef5a D _bootflg
+0001f7ee 0003ef66 D _nmfpp
+0001f7f2 0003ef6a D _onmrfpp
+0001f7f8 0003ef70 D _fpptab
+0001f80a 0003ef82 D _fppbdev
+0001f81e 0003ef96 D _fppcdev
+0001f836 0003efae D _rfppbuf
+0001f864 0003efdc D _fppnm
+0001f868 0003efe0 D _fpproc
+0001f86c 0003efe4 D __regs
+0001f98e 0003f106 D _mmupres
+0001f992 0003f10a D _silent
+0001f996 0003f10e D _smax
+0001f998 0003f110 D _biops
+0001f99a 0003f112 D _ttyps
+0001f99c 0003f114 D _hips
+0001f99e 0003f116 D _lops
+0001f9a0 0003f118 D __cpu
+0001f9a4 0003f11c D __vbr
+0001f9a8 0003f120 D _u0stack
+0001f9ac 0003f124 D _exuser
+0001f9b0 0003f128 D __mdbase
+0001f9b4 0003f12c D _mdpages
+0001f9b6 0003f12e D _mdbase
+0001f9b8 0003f130 D _ex20sz
+0001f9f8 0003f170 D _rootdev
+0001f9fa 0003f172 D _pipedev
+0001f9fc 0003f174 D _swapdev
+0001f9fe 0003f176 D _swapadr
+0001fa00 0003f178 D _swapsiz
+0001fa02 0003f17a D _rootro
+0001fa06 0003f17e D _blkdevs
+0001fa2a 0003f1a2 D _nblkdev
+0001fa2e 0003f1a6 D _chrdevs
+0001fa66 0003f1de D _nchrdev
+0001fa6a 0003f1e2 D _in_max
+0001fa6c 0003f1e4 D _in_xoff
+0001fa6e 0003f1e6 D _in_xon
+0001fa70 0003f1e8 D _in_lim
+0001fa72 0003f1ea D _out_hi
+0001fa74 0003f1ec D _out_lo
+0001fa76 0003f1ee D _syslock
+0001fa7e 0003f1f6 D _nsyslock
+0001fa82 0003f1fa D _nbufs
+0001fa86 0003f1fe D _nclist
+0001fa8a 0003f202 D __mdpages
+0001fa8e 0003f206 D _nheap
+0001fa92 0003f20a D _u0stksz
+0001fa96 0003f20e D _lit1
+0001fa9a 0003f212 D _lit16
+0001fa9e 0003f216 D _lit512
+0001faa2 0003f21a D _num_sbufs
+0001faaa 0003f222 D _loc_sbufs
+0001faae 0003f226 D _svdnib
+0001fb5e 0003f2d6 D _tinc
+0001fb62 0003f2da D _coremode
+0001fb66 0003f2de D _fppres
+0001fb6a 0003f2e2 D _hi_chk
+0001fb6e 0003f2e6 D _sig_chk
+0001fb72 0003f2ea D _lo_chk
+0001fb76 0003f2ee D _maxargs
+0001fb7a 0003f2f2 D _maxpipe
+0001fb7e 0003f2f6 D _absok
+0001fb82 0003f2fa D _sharetext
+0001fb86 0003f2fe D _rahead
+0001fb8a 0003f302 D _sepid
+0001fb8e 0003f306 D _stdheap
+0001fb92 0003f30a D _where
+0001fbca 0003f342 D _sysname
+0001fbd2 0003f34a D _nodename
+0001fbda 0003f352 D _release
+0001fbe2 0003f35a D _version
+0001fbea 0003f362 D _machine
+0001fc1e 0003f396 D _mdtab
+0001fc30 0003f3a8 D _nmmd
+0001fc4e 0003f3c6 D _nmrmd
+0001fc74 0003f3ec D _mdbdev
+0001fc88 0003f400 D _mdcdev
+0001fca0 0003f418 D _rmdbuf
+0001fd66 0003f4de D _paniccore
+0001fd6a 0003f4e2 D _debug_mode
+0001fd6e 0003f4e6 D _debug_char
+0001fd70 0003f4e8 D _debug_console
+0001fe74 0003f5ec D erraddr
+0001fe78 0003f5f0 D __pux
+0001fea4 0003f61c D _contig
+0001fea6 0003f61e D _hipage
+0001fea8 0003f620 D _lopage
+0001feaa 0003f622 D _memsiz
+0001feac 0003f624 D _noswap
+0001feb0 0003f628 D _romsys
+0001feb4 0003f62c D _memtop
+0001feb8 0003f630 D _sysbot
+0001febc 0003f634 D _systop
+0001fec0 0003f638 D _root
+0001fec8 0003f640 D _proc0
+0001ff0e 0003f686 D _pheap
+0001ff12 0003f68a D _physbias
+0001ff16 0003f68e D _u0
+00020086 0003f7fe D _pu
+000201c2 0003f93a D _xaspc
+000201c6 0003f93e D _xamagic
+000201c8 0003f940 D _xamask
+000201ca 0003f942 D _xmagic
+000201cc 0003f944 D _xmask
+000201ce 0003f946 D _xmemall
+000201d0 0003f948 D _xmemshft
+000201d2 0003f94a D _xreloc
+000201d4 0003f94c D _curbase
+000201d6 0003f94e D _p1size
+000201da 0003f952 D _uiobase
+000201de 0003f956 D _utxtbase
+000201e2 0003f95a D _usize
+000201e6 0003f95e D _usersz
+000201ea 0003f962 D _uxsize
+000201ee 0003f966 D _map_ux
+000201f8 0003f970 D _swapbuf
+00020254 0003f9cc D _sycount
+000202ac 0003fa24 D _syfun
+000204fa 0003fc72 D _clist
+000204fe 0003fc76 D _pclist
+00020502 0003fc7a D _nclost
+0002050c 0003fc84 D __i_tty
+00020554 0003fccc D _cmaptab
+00020720 0003fe98 D _xputch
+000207bc 0003ff34 D _ilist
+000207c0 0003ff38 D _mlist
+000207c4 0003ff3c D ___resvers
+000207c8 0003ff40 D _nobdev
+000207de 0003ff56 D _nocdev
+000207f8 0003ff70 D _blist
+00020826 0003ff9e D _pbufs
+0002082a 0003ffa2 D _bufsiz
+0002082e 0003ffa6 D _nbufres
+00020832 0003ffaa D _buffers
+0002089f 00040017 D _callno
+0002092c 000400a4 D _maxlock
+00020930 000400a8 D _nlock
+0002095c 000400d4 D _nmmem
+0002099e 00040116 D _memcdev
+00020a26 0004019e D _onfirst
+00020a2a 000401a2 D _onlast
+00020a2e 000401a6 D _onflag
+00020a30 000401a8 D _maxctig
+00020a32 000401aa D _minctig
+00020a76 000401ee D _exproc
+00020a7a 000401f2 D _exbase
+00020b12 0004028a D _p0st
+00020b16 0004028e D _swflag
+00020b1a 00040292 D _swlist
+00020b1e 00040296 D _p0px
+00020be4 0004035c D _hiproc
+00020be8 00040360 D _outproc
+00020bec 00040364 D _swpwait
+00020bf0 00040368 D _paniced
+00020bf4 0004036c D _hipri
+00020bf6 0004036e D _minquan
+00020bf8 00040370 D _maxquan
+00020bfa 00040372 D _nrun
+00020bfc 00040374 D _wakelist
+00020c00 00040378 D _plist
+00020c04 0004037c D _runlist
+00020c08 00040380 D _waitlist
+00020c0c 00040384 D _psignal
+00020c12 0004038a D _coresig
+00020c74 000403ec D _alarmcb
+00020c84 000403fc D _agercb
+00020c94 0004040c D _schrate
+00020c96 0004040e D _ticking
+00020c9a 00040412 D _lstime
+00020c9e 00040416 D _time
+00020ca2 0004041a D _timeleft
+00020ca6 0004041e D _memlist
+00020caa 00040422 D _slist
+00020cae 00040426 D _cout
+00020dc6 0004053e D _stat_lo
+00020dca 00040542 D _nlocb
+00020dce 00040546 D _nlocbh
+00020dd2 0004054a D _nlocbs
+00020dd6 0004054e D _nlocbm
+00020dda 00040552 D _nreadi
+00020dde 00040556 D _nread0
+00020de2 0004055a D _nread1
+00020de6 0004055e D _nreadn
+00020dea 00040562 D _nreadp
+00020dee 00040566 D _stat_hi
+00020df2 0004056a D _lockcb
+00020e48 000405c0 D __mdate
+00020e4c 000405c4 D __mversion
+00020e4e 000405c6 D _msgbdev
+00020e62 000405da D _msgcdev
+00020e7a 000405f2 D _msgtab
+00020e8c 00040604 D _nmmsg
+00020e9f 00040617 D _nmrmsg
+00020f9e 00040716 D _map_lo
+00020fa2 0004071a D _map_hi
+00020fa6 0004071e D _xpage
+00020faa 00040722 D _tlistmax
+00020fac 00040724 D _tlistnum
+00020fae 00040726 D _curasn
+00020fb0 00040728 D _mmu
+000210e0 00040858 D _fdbdev
+000210f4 0004086c D _fdcdev
+000237c6 00042f3e D _hdbdev
+000237da 00042f52 D _hdcdev
+00023b50 000432c8 D _concdev
+00023c64 000433dc D _lpcdev
+00023d0a 00043482 D _sercdev
+00024614 00043d8c D _selcdev
+00024c5c 000443d4 D _ptmcdev
+000250d6 0004484e D _ptscdev
+000259d0 00045148 D _soccdev
 
-0002ff56 B __memory
+0002ff56 0004f6ce B __memory
 
 ; a.out Relocations:
 0000a102: 00000000

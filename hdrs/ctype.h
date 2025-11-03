@@ -23,14 +23,14 @@
 
 /*	bit definitions for character mapping array
  */
-#define	_UC		0001	/* upper case */
-#define	_LC		0002	/* lower case */
-#define	_D		0004	/* decimal digit */
-#define	_S		0010	/* whitespace */
-#define	_P		0020	/* punctuation */
-#define	_C		0040	/* control */
-#define	_X		0100	/* hexadecimal digit */
-#define	_SP		0200	/* space */
+#define	_UC		0x01	/* upper case */
+#define	_LC		0x02	/* lower case */
+#define	_D		0x04	/* decimal digit */
+#define	_S		0x08	/* whitespace */
+#define	_P		0x10	/* punctuation */
+#define	_C		0x20	/* control */
+#define	_X		0x40	/* hexadecimal digit */
+#define	_SP		0x80	/* space */
 
 /*	character mapping array
  */
@@ -68,8 +68,10 @@ int toupper __((int c));
 #define isxdigit(c) ((_ctype+1)[(c)] & (_D|_X))
 
 #ifdef _IDRIS
-#define	_toupper(c)	((c) - ('a' + 'A'))
-#define	_tolower(c)	((c) - 'A' + 'a')
+int _toupper __((int c));
+int _tolower __((int c));
+#define	_toupper(c)	((c) - ('a' - 'A'))
+#define	_tolower(c)	((c) - ('A' - 'a'))
 #define	isascii(c)	(!((c) & ~0177))
 #define	toascii(c)	((c) & 0177)
 #ifndef _EBCDIC

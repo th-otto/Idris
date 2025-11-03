@@ -8,7 +8,7 @@ _access:
 	move.l	(sp)+,a0
 	moveq.l	#33,d7
 	trap	#1
-	bcc		1f
+	bcc.s	1f
 	jmp		seterr
 1:
 	jmp	(a0)

@@ -43,7 +43,7 @@ void _lstat(void)
 
 	_stderr.flist = NULL;
 	_stderr.fd = STDERR;
-	_stderr.flag = 0x208; /* FIXME */
+	_stderr.flag = _FIOUNBUFFERED | _FIOX004;
 	_stderr.nleft = 0;
 	_stderr.bufsize = BUFSIZ;
 	_stderr.loff = 0;
@@ -52,7 +52,7 @@ void _lstat(void)
 
 	_stdin.flist = NULL;
 	_stdin.fd = STDIN;
-	_stdin.flag = 0x0004; /* FIXME */
+	_stdin.flag = _FIOX004;
 	_stdin.nleft = 0;
 	_stdin.bufsize = BUFSIZ;
 	_stdin.loff = 0;
@@ -61,7 +61,7 @@ void _lstat(void)
 
 	_stdout.flist = NULL;
 	_stdout.fd = STDOUT;
-	_stdout.flag = 0x0008; /* FIXME */
+	_stdout.flag = _FIOX008;
 	_stdout.nleft = 0;
 	_stdout.bufsize = BUFSIZ;
 	_stdout.loff = 0;

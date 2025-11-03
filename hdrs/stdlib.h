@@ -46,7 +46,7 @@ int system __((const char *string));
 long atol __((const char *nptr));
 long strtol __((const char *nptr, char **endptr, int base));
 onexit_t onexit __((onexit_t (*pfn)(void)));
-void *calloc __((unsigned int nelem, size_t elsize));
+void *calloc __((size_t nelem, size_t elsize));
 void *malloc __((size_t size));
 void *realloc __((void *ptr, size_t size));
 void abort __((void));

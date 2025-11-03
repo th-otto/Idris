@@ -77,5 +77,5 @@ p_subidx:
 p_buf:
 	.long	0
 p_fname:
-	.ascii "profil"
+"profil"
 	.byte 0

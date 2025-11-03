@@ -84,5 +84,6 @@ struct user {
 extern struct user *pu;
 
 int _times(TIMES *t);
+int _syprof(COUNT *buf, BYTES size, BYTES offset, BYTES scale);
 
 #endif

@@ -15,16 +15,17 @@
 
 /*	the pseudo types
  */
+#ifndef __STD__
 typedef char TBOOL, TEXT;
 typedef double DOUBLE;
 typedef float FLOAT;
-typedef int ARGINT, BOOL, FD, INT, METACH;
+typedef int ARGINT, BOOL, ERROR, FD, INT, METACH;
 typedef long LONG;
 typedef short COUNT;
 typedef unsigned char TBITS, UTINY;
-typedef unsigned int BYTES;
-typedef unsigned long LBITS, TIME, ULONG;
+typedef unsigned long LBITS, ULONG;
 typedef unsigned short BITS, UCOUNT;
+typedef unsigned int BYTES;
 
 #if _CVERSION < 300
 typedef char TINY;
@@ -33,11 +34,19 @@ typedef char TINY;
 #else
 typedef signed char TINY;
 typedef void VOID;
+#ifndef RDONLY
 #define RDONLY const
+#endif
+#ifndef TOUCHY
 #define TOUCHY volatile
-typedef VOID (*(*FNPTR)())();	/* pseudo type for onexit */
+#endif
+typedef VOID (*(*FNPTR)(void))(void);	/* pseudo type for onexit */
 #endif
 
-#define TIMEVEC struct _tm
+#define TIMEVEC struct tm
+
+#endif /* __STD__ */
+
+typedef unsigned long TIME;
 
 #endif

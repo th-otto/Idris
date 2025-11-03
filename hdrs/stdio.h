@@ -41,8 +41,8 @@ typedef struct _file
 
 /*	function declarations
  */
-FILE *fopen __((const char *pathname, const char *type));
-FILE *freopen __((const char *pathname, const char *type, FILE *stream));
+FILE *fopen __((const char *pathname, const char *mode));
+FILE *freopen __((const char *pathname, const char *mode, FILE *stream));
 FILE *tmpfile __((void));
 char *fgets __((char *s, int n, FILE *stream));
 char *gets __((char *s));
@@ -53,6 +53,8 @@ int feof __((FILE *stream));
 int ferror __((FILE *stream));
 int fflush __((FILE *stream));
 int fgetc __((FILE *stream));
+int getc __((FILE *stream));
+int getchar __((void));
 int fprintf __((FILE *stream, const char *format, ...));
 int fputc __((int c, FILE *stream));
 int fputs __((const char *s, FILE *stream));
@@ -61,6 +63,8 @@ int fscanf __((FILE *stream, const char *format, ...));
 int fseek __((FILE *stream, long offset, int ptrname));
 int fwrite __((const void *ptr, size_t size, int nelem, FILE *stream));
 int printf __((const char *format, ...));
+int putc __((int c, FILE *stream));
+int putchar __((int c));
 int puts __((const char *s));
 int remove __((const char *s));
 int rename __((const char *old, const char *new));
@@ -76,6 +80,8 @@ long ftell __((FILE *stream));
 void clearerr __((FILE *stream));
 void rewind __((FILE *stream));
 void setbuf __((FILE *stream, char *buf));
+FILE *fdopen __((int fd, const char *type));
+int fileno __((FILE *pf));
 
 /*	include system dependent information
  */
@@ -83,8 +89,6 @@ void setbuf __((FILE *stream, char *buf));
 
 char *ctermid __((char *s));
 char *cuserid __((char *s));
-FILE *fdopen __((int fd, const char *type));
-int fileno __((FILE *pf));
 
 #if 0
 int getw __((FILE *pf));
@@ -106,7 +110,7 @@ extern FILE *stdout;
 #define _IOLBF		2
 #define _IONBF		3
 #define BUFSIZ 		512
-#define EOF		 	-1
+#define EOF		 	(-1)
 #define L_tmpnam	_TMPSIZ
 #define L_ctermid	20
 #define L_cuserid	20
@@ -126,12 +130,12 @@ extern FILE *stdout;
 /*	macros
  */
 #ifndef NULL
-#define NULL (void *)0
+#define NULL ((void *)0)
 #endif
-#define getc(pf)	(((pf)->flag & 020 && 0 < (pf)->nleft) ? \
+#define getc(pf)	(((pf)->flag & 0x10 && 0 < (pf)->nleft) ? \
 					(--(pf)->nleft, *(pf)->pnext++) : fgetc(pf))
 #define getchar()	(getc(stdin))
-#define putc(c, pf)	(((pf)->flag & 040 && (c) != '\n' && \
+#define putc(c, pf)	(((pf)->flag & 0x20 && (c) != '\n' && \
 					(pf)->nleft < (pf)->bufsize) ? \
 					((pf)->buf[(pf)->nleft++] = (c)) : fputc(c, pf))
 #define putchar(c)	(putc(c, stdout))

@@ -18,7 +18,7 @@ __xeq:
 	moveq.l	#0x43,d7
 	trap	#1
 	move.l	a1,sp
-	bcc		1f
+	bcc.s	1f
 	jmp		seterr
 1:
 	jmp		(a0)

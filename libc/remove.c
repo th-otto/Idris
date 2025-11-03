@@ -11,7 +11,7 @@
 #undef remove
 int remove(const char *f)
 {
-	FAST COUNT fm;
+	FAST mode_t fm;
 
 	if (!(fm = _getmod(f)))
 		return (errno = ENOENT, -1);

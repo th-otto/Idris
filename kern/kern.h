@@ -150,6 +150,7 @@ void movbuf(const void *src, void *dst, BYTES size);
 
 void syfstat(void *args);
 void _sytimes(void *args);
+void syprof(void *args);
 
 struct fvar *mapfd(int fd);
 

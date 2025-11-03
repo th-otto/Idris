@@ -13,7 +13,7 @@ __lseek:
 	moveq	#0x28,d7
 	* call Idris
 	trap	#1
-	bcc		1f
+	bcc.s	1f
 	jmp		seterr
 1:
 	* return

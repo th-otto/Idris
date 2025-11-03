@@ -1,11 +1,33 @@
 CC = cdriver -proto c.proto +o -v -dnostrict -dlincl -prefix ./
 AS = as.68k
 AR = lib
+ARFLAGS = -c
+RM = -rm
 
 LIBA_OBJS = \
 	abort.o \
 	a_astat.o \
+	asctime.o \
+	atoi.o \
+	atol.o \
+	btoi.o \
+	btol.o \
+	btos.o \
+	buybuf.o \
+	calloc.o \
+	clearerr.o \
 	clock.o \
+	ctime.o \
+	free.o \
+	frexp.o \
+	fgetc.o \
+	fgets.o \
+	fopen.o \
+	fputc.o \
+	fputs.o \
+	freopen.o \
+	getc.o \
+	getchar.o \
 	isspace.o \
 	isalnum.o \
 	isalpha.o \
@@ -17,9 +39,15 @@ LIBA_OBJS = \
 	ispunct.o \
 	isupper.o \
 	isxdigit.o \
+	putc.o \
+	putchar.o \
 	perror.o \
+	feof.o \
+	ferror.o \
+	fflush.o \
 	fread.o \
 	fwrite.o \
+	setbuf.o \
 	toupper.o \
 	tolower.o \
 	atan2.o \
@@ -27,6 +55,7 @@ LIBA_OBJS = \
 	fmod.o \
 	raise.o \
 	sin.o \
+	cos.o \
 	sqrt.o \
 	$(empty)
 
@@ -38,9 +67,21 @@ LIBB_OBJS = \
 	chdir.o \
 	close.o \
 	cmain.o \
+	cmpbuf.o \
+	cpybuf.o \
+	cpystr.o \
 	creat.o \
+	ctype.o \
+	doclose.o \
+	doread.o \
+	dowrite.o \
 	dup.o \
+	error.o \
 	fabs.o \
+	fclose.o \
+	filerr.o \
+	fioerr.o \
+	flush.o \
 	fork.o \
 	fstat.o \
 	getmod.o \
@@ -50,30 +91,45 @@ LIBB_OBJS = \
 	getpid.o \
 	getuid.o \
 	gtty.o \
+	huge.o \
 	kill.o \
+	lenstr.o \
 	link.o \
 	lseek.o \
 	lstat.o \
 	onintr.o \
 	open.o \
+	parstype.o \
+	pname.o \
 	read.o \
+	reaerr.o \
 	rawmode.o \
 	remove.o \
 	_remove.o \
 	rename.o \
 	_rename.o \
+	_round.o \
 	sbreak.o \
 	setuid.o \
 	signal.o \
+	sqr.o \
 	sstat.o \
 	stat.o \
 	stty.o \
+	syprof.o \
 	system.o \
 	time.o \
 	times.o \
+	_tolower.o \
+	_toupper.o \
+	_trunc.o \
 	uniqnm.o \
 	unlink.o \
+	unpack.o \
+	ustat.o \
+	va.o \
 	wait.o \
+	wrierr.o \
 	write.o \
 	xeq.o \
 	xecv.o \
@@ -84,8 +140,13 @@ LIBC_OBJS = \
 	decode.o \
 	encode.o \
 	fileno.o \
+	getf.o \
+	getl.o \
+	getlin.o \
 	lfree.o \
+	lower.o \
 	malloc.o \
+	putfmt.o \
 	usage.o \
 	$(empty)
 
@@ -143,27 +204,27 @@ LIBM_OBJS = \
 all: liba.68k libb.68k libc.68k libposix.68k libm.68k Crts.o Crtf.o Crtp.o
 
 liba.68k: $(LIBA_OBJS)
-	-rm $@
-	$(AR) -c $@ $(LIBA_OBJS)
+	$(RM) $@
+	$(AR) $(ARFLAGS) $@ $(LIBA_OBJS)
 
 libb.68k: $(LIBB_OBJS)
-	-rm $@
-	$(AR) -c $@ $(LIBB_OBJS)
+	$(RM) $@
+	$(AR) $(ARFLAGS) $@ $(LIBB_OBJS)
 
 libc.68k: $(LIBC_OBJS)
-	-rm $@
-	$(AR) -c $@ $(LIBC_OBJS)
+	$(RM) $@
+	$(AR) $(ARFLAGS) $@ $(LIBC_OBJS)
 
 libposix.68k: $(LIBPOSIX_OBJS)
-	rm -f $@
-	$(AR) -c $@ $(LIBPOSIX_OBJS)
+	$(RM) $@
+	$(AR) $(ARFLAGS) $@ $(LIBPOSIX_OBJS)
 
 libm.68k: $(LIBM_OBJS)
-	-rm $@
-	$(AR) -c $@ $(LIBM_OBJS)
+	$(RM) $@
+	$(AR) $(ARFLAGS) $@ $(LIBM_OBJS)
 
 .s.o:
 	$(AS) -o $@ $<
 
 clean:
-	rm *.o *.68k
+	$(RM) *.o *.68k

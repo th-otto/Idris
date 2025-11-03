@@ -12,4 +12,3 @@ _pause:
 	jmp		seterr
 1:
 	jmp	(a0)
-;

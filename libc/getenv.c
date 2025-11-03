@@ -5,7 +5,13 @@
 #include <stdlib.h>
 #include "libc.h"
 
-char *_getenv(const char *p)
+char *getenv(const char *p)
 {
-	return getenv(p);
+	FAST BYTES l = _lenstr(p);
+	FAST const char **pe;
+
+	for (pe = environ; pe && *pe; ++pe)
+		if (_cmpbuf(p, *pe, l) && (*pe)[l] == '=')
+			return (char *)(&(*pe)[l + 1]);
+	return NULL;
 }

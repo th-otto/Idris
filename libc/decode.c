@@ -5,8 +5,9 @@
 #include "libc.h"
 
 
-static BYTES eputf(register struct _mbuf *buf, register const char *s, BYTES count)
+static BYTES eputf(void *arg, register const char *s, BYTES count)
 {
+	register struct _mbuf *buf = arg;
 	register int n = count;
 	
 	while (n > 0 && buf->count < buf->maxcount)

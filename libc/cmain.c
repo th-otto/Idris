@@ -2,7 +2,6 @@
  * Copyright (c) 1986 by Whitesmiths, Ltd.
  */
 #include <std.h>
-#define getenv _getenv
 #include <stdlib.h>
 #include "libc.h"
 

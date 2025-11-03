@@ -14,7 +14,7 @@ double _range(const char *str)
 	} else
 	{
 		_ranerr = str;
-		_raise(0, &_ranerr);
+		_raise(NULL, &_ranerr);
 	}
 	return HUGE_VAL;
 }

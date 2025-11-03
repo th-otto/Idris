@@ -74,7 +74,7 @@ typedef VOID (*(*FNPTR)(void))(void);	/* pseudo type for onexit */
 #define FAIL	1
 #define SUCCESS	0
 #ifndef NULL
-#define NULL	(VOID *)0
+#define NULL	((VOID *)0)
 #endif
 #define FOREVER	for (;;)
 #define BYTMASK	0377
@@ -105,7 +105,7 @@ DOUBLE sqr __((DOUBLE x));
 DOUBLE sqrt __((DOUBLE x));
 LONG lstol __((const char *s, BOOL bigendian));
 TEXT *atime __((struct _tvec *pv, TEXT *s));
-TEXT *cpystr __((TEXT *dest, ...));
+char *cpystr __((char *dest, ...));
 TEXT *_decrypt __((TEXT data[8], TINY ks[16][8]));
 TEXT *_encrypt __((TEXT data[8], TINY ks[16][8]));
 TEXT *getflags __((BYTES *pac, TEXT ***pav, const char *fmt, ...));
@@ -117,7 +117,7 @@ TEXT *uniqnm __((VOID));
 TINY *_bldks __((TINY ks[16][8], TEXT key[8]));
 ULONG xstol __((const char *s, BOOL lsfmt));
 VOID *_alloc __((BYTES need, VOID *link));
-VOID *buybuf __((VOID *s, BYTES n));
+VOID *buybuf __((const VOID *s, BYTES n));
 VOID *frelst __((VOID *p, VOID *plast));
 VOID *lfree __((VOID *addr, VOID *link));
 VOID *_nalloc __((BYTES need, VOID *link));

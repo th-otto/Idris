@@ -87,7 +87,7 @@ seterr:
 .data
 __data:
 	.byte 0
-	.ascii "IDR68K Edition 3.2: Copyright (c) 1981, 1983, 1986, 1987 by Whitesmiths, Ltd. all rights reserved"
+"IDR68K Edition 3.2: Copyright (c) 1981, 1983, 1986, 1987 by Whitesmiths, Ltd. all rights reserved"
 	.byte 0
 	.even
 __errno:

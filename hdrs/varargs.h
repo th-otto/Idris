@@ -9,7 +9,7 @@
  */
 #include <stdarg.h>
 #undef va_start
-#define va_start(ap)	((ap)[_VANEW] = (char *)&va_alist)
+#define va_start(ap)	((ap) = (char *)&va_alist)
 #define va_dcl	int va_alist;
 
 #endif

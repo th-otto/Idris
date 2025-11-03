@@ -20,7 +20,7 @@ extern int errno;
 /*	macros
  */
 #ifndef NULL
-#define NULL	(void *)0
+#define NULL	((void *)0)
 #endif
 
 #ifdef __GNUC__

@@ -10,7 +10,7 @@ __wait:
 	move.l	(sp)+,a0
 	moveq.l	#7,d7
 	trap	#1
-	bcc		1f
+	bcc.s	1f
 	jmp		seterr
 1:
 	tst.l      (a7)

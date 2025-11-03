@@ -8,7 +8,7 @@ __getegid:
 _getegid:
 	moveq.l	#47,d7
 	trap	#1
-	bcc		1f
+	bcc.s	1f
 	jmp		pseterr
 1:
 	lsr.l	#8,d7

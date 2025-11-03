@@ -11,3 +11,4 @@ _ioctl:
 	bcc.s	1f
 	jmp		seterr
 1:
+	jmp	(a0)

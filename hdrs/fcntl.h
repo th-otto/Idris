@@ -7,20 +7,20 @@
 
 /*	open flags
  */
-#define O_RDONLY	00		/* read only */
-#define O_WRONLY	01		/* write only */
-#define O_RDWR		02		/* read/write */
-#define O_NDELAY	04		/* non-blocking i/o */
+#define O_RDONLY	0x0000		/* read only */
+#define O_WRONLY	0x0001		/* write only */
+#define O_RDWR		0x0002		/* read/write */
+#define O_NDELAY	0x0004		/* non-blocking i/o */
 #define O_NONBLOCK	O_NDELAY
-#define O_APPEND	010		/* append */
-#define O_PHYSIO	020
-#define O_CREAT		0400	/* create */
-#define O_TRUNC		01000	/* truncate */
-#define O_EXCL		02000	/* exclusive open */
-#define O_XTYPE		010000	/* extended type field */
-#define O_BUF		020000	/* buffered write, used only by WSL i/o for 3.0 */
-#define O_REUSE		040000	/* reuse FILE structure (as in freopen) */
-#define O_BIN		0100000	/* open file for binary i/o */
+#define O_APPEND	0x0008		/* append */
+#define O_PHYSIO	0x0010
+#define O_CREAT		0x0100		/* create */
+#define O_TRUNC		0x0200		/* truncate */
+#define O_EXCL		0x0400		/* exclusive open */
+#define O_XTYPE		0x1000		/* extended type field */
+#define O_BUF		0x2000		/* buffered write, used only by WSL i/o for 3.0 */
+#define O_REUSE		0x4000		/* reuse FILE structure (as in freopen) */
+#define O_BIN		0x8000		/* open file for binary i/o */
 #if 0
 #define O_SYNC		xxx
 #endif

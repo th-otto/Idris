@@ -72,6 +72,9 @@ typedef unsigned int sig_atomic_t;
 int kill __((int pid, int signo));
 void (*signal __((int signo, void (*pfunc)(int sig))))(int sig);
 
-void _raise __((int signo, void *arg));
+void _raise __((const char **ptr, const char **cx));
+unsigned int _when __((const char **ptr, ...));
+void _leave __((unsigned int val));
+unsigned int _enter __((unsigned int (*pfn)(unsigned int arg), unsigned int arg));
 
 #endif

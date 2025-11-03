@@ -18,9 +18,9 @@ struct _file;
 #endif
 #endif
 
-int round __((DOUBLE d));
-int trunc __((DOUBLE d));
-BOOL cmpbuf __((TEXT *s1, TEXT *s2, BYTES n));
+int _round __((DOUBLE d));
+int _trunc __((DOUBLE d));
+BOOL _cmpbuf __((const void *s1, const void *s2, BYTES n));
 BOOL _cmpstr __((TEXT *s1, TEXT *s2));
 BOOL getin __((BYTES *pac, TEXT ***pav));
 BOOL match __((TEXT *buf, BYTES n, TEXT *pat));
@@ -30,16 +30,16 @@ BYTES amatch __((TEXT *buf, BYTES n, BYTES indx, TEXT *pat, struct _msub *pmsub)
 BYTES _btod __((TEXT *is, BYTES n, DOUBLE *pdnum));
 BYTES _btoi __((const char *s, BYTES n, int *i, int base));
 BYTES _btol __((const char *s, BYTES n, long *l, int base));
-BYTES _btos __((const char *s, BYTES n, unsigned short *i, int base));
+BYTES _btos __((const char *s, BYTES n, short *i, int base));
 BYTES _cpybuf __((void *s1, const void *s2, BYTES an));
 BYTES decode __((char *s, BYTES n, const char *fmt, ...));
 double _dtento __((double d, int exp));
 BYTES _dtoe __((char *is, double d, COUNT p, COUNT g));
 BYTES _dtof __((char *is, double d, COUNT p, COUNT g));
-BYTES enter __((BYTES (*pfn)(void), BYTES arg));
+BYTES _enter __((BYTES (*pfn)(BYTES arg), BYTES arg));
 void _error __((const char *s1, const char *s2));
 BYTES fill __((TEXT *s, BYTES n, TEXT c));
-BYTES getl __((struct _file *pf, TEXT *s, BYTES n));
+BYTES getl __((void *arg, char *s, BYTES n));
 BYTES getlin __((TEXT *s, BYTES n));
 BYTES inbuf __((TEXT *is, BYTES n, TEXT *p));
 BYTES instr __((const char *is, const char *p));
@@ -51,7 +51,7 @@ BYTES lower __((TEXT *s, BYTES n));
 BYTES _ltob __((char *is, LONG ln, int base));
 BYTES notbuf __((TEXT *is, BYTES n, TEXT *p));
 BYTES notstr __((TEXT *is, TEXT *p));
-BYTES putl __((struct _file *pf, TEXT *s, BYTES n));
+BYTES putl __((void *arg, const char *s, BYTES count));
 BYTES putlin __((TEXT *s, BYTES n));
 BYTES _scnbuf __((const char *s, BYTES n, char c));
 BYTES _scnstr __((const char *s, char c));
@@ -64,7 +64,7 @@ COUNT doesc __((TEXT **pp, TEXT *magic));
 COUNT _encode __((char *s, BYTES n, const char *fmt, va_list args));
 #endif
 COUNT encode __((char *s, BYTES n, const char *fmt, ...));
-COUNT getf __((struct _file *pf, TEXT *fmt, ...));
+COUNT getf __((struct _file *pf, const char *fmt, ...));
 COUNT getfmt __((TEXT *fmt, ...));
 COUNT lstoi __((const char *s));
 LONG lstol __((const char *s, BOOL bigendian));
@@ -75,17 +75,17 @@ COUNT ordbuf __((TEXT *p, TEXT *q, COUNT n));
 COUNT usage __((const char *msg));
 FD getbfiles __((BYTES *pac, TEXT ***pav, FD dfd, FD efd, BYTES rsize));
 FD getfiles __((BYTES *pac, TEXT ***pav, FD dfd, FD efd));
-VOID errfmt __((TEXT *fmt, ...));
-VOID _error __((const char *s1, const char *s2));
-VOID leave __((BYTES val));
+VOID errfmt __((const char *fmt, ...));
+VOID _leave __((BYTES val));
 VOID mapchar __((TEXT c, TEXT *buf));
 VOID prtheap __((VOID));
 VOID putf __((struct _file *pf, const char *fmt, ...));
-VOID putfmt __((TEXT *fmt, ...));
+BYTES putfmt __((const char *fmt, ...));
 VOID _putstr __((FD fd, ...));
 VOID sort __((int n, COUNT (*ordf)(void), VOID (*excf)(void), TEXT *base));
 void onintr __((void (*f)(int)));
 COUNT _rawmode __((FD fd, COUNT nmode));
 BOOL _devname __((char *s, UCOUNT mdev, BOOL cspec));
+double _sqr __((double d));
 
 #endif

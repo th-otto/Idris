@@ -6,20 +6,24 @@
 #define __USTAT__ 1
 
 struct ustat {
-	unsigned short f_isize;
-	unsigned short f_fsize;
+	/*  0 */ unsigned short f_isize;
+	/*  2 */ unsigned short f_fsize;
 	struct {
-		unsigned long tfree;
-		unsigned short tinode;
-		unsigned char fsname[6];
-		unsigned char pkname[6];
+		/*  4 */ unsigned long tfree;
+		/*  8 */ unsigned short tinode;
+		/* 10 */ unsigned char fsname[6];
+		/* 16 */ unsigned char pkname[6];
 	} f_sbi;
 	struct {
-		unsigned short mddev, mdino;
-		unsigned short mtdev, mtino;
-		unsigned short mtpdev, mtpino;
-		unsigned char mdronly;
+		/* 22 */ unsigned short mddev;
+		/* 24 */ unsigned short mdino;
+		/* 26 */ unsigned short mtdev;
+		/* 28 */ unsigned short mtino;
+		/* 30 */ unsigned short mtpdev;
+		/* 32 */ unsigned short mtpino;
+		/* 34 */ unsigned char mdronly;
 	} f_mnt;
+	/* 36 */
 };
 
 #define f_fname	f_sbi.fsname
@@ -35,5 +39,7 @@ struct ustat {
 #define f_mtpdev f_mnt.mtpdev
 #define f_mtpino f_mnt.mtpino
 #define f_mdronly f_mnt.mdronly
+
+int ustat(int fd, struct ustat *st);
 
 #endif

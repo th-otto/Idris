@@ -1,6 +1,9 @@
 #ifndef __STDEFS__
 #include <stddef.h>
 #endif
+#ifndef __TYPES__
+#include <sys/types.h>
+#endif
 
 #ifdef __GNUC__
 #define UNUSED(x) (void)(x)
@@ -19,34 +22,57 @@ extern const char *_pname;
 extern char *_shell;
 
 char *_getenv(const char *p);
-BYTES _lenstr(const char *str);
-int _cmpbuf(const void *p1, const void *p2, BYTES len);
-BITS _getmod(const char *fname);
+size_t _lenstr(const char *str);
+int _cmpbuf(const void *p1, const void *p2, size_t len);
+mode_t _getmod(const char *fname);
 int _rename(const char *from, const char *to);
 int _remove(const char *f);
 
 void (*_signal (int signo, void (*pfunc)(int sig)))(int sig);
 
-COUNT _xecv(const char *cmd, FD sin, FD sout, COUNT flags, const char **pargs);
+short _xecv(const char *cmd, int sin, int sout, short flags, const char **pargs);
 
 #ifdef __STDIO__
 extern FILE _stdin;
 extern FILE _stdout;
 extern FILE _stderr;
 extern FILE *_pfile;
+#define _FIOEOF          0x0001
+#define _FIOERR          0x0002
+#define _FIOX004         0x0004
+#define _FIOX008         0x0008
+#define _FIOX010         0x0010
+#define _FIOX020         0x0020
+#define _FIOBUFALLOCATED 0x0040
+#define _FIOALLOCATED    0x0080
+#define _FIOBINARY       0x0100
+#define _FIOUNBUFFERED   0x0200
+#define _FIOX400         0x0400
+int _flush(int fd);
+int _chkio(FILE *stream, int flag);
+int _doclose(FILE *stream, int freeit);
+long _doread(FILE *stream, unsigned char *s, size_t n);
+long _dowrite(FILE *stream, const void *s, size_t n, int doflush);
+FILE *_onlist(FILE *stream, FILE **list);
+FILE *_finit(FILE *stream, int fd, int type);
+int _parstype(const char *mode);
 #endif
 struct _mbuf {
 	char *s;
-	BYTES maxcount;
-	BYTES count;
+	size_t maxcount;
+	size_t count;
 };
 #ifdef __STDARG__
-BYTES _putf(BYTES (*putf)(struct _mbuf *buf, const char *s, BYTES count), struct _mbuf *buf, const char *fmt, va_list args);
+/* arg is either a FILE * or a struct _mbuf */
+size_t _putf(size_t (*putf)(void *arg, const char *s, size_t count), void *arg, const char *fmt, va_list args);
+size_t _getf(size_t (*getf)(void *rg, char *s, size_t n), void *arg, const char *fmt, va_list args);
 #endif
 
 void _astat(void);
 void _cstat(void);
 void _lstat(void);
+
+void *_free(void *ptr, void *link);
 
 #ifdef __SORT__
 extern int entval;
@@ -71,9 +97,13 @@ extern size_t _hinf[];
 extern size_t _hbot;
 extern size_t _heap;
 extern size_t _htop;
-const char *_domerr;
-const char *_memerr;
-const char *_ranerr;
+extern const char *_domerr;
+extern const char *_memerr;
+extern const char *_ranerr;
+extern const char *_filerr;
+extern const char *_fioerr;
+extern const char *_wrierr;
+extern const char *_reaerr;
 extern void *_stop;
 extern int _fnext;
 extern int _tfile;

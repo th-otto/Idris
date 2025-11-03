@@ -15,7 +15,7 @@ _chown:
 	move.l     d0,4(a7)
 	moveq.l	#16,d7
 	trap	#1
-	bcc		1f
+	bcc.s	1f
 	jmp		seterr
 1:
 	jmp	(a0)

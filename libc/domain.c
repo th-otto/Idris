@@ -14,6 +14,6 @@ void _domain(const char *str)
 	} else
 	{
 		_domerr = str;
-		_raise(0, &_domerr);
+		_raise(NULL, &_domerr);
 	}
 }
