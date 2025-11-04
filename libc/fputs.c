@@ -10,17 +10,17 @@ int fputs(const char *s, register FILE *stream)
 	register int ret;
 	register const char *src;
 	register unsigned char *dst;
-	int binary;
+	int fullbuffered;
 	int doflush;
 	unsigned char uc;
 
-	binary = stream->flag & _FIOBINARY;
+	fullbuffered = stream->flag & _FIOFULLBUFFERED;
 	if (stream == NULL)
 	{
 		_raise(NULL, &_filerr);
 	} else if (!(stream->flag & _FIOWASWRITTEN) && !_chkio(stream, TRUE))
 	{
-		return EOF;
+		return EOF; /* Note: return value in origin code was wrong */
 	}
 	if ((len = strlen(s)) == 0)
 		return 0;
@@ -40,11 +40,11 @@ int fputs(const char *s, register FILE *stream)
 			*dst++ = uc;
 			i--;
 			stream->nleft++;
-			ret = stream->nleft < stream->bufsize && (binary != 0 || uc != '\n') ? 1 : 0;
+			ret = stream->nleft < stream->bufsize && (fullbuffered != 0 || uc != '\n') ? 1 : 0;
 		}
 		if (ret == 0)
 		{
-			doflush = binary == 0 && uc == '\n';
+			doflush = fullbuffered == 0 && uc == '\n';
 			if (!_dowrite(stream, stream->buf, stream->nleft, doflush))
 				return EOF;
 			stream->nleft = 0;

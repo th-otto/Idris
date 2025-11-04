@@ -28,7 +28,7 @@ int fputc(int c, register FILE *stream)
 		stream->nleft = 1;
 		stream->buf[0] = uc;
 	}
-	if (uc != '\n' || (stream->flag & _FIOBINARY))
+	if (uc != '\n' || (stream->flag & _FIOFULLBUFFERED))
 		return uc;
 	if (stream->nleft <= 0)
 		return uc;

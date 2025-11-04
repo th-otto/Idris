@@ -35,10 +35,10 @@ FILE *_finit(register FILE *stream, int fd, register int type)
 	if ((type & O_ACCMODE) != O_RDONLY)
 		stream->flag |= _FIOWRITE;
 	if ((type & O_BUF) || (type & O_BIN))
-		stream->flag |= _FIOBINARY;
+		stream->flag |= _FIOFULLBUFFERED;
 	if (stream->flag & _FIOWRITE)
 	{
-		if ((stream->flag & _FIOBINARY) || !(stream->flag & _FIOUNBUFFERED))
+		if ((stream->flag & _FIOFULLBUFFERED) || !(stream->flag & _FIOUNBUFFERED))
 		{
 			if (!_onlist(stream, &_pfile))
 			{

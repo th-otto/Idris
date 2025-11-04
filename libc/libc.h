@@ -45,7 +45,7 @@ extern FILE *_pfile;
 #define _FIOWASWRITTEN   0x0020
 #define _FIOBUFALLOCATED 0x0040
 #define _FIOALLOCATED    0x0080
-#define _FIOBINARY       0x0100
+#define _FIOFULLBUFFERED 0x0100
 #define _FIOUNBUFFERED   0x0200
 #define _FIOX400         0x0400
 int _flush(int fd);
@@ -81,6 +81,8 @@ int _cache(const void *arg, int count, void *_dst);
 size_t _putf(size_t (*putf)(void *arg, const char *s, size_t count), void *arg, const char *fmt, va_list args);
 size_t _getf(size_t (*getf)(void *rg, char *s, size_t n), void *arg, const char *fmt, va_list args);
 #endif
+void _fwrite(int fd, const void *buf, size_t len);
+size_t _fread(int fd, void *buf, size_t len);
 
 void _astat(void);
 void _cstat(void);

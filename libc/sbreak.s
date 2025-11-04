@@ -2,6 +2,8 @@
 *	copyright (c) 1981, 1986 by Whitesmiths, Ltd.
 *	move system break up at least incr bytes, return old break
 
+	.globl	_sbreak
+_sbreak:
 	.globl	__sbreak
 __sbreak:
 	moveq.l		#0,d0

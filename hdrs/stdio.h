@@ -69,7 +69,7 @@ int puts __((const char *s));
 int remove __((const char *s));
 int rename __((const char *old, const char *new));
 int scanf __((const char *format, ...));
-int setvbuf __((FILE *stream, char *buf, int type, int size));
+int setvbuf __((FILE *stream, char *buf, int type, size_t size));
 int sprintf __((char *s, const char *format, ...));
 int sscanf __((const char *s, const char *format, ...));
 int ungetc __((int c, FILE *stream));
@@ -83,7 +83,7 @@ long ftell __((FILE *stream));
 void clearerr __((FILE *stream));
 void rewind __((FILE *stream));
 void setbuf __((FILE *stream, char *buf));
-FILE *fdopen __((int fd, const char *type));
+FILE *fdopen __((int fd, const char *mode));
 int fileno __((FILE *pf));
 
 /*	include system dependent information

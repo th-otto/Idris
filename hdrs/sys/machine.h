@@ -27,7 +27,6 @@
 #define _FROUND		1
 #define _IMAX		2147483647
 #define _IMIN		(-2147483648)
-#define _JMPSIZ		13
 #define _LDDIG		16
 #define _LDMAXEX	308
 #define _LDMINEX	(-308)
@@ -43,5 +42,11 @@
 #define _UIMAX		4294967295
 #define _ULMAX		4294967295
 #define _USMAX		65535
+
+/*
+ * Actually only 9 slots used:
+ * d5/d4/d3/a5/a4/a3/a6/a7/pc
+ */
+#define _JMPSIZ		13
 
 #endif

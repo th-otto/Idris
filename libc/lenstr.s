@@ -1,7 +1,9 @@
 	.text
-	.globl __lenstr
 	.globl _strlen
+	.globl _lenstr
+	.globl __lenstr
 _strlen:
+_lenstr:
 __lenstr:
 	movea.l    4(a7),a0
 __lenstr_1:
