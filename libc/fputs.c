@@ -18,7 +18,7 @@ int fputs(const char *s, register FILE *stream)
 	if (stream == NULL)
 	{
 		_raise(NULL, &_filerr);
-	} else if (!(stream->flag & _FIOX020) && !_chkio(stream, TRUE))
+	} else if (!(stream->flag & _FIOWASWRITTEN) && !_chkio(stream, TRUE))
 	{
 		return EOF;
 	}

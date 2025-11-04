@@ -10,7 +10,7 @@ void setbuf(FILE *stream, char *buf)
 	if (stream == NULL)
 	{
 		_raise(NULL, &_filerr);
-	} else if ((stream->flag & _FIOX010) || (stream->flag & _FIOX020))
+	} else if ((stream->flag & _FIOWASREAD) || (stream->flag & _FIOWASWRITTEN))
 	{
 		stream->flag |= _FIOERR;
 	} else

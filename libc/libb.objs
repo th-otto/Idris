@@ -22,7 +22,6 @@ btos.o
 cfcan.o
 cfcon.o
 cgetf.o
-chkio.o
 cmpstr.o
 cnorm.o
 convrt.o
@@ -37,7 +36,6 @@ dtoe.o
 dtof.o
 encode.o
 exp.o
-finit.o
 fmod.o
 frac.o
 fread.o
@@ -48,7 +46,6 @@ itob.o
 jmp.o
 ln.o
 ltob.o
-onlist.o
 poly.o
 prefix.o
 putstr.o

@@ -1,0 +1,9 @@
+#include <stdio.h>
+#include <stdarg.h>
+#include "libc.h"
+
+
+int printf(const char *format, ...)
+{
+	return _print(_putbuf, stdout, format, &(&format)[1]);
+}

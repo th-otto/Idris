@@ -65,7 +65,7 @@ COUNT _encode __((char *s, BYTES n, const char *fmt, va_list args));
 #endif
 COUNT encode __((char *s, BYTES n, const char *fmt, ...));
 COUNT getf __((struct _file *pf, const char *fmt, ...));
-COUNT getfmt __((TEXT *fmt, ...));
+COUNT getfmt __((const char *fmt, ...));
 COUNT lstoi __((const char *s));
 LONG lstol __((const char *s, BOOL bigendian));
 ULONG xstol __((const char *s, BOOL bigendian));

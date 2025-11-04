@@ -24,6 +24,7 @@
 #if 0
 #define O_SYNC		xxx
 #endif
+#define O_ACCMODE 0x0003
 
 /*	codes for fcntl
  */

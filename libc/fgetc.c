@@ -9,7 +9,7 @@ int fgetc(register FILE *stream)
 	if (stream == NULL)
 	{
 		_raise(NULL, &_filerr);
-	} else if (!(stream->flag & _FIOX010) && !_chkio(stream, FALSE))
+	} else if (!(stream->flag & _FIOWASREAD) && !_chkio(stream, FALSE))
 	{
 		return EOF;
 	}

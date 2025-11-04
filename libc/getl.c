@@ -15,7 +15,7 @@ size_t getl(void *arg, register char *s, BYTES n)
 	if (pf == NULL)
 	{
 		_raise(NULL, &_fioerr);
-	} else if (!(pf->flag & _FIOX010) && !_chkio(pf, FALSE))
+	} else if (!(pf->flag & _FIOWASREAD) && !_chkio(pf, FALSE))
 	{
 		_raise(NULL, &_reaerr);
 	}

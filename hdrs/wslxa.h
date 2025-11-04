@@ -100,9 +100,8 @@ typedef VOID (*(*FNPTR)(void))(void);	/* pseudo type for onexit */
 struct _tvec;
 
 COUNT (*mkord __((TEXT **keyarray, TEXT *lnordrule)))(void);
-DOUBLE dtento __((DOUBLE d, COUNT exp));
+DOUBLE _dtento __((DOUBLE d, int exp));
 DOUBLE sqr __((DOUBLE x));
-DOUBLE sqrt __((DOUBLE x));
 LONG lstol __((const char *s, BOOL bigendian));
 TEXT *atime __((struct _tvec *pv, TEXT *s));
 char *cpystr __((char *dest, ...));
@@ -122,7 +121,6 @@ VOID *frelst __((VOID *p, VOID *plast));
 VOID *lfree __((VOID *addr, VOID *link));
 VOID *_nalloc __((BYTES need, VOID *link));
 VOID *sbreak __((BYTES size));
-struct _file *fdopen __((FD fd, const char *type));
 struct _tvec *ltime __((struct _tvec *pv, ULONG lt));
 struct _tvec *vtime __((struct _tvec *pv, ULONG lt));
 #endif	/* EXECUTIVE */

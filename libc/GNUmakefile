@@ -32,6 +32,8 @@ LIBA_OBJS = \
 	fputc.o \
 	fputs.o \
 	freopen.o \
+	fseek.o \
+	ftell.o \
 	getc.o \
 	getchar.o \
 	isspace.o \
@@ -53,7 +55,20 @@ LIBA_OBJS = \
 	fflush.o \
 	fread.o \
 	fwrite.o \
+	printf.o \
+	fprintf.o \
+	vprintf.o \
+	vfprintf.o \
+	sprintf.o \
+	vsprintf.o \
+	rewind.o \
 	setbuf.o \
+	scanf.o \
+	sscanf.o \
+	fscanf.o \
+	vfscanf.o \
+	vscanf.o \
+	vsscanf.o \
 	toupper.o \
 	tolower.o \
 	atan2.o \
@@ -70,6 +85,7 @@ LIBB_OBJS = \
 	b_astat.o \
 	b_cstat.o \
 	brk.o \
+	chkio.o \
 	chdir.o \
 	close.o \
 	cmain.o \
@@ -86,6 +102,7 @@ LIBB_OBJS = \
 	fabs.o \
 	fclose.o \
 	filerr.o \
+	_finit.o \
 	fioerr.o \
 	flush.o \
 	fork.o \
@@ -104,6 +121,7 @@ LIBB_OBJS = \
 	lseek.o \
 	lstat.o \
 	onintr.o \
+	onlist.o \
 	open.o \
 	parstype.o \
 	pname.o \
@@ -124,6 +142,7 @@ LIBB_OBJS = \
 	stty.o \
 	syprof.o \
 	system.o \
+	_system.o \
 	time.o \
 	times.o \
 	_tolower.o \
@@ -146,12 +165,15 @@ LIBC_OBJS = \
 	decode.o \
 	encode.o \
 	fileno.o \
+	finit.o \
 	getf.o \
+	getfmt.o \
 	getl.o \
 	getlin.o \
 	lfree.o \
 	lower.o \
 	malloc.o \
+	putf.o \
 	putfmt.o \
 	usage.o \
 	$(empty)
@@ -230,10 +252,10 @@ libm.68k: $(LIBM_OBJS)
 	$(AR) $(ARFLAGS) $@ $(LIBM_OBJS)
 
 Crts.o: Crts.s
-	cat $< | sed -e 's/^"/ .ascii "/' | $(AS) -c -o $@
+	cat $< | sed -e 's/^"/ .ascii "/' -e 's/a~/a./g' | $(AS) -c -o $@
 
 Crtp.o: Crtp.s
-	cat $< | sed -e 's/^"/ .ascii "/' -e 's/a~count/a.count/' | $(AS) -c -o $@
+	cat $< | sed -e 's/^"/ .ascii "/' -e 's/a~/a./g' | $(AS) -c -o $@
 
 clean:
 	$(RM) *.o *.68k

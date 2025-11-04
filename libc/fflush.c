@@ -12,7 +12,7 @@ int fflush(register FILE *stream)
 		_raise(NULL, &_filerr);
 	}
 	ret = 0;
-	if ((stream->flag & _FIOX020) && stream->nleft > 0)
+	if ((stream->flag & _FIOWASWRITTEN) && stream->nleft > 0)
 	{
 		if (!_dowrite(stream, stream->buf, stream->nleft, TRUE))
 			ret = EOF;

@@ -39,23 +39,32 @@ extern FILE _stderr;
 extern FILE *_pfile;
 #define _FIOEOF          0x0001
 #define _FIOERR          0x0002
-#define _FIOX004         0x0004
-#define _FIOX008         0x0008
-#define _FIOX010         0x0010
-#define _FIOX020         0x0020
+#define _FIOREAD         0x0004
+#define _FIOWRITE        0x0008
+#define _FIOWASREAD      0x0010
+#define _FIOWASWRITTEN   0x0020
 #define _FIOBUFALLOCATED 0x0040
 #define _FIOALLOCATED    0x0080
 #define _FIOBINARY       0x0100
 #define _FIOUNBUFFERED   0x0200
 #define _FIOX400         0x0400
 int _flush(int fd);
-int _chkio(FILE *stream, int flag);
+int _chkio(FILE *stream, int forwrite);
 int _doclose(FILE *stream, int freeit);
 long _doread(FILE *stream, unsigned char *s, size_t n);
 long _dowrite(FILE *stream, const void *s, size_t n, int doflush);
-FILE *_onlist(FILE *stream, FILE **list);
+#ifdef __STDLIB__
+onexit_t _doflush(void);
+#endif
+FILE **_onlist(FILE *stream, FILE **list);
 FILE *_finit(FILE *stream, int fd, int type);
+FILE *finit(FILE *stream, int fd, int type);
 int _parstype(const char *mode);
+struct tmpfile {
+	struct tmpfile *link;
+	char filename[14];
+	FILE *fp;
+};
 #endif
 struct _mbuf {
 	char *s;
@@ -63,6 +72,11 @@ struct _mbuf {
 	size_t count;
 };
 #ifdef __STDARG__
+/* arg is either a FILE * or a char * */
+int _scan(const void *arg, int isstring, const char *fmt, va_list args);
+int _print(int (*putc)(const void *arg, int count, void *dst), void *arg, const char *format, va_list args);
+int _putbuf(const void *arg, int count, void *dst);
+int _cache(const void *arg, int count, void *_dst);
 /* arg is either a FILE * or a struct _mbuf */
 size_t _putf(size_t (*putf)(void *arg, const char *s, size_t count), void *arg, const char *fmt, va_list args);
 size_t _getf(size_t (*getf)(void *rg, char *s, size_t n), void *arg, const char *fmt, va_list args);
@@ -105,6 +119,8 @@ extern const char *_fioerr;
 extern const char *_wrierr;
 extern const char *_reaerr;
 extern void *_stop;
-extern int _fnext;
-extern int _tfile;
+#ifdef __STDLIB__
+extern onexit_t _fnext;
+#endif
+extern struct tmpfile *_tfile;
 extern char _rbuf[];

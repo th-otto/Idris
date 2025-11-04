@@ -1,6 +1,7 @@
 #include <std.h>
 #include <stdio.h>
 #include <time.h>
+#include <stdlib.h>
 #include "libc.h"
 
 char _savtime[] = "EDT";
@@ -13,8 +14,8 @@ char _rbuf[18];
 FILE _stdout;
 FILE _stdin;
 FILE _stderr;
-int _tfile;
-int _fnext;
+struct tmpfile *_tfile;
+onexit_t _fnext;
 FILE *_pfile;
 void *_stop;
 const char *_ranerr;
@@ -43,7 +44,7 @@ void _lstat(void)
 
 	_stderr.flist = NULL;
 	_stderr.fd = STDERR;
-	_stderr.flag = _FIOUNBUFFERED | _FIOX004;
+	_stderr.flag = _FIOUNBUFFERED | _FIOWRITE;
 	_stderr.nleft = 0;
 	_stderr.bufsize = BUFSIZ;
 	_stderr.loff = 0;
@@ -52,7 +53,7 @@ void _lstat(void)
 
 	_stdin.flist = NULL;
 	_stdin.fd = STDIN;
-	_stdin.flag = _FIOX004;
+	_stdin.flag = _FIOREAD;
 	_stdin.nleft = 0;
 	_stdin.bufsize = BUFSIZ;
 	_stdin.loff = 0;
@@ -61,7 +62,7 @@ void _lstat(void)
 
 	_stdout.flist = NULL;
 	_stdout.fd = STDOUT;
-	_stdout.flag = _FIOX008;
+	_stdout.flag = _FIOWRITE;
 	_stdout.nleft = 0;
 	_stdout.bufsize = BUFSIZ;
 	_stdout.loff = 0;

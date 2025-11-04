@@ -21,7 +21,7 @@ long _doread(register FILE *stream, register unsigned char *s, size_t n)
 	} else if (nread == 0)
 	{
 		stream->flag |= _FIOEOF;
-		stream->flag &= ~_FIOX010;
+		stream->flag &= ~_FIOWASREAD;
 	}
 	return nread;
 }
