@@ -15,7 +15,7 @@ __xeq:
 	move.l	4(a1),-(sp)
 	* fn
 	move.l	(a1),-(sp)
-	moveq.l	#0x43,d7
+	moveq.l	#67,d7
 	trap	#1
 	move.l	a1,sp
 	bcc.s	1f

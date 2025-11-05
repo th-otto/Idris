@@ -16,9 +16,9 @@ LIBA_OBJS = \
 	asctime.o \
 	atoi.o \
 	atol.o \
-	btoi.o \
-	btol.o \
-	btos.o \
+	_btoi.o \
+	_btol.o \
+	_btos.o \
 	buybuf.o \
 	calloc.o \
 	clearerr.o \
@@ -32,12 +32,14 @@ LIBA_OBJS = \
 	fopen.o \
 	fputc.o \
 	puts.o \
+	fgets.o \
 	fputs.o \
 	freopen.o \
 	fseek.o \
 	ftell.o \
 	getc.o \
 	getchar.o \
+	gets.o \
 	isspace.o \
 	isalnum.o \
 	isalpha.o \
@@ -83,6 +85,9 @@ LIBA_OBJS = \
 	strrchr.o \
 	strcmp.o \
 	strncmp.o \
+	strpbrk.o \
+	strtok.o \
+	strtol.o \
 	memchr.o \
 	memcmp.o \
 	memcpy.o \
@@ -106,7 +111,7 @@ LIBB_OBJS = \
 	close.o \
 	cmain.o \
 	cmpbuf.o \
-	cmpstr.o \
+	_cmpstr.o \
 	cpybuf.o \
 	cpystr.o \
 	creat.o \
@@ -140,23 +145,28 @@ LIBB_OBJS = \
 	link.o \
 	lseek.o \
 	lstat.o \
+	_itob.o \
+	_ltob.o \
+	_stob.o \
 	onintr.o \
 	onlist.o \
 	open.o \
 	parstype.o \
 	pname.o \
+	_prefix.o \
 	putstr.o \
 	read.o \
 	reaerr.o \
 	rawmode.o \
-	remark.o \
+	_remark.o \
 	remove.o \
 	_remove.o \
 	rename.o \
 	_rename.o \
 	_round.o \
 	sbreak.o \
-	scnstr.o \
+	_scnbuf.o \
+	_scnstr.o \
 	setuid.o \
 	signal.o \
 	sqr.o \
@@ -185,27 +195,42 @@ LIBB_OBJS = \
 
 LIBC_OBJS = \
 	c_cstat.o \
+	cmpstr.o \
 	decode.o \
 	encode.o \
 	fdopen.o \
 	fileno.o \
+	fill.o \
 	finit.o \
 	getf.o \
 	getfmt.o \
 	getl.o \
 	getlin.o \
+	inbuf.o \
+	instr.o \
 	itols.o \
 	lfree.o \
 	lstoi.o \
 	lstol.o \
 	lstou.o \
+	itob.o \
+	ltob.o \
+	stob.o \
 	ltols.o \
 	lower.o \
 	malloc.o \
+	notbuf.o \
+	notstr.o \
+	prefix.o \
 	putf.o \
 	putfmt.o \
 	putl.o \
 	putlin.o \
+	remark.o \
+	strcspn.o \
+	strspn.o \
+	subbuf.o \
+	substr.o \
 	usage.o \
 	xstos.o \
 	xstol.o \
@@ -243,6 +268,7 @@ LIBPOSIX_OBJS = \
 	lockf.o \
 	mkdir.o \
 	mknod.o \
+	nice.o \
 	pause.o \
 	parent.o \
 	pipe.o \
@@ -251,6 +277,7 @@ LIBPOSIX_OBJS = \
 	setgid.o \
 	setpgrp.o \
 	sleep.o \
+	stime.o \
 	ttyname.o \
 	umask.o \
 	uname.o \

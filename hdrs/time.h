@@ -55,6 +55,7 @@ double difftime __((time_t time2, time_t time1));
 struct tm *gmtime __((const time_t *timer));
 struct tm *localtime __((const time_t *timer));
 time_t time __((time_t *timer));
+int stime __((time_t t));
 
 /*	include system dependent clock info
  */

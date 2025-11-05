@@ -6,9 +6,12 @@
 #include <limits.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/xeq.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 #include <pcdecl.h>
+#include <xecv.h>
 #include "libc.h"
 
 BYTES _setb = 0;
@@ -102,7 +105,8 @@ COUNT _xecv(const char *cmd, FD sin, FD sout, COUNT flags, const char **pargs)
 					pp = "";
 				break;
 			default:
-				s = (*pp) ? NULL : "not found.";
+				s = *pp ? NULL : "not found.";
+				break;
 			}
 		}
 		if (s)
@@ -114,19 +118,16 @@ COUNT _xecv(const char *cmd, FD sin, FD sout, COUNT flags, const char **pargs)
 	/* BUG: pid never set if program not found */
 	if (!syn)
 		return (pid);
-	else
+	while ((i = wait(&status)) != pid)
+		if (i < 0)	/* no exit status returned */
+			return (YES);
+	if (WIFSIGNALED(status))
 	{
-		while ((i = wait(&status)) != pid)
-			if (i < 0)	/* no exit status returned */
-				return (YES);
-		if (WIFSIGNALED(status))
-		{
-			i = WTERMSIG(status);
-			s = (0 <= i && i < NSIG) ? _signam[i] : _signam[0];
-			if (s)
-				_putstr(STDERR, *pargs, ": ", s, WCOREDUMP(status) ?
-					" - core dumped\n" : "\n", NULL);
-		}
-		return (status == 0);
+		i = WTERMSIG(status);
+		s = (0 <= i && i < NSIG) ? _signam[i] : _signam[0];
+		if (s)
+			_putstr(STDERR, *pargs, ": ", s, WCOREDUMP(status) ?
+				" - core dumped\n" : "\n", NULL);
 	}
+	return status == 0;
 }

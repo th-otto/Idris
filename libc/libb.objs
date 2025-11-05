@@ -1,3 +1,4 @@
+onexit_t
 Dcdbmain.o
 Ddb68kc.o
 Ddb68ks.o
@@ -16,9 +17,6 @@ addexp.o
 alloc.o
 atan2.o
 btod.o
-btoi.o
-btol.o
-btos.o
 cfcan.o
 cfcon.o
 cgetf.o
@@ -37,13 +35,9 @@ fmod.o
 frac.o
 ftrunc.o
 getzon.o
-itob.o
 ln.o
-ltob.o
 poly.o
-prefix.o
 raise.o
-scnbuf.o
 sin.o
 sqrt.o
 stob.o

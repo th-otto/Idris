@@ -30,8 +30,6 @@ int _remove(const char *f);
 
 void (*_signal (int signo, void (*pfunc)(int sig)))(int sig);
 
-short _xecv(const char *cmd, int sin, int sout, short flags, const char **pargs);
-
 #ifdef __STDIO__
 extern FILE _stdin;
 extern FILE _stdout;

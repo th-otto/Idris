@@ -15,4 +15,7 @@
 #define X_EUID	0x10
 #define X_EID	X_EUID
 
+short _xecv(const char *cmd, int sin, int sout, short flags, const char **pargs);
+int _xecl(const char *cmd, int sin, int sout, int flags, ...);
+
 #endif

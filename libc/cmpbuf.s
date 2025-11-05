@@ -1,4 +1,6 @@
 	.text
+	.globl _cmpbuf
+_cmpbuf:
 	.globl __cmpbuf
 __cmpbuf:
 	move.l     12(a7),d0
