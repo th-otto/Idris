@@ -285,7 +285,7 @@ cmd_cd:
 [0004032a] 588f                      addq.l     #4,a7
 [0004032c] 4878 0018                 pea.l      (24).w
 [00040330] 486d 0002                 pea.l      2(a5)
-[00040334] 2e2e 0008                 move.l     8(a6),d7
+[00040334] 2e2e 0008                 move.l     8(a6),d7  ioff
 [00040338] 5387                      subq.l     #1,d7
 [0004033a] 7c0f                      moveq.l    #15,d6
 [0004033c] cc87                      and.l      d7,d6
@@ -299,7 +299,7 @@ cmd_cd:
 [00040358] 4a39 0004 1cce            tst.b      $00041CCE
 [0004035e] 662a                      bne.s      $0004038A
 [00040360] 486d 0002                 pea.l      2(a5)
-[00040364] 4eb9 0004 1b4c            jsr        $00041B4C
+[00040364] 4eb9 0004 1b4c            jsr        _lstoi
 [0004036a] 588f                      addq.l     #4,a7
 [0004036c] 3b47 0002                 move.w     d7,2(a5)
 [00040370] 7a09                      moveq.l    #9,d5
@@ -308,7 +308,7 @@ cmd_cd:
 [00040378] 5385                      subq.l     #1,d5
 [0004037a] 6d0e                      blt.s      $0004038A
 [0004037c] 2e8c                      move.l     a4,(a7)
-[0004037e] 4eb9 0004 1b4c            jsr        $00041B4C
+[0004037e] 4eb9 0004 1b4c            jsr        _lstoi
 [00040384] 3887                      move.w     d7,(a4)
 [00040386] 548c                      addq.l     #2,a4
 [00040388] 60ee                      bra.s      $00040378
@@ -723,7 +723,7 @@ cmd_ls:
 [000408a2] 2e39 0004 1f40            move.l     $00041F40,d7
 [000408a8] de86                      add.l      d6,d7
 [000408aa] 2e87                      move.l     d7,(a7)
-[000408ac] 4eb9 0004 1b4c            jsr        $00041B4C
+[000408ac] 4eb9 0004 1b4c            jsr        _lstoi
 [000408b2] 2a07                      move.l     d7,d5
 [000408b4] 4a85                      tst.l      d5
 [000408b6] 6604                      bne.s      $000408BC
@@ -739,7 +739,7 @@ cmd_ls:
 [000408d4] 2c39 0004 1f40            move.l     $00041F40,d6
 [000408da] dc87                      add.l      d7,d6
 [000408dc] 2e86                      move.l     d6,(a7)
-[000408de] 4eb9 0004 1b4c            jsr        $00041B4C
+[000408de] 4eb9 0004 1b4c            jsr        _lstoi
 [000408e4] 2a07                      move.l     d7,d5
 [000408e6] 2e05                      move.l     d5,d7
 [000408e8] 4cdf 2031                 movem.l    (a7)+,d0/d4-d5/a5
@@ -1067,7 +1067,7 @@ cmd_go:
 [00040cf6] 0c83 0000 000e            cmpi.l     #$0000000E,d3
 [00040cfc] 6de8                      blt.s      $00040CE6
 [00040cfe] 2e8c                      move.l     a4,(a7)
-[00040d00] 4eb9 0004 1b4c            jsr        $00041B4C
+[00040d00] 4eb9 0004 1b4c            jsr        _lstoi
 [00040d06] 6002                      bra.s      $00040D0A
 [00040d08] 7e00                      moveq.l    #0,d7
 [00040d0a] 4cdf 3039                 movem.l    (a7)+,d0/d3-d5/a4-a5
@@ -1341,23 +1341,23 @@ kbgetc:
 [000410d4] 7001                      moveq.l    #1,d0
 [000410d6] 2a80                      move.l     d0,(a5)
 [000410d8] 486e fe0b                 pea.l      -501(a6)
-[000410dc] 4eb9 0004 1202            jsr        $00041202
+[000410dc] 4eb9 0004 1202            jsr        _swap_little_endian
 [000410e2] 588f                      addq.l     #4,a7
 [000410e4] 2b47 0004                 move.l     d7,4(a5)
 [000410e8] 486e fe0e                 pea.l      -498(a6)
-[000410ec] 4eb9 0004 1202            jsr        $00041202
+[000410ec] 4eb9 0004 1202            jsr        _swap_little_endian
 [000410f2] 588f                      addq.l     #4,a7
 [000410f4] 2b47 0008                 move.l     d7,8(a5)
 [000410f8] 486e fe13                 pea.l      -493(a6)
-[000410fc] 4eb9 0004 1202            jsr        $00041202
+[000410fc] 4eb9 0004 1202            jsr        _swap_little_endian
 [00041102] 588f                      addq.l     #4,a7
 [00041104] 2b47 000c                 move.l     d7,12(a5)
 [00041108] 486e fe18                 pea.l      -488(a6)
-[0004110c] 4eb9 0004 1202            jsr        $00041202
+[0004110c] 4eb9 0004 1202            jsr        _swap_little_endian
 [00041112] 588f                      addq.l     #4,a7
 [00041114] 2b47 0010                 move.l     d7,16(a5)
 [00041118] 486e fe1a                 pea.l      -486(a6)
-[0004111c] 4eb9 0004 1202            jsr        $00041202
+[0004111c] 4eb9 0004 1202            jsr        _swap_little_endian
 [00041122] 588f                      addq.l     #4,a7
 [00041124] 2b47 0014                 move.l     d7,20(a5)
 [00041128] 0cad 0000 0200 0004       cmpi.l     #$00000200,4(a5)
@@ -1425,6 +1425,7 @@ kbgetc:
 [000411fe] 4e5e                      unlk       a6
 [00041200] 4e75                      rts
 
+_swap_little_endian:
 [00041202] 4e56 0000                 link       a6,#0
 [00041206] 226e 0008                 movea.l    8(a6),a1
 [0004120a] 7e00                      moveq.l    #0,d7
@@ -2082,7 +2083,6 @@ write_wdcwdl:
 [00041a30] 4cdf 0039                 movem.l    (a7)+,d0/d3-d5
 [00041a34] 4e5e                      unlk       a6
 [00041a36] 4e75                      rts
-
 [00041a38] 227c 00ff 860d            movea.l    #$00FF860D,a1
 [00041a3e] 7e00                      moveq.l    #0,d7
 [00041a40] 1e11                      move.b     (a1),d7
@@ -2176,6 +2176,7 @@ write_wdcwdl:
 [00041b48] 4e5e                      unlk       a6
 [00041b4a] 4e75                      rts
 
+_lstoi:
 [00041b4c] 4e56 fffe                 link       a6,#-2
 [00041b50] 48e7 8004                 movem.l    d0/a5,-(a7)
 [00041b54] 2a6e 0008                 movea.l    8(a6),a5

@@ -3,6 +3,9 @@
 #include <string.h>
 
 
+/*
+ * get parent name of file
+ */
 char *_parent(register char *buf, register const char *pathname)
 {
 	register const char *pathend;

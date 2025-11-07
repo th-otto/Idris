@@ -16,7 +16,6 @@
 #define TRUE  1
 #endif
 
-extern const char **environ;
 extern char *_paths;
 extern const char *_pname;
 extern char *_shell;
@@ -124,3 +123,4 @@ extern onexit_t _fnext;
 #endif
 extern struct tmpfile *_tfile;
 extern char _rbuf[];
+extern char *end; /* WTF */

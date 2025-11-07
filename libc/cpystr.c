@@ -1,6 +1,7 @@
 #include <wslxa.h>
 #include <stdarg.h>
 
+#undef cpystr
 char *cpystr(char *_dest, ...)
 {
 	va_list args;

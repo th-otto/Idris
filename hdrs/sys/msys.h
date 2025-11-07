@@ -3,6 +3,8 @@
  */
 #include <alloc.h>
 
+#define PHYS ULONG
+
 /*	misc defs
  */
 #define	NOLIMIT	(-1)

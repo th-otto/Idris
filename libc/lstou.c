@@ -1,7 +1,7 @@
 #include <std.h>
 #include <pcdecl.h>
 
-UCOUNT lstou(const char *s)
+UCOUNT lstou(const UCOUNT *s)
 {
 	register const unsigned char *us = (const unsigned char *)s;
 	

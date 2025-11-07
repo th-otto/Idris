@@ -4,7 +4,7 @@
 /*
  * return short from pdp-endian format
  */
-COUNT lstoi(const char *s)
+COUNT lstoi(const COUNT *s)
 {
 	register const unsigned char *us = (const unsigned char *)s;
 	

@@ -4624,7 +4624,7 @@ _closed:
 [0000d816] 2e05                      move.l     d5,d7
 [0000d818] e587                      asl.l      #2,d7
 [0000d81a] 2247                      movea.l    d7,a1
-[0000d81c] d3fc 0001 fa2e            adda.l     #$0001FA2E,a1
+[0000d81c] d3fc 0001 fa2e            adda.l     #_chrdevs,a1
 [0000d822] 2251                      movea.l    (a1),a1
 [0000d824] 2269 0004                 movea.l    4(a1),a1
 [0000d828] 4e91                      jsr        (a1)
@@ -4832,7 +4832,7 @@ _opendev_3:
 [0000da38] 2e05                      move.l     d5,d7
 [0000da3a] e587                      asl.l      #2,d7
 [0000da3c] 2247                      movea.l    d7,a1
-[0000da3e] d3fc 0001 fa2e            adda.l     #$0001FA2E,a1
+[0000da3e] d3fc 0001 fa2e            adda.l     #_chrdevs,a1
 [0000da44] 2251                      movea.l    (a1),a1
 [0000da46] 2251                      movea.l    (a1),a1
 [0000da48] 4e91                      jsr        (a1)
@@ -4859,7 +4859,7 @@ _readev:
 [0000da78] e087                      asr.l      #8,d7
 [0000da7a] e587                      asl.l      #2,d7
 [0000da7c] 2247                      movea.l    d7,a1
-[0000da7e] d3fc 0001 fa2e            adda.l     #$0001FA2E,a1
+[0000da7e] d3fc 0001 fa2e            adda.l     #_chrdevs,a1
 [0000da84] 2251                      movea.l    (a1),a1
 [0000da86] 2269 0008                 movea.l    8(a1),a1
 [0000da8a] 4e91                      jsr        (a1)
@@ -4874,7 +4874,7 @@ _wridev:
 [0000daa2] e087                      asr.l      #8,d7
 [0000daa4] e587                      asl.l      #2,d7
 [0000daa6] 2247                      movea.l    d7,a1
-[0000daa8] d3fc 0001 fa2e            adda.l     #$0001FA2E,a1
+[0000daa8] d3fc 0001 fa2e            adda.l     #_chrdevs,a1
 [0000daae] 2251                      movea.l    (a1),a1
 [0000dab0] 2269 000c                 movea.l    12(a1),a1
 [0000dab4] 4e91                      jsr        (a1)
@@ -6537,7 +6537,7 @@ _putdnm:
 [0000eeee] 48c7                      ext.l      d7
 [0000eef0] e587                      asl.l      #2,d7
 [0000eef2] 2247                      movea.l    d7,a1
-[0000eef4] d3fc 0001 fa2e            adda.l     #$0001FA2E,a1
+[0000eef4] d3fc 0001 fa2e            adda.l     #_chrdevs,a1
 [0000eefa] 2251                      movea.l    (a1),a1
 [0000eefc] 2e29 0014                 move.l     20(a1),d7
 [0000ef00] 6016                      bra.s      _putdnm_2
@@ -10529,7 +10529,7 @@ x11bb6_9:
 [00011d02] 2e05                      move.l     d5,d7
 [00011d04] e587                      asl.l      #2,d7
 [00011d06] 2247                      movea.l    d7,a1
-[00011d08] d3fc 0001 fa2e            adda.l     #$0001FA2E,a1
+[00011d08] d3fc 0001 fa2e            adda.l     #_chrdevs,a1
 [00011d0e] 2251                      movea.l    (a1),a1
 [00011d10] 2ea9 0014                 move.l     20(a1),(a7)
 [00011d14] 4eb9 0001 1ef0            jsr        $00011EF0
@@ -10590,7 +10590,7 @@ _memsgtty:
 [00011dc4] e087                      asr.l      #8,d7
 [00011dc6] e587                      asl.l      #2,d7
 [00011dc8] 2247                      movea.l    d7,a1
-[00011dca] d3fc 0001 fa2e            adda.l     #$0001FA2E,a1
+[00011dca] d3fc 0001 fa2e            adda.l     #_chrdevs,a1
 [00011dd0] 2251                      movea.l    (a1),a1
 [00011dd2] 2269 0010                 movea.l    16(a1),a1
 [00011dd6] 4e91                      jsr        (a1)
@@ -11902,7 +11902,7 @@ _setget_2:
 [00012cea] e087                      asr.l      #8,d7
 [00012cec] e587                      asl.l      #2,d7
 [00012cee] 2247                      movea.l    d7,a1
-[00012cf0] d3fc 0001 fa2e            adda.l     #$0001FA2E,a1
+[00012cf0] d3fc 0001 fa2e            adda.l     #_chrdevs,a1
 [00012cf6] 2251                      movea.l    (a1),a1
 [00012cf8] 2269 0010                 movea.l    16(a1),a1
 [00012cfc] 4e91                      jsr        (a1)

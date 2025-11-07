@@ -2,9 +2,6 @@
  *	copyright (c) 1985 by Whitesmiths, Ltd.
  */
 
-#define PHYS ULONG
-#define PID short
-
 /*	ms error codes
  */
 #define MEBADEV		1000
@@ -40,37 +37,38 @@
 #define	MP_MAXCON	3
 #define	MP_MAXQUE	4
 #define	MP_STATUS	5
+#define	MP_MGETPRM	6
 
 /*	function bits for msend(), mreceive()
  */
-#define MSG_WAIT 0x1
-#define MSG_TEST 0x2
-#define MSG_COPY 0x4
-#define MSG_KEEP 0x8
+#define MSG_WAIT   0x01
+#define MSG_TEST   0x02
+#define MSG_COPY   0x04
+#define MSG_KEEP   0x08
 #define MSG_SELECT 0x10
-#define MSG_SENT 0x20
+#define MSG_SENT   0x20
 
 /*	status bits for mreceive()
  */
-#define	MP_LOST	0x1
-#define	MT_LOST 0x2
-#define ME_LOST 0x4
-#define MH_LOST 0x8
+#define	MP_LOST	0x01
+#define	MT_LOST 0x02
+#define ME_LOST 0x04
+#define MH_LOST 0x08
 #define MQ_LOST 0x10
 
 /*	function codes and flags for evmon()
  */
-#define EV_DMON 0x0
-#define EV_ALL	0x1
-#define EV_SOME 0x2
-#define EV_ONE	0x3
-#define EV_YES	0x4
-#define EV_NAND 0x5
-#define EV_NOR	0x6
-#define EV_NJONE 0x7
-#define EV_TYPE 0x7
-#define EV_INIT	0x8
-#define EV_POST	0x10
+#define EV_DMON     0x00
+#define EV_ALL	    0x01
+#define EV_SOME     0x02
+#define EV_ONE	    0x03
+#define EV_YES	    0x04
+#define EV_NAND     0x05
+#define EV_NOR	    0x06
+#define EV_NJONE    0x07
+#define EV_TYPE     0x07
+#define EV_INIT	    0x08
+#define EV_POST	    0x10
 #define EV_NOTEST	0x20
 #define EV_ONESHOT	0x40
 
@@ -117,3 +115,35 @@ typedef struct {
 	BITS eb_mask, eb_mode, eb_init;
 	COUNT eb_mchan;
 } EVBUF;
+
+typedef struct {
+	BYTES sd_size;
+	BYTES sd_start;
+	TEXT *sd_buf;
+} SDSTAT;
+
+/*
+ * system calls
+ */
+int mgetprm(int fd, int mode);
+int msetprm(int fd, int mode);
+int _mcreat(int fd, int arg1, int arg2, int arg3);
+int _mrm(int fd);
+int clrsl(int, int);
+int tsetsl(int, int);
+
+/*
+ * library functions
+ */
+int sdclose(int fd);
+int sdmap(int fd);
+int sdopen(const char *filename);
+BYTES sdsize(int fd);
+int sdstat(int fd, SDSTAT *stat);
+size_t sdstart(int fd);
+int sdpalloc(const char *filename, size_t start, size_t size);
+int sdcreate(const char *filename, const char *control, size_t o16, size_t size);
+int sdremove(const char *filename);
+
+int mopen(const char *filename);
+int mcreate(const char *filename, int arg1, int arg2, int arg3);

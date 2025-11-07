@@ -23,6 +23,8 @@
 #include <stddef.h>
 #endif
 
+extern const char **environ;
+
 /* CONSTANTS FOR THE LOCKF FUNCTION
  */
 
@@ -124,7 +126,10 @@ int lockf __((int fd, int cmd, off_t len));
 int rmdir __((const char *pathname));
 int nice __((int incr));
 
+int cwd __((char *buff));
 int _cwd __((char *tbuf));
 char *getpass __((const char *prompt));
+void *sbrk __((int increment));
+void *inheap __((void *p));
 
 #endif /* __UNISTD__ */

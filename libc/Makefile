@@ -108,6 +108,7 @@ LIBB_OBJS = \
 	_cmpstr.o \
 	cpybuf.o \
 	cpystr.o \
+	_cpystr.o \
 	creat.o \
 	ctype.o \
 	doclose.o \
@@ -125,7 +126,7 @@ LIBB_OBJS = \
 	flush.o \
 	fork.o \
 	fstat.o \
-	getmod.o \
+	_getmod.o \
 	getenv.o \
 	_getenv.o \
 	geteuid.o \
@@ -185,6 +186,7 @@ LIBB_OBJS = \
 	write.o \
 	xeq.o \
 	xecv.o \
+	inheap.o \
 	$(empty)
 
 LIBC_OBJS = \
@@ -238,8 +240,8 @@ LIBPOSIX_OBJS = \
 	crypt.o \
 	ctermid.o \
 	cuserid.o \
-	cwd.o \
-	devname.o \
+	_cwd.o \
+	_devname.o \
 	dirent.o \
 	dup2.o \
 	execl.o \
@@ -252,7 +254,7 @@ LIBPOSIX_OBJS = \
 	getcwd.o \
 	getegid.o \
 	getgid.o \
-	getlinks.o \
+	_getlinks.o \
 	getlogin.o \
 	getpass.o \
 	getpgrp.o \
@@ -264,7 +266,7 @@ LIBPOSIX_OBJS = \
 	mknod.o \
 	nice.o \
 	pause.o \
-	parent.o \
+	_parent.o \
 	pipe.o \
 	pwdfil.o \
 	rmdir.o \

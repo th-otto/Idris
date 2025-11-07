@@ -7,6 +7,38 @@
 #include <sys/sup.h>
 #include <stddef.h>
 
+#define MAJOR_MEM         0
+#  define MINOR_MEM_KMEM   1
+#  define MINOR_MEM_NULL   2
+#  define MINOR_MEM_PS     3
+#  define MINOR_MEM_MYPS   4
+#  define MINOR_MEM_MOUNT  5
+#  define MINOR_MEM_INODE  6
+#  define MINOR_MEM_WHERE  7
+#  define MINOR_MEM_BNAMES 8
+#  define MINOR_MEM_CNAMES 9
+#  define MINOR_MEM_ZERO   10
+#  define MINOR_MEM_TTY    11
+#  define MINOR_MEM_STAT   12
+#define MAJOR_CON         1
+#  define MINOR_CON_CONSOLE 0
+#  define MINOR_CON_MIDI    1
+#  define MINOR_CON_MOUSE   2
+#  define MINOR_CON_IKBD    3
+#  define MINOR_CON_CLOCK   4
+#  define MINOR_CON_IKBDX   (MINOR_CON_IKBD + 64)
+#define MAJOR_SER         2
+#define MAJOR_LP          3
+#define MAJOR_FD          4
+#define MAJOR_HD          5
+#define MAJOR_MD          6
+#define MAJOR_MSG         7
+#define MAJOR_FPP         8
+#define MAJOR_PTY_MASTER  9
+#define MAJOR_PTY_SLAVE  10
+#define MAJOR_SOCKET     11
+#define MAJOR_SEL        12
+
 /* MC68000 MACHINE INTERFACE
  */
 typedef int _jmp_buf[9];

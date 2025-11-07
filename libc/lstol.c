@@ -4,7 +4,7 @@
 /*
  * return long from pdp-endian format
  */
-LONG lstol(const char *s)
+LONG lstol(const ULONG *s)
 {
 	register const unsigned char *us = (const unsigned char *)s;
 	

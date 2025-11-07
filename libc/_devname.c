@@ -18,6 +18,9 @@
 #endif
 
 
+/*
+ * get device name
+ */
 BOOL _devname(char *s, register UCOUNT mdev, register BOOL cspec)
 {
 	unsigned short major_num;

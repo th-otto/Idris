@@ -3,6 +3,7 @@
  */
 #include <std.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "libc.h"
 
 char *getenv(const char *p)

@@ -62,6 +62,9 @@ void srandom __((unsigned int seed));
 int rand __((void));
 void srand __((unsigned int seed));
 
+void *bsearch __((const void *key, const void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *)));
+void qsort __((void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *)));
+char *putenv __((char *string));
+char *setenv __((const char *name, const char *value));
+
 #endif
-
-

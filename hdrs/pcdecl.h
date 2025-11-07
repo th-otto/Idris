@@ -73,11 +73,11 @@ COUNT _encode __((char *s, BYTES n, const char *fmt, va_list args));
 COUNT encode __((char *s, BYTES n, const char *fmt, ...));
 COUNT getf __((struct _file *pf, const char *fmt, ...));
 COUNT getfmt __((const char *fmt, ...));
-COUNT lstoi __((const char *s));
-LONG lstol __((const char *s));
+COUNT lstoi __((const COUNT *s));
+LONG lstol __((const ULONG *s));
 ULONG xstol __((const char *s, BOOL lsfmt));
 UCOUNT xstos __((const char *s, BOOL lsfmt));
-UCOUNT lstou __((const char *s));
+UCOUNT lstou __((const UCOUNT *s));
 COUNT ordbuf __((TEXT *p, TEXT *q, COUNT n));
 COUNT usage __((const char *msg));
 FD getbfiles __((BYTES *pac, TEXT ***pav, FD dfd, FD efd, BYTES rsize));
@@ -89,10 +89,22 @@ VOID prtheap __((VOID));
 VOID putf __((struct _file *pf, const char *fmt, ...));
 BYTES putfmt __((const char *fmt, ...));
 VOID _putstr __((FD fd, ...));
-VOID sort __((int n, COUNT (*ordf)(void), VOID (*excf)(void), TEXT *base));
 void onintr __((void (*f)(int)));
 COUNT _rawmode __((FD fd, COUNT nmode));
 BOOL _devname __((char *s, UCOUNT mdev, BOOL cspec));
+BOOL devname __((char *s, register UCOUNT mdev, register BOOL cspec));
 double _sqr __((double d));
+
+struct _ordf {
+	UCOUNT len;
+	unsigned char buf[1];
+};
+struct _sortarg {
+	void *base;
+	BYTES nmemb;
+	BYTES size;
+	int (*compar) __((const void *, const void *));
+};
+VOID sort __((BYTES n, int (*ordf)(BYTES i, BYTES j, struct _sortarg **arg), VOID (*excf)(BYTES i, BYTES j, struct _sortarg **arg), struct _sortarg *arg));
 
 #endif

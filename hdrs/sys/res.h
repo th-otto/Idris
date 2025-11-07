@@ -7,12 +7,9 @@
 #define __IDRIS__ 1
 #define __RES__ 1
 
-#ifndef __STDEFS__
-#ifndef __STDLIB__
-#ifndef __STRING__
+#ifndef __SIZE_T__
+#define __SIZE_T__ 1
 typedef unsigned int size_t;
-#endif
-#endif
 #endif
 
 #ifndef _IDRIS_VERSION
@@ -171,7 +168,9 @@ typedef struct {
 
 /*	uname system call
  */
+#ifndef SYS_NMLN
 #define SYS_NMLN	8
+#endif
 #define UNAMESZ		(5*SYS_NMLN)
 
 /*	trapout control block

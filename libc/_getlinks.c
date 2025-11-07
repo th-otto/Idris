@@ -90,6 +90,9 @@ static void swap_dirent(unsigned int e1, unsigned int e2, struct dirent *arr)
 }
 
 
+/*
+ * read and sort directory
+ */
 struct dirent *_getlinks(const char *pathname, unsigned int *pnentries, long size)
 {
 	register unsigned int nentries;

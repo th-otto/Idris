@@ -18,4 +18,9 @@ typedef struct {
 	LONG w_time;
 } WHO;
 
+/*
+ * read and sort who file
+ */
+WHO *who(unsigned int *n, const char *fname);
+
 #endif

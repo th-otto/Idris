@@ -44,5 +44,7 @@ void rewinddir(DIR *dirp);
 
 struct dirent *_getlinks(const char *pathname, unsigned int *nentries, long size);
 char *_parent(char *buf, const char *pathname);
+char *parent(char *buf, const char *pathname);
+char *ename(char *pname, const char *dname, struct dirent *ent);
 
 #endif

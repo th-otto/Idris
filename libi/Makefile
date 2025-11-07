@@ -1,4 +1,4 @@
-CC = cdriver -proto c.proto +o -v -dnostrict -dlincl -prefix ./
+CC = cdriver -proto c.proto +o -dnostrict -dlincl -prefix ./
 AS = as.68k
 AR = lib
 ARFLAGS = -c
@@ -18,7 +18,7 @@ LIBI_OBJS = \
 	getul.o \
 	mclose.o \
 	mconnect.o \
-	mcreat.o \
+	_mcreat.o \
 	mdiscon.o \
 	mfree.o \
 	mgetbuf.o \
@@ -26,7 +26,7 @@ LIBI_OBJS = \
 	mount.o \
 	mreceive.o \
 	mrelbuf.o \
-	mrm.o \
+	_mrm.o \
 	msend.o \
 	msetprm.o \
 	mtimer.o \
@@ -41,6 +41,45 @@ LIBI_OBJS = \
 	usrcall.o \
 	xecl.o \
 	xecv.o \
+	\
+	asure.o \
+	baud.o \
+	bsearch.o \
+	cpyi.o \
+	create.o \
+	cwd.o \
+	clrbuf.o \
+	dir.o \
+	_defenv.o \
+	devname.o \
+	ename.o \
+	getblk.o \
+	getlinks.o \
+	inblk.o \
+	inode.o \
+	ioff.o \
+	isdir.o \
+	lsize.o \
+	logname.o \
+	parent.o \
+	perm.o \
+	putblk.o \
+	qsort.o \
+	putenv.o \
+	setenv.o \
+	\
+	sdclose.o \
+	sdcreate.o \
+	sdpalloc.o \
+	sdmap.o \
+	sdopen.o \
+	sdsize.o \
+	sdstat.o \
+	sdstart.o \
+	sdremove.o \
+	mcreate.o \
+	mopen.o \
+	mesg.o \
 	$(empty)
 
 all: libi.68k

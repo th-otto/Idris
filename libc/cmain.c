@@ -3,6 +3,7 @@
  */
 #include <std.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "libc.h"
 
 int _main __((long ac, char *args));
