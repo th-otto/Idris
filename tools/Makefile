@@ -3,6 +3,8 @@ CC = cdriver -proto c.proto -dnostrict -dlincl
 TOOLS = \
 	readclock \
 	date \
+	false \
+	true \
 	ps \
 	show0 \
 	settime \
@@ -24,6 +26,12 @@ show0: show0.o
 
 ps: ps.o
 	$(CC) -o$@ ps.o
+
+false: false.o
+	$(CC) -o$@ false.o
+
+true: true.o
+	$(CC) -o$@ true.o
 
 xbios.o: xbios.s
 	$(CC) +o xbios.s

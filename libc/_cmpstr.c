@@ -1,6 +1,9 @@
 #include <std.h>
 #include <pcdecl.h>
 
+/*
+ * compare two strings for equality
+ */
 BOOL _cmpstr(register const char *s1, register const char *s2)
 {
 	register char c;

@@ -5,6 +5,9 @@
 #include <wslxa.h>
 #include <unistd.h>
 
+/*
+ * create a unique file name
+ */
 char *uniqnm(void)
 {
 	FAST COUNT i, pid;

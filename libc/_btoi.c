@@ -14,6 +14,11 @@
 #endif
 
 
+/*
+ * btoi - convert buffer to integer
+ * btol - convert buffer to long
+ * btos - convert buffer to short integer
+ */
 BYTES FUNCNAME(const char *s, register BYTES n, VALTYPE *i, register int base)
 {
 	register VALTYPE digit;

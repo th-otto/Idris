@@ -1,3 +1,4 @@
+* copy one buffer to another
 	.text
 	.globl __cpybuf
 __cpybuf:

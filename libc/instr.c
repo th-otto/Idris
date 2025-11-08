@@ -2,6 +2,9 @@
 #include <pcdecl.h>
 
 
+/*
+ * find occurrence in string of character in set
+ */
 BYTES instr(register const char *is, const char *p)
 {
 	register const char *pscan;

@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include "libc.h"
 
-
 static void errstr(register const char *str)
 {
 	if (str != NULL && *str != '\0')
@@ -18,6 +17,9 @@ static void errstr(register const char *str)
 }
 
 
+/*
+ * print error message and exit
+ */
 void _error(const char *s1, const char *s2)
 {
 	errstr(_pname);

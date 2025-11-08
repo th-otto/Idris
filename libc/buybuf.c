@@ -1,5 +1,8 @@
 #include <wslxa.h>
 
+/*
+ * allocate a cell and copy in text buffer
+ */
 void *buybuf(const void *s, register BYTES n)
 {
 	register const char *src;

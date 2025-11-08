@@ -2,6 +2,9 @@
 #include <signal.h>
 #include "libc.h"
 
+/*
+ * close a file controlled by FIO buffer
+ */
 int fclose(FILE *stream)
 {
 	if (stream == NULL)

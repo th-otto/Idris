@@ -4,6 +4,9 @@
 #include <fcntl.h>
 #include "libc.h"
 
+/*
+ * initialize an FIO control buffer
+ */
 FILE *_finit(register FILE *stream, int fd, register int type)
 {
 	register unsigned short allocated;

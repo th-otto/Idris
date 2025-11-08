@@ -111,7 +111,7 @@ TEXT *_encrypt __((TEXT data[8], TINY ks[16][8]));
 TEXT *getflags __((BYTES *pac, TEXT ***pav, const char *fmt, ...));
 TEXT *itols __((TEXT *s, COUNT n));
 TEXT *ltols __((TEXT *pl, LONG lo));
-TEXT *pathnm __((TEXT *buf, TEXT *n1, TEXT *n2));
+char *pathnm __((char *buf, const char *n1, const char *n2));
 TEXT *pattern __((TEXT *pat, TEXT delim, TEXT *p));
 TEXT *uniqnm __((VOID));
 TINY *_bldks __((TINY ks[16][8], const char key[8]));

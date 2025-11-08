@@ -66,7 +66,7 @@ BYTES _stob __((char *is, COUNT n, int base));
 BYTES stob __((char *is, COUNT n, int base));
 BYTES subbuf __((const void *ps, BYTES ns, const void *pp, BYTES np));
 BYTES substr __((const char *ps, const char *pp));
-COUNT doesc __((TEXT **pp, TEXT *magic));
+int doesc __((TEXT **pp, const char *magic));
 #ifdef __STDARG__
 COUNT _encode __((char *s, BYTES n, const char *fmt, va_list args));
 #endif

@@ -112,6 +112,9 @@ static char *find_name(struct stat *st, char *dirname)
 }
 
 
+/*
+ * get current working directory
+ */
 int _cwd(char *tbuf)
 {
 	register char *name;

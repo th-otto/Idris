@@ -4,6 +4,9 @@
 #include "libc.h"
 
 
+/*
+ * read until full count
+ */
 size_t _fread(int fd, void *_buf, size_t len)
 {
 	register unsigned char *buf = _buf;

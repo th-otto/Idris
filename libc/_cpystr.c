@@ -1,6 +1,9 @@
 #include <wslxa.h>
 #include <stdarg.h>
 
+/*
+ * copy multiple strings
+ */
 char *_cpystr(char *_dest, ...)
 {
 	va_list args;

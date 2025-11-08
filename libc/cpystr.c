@@ -1,6 +1,9 @@
 #include <wslxa.h>
 #include <stdarg.h>
 
+/*
+ * copy multiple strings
+ */
 #undef cpystr
 char *cpystr(char *_dest, ...)
 {

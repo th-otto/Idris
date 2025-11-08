@@ -1,3 +1,4 @@
+* compare two buffers for equality
 	.text
 	.globl _cmpbuf
 _cmpbuf:

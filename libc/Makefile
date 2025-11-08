@@ -192,6 +192,7 @@ LIBB_OBJS = \
 LIBC_OBJS = \
 	c_cstat.o \
 	cmpstr.o \
+	cwd.o \
 	decode.o \
 	encode.o \
 	fdopen.o \
@@ -199,6 +200,9 @@ LIBC_OBJS = \
 	fill.o \
 	finit.o \
 	getf.o \
+	getflags.o \
+	doesc.o \
+	getin.o \
 	getfmt.o \
 	getl.o \
 	getlin.o \
@@ -217,6 +221,7 @@ LIBC_OBJS = \
 	malloc.o \
 	notbuf.o \
 	notstr.o \
+	pathnm.o \
 	prefix.o \
 	putf.o \
 	putfmt.o \

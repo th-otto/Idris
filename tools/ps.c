@@ -98,7 +98,7 @@ static char *readfill(BYTES *psize, const char *filename, int fd)
 }
 
 
-static BOOL devname(char *s, register UCOUNT mdev, register BOOL cspec)
+BOOL devname(char *s, register UCOUNT mdev, register BOOL cspec)
 {
 	register BYTES size;
 	register unsigned int major_num;

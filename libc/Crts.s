@@ -86,6 +86,7 @@ seterr:
 
 .data
 __data:
+* this is referenced in getflags()
 	.byte 0
 "IDR68K Edition 3.2: Copyright (c) 1981, 1983, 1986, 1987 by Whitesmiths, Ltd. all rights reserved"
 	.byte 0
