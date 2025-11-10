@@ -3,6 +3,9 @@
 #include <string.h>
 
 
+/*
+ * scan buffer for character
+ */
 size_t _scnbuf(const void *s, register size_t n, register char c)
 {
 	register const char *str = s;

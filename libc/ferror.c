@@ -3,6 +3,9 @@
 #include "libc.h"
 
 
+/*
+ * check stream status
+ */
 int ferror(register FILE *stream)
 {
 	if (stream == NULL)

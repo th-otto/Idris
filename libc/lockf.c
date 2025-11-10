@@ -1,6 +1,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+/*
+ * apply, test or remove a POSIX lock on an open file
+ */
 int lockf(int fd, int cmd, off_t len)
 {
 	struct flock fl;

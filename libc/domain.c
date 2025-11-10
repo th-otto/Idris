@@ -5,6 +5,9 @@
 #include <pcdecl.h>
 #include "libc.h"
 
+/*
+ * report domain error
+ */
 void _domain(const char *str)
 {
 	if (_domerr != NULL)

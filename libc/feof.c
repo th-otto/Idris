@@ -3,6 +3,9 @@
 #include "libc.h"
 
 
+/*
+ * check stream status
+ */
 int feof(register FILE *stream)
 {
 	if (stream == NULL)

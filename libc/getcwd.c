@@ -6,6 +6,9 @@
 #include <string.h>
 
 
+/*
+ * get current working directory
+ */
 char *getcwd(char *buf, size_t size)
 {
 	char *s;

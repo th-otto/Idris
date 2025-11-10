@@ -3,6 +3,9 @@
 #include "libc.h"
 
 
+/*
+ * input of string
+ */
 char *fgets(char *s, register int n, register FILE *fp)
 {
 	register char *dst;

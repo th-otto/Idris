@@ -5,6 +5,9 @@
 #include <sys/stat.h>
 #include "libc.h"
 
+/*
+ * get mode of file
+ */
 BITS _getmod(const char *fname)
 {
 	struct stat buf;

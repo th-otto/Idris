@@ -3,12 +3,15 @@
 #include <fcntl.h>
 #include "libi.h"
 
-int create(const char *filename, int mode)
+int create(const char *filename, int mode, size_t rsize)
 {
 	const char *ptr;
 	const char *uniq;
 	int fd;
 	
+#ifdef __GNUC__
+	(void)rsize;
+#endif
 	uniq = uniqnm();
 	ptr = filename;
 	while (*uniq != '\0' && *ptr++ == *uniq)

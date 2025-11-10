@@ -9,6 +9,9 @@
 #include "libc.h"
 #undef rename
 
+/*
+ * rename a file
+ */
 int _rename(const char *from, const char *to)
 {
 	return rename(from, to);

@@ -1,5 +1,8 @@
 #include <string.h>
 
+/*
+ * compare memory areas
+ */
 int memcmp(const void *s1, const void *s2, register size_t size)
 {
 	register const unsigned char *scan1;

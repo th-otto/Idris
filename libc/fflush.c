@@ -2,6 +2,9 @@
 #include <signal.h>
 #include "libc.h"
 
+/*
+ * flush a stream
+ */
 int fflush(register FILE *stream)
 {
 	register int ret;

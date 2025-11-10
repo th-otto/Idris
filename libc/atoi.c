@@ -4,6 +4,9 @@
 #include <string.h>
 
 
+/*
+ * convert string to integer
+ */
 int atoi(const char *nptr)
 {
 	int val;

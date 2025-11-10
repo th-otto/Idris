@@ -17,6 +17,9 @@ int _cache(const void *arg, int count, void *_dst)
 }
 
 
+/*
+ * formatted output conversion
+ */
 int sprintf(char *s, const char *format, ...)
 {
 	char *str = s;

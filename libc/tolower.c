@@ -1,6 +1,9 @@
 #include <limits.h>
 #include <ctype.h>
 
+/*
+ * convert character to lowercase if necessary
+ */
 #undef tolower
 #undef toupper
 #undef isupper

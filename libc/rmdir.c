@@ -7,6 +7,9 @@
 #include <dirent.h>
 
 
+/*
+ * remove directory
+ */
 int rmdir(const char *pathname)
 {
 	unsigned int nentries;

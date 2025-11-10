@@ -2,6 +2,9 @@
 #include "libc.h"
 
 
+/*
+ * stream open function
+ */
 FILE *fdopen(int fd, const char *mode)
 {
 	int type;

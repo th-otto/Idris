@@ -1,0 +1,31 @@
+!include config.u
+
+!docinfo [title] Whitesmith, Ltd.
+!docinfo [program] IDRIS PROGRAMMERS MANUAL
+!docinfo [date]    January 1985
+
+!html_merge_subsubnodes
+
+########################################
+
+!begin_document
+
+!ifdest [tex]
+\documentstyle[11pt,german]{article}
+!endif
+!ifdest [stg]
+!begin_raw
+@options "+g -s +x +zz -t4"
+@subject "Programmieren/Atari"
+!end_raw
+!endif
+!maketitle
+!tableofcontents !depth 2
+
+!include preface.ui
+!include whitesmithing.ui
+!include system_interface.ui
+!include programming_file_formats.ui
+!include support_library.ui
+
+!end_document

@@ -2,6 +2,9 @@
 #include <signal.h>
 #include "libc.h"
 
+/*
+ * get a character from input buffer
+ */
 int fgetc(register FILE *stream)
 {
 	unsigned char c;

@@ -4,6 +4,9 @@
 #include "libc.h"
 
 
+/*
+ * formatted output conversion
+ */
 int vfprintf(FILE *stream, const char *format, va_list args)
 {
 	if (stream == NULL)

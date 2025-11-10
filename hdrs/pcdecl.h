@@ -53,6 +53,7 @@ char *itlos __((char *is, int val));
 char *ltlos __((char *is, LONG val));
 BYTES _lenstr __((const char *is));
 BYTES lower __((TEXT *s, BYTES n));
+BYTES upper __((TEXT *s, BYTES n));
 BYTES _ltob __((char *is, LONG ln, int base));
 BYTES ltob __((char *is, LONG ln, int base));
 BYTES notbuf __((const char *is, BYTES n, const char *p));

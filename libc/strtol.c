@@ -7,6 +7,9 @@
 #include <limits.h>
 
 
+/*
+ * convert a string to a long integer
+ */
 long strtol(register const char *nptr, char **endptr, int base)
 {
 	register size_t len;

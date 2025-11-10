@@ -3,6 +3,9 @@
 #include "libc.h"
 
 
+/*
+ * formatted output conversion
+ */
 int vsprintf(char *s, const char *format, va_list args)
 {
 	char *str = s;

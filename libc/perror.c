@@ -3,6 +3,9 @@
 #include <errno.h>
 
 
+/*
+ * print a system error message
+ */
 char *perror(const char *s)
 {
 	const char *str;

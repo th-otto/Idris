@@ -243,5 +243,5 @@ WHO *who(unsigned int *n, const char *fname);
 #endif
 
 const char *logname(void);
-int create(const char *filename, int mode);
+int create(const char *filename, int mode, size_t rsize);
 

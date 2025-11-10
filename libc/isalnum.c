@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * test for alphabetic or numeric character
+ */
 #undef isalnum
 int isalnum(int c)
 {

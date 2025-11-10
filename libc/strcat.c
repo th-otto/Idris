@@ -1,5 +1,8 @@
 #include <string.h>
 
+/*
+ * catenate a string
+ */
 char *strcat(char *s1, register const char *s2)
 {
 	register char *dst = s1;

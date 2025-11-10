@@ -4,6 +4,9 @@
 #include "libc.h"
 
 
+/*
+ * reposition a stream
+ */
 int fseek(register FILE *stream, long offset, register int whence)
 {
 	if (stream == NULL)

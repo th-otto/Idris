@@ -5,6 +5,9 @@
 #include <pcdecl.h>
 #include "libc.h"
 
+/*
+ * report range error
+ */
 double _range(const char *str)
 {
 	if (_ranerr != NULL)

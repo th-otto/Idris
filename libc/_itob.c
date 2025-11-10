@@ -2,6 +2,9 @@
 #include <pcdecl.h>
 #include <math.h>
 
+/*
+ * convert integer to text in buffer
+ */
 BYTES _itob(char *is, register int ln, register int base)
 {
 	register int _base;

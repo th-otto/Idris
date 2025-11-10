@@ -2,6 +2,9 @@
 #include <time.h>
 #include <sys/times.h>
 
+/*
+ * determine processor time
+ */
 clock_t clock(void)
 {
 	struct tms t;

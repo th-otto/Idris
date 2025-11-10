@@ -1,5 +1,8 @@
 #include <string.h>
 
+/*
+ * compare two strings
+ */
 int strncmp(register const char *scan1, register const char *scan2, size_t n)
 {
 	register unsigned char c1, c2;

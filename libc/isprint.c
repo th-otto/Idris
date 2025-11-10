@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * test for printable character
+ */
 #undef isprint
 int isprint(int c)
 {

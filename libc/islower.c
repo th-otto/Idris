@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * test for lowercase character
+ */
 #undef islower
 int islower(int c)
 {

@@ -5,6 +5,9 @@
 #include "libc.h"
 
 
+/*
+ * stream open function
+ */
 FILE *freopen(const char *pathname, const char *mode, register FILE *stream)
 {
 	register char *p;

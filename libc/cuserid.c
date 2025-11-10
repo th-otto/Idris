@@ -5,6 +5,9 @@
 #include <string.h>
 
 
+/*
+ * get username
+ */
 char *cuserid(char *string)
 {
 	struct passwd *pw;

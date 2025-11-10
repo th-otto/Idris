@@ -9,6 +9,9 @@ static short const endian_word = 1;
 static const char *endian_ptr = (char *)&endian_word;
 
 
+/*
+ * close a directory
+ */
 int closedir(DIR *dirp)
 {
 	if (close(dirp->dir_fd) < 0)
@@ -18,6 +21,9 @@ int closedir(DIR *dirp)
 }
 
 
+/*
+ * open a directory
+ */
 DIR *opendir(const char *name)
 {
 	struct stat st;
@@ -42,6 +48,9 @@ DIR *opendir(const char *name)
 }
 
 
+/*
+ * read a directory
+ */
 struct dirent *readdir(register DIR *dir)
 {
 	struct idir entry;
@@ -70,18 +79,27 @@ struct dirent *readdir(register DIR *dir)
 }
 
 
+/*
+ * reset directory stream
+ */
 void rewinddir(DIR *dir)
 {
 	lseek(dir->dir_fd, 0, SEEK_SET);
 }
 
 
+/*
+ * set the position of the next readdir() call in the directory stream
+ */
 void seekdir(DIR *dir, long loc)
 {
 	lseek(dir->dir_fd, loc, SEEK_SET);
 }
 
 
+/*
+ * return current location in directory stream
+ */
 long telldir(DIR *dir)
 {
 	return lseek(dir->dir_fd, 0, SEEK_CUR);

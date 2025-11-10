@@ -5,6 +5,9 @@
 #include <signal.h>
 #include "libc.h"
 
+/*
+ * stream buffering operations
+ */
 void setbuf(FILE *stream, char *buf)
 {
 	if (stream == NULL)

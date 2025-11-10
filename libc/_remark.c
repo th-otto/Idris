@@ -17,6 +17,9 @@ static void errstr(register const char *str)
 }
 
 
+/*
+ * print non-fatal error message
+ */
 BOOL _remark(const char *s1, const char *s2)
 {
 	errstr(_pname);

@@ -6,6 +6,9 @@
 #include <errno.h>
 #include "libc.h"
 
+/*
+ * execute a file
+ */
 int execvp(const char *file, const char *argv[])
 {
 	register const char *s;

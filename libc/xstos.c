@@ -2,7 +2,7 @@
 #include <pcdecl.h>
 
 /*
- * return short  from either little-endian or big-endian format
+ * return short from either little-endian or big-endian format
  */
 UCOUNT xstos(const char *s, BOOL lsfmt)
 {

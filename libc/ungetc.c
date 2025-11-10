@@ -2,6 +2,9 @@
 #include <signal.h>
 #include "libc.h"
 
+/*
+ * push a character back to stream
+ */
 int ungetc(register int c, register FILE *stream)
 {
 	if (stream == NULL)

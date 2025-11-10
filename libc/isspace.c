@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * test for whitespace character
+ */
 #undef isspace
 int isspace(int c)
 {

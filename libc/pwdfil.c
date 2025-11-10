@@ -30,6 +30,9 @@ static void parse_grpent(struct passwd *grpent);
 static void read_groups(register struct passwd *grpent);
 
 
+/*
+ * get password file entry
+ */
 struct passwd *getpwent(void)
 {
 	char *line;
@@ -50,6 +53,9 @@ struct passwd *getpwent(void)
 }
 
 
+/*
+ * get password file entry
+ */
 struct passwd *getpwuid(uid_t uid)
 {
 	FILE *fp;
@@ -73,6 +79,9 @@ struct passwd *getpwuid(uid_t uid)
 }
 
 
+/*
+ * get password file entry
+ */
 struct passwd *getpwgid(gid_t gid)
 {
 	FILE *fp;
@@ -96,6 +105,9 @@ struct passwd *getpwgid(gid_t gid)
 }
 
 
+/*
+ * get password file entry
+ */
 struct passwd *getpwnam(const char *name)
 {
 	FILE *fp;
@@ -119,6 +131,9 @@ struct passwd *getpwnam(const char *name)
 }
 
 
+/*
+ * close the password database
+ */
 void endpwent(void)
 {
 	if (pwfile != NULL)
@@ -129,6 +144,9 @@ void endpwent(void)
 }
 
 
+/*
+ * rewind to the beginning of the password database
+ */
 void setpwent(void)
 {
 	endpwent();
@@ -257,6 +275,9 @@ static int has_name(register const char *name)
 }
 
 
+/*
+ * get group file entry
+ */
 struct group *getgrent(void)
 {
 	FILE save_pwfile;
@@ -274,6 +295,9 @@ struct group *getgrent(void)
 }
 
 
+/*
+ * get group file entry
+ */
 struct group *getgrgid(gid_t gid)
 {
 	FILE save_pwfile;
@@ -292,6 +316,9 @@ struct group *getgrgid(gid_t gid)
 }
 
 
+/*
+ * get group file entry
+ */
 struct group *getgrnam(const char *name)
 {
 	FILE save_pwfile;
@@ -309,6 +336,9 @@ struct group *getgrnam(const char *name)
 }
 
 
+/*
+ * close the group database
+ */
 void endgrent(void)
 {
 	fclose(&grpfile);
@@ -316,6 +346,9 @@ void endgrent(void)
 }
 
 
+/*
+ * rewind to the beginning of the group database
+ */
 void setgrent(void)
 {
 	fseek(&grpfile, 0, SEEK_SET);

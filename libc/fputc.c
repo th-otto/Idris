@@ -2,6 +2,9 @@
 #include <signal.h>
 #include "libc.h"
 
+/*
+ * put a character to output buffer
+ */
 int fputc(int c, register FILE *stream)
 {
 	unsigned char uc;

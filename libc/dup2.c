@@ -5,6 +5,9 @@
 #include <errno.h>
 
 
+/*
+ * duplicate a file descriptor
+ */
 int dup2(register int oldfd, register int newfd)
 {
 	if (oldfd >= OPEN_MAX || newfd >= OPEN_MAX)

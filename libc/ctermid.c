@@ -3,6 +3,9 @@
 
 static char termid[] = "/dev/tty";
 
+/*
+ * get controlling terminal name
+ */
 char *ctermid(char *s)
 {
 	if (s != NULL)

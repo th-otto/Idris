@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * test for upperspace character
+ */
 #undef isupper
 int isupper(int c)
 {

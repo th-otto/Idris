@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * test for hexadecimal digit
+ */
 #undef isxdigit
 int isxdigit(int c)
 {

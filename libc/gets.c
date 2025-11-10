@@ -3,6 +3,9 @@
 #include "libc.h"
 
 
+/*
+ * get a text line from input buffer stdin
+ */
 char *gets(register char *s)
 {
 	register FILE *fp = stdin;

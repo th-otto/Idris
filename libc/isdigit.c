@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * test for digit
+ */
 #undef isdigit
 int isdigit(int c)
 {

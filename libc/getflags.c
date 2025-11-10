@@ -3,6 +3,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+/*
+ * getflags - collect flags from command line
+ */
 
 extern char _data[];
 

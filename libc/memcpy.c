@@ -1,5 +1,8 @@
 #include <string.h>
 
+/*
+ * copy memory area
+ */
 void *memcpy(void *dest, const void *src, size_t n)
 {
 	register unsigned char *pd = (unsigned char *)dest;

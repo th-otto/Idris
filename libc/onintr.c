@@ -7,6 +7,9 @@
 #include <pcdecl.h>
 #include "libc.h"
 
+/*
+ * onintr - capture interrupts
+ */
 static void (*func)(int);
 
 static void _dointr(int sig)
@@ -27,10 +30,10 @@ VOID onintr(void (*pfn)(int))
 		ih = &_dointr;
 		func = pfn;
 	}
-	if (_signal(SIGHUP, SIG_IGN) != SIG_IGN)
-		_signal(SIGHUP, ih);
-	if (_signal(SIGINT, SIG_IGN) != SIG_IGN)
-		_signal(SIGINT, ih);
-	if (_signal(SIGPIPE, SIG_IGN) != SIG_IGN)
-		_signal(SIGPIPE, ih);
+	if (signal(SIGHUP, SIG_IGN) != SIG_IGN)
+		signal(SIGHUP, ih);
+	if (signal(SIGINT, SIG_IGN) != SIG_IGN)
+		signal(SIGINT, ih);
+	if (signal(SIGPIPE, SIG_IGN) != SIG_IGN)
+		signal(SIGPIPE, ih);
 }

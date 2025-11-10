@@ -5,6 +5,9 @@
 #include <signal.h>
 #include "libc.h"
 
+/*
+ * get a text line from input buffer
+ */
 size_t getl(void *arg, register char *s, BYTES n)
 {
 	register FILE *pf = arg;

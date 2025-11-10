@@ -5,6 +5,9 @@
 #include "libc.h"
 
 
+/*
+ * put a text line to output buffer
+ */
 size_t putl(void *arg, register const char *s, size_t count)
 {
 	register FILE *fp = arg;

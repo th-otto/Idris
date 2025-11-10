@@ -85,6 +85,7 @@ LIBA_OBJS = \
 	memchr.o \
 	memcmp.o \
 	memcpy.o \
+	memmove.o \
 	memset.o \
 	atan2.o \
 	exp.o \
@@ -149,7 +150,7 @@ LIBB_OBJS = \
 	parstype.o \
 	pname.o \
 	_prefix.o \
-	putstr.o \
+	_putstr.o \
 	read.o \
 	reaerr.o \
 	rawmode.o \
@@ -232,6 +233,7 @@ LIBC_OBJS = \
 	strspn.o \
 	subbuf.o \
 	substr.o \
+	upper.o \
 	usage.o \
 	xstos.o \
 	xstol.o \

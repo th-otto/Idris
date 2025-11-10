@@ -2,6 +2,9 @@
 #include <pcdecl.h>
 #include <string.h>
 
+/*
+ * find occurrence in string of character not in set
+ */
 size_t notstr(const char *is, const char *p)
 {
 	register const char *iscan = is;

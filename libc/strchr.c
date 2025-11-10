@@ -1,5 +1,8 @@
 #include <string.h>
 
+/*
+ * locate character in string
+ */
 char *strchr(register const char *s, register int c)
 {
 	while (*s != '\0' && *s != (char)c)

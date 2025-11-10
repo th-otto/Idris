@@ -9,6 +9,9 @@ static unsigned short const types[2][3] = {
 	{ O_RDWR,   O_RDWR | O_CREAT | O_TRUNC,   O_RDWR | O_CREAT | O_APPEND }
 };
 
+/*
+ * internal - parse fopen mode into type
+ */
 int _parstype(register const char *mode)
 {
 	register int type;

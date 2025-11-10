@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * test for alphabetic character
+ */
 #undef isalpha
 int isalpha(int c)
 {

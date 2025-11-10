@@ -2,6 +2,9 @@
 #include <stdlib.h>
 
 
+/*
+ * allocate dynamic memory
+ */
 void *calloc(size_t nelem, size_t elsize)
 {
 	register size_t size;

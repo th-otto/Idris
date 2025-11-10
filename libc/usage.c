@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include "libc.h"
 
+/*
+ * output standard usage information
+ */
 COUNT usage(const char *msg)
 {
 	_putstr(STDERR, "usage: ", _pname, " ", msg, NULL);

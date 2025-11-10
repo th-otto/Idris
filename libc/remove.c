@@ -8,15 +8,18 @@
 #include <unistd.h>
 #include "libc.h"
 
+/*
+ * remove a file
+ */
 #undef remove
 int remove(const char *f)
 {
 	FAST mode_t fm;
 
-	if (!(fm = _getmod(f)))
-		return (errno = ENOENT, -1);
+	if ((fm = _getmod(f)) == 0)
+		return -1;
 	else if (S_ISDIR(fm))
-		return (errno = EISDIR, -1);
+		return rmdir(f);
 	else
 		return unlink(f);
 }

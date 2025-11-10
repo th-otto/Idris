@@ -3,6 +3,9 @@
 #include <fcntl.h>
 #include <stdio.h>
 
+/*
+ * get username
+ */
 char *getlogin(void)
 {
 	int fd;

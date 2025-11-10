@@ -12,6 +12,9 @@
 
 char *_shell = "/bin/sh";
 
+/*
+ * execute a shell command
+ */
 int system(const char *p)
 {
 	register int pid;

@@ -1,5 +1,8 @@
 #include <string.h>
 
+/*
+ * copy a string
+ */
 char *strcpy(register char *s1, register const char *s2)
 {
 	register char *dst = s1;

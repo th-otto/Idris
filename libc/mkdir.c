@@ -2,6 +2,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+/*
+ * make directory
+ */
 int mkdir(const char *pathname, mode_t mode)
 {
 	int err;

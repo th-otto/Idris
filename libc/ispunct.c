@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * checks for any printable character which is not a space or an alphanumeric character
+ */
 #undef ispunct
 int ispunct(int c)
 {

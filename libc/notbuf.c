@@ -2,6 +2,9 @@
 #include <pcdecl.h>
 #include <string.h>
 
+/*
+ * find occurrence in buffer of character not in set
+ */
 size_t notbuf(const char *is, register BYTES n, const char *p)
 {
 	register const char *iscan = is;

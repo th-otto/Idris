@@ -2,6 +2,9 @@
 #include <pcdecl.h>
 #include <math.h>
 
+/*
+ * convert long to text in buffer
+ */
 BYTES _ltob(char *is, register LONG ln, register int base)
 {
 	register int _base;

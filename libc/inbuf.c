@@ -1,6 +1,9 @@
 #include <std.h>
 #include <pcdecl.h>
 
+/*
+ * find occurrence in buffer of character in set
+ */
 BYTES inbuf(register const char *is, register BYTES n, const char *p)
 {
 	register const char *pscan;

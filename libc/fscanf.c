@@ -3,6 +3,9 @@
 #include <signal.h>
 #include "libc.h"
 
+/*
+ * input FILE format conversion
+ */
 int fscanf(FILE *stream, const char *format, ...)
 {
 	if (stream == NULL)

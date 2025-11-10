@@ -3,6 +3,9 @@
 #include "libc.h"
 
 
+/*
+ * binary stream input
+ */
 int fread(void *ptr, size_t size, int nelem, register FILE *stream)
 {
 	register unsigned char *dst;

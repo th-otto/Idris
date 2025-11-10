@@ -3,6 +3,9 @@
 #include <signal.h>
 #include "libc.h"
 
+/*
+ * input FILE format conversion
+ */
 int vscanf(const char *format, va_list args)
 {
 	return _scan(stdin, FALSE, format, args);

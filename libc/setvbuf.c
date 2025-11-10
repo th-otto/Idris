@@ -2,6 +2,9 @@
 #include <signal.h>
 #include "libc.h"
 
+/*
+ * stream buffering operations
+ */
 int setvbuf(register FILE *stream, char *buf, register int type, register size_t size)
 {
 	if (stream == NULL)

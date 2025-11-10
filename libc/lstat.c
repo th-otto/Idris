@@ -17,9 +17,13 @@ FILE _stderr;
 struct tmpfile *_tfile;
 onexit_t _fnext;
 FILE *_pfile;
+/* end of stack area */
 void *_stop;
+/* range error condition */
 const char *_ranerr;
+/* memory error condition */
 const char *_memerr;
+/* domain error condition */
 const char *_domerr;
 size_t _htop;
 size_t _heap;

@@ -9,6 +9,9 @@
 #include "libc.h"
 #undef rename
 
+/*
+ * rename a file
+ */
 int rename(const char *from, const char *to)
 {
 	struct stat st;

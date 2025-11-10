@@ -6,6 +6,9 @@
 #include <unistd.h>
 #include <limits.h>
 
+/*
+ * getpass - get a password
+ */
 static unsigned short save_t_mode;
 static struct sgtty tty;
 static void (*old_sigint)(int);

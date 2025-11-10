@@ -57,6 +57,7 @@ char *rindex(const char *str, char c);
 int memcmp __((const void *s1, const void *s2, size_t n));
 void *memchr __((const void *s, int c, size_t n));
 void *memcpy __((void *s1, const void *s2, size_t n));
+void *memmove __((void *s1, const void *s2, size_t n));
 void *memset __((void *s, int c, size_t n));
 
 #endif /* __STRING__ */

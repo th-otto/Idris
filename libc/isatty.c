@@ -2,6 +2,9 @@
 #include <unistd.h>
 #include <termio.h>
 
+/*
+ * test whether a file descriptor refers to a terminal
+ */
 int isatty(int fd)
 {
 	struct sgtty t;

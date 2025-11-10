@@ -3,7 +3,9 @@
 #include <limits.h>
 #include <string.h>
 
-
+/*
+ * encode block of text
+ */
 static void encode_asc(char *out, const char *hash)
 {
 	register int i;

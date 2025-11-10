@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * test for control character
+ */
 #undef iscntrl
 int iscntrl(int c)
 {

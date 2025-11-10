@@ -4,6 +4,9 @@
 #include <ctype.h>
 
 
+/*
+ * convert characters in buffer to lowercase
+ */
 size_t lower(register char *s, register size_t n)
 {
 	size_t i;

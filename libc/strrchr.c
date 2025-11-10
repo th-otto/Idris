@@ -1,6 +1,8 @@
 #include <string.h>
 
-
+/*
+ * locate last character in string
+ */
 char *strrchr(register const char *s, register int c)
 {
 	register char *ret = NULL;

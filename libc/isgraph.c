@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * checks for any printable character except space
+ */
 #undef isgraph
 int isgraph(int c)
 {

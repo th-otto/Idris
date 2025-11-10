@@ -7,6 +7,9 @@
 static long readback(int fd, unsigned char *buf, long pos);
 
 
+/*
+ * obtain the current value of the file position
+ */
 long ftell(register FILE *stream)
 {
 	register long pos;

@@ -2,6 +2,9 @@
 #include <pcdecl.h>
 #include <math.h>
 
+/*
+ * convert short to text in buffer
+ */
 BYTES _stob(char *is, register COUNT ln, register int base)
 {
 	register int _base;

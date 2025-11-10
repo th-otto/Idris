@@ -4,6 +4,9 @@
 #include "libc.h"
 
 
+/*
+ * formatted output conversion
+ */
 int fprintf(FILE *stream, const char *format, ...)
 {
 	if (stream == NULL)

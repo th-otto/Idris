@@ -1,5 +1,8 @@
 #include <string.h>
 
+/*
+ * concatenate a null-padded character sequence into a string
+ */
 char *strncat(char *dst, register const char *src, size_t max)
 {
 	register char *dscan = dst;

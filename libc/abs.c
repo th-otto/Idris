@@ -4,6 +4,9 @@
 #include <std.h>
 #include <math.h>
 
+/*
+ * find absolute value
+ */
 #undef abs
 int abs(int d)
 {

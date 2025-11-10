@@ -2,6 +2,9 @@
 
 static char *scanpoint;
 
+/*
+ * extract tokens from strings
+ */
 char *strtok(char *s, const char *delim)
 {
 	register char *scan;

@@ -9,6 +9,9 @@
 #include "libc.h"
 #undef remove
 
+/*
+ * remove a file
+ */
 int _remove(const char *f)
 {
 	return remove(f);

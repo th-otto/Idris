@@ -1,6 +1,9 @@
 #include <std.h>
 #include <pcdecl.h>
 
+/*
+ * test if one string is a prefix of the other
+ */
 BOOL _prefix(register const char *s1, register const char *s2)
 {
 	while (*s2 != '\0')

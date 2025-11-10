@@ -1,0 +1,1366 @@
+!begin_node IDRIS System Interface
+!html_name system_interface
+
+!toc !depth 1
+
+################################################################################
+
+!begin_node Idris system interface
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+Interface - Idris system interface
+
+!item [FUNCTION] (!nl)
+The functions in this section define the Idris system interface that is
+visible to a C program, regardless of target machine. It is actually the
+union of two interfaces:
+
+!begin_enumerate
+!item the standard portable C system interface, as documented in Section
+III of the C Programmers' Manual, and
+!item the system calls supported by all Idris implementations, provided
+as C callable functions. Each Idris Interface Manual describes the
+actual machine level system call formats for a given target machine.
+!end_enumerate
+
+!subheading TYPES
+A number of special data types are used to help document the Idris system
+interface. The more heavily used of these are defined in the standard
+system header file sys.h. The special types are:
+
+!begin_blist [DEV]
+!item [DEV]
+an unsigned short integer, whose more significant byte is the "major
+number" of a physical device and whose less significant byte is the
+"minor number". The major number is used to index into one of two
+resident device tables (for block special or character special devices)
+to select a device handler. The device number DEV is tucked in an odd
+corner of a block or character special inode, is provided as part of
+the file status delivered up for stat (or fstat), and is passed to the
+selected device handler in case it deals with multiple devices. Note
+that a device number is written on disk less significant byte first,
+regardless of target machine.
+!item [DIR]
+a directory link entry, consisting of a two-byte inode number and a
+14-byte link name. No system call delivers up a DIR, but such creatures
+are frequently read when scanning directories. Note that the inode
+number is written on disk less significant byte first, regardless of
+target machine. Defined in <sys.h>.
+!item [ERROR]
+a short integer, capable of holding any error return code from the
+resident. Zero or a positive number usually indicates success; Idris
+error code is usually negated. Defined in <sys.h>.
+!item [PID]
+a short integer, capable of holding any processid. Valid processids
+are always positive, nonzero.
+!item [SIG]
+a character, capable of holding any signal.
+!item [STAT]
+the file status returned by the fstat or stat system calls. Defined
+in <sys/stat.h> and described along with fstat.
+!item [TTY]
+the tty status returned by gtty and expected by stty. Defined in
+<sys.h> and described along with gtty.
+!item [UID]
+an unsigned character* capable of holding any userid or groupid.
+!end_blist
+
+Extensive use is also made of two more conventional C types:
+!begin_blist [FILE]
+!item [FILE]
+a short integer, capable of holding a negated error code or any valid
+file descriptor returned by Idris.
+!item [TEXT *]
+a pointer to character, usually to the first of a NUL-terminated string
+of characters variously known as a string, filename, or path name. Note
+that this declaration is sometimes used merely to indicate a pointer
+with unknown storage boundary constraints, as an ar bitrary user memory
+address.
+!item [ERROR]
+
+An important group of system parameters is the error codes. These are
+returned, when a system call fails, to indicate the general nature of the
+failure. Most system calls can return a variety of error codes, and most
+error codes can be returned by a variety of system calls, so no attempt is
+made to correlate the two groups. The error codes are:
+
+!begin_itemize !compressed
+!item E2BIG (7) argument list too big for exec.
+!item EACCES (13) file access prohibited.
+!item EAGAIN (11) exec or fork failed* but may work if you try again.
+!item EBADF (9) bad file descriptor.
+!item EBUSY (16) can't mount or unmount busy filesystem.
+!item ECHILD (10) no children to wait for.
+!item EDOM (33) math function argument outside defined domain.
+!item EEXIST (17) file already exists.
+!item EFAULT (11) can't access argument on system call.
+!item EFBIG (27) file too big.
+!item EINTR (1) system call was interrupted.
+!item EINVAL (22) illegal argument value on system call.
+!item EIO (5) unrecoverable physical I/O error.
+!item EISDIR (21) file is a directory.
+!item EMFILE (21) too many files opened by process.
+!item EMLINK (31) too many links to a file.
+!item ENFILE (23) no system storage left to represent opened file.
+!item ENODEV (19) not a defined operation for the device.
+!item ENOENT (2) directory entry does not exist.
+!item ENOEXEC (8) wrong file format for exec.
+!item ENOMEM (12) not enough memory to exec program or to grow heap.
+!item ENOSPC (28) no space on filesystem.
+!item ENOTBLK (15) not a block special device.
+!item ENOTDIR (20) not a directory.
+!item ENOTTY (25) not a tty.
+!item ENXIO (6) nonexistent I/O device.
+!item EPERM (1) user lacks permission.
+!item EPIPE (32) write to broken pipe.
+!item ERANGE (34) math function result outside representable range.
+!item EROFS (30) readronly filesystera.
+!item ESPIPE (29) can't seek on a pipe.
+!item ESRCH (3) can't find process to signal.
+!item ETXTBSY (26) shared text portion of file is in use by exec.
+!item EXDEV (18) can't link across filesystems.
+!end_itemize
+
+!end_blist
+
+!item [SIGNALS] (!nl)
+There are also a number of signals that can be sent to processes, for standard
+system action or for handling by the program itself. These are:
+
+!begin_itemize !compressed
+!item SIGALRM (14) alarm clock timeout.
+!item SIGBUS (10) bus error, as for nonexistent memory.
+!item SIGDOM (7) domain error for a math function.
+!item SIGFPT (8) floating point arithmetic error.
+!item SIGHUP (1) hangup, as when dataphone disconnects.
+!item SIGILIN (4) illegal instruction.
+!item SIGINT (2) interrupt, as when DEL is typed.
+!item SIGKILL (9) kill request.
+!item SIGPIPE (13) broken pipe.
+!item SIGQUIT (3) quit, as when ctl-\ is typed.
+!item SIGRNG (6) range error for a math function.
+!item SIGSEG (11) segmentation, or memory protection, violation.
+!item SIGSYS (12) bad system call.
+!item SIGTERM (15) terminate request, a catchable variant of kill.
+!item SIGTRC (5) instruction execution trace.
+!end_itemize
+
+Along with the signals is defined the special user memory address: NOSIG (1)
+signal is to be ignored.
+
+NOSIG is to be distinguished from the other special pointer value, NULL, which
+calls for standard system handling of a signal. Any other pointer value is
+used as the address of a function to handle the signal in question. See the
+manual page on signal for more information.
+
+!item [BUGS] (!nl)
+All of the types used in this section should appear in <sys.h>.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node Conventions
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+Conventions - Idris system subroutines
+
+!item [SYNOPSIS] (!nl)
+ #include <sys.h>
+
+!item [FUNCTION] (!nl)
+All standard system library functions callable from C follow a set of
+uniform conventions, many of which are supported at compile time by
+including a standard header file, <sys.h>, at the top of each program.
+Note that this header is used in addition to the standard header
+<std.h>. The system header defines various system parameters and a
+useful macro or two.
+
+Herewith the principal definitions:
+
+!begin_itemize !compressed
+!item DIRSIZE - m, the maximum directory name size
+!item E2BIG - 7, the error codes returned by system calls
+!item EACCES - 13
+!item EAGAIN - 11
+!item EBADF - 9
+!item EBUSY - 16
+!item ECHILD - 10
+!item EDOM - 33
+!item EEXIST - 17
+!item EFAULT - 11
+!item EFBIG - 27
+!item EINTR - 1
+!item EINVAL - 22
+!item EIO - 5
+!item EISDIR - 21
+!item EMFILE - 21
+!item EMLINK - 31
+!item ENFILE - 23
+!item ENODEV - 19
+!item ENOENT - 2
+!item ENOEXEC - 8
+!item ENOMEM - 12
+!item ENOSPC - 28
+!item ENOTBLK - 15
+!item ENOTDIR - 20
+!item ENOTTY - 25
+!item ENXIO - 6
+!item EPERM - 1
+!item EPIPE - 32
+!item ERANGE - 31
+!item EROFS - 30
+!item ESPIPE - 29
+!item ESRCH - 3
+!item ETXTBSY - 26
+!item EXDEV - 18
+!item NAMSIZE - 61, the maximum filename size, counting NUL at end
+!item NSIG - 16, the number of signals, counting signal 0
+!item SIGALRM - 11, the signal numbers
+!item SIGBUS - 10
+!item SIGDOM - 7
+!item SIGFPT - 8
+!item SIGHUP - 1
+!item SIGILIN - 4
+!item SIGINT - 2
+!item SIGKILL - 9
+!item SIGPIPE - 13
+!item SIGQUIT - 3
+!item SIGRNG - 6
+!item SIGSEG - 11
+!item SIGSYS - 12
+!item SIGTERM - 15
+!item SIGTRC - 5
+!end_itemize
+
+The macro isdir(mod) is a boolean rvalue that is true if the mode mod,
+obtained by a getmod call, is that of a directory. Similarly isblk(mod)
+tests for block special devices, and ischr(mod) tests for character
+special devices.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node _pname - program name
+!label _pname
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+_pname - program name
+
+!item [SYNOPSIS] (!nl)
+TEXT *_pname;
+
+!item [FUNCTION] (!nl)
+_pname is the (NUL terminated) name by which the program was invoked,
+as obtained from the command line argument zero. It overrides any name
+supplied by the program at compile time.
+
+It is used primarily for labelling diagnostic printouts.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node brk - set system break to address
+!label brk
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+brk - set system break to address
+
+!item [SYNOPSIS] (!nl)
+TEXT *brk(addr) (!nl)
+~~~~TEXT *addr;
+
+!item [FUNCTION] (!nl)
+brk sets the system break, at the top of the data area, to addr.
+Addresses between the system break and the current top of stack are not
+considered part of the valid process image; they may or may not be
+preserved. It is considered an error for the top of stack ever to
+extend below the system break.
+
+!item [RETURNS] (!nl)
+If successful, brk returns the old system break; otherwise the value
+returned is -1.
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+if (brk(end + nsyms ? sizeof (symbol)) == -1)
+{
+putstr(STDERR, "not enough room!\n", NULL);
+exit(NO);
+}
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+sbreak
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node chdir - change working directory
+!label chdir
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+chdir - change working directory
+
+!item [SYNOPSIS] (!nl)
+ERROR chdir(fname) (!nl)
+~~~~TEXT *fname;
+
+!item [FUNCTION] (!nl)
+chdir changes the working directory to fname.
+
+!item [RETURNS] (!nl)
+chdir returns zero if successful, else a negative number, which is the
+Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+chdir("/tmp");
+!end_sourcecode
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node chmod - change mode of file
+!label chmod
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+chmod - change mode of file
+
+!item [SYNOPSIS] (!nl)
+ERROR chmod(fname, mode) (!nl)
+~~~~TEXT *fname; (!nl)
+~~~~BITS mode;
+
+!item [FUNCTION] (!nl)
+chmod changes the mode of the file fname to match mode. Only the low
+order twelve bits of mode are used, to specify ugtrwxrwxrwx, where u is
+the set userid bit, g is the set groupid bit, t is the save text image
+bit, and the rwx groups give access permissions for the file. Access
+per missions are r for read, w for write, and x for execute (or scan
+permission for a directory); the first group applies to the owner of
+the file, the second to the group that owns the file, and the third to
+the hoi polloi.
+
+!item [RETURNS] (!nl)
+chmod returns zero if successful, else a negative number,
+which is the Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To make a file executable:
+!begin_sourcecode
+chmod("xeq", 0777);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+getmod
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node chown - change owner of file
+!label chown
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+chown - change owner of file
+
+!item [SYNOPSIS] (!nl)
+ERROR ERROR chown(fname, owner) (!nl)
+~~~~TEXT *fname; (!nl)
+~~~~UCOUNT owner;
+
+!item [FUNCTION] (!nl)
+chown changes the owner of file fname to be the less significant byte of
+owner, and changes its group to be the more significant byte of owner.
+Only the superuser succeeds with this call,
+
+!item [RETURNS] (!nl)
+chown returns zero if successful, else a negative number, which is the
+Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To give ownership of a file to the person who invoked you:
+!begin_sourcecode
+chown(newfile, getuid(), getgid() << 8);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+getgid, getuid
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node close - close a file
+!label close
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+close - close a file
+
+!item [SYNOPSIS] (!nl)
+ERROR close(fd) (!nl)
+~~~~FILE fd;
+
+!item [FUNCTION] (!nl)
+close closes the file associated with the file descriptor
+fd, making fdavailable for future open or create calls.
+
+!item [RETURNS] (!nl)
+close returns zero, if successful, or a negative number, which is the
+Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To copy an arbitrary number of files:
+!begin_sourcecode
+while (0 < ac && 0 <= (fd = open(av[?ac], READ, 0)})
+{
+while (0 < (n = read(fd, buf, BUFSIZE)))
+    write(STDOUT, buf, n);
+close(fd);
+}
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+creat, open, remove, uniqnm
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node creat - make a new file
+!label creat
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+creat - make a new file
+
+!item [SYNOPSIS] (!nl)
+FILE creat(fname, perm) (!nl)
+~~~~TEXT *fname; (!nl)
+~~~~BITS perm;
+
+!item [FUNCTION] (!nl)
+creat makes a new file with name fname, if it did not previously exist, or
+truncates the existing file to zero length. In the former case, the file
+is given access permission specified by perm; in the latter, the access
+permission is left unchanged. Access permissions are described under
+chmod. The file is opened for writing.
+
+!item [RETURNS] (!nl)
+creat returns a file descriptor for the created file or a negative number,
+which is the Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+if ((fd = creat("xeq", 0777)) < 0)
+    putstr(STDERR, "can't creat xeq\n", NULL);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+chmod, close, create, open, remove, uniqnm
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node create - open an empty instance of a file
+!label create
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+create - open an empty instance of a file
+
+!item [SYNOPSIS] (!nl)
+FILE create(fname, mode, rsize) (!nl)
+~~~~TEXT *fname; (!nl)
+~~~~COUNT mode; (!nl)
+~~~~BYTES rsize;
+
+!item [FUNCTION] (!nl)
+create makes a new file with name fname, if it did not previously exist,
+or truncates the existing file to zero length. An existing file has its
+permissions left alone; otherwise if the filename returned by uniqnm is a
+prefix of fname, the (newly created) file is given restricted access
+(0600); if not, the file is given general access (0666). If (mode == 0)
+the file is opened for reading, else if (mode == 1) it is opened for
+writing, else (mode == 2) of necessity and the file is opened for updating
+(reading and writing).
+
+rsize is the record size in bytes, which must be nonzero on many
+systems if the file is not to be interpreted as ASCII text. It is
+ignored by Idris, but should be present for portability.
+
+!item [RETURNS] (!nl)
+create returns a file descriptor for the created file or a negative
+number, which is the Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+if ((fd = create("xeq", WRITE, 1)) < 0)
+    putstr(STDERR, "can't create xeq\n", NULL);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+close, open, remove, uniqnm
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node dup - duplicate a file descriptor
+!label dup
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+dup - duplicate a file descriptor
+
+!item [SYNOPSIS] (!nl)
+FILE dup(fd) (!nl)
+~~~~FILE fd;
+
+!item [FUNCTION] (!nl)
+dup allocates a file descriptor that points at the same file, and has the
+same current offset, as the file descriptor fd. It is promised that the
+smallest available file descriptor is allocated on any creat, dup, open,
+or pipe call, so file descriptors can be rearranged by judicious use of
+dup and close calls.
+
+!item [RETURNS] (!nl)
+dup returns the newly allocated file descriptor or a negative number,
+which is the Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To redirect STDIN from fd:
+!begin_sourcecode
+close(STDIN);
+dup(fd);
+close(fd);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+close, creat, create, open, pipe
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node execl - execute a file with argument list
+!label execl
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+execl - execute a file with argument list
+
+!item [SYNOPSIS] (!nl)
+ERROR execl(fname, s0, s1, ..., NULL) (!nl)
+~~~~TEXT *fname, *s0, *s1, ...;
+
+!item [FUNCTION] (!nl)
+execl invokes the executable program file fname and passes it the NULL
+terminated list of string arguments specified in the argument list sO,
+si, etc. The invoked file overlays the current program, inheriting all
+its open files and ignored signals; the current program is forever
+gone. Signals that were caught by the current program revert to system
+handling.
+
+If the set userid bit in the mode for fname is set, the effective userid
+of the invoked file becomes that of the owner of the file; the effective
+groupid may be changed in a similar manner by the set groupid bit. (The
+save text bit is currently ignored.)
+
+The invoked program begins execution at the start of the text section,
+with the string arguments at the top of user memory, just above the stack,
+i.e., on the stack is initially pushed a NULL fence, followed by pointers
+to the stacked strings in reverse order, followed by a count of the number
+of strings passed as arguments. Thus, for a machine with two-byte integers:
+!begin_itemize !compressed
+!item 0(sp) is the count of arguments, typically > 0.
+!item 2(sp) points to the zeroeth argument string
+!item 4(sp) points to the first argument string, etc.
+!end_itemize
+
+Note that the stack is not well conditioned for direct entry into a C
+function; the C runtime startup header is usually linked at the start
+of the text section. It enforces conventions such as setting _pname,
+isolating the execution search path, calling the C main function, and
+calling exit. Note also that the fence, placed at the end of the
+stacked argument strings, is -1 under UNIX/V6, and not NULL.
+
+By convention, the zeroeth argument is always present and is taken as
+the name _pname by which the file is invoked; if it contains a vertical
+bar '|', the string before the first vertical bar is taken as argument
+zero and the string after that bar is taken as a search path, or
+concatenation of filename prefixes separated by vertical bars, used for
+locating ex ecutable files. Additional arguments are typically
+optional; their interpretation is left purely to the whim of the
+invoked program.
+
+!item [RETURNS] (!nl)
+execl will return only if the file cannot be invoked, in which case the
+value returned is the Idris error return code, negated. Specifically,
+E2BIG means that too many argument characters are being sent, ENOMEM means
+that the program is too large for available memory, and ENOEXEC means that
+the program has execute permission but is not a proper binary object module.
+
+!item [EXAMPLE]
+!begin_sourcecode
+execl("/bin/mv", file, direc, NULL);
+putstr(STDERR, "can't exec mv\n", NULL);
+exit(NO);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+_pname, execv, exit, fork
+
+!item [BUGS] (!nl)
+Only 512 characters of argument strings may be sent, counting terminating
+NULs.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node execv - execute a file with argument vector
+!label execv
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+execv - execute a file with argument vector
+
+!item [SYNOPSIS] (!nl)
+COUNT execv(fname, args) (!nl)
+~~~~TEXT *fname, **args;
+
+!item [FUNCTION] (!nl)
+execv invokes the executable program file fname and passes it the NULL
+terminated list of string arguments specified in the vector args. Its
+behavior is otherwise identical to execl.
+
+!item [RETURNS] (!nl)
+
+!item [EXAMPLE]
+!begin_sourcecode
+avec[0] = "mv";
+avec[1] = file;
+avec[2] = direc;
+avec[3] = NULL;
+execv("/bin/mv", avec);
+putstr(STDERR, "can't exec mv\n", NULL);
+exit(NO);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+execl
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node exit - terminate program execution
+!label exit
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+exit - terminate program execution
+
+!item [SYNOPSIS] (!nl)
+VOID exit(exitcode) (!nl)
+~~~~int exitcode;
+
+!item [FUNCTION] (!nl)
+exit calls all functions registered with onexit, then terminates program
+execution. exitcode is passed to the invoker, with the convention of 0
+for successful termination.
+
+!item [RETURNS] (!nl)
+exit will never return to the caller.
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+if ((fd = open("file", READ)) < 0)
+{
+putstr(STDERR, "can't open file\n", NULL);
+exit(1);
+}
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+onexit
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node fork - create a new process
+!label fork
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+fork - create a new process
+
+!item [SYNOPSIS] (!nl)
+PID fork()
+
+!item [FUNCTION] (!nl)
+
+fork creates a new process which is identical to the initial process,
+except for the value returned. All open files and all signal settings
+are the same in both processes. It is customary for the child process
+to invoke a program file via execl or execv, shortly after birth,
+while the parent either waits to learn the termination status of the
+child or proceeds on to other matters.
+
+!item [RETURNS] (!nl)
+In the child process, fork returns a zero. In the parent process, fork
+returns the processid of the child if successful, or a negative number,
+which is the Idris error return code, negated. Failure occurs only if the
+system is out of resident heap space or (possibly) out of swap space.
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+if ((pid = forkO) < 0)
+    putstrCSTDERR, "try again\n", NULL);
+else if (pid)
+    while (wait(&status) != pid)
+        ;
+else
+{
+    execl("prog", "prog", NULL);
+    putstr(STDERR, "can't exec prog\n", NULL);
+    exit(1);
+}
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+execl, execv, wait
+
+!item [BUGS] (!nl)
+If the parent never waits, the dead child will remain a zombie until the
+parent dies. A prolific parent can thus overpopulate the system.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node fstat - get status of open file
+!label fstat
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+fstat - get status of open file
+
+!item [SYNOPSIS] (!nl)
+ERROR fstat(fd, buf) (!nl)
+~~~~FILE fd; (!nl)
+~~~~struct stat *buf;
+
+!item [FUNCTION] (!nl)
+fstat obtains the status of the opened file fd in the structure pointed
+to by buf. The structure is essentially that of a filesystem inode,
+preceded by the device dev and the inode number ino on that device. The
+less signicant byte of dev is the device minor number, the more
+significant byte is its major number,
+
+mode takes the form 'azzlugtrwxrwxrwx', where a is set to indicate that
+the file is allocated, zz is 00 for a plain file, 01 for character
+special, 10 for a directory, and 11 for block special, l is set for a
+large (4096 <= size) file. 
+
+nlinks counts the number of directory entries that point at this inode.
+uid is the userid of the owner, and gid is the groupid of the owning
+group. The size of the file in bytes is ((LONG)msize << 16) + lsize,
+
+For character and block special files, addr[0] contains the device major
+and minor numbers, the latter in the less significant byte. The eight
+block addresses are otherwise magic from the standpoint of most users.
+
+The last accessed time, actime, and last modified time, modtime, are both
+in seconds from the 1 Jan 1970 epoch,
+
+!item [RETURNS] (!nl)
+fstat returns zero if successful, or a negative number, which is the Idris
+error return code, negated,
+
+!item [EXAMPLE]
+!begin_sourcecode
+if (fstat(STDIN, &sbuf) < 0 || buf.dev != dev)
+    putstr(STDERR, "wrong filesystem\n", NULL);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+chmod, getmod, stat
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node getcsw - get console switches
+!label getcsw
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+getcsw - get console switches
+
+!item [SYNOPSIS] (!nl)
+BYTES getcsw()
+
+!item [FUNCTION] (!nl)
+getcsw reads the console switches.
+
+!item [RETURNS] (!nl)
+getcsw always succeeds in reading the console switches, even if they don't
+exist.
+
+!item [EXAMPLE]
+!begin_sourcecode
+if (getcsw() == 0173030)
+    sync();
+!end_sourcecode
+
+!item [BUGS] (!nl)
+Many systems have no console switches in real life.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node getegid - get effective groupid
+!label getegid
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+getegid - get effective groupid
+
+!item [SYNOPSIS] (!nl)
+UID getegid()
+
+!item [FUNCTION] (!nl)
+getegid obtains the current effective groupid.
+
+!item [RETURNS] (!nl)
+getegid always returns the effective groupid.
+
+!item [EXAMPLE] (!nl)
+To forget who invoked you:
+!begin_sourcecode
+setgid(getegid());
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+getgid, setgid
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node geteuid - get effective userid
+!label geteuid
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+geteuid - get effective userid
+
+!item [SYNOPSIS] (!nl)
+UID geteuid()
+
+!item [FUNCTION] (!nl)
+geteuid obtains the current effective userid.
+
+!item [RETURNS] (!nl)
+geteuid always returns the effective userid.
+
+!item [EXAMPLE] (!nl)
+To forget who invoked you:
+!begin_sourcecode
+setuid(geteuid());
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+getuid, setuid
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node getgid - get real groupid
+!label getgid
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+getgid - get real groupid
+
+!item [SYNOPSIS] (!nl)
+UID getgid()
+
+!item [FUNCTION] (!nl)
+getgid obtains the current real groupid.
+
+!item [RETURNS] (!nl)
+getgid always returns the real groupid.
+
+!item [EXAMPLE] (!nl)
+To revert ownership to whoever invoked you:
+!begin_sourcecode
+setgid(getgid());
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+getegid, setgid
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node getmod - get mode of file
+!label getmod
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+getmod - get mode of file
+
+!item [SYNOPSIS] (!nl)
+BITS getmod(fname) (!nl)
+~~~~TEXT *fname;
+
+!item [FUNCTION] (!nl)
+getmod obtains the mode of the file fname. The low order twelve bits of
+mode are used to specify access permissions as described for chmod.
+
+!item [RETURNS] (!nl)
+getmod returns the (always non zero) mode of the file if successfult else
+zero.
+
+!item [EXAMPLE] (!nl)
+To copy the mode of a file:
+!begin_sourcecode
+chmod(newfile, getmod(oldfile));
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+chmod
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node getpid - get processld
+!label getpid
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+getpid - get processld
+
+!item [SYNOPSIS] (!nl)
+PID getpid()
+
+!item [FUNCTION] (!nl)
+getpid obtains the processid of the currently running process, which is
+not very meaningful but has the virtue of being unique among all living
+processes. Hence it serves as a useful seed for temporary filenames.
+
+!item [RETURNS] (!nl)
+getpid returns the (always positive) processid.
+
+!item [EXAMPLE]
+!begin_sourcecode
+name[itob(name, getpidO, 10)] = '\0';
+fd = create(name, WRITE);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+uniqnm
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node getuid - get real userid
+!label getuid
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+getuid - get real userid
+
+!item [SYNOPSIS] (!nl)
+UID getuid()
+
+!item [FUNCTION] (!nl)
+getuid obtains the current real userid.
+
+!item [RETURNS] (!nl)
+getuid always returns the real userid.
+
+!item [EXAMPLE] (!nl)
+To revert ownership to whoever invoked you:
+!begin_sourcecode
+setuid(getuid()):
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+geteuid, setuid
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node gtty - get tty status
+!label gtty
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+gtty - get tty status
+
+!item [SYNOPSIS] (!nl)
+ERROR gtty(fd, buf) (!nl)
+~~~~FILE fd; (!nl)
+~~~~struct sgtty *buf;
+
+!item [FUNCTION] (!nl)
+gtty obtains the status of a tty or other character special device, under
+control of fd, that responds to stty system calls. For a tty, six bytes
+of status are returned for the character special file fd, the information
+being written in the structure pointed at by buf. Other character special
+devices may refuse to honor a gtty request, or they return other than six
+characters, depending strongly upon the device. If the device is a tty,
+the information can be interpreted as follows:
+!begin_table [lll]
+mask       !! value      !! meaning of speeds field
+S_ISPEED   !! 0x000f     !! input speed
+S_IBREAK   !! 0x0010     !! break received
+S_ILOST    !! 0x0020     !! input lost (overrun)
+S_IMASK4   !! 0x0040     !! reserved
+S_IREADY   !! 0x0080     !! input ready to be read
+S_OSPEED   !! 0x0f00     !! output speed
+S_OBREAK   !! 0x1000     !! send break char
+S_ONXON    !! 0x2000     !! don't output X-ON/X-OFF codes
+S_0MASK4   !! 0x4000     !! reserved
+S_OREADY   !! 0x8000     !! output is finished
+!end_table
+
+The input speed and output speed are codes for baudrates of the set: (0,
+50, 75, 110, 131.5, 150, 200, 300, 600, 1200, 1800, 2100, 1800, 9600,
+19200, 38100). A baud rate of 0 calls for the tty to hangup. By no means
+do all devices support all speeds.
+
+break received and input lost flags are reset after the gtty is done,
+in put ready, if set, assures that a read of the terminal will not
+readblock, output ready assures that the output queues are empty, and
+that the transmitter is ready for another character, output break is
+reset when the break character is sent. Since all devices cannot
+generate break characters, this bit may be ignored (and left set).
+
+erase is the character which, if typed in other than raw mode, calls for
+the preceding character on the current line (if any) to be deleted. kill
+is the character which calls for the entire current line to be deleted.
+Defaults are '\b' (backspace) and '\25' (ctl-u). If the sign bit of
+either erase or kill is set, the sequence backspace-space-backspace used
+to erase characters on a CRT screen will be inhibited.
+
+!begin_table [lll]
+mask       !! value      !! meaning of mode field
+M_RARE     !! 0x0001     !! rare mode
+M_XTABS    !! 0x0002     !! expand tabs
+M_LCASE    !! 0x0004     !! map uppercase to lowercase
+M_ECHO     !! 0x0008     !! echo input
+M_CRMOD    !! 0x0010     !! map carriage return to linefeed
+M_RAW      !! 0x0020     !! raw mode
+M_ODDP     !! 0x0040     !! generate odd parity
+M_EVENP    !! 0x0080     !! generate even parity
+M_NL3      !! 0x0300     !! newline delay
+M_HT3      !! 0x0c00     !! horizontal tab delay
+M_CR3      !! 0x3000     !! carriage return delay
+M_FF1      !! 0x4000     !! form feed delay
+M_BS1      !! 0x8000     !! backspace delay
+!end_table
+
+rare (the least significant bit) puts the handler in a semi-transparent
+mode. DEL and FS characters cause interrupt signals, X-ON and X-OFF cause
+output to start and stop, and proper parity is generated on output.
+Parity bits are not removed on input.
+
+expand tabs calls for each tab to be expanded to spaces, lease maps all
+uppercase characters typed in to lowercase, and all lowercase characters
+typed out to uppercase, echo steers all characters typed in back out for
+full duplex operation, crmod accepts carriage returns CR as linefeeds LF,
+and expands all typed out LFs to CR-LF sequences.
+
+raw instructs the handler to ignore interpretation of input characters,
+including the processing of erase and kill characters, the recognition of
+interrupt codes DEL and FS, and the treatment of EOT as end of file.
+Characters are read and written transparently as eight-bit bytes, with no
+parity checking or mapping, and with no typeout delays.
+
+evenp and oddp control parity generation on output. If even and odd are
+off, the parity is zero. If even and odd are on, the parity is one.
+Otherwise, even selects even parity and odd selects odd parity.
+
+Various typeout delays may be requested, for newlines with nl3, horizontal
+tabs with ht3, carriage returns with cr3, formfeeds and vertical tabs with
+ffl, and for backspaces with bsl. Actual delays are in multiples of 1/60
+second ticks. The ranges are (0, 1, 8, 12) ticks for horizontal tabs,
+newlines, and carrage returns; (0, 64) for formfeeds and vertical tabs;
+and (0, 16) for backspaces.
+
+!item [RETURNS] (!nl)
+gtty returns zero if successful, else a negative number which is the Idris
+error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To put a tty in raw mode, with minimum perturbation:
+!begin_sourcecode
+gtty(fd, &stat);
+stat.t_mode |= M_RAW;
+stty(fd, &stat);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+stty
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node kill - send signal to a process
+!label kill
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+kill - send signal to a process
+
+!item [SYNOPSIS] (!nl)
+ERROR kill(pid, sig) (!nl)
+~~~~PID pid; (!nl)
+~~~~SIG signo;
+
+!item [FUNCTION] (!nl)
+kill sends the signal signo to the process identified by processid pid.
+The sender must either have the same effective userid as the receiver
+or be the superuser; if pid is zero, the signal is sent to all
+processes under control of the same tty as the sender. A process
+cannot, however, kill itself.
+
+The signals that may be sent are:
+!begin_table [lll]
+NAME    !! VALUE !! MEANING
+SIGHUP  !! 1     !! hangup
+SIGINT  !! 2     !! interrupt
+SIGQUIT !! 3     !! quit (core dump)
+SIGILL  !! 4     !! illegal instruction (core dump)
+SIGTRC  !! 5     !! trace trap (core dump)
+SIGRNG  !! 6     !! range error (core dump)
+SIGDOM  !! 7     !! domain error (core dump)
+SIGFPT  !! 8     !! floating point exception (core dump)
+SIGKILL !! 9     !! kill
+SIGBUS  !! 10    !! bus error (core dump)
+SIGSEG  !! 11    !! segmentation violation (core dump)
+SIGSYS  !! 12    !! bad system call (core dump)
+SIGPIPE !! 13    !! broken pipe
+SIGALRM !! 14    !! alarm clock
+SIGTERM !! 15    !! terminate
+!end_table
+
+A core dump may not occur on those signals that have been caught or
+ignored by the receiving process. Note that SIGALRM and SIGTERM are not
+defined in UNIX/V6, and that SIGRNG and SIGDOM have somewhat less
+general meaning on that system.
+
+!item [RETURNS] (!nl)
+kill returns zero if successful, else a negative number which is the Idris
+error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To hangup a long-idle terminal (as superuser):
+!begin_sourcecode
+kill(pid, 1);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+signal
+
+!item [BUGS] (!nl)
+kill is a misnomer, as it can be used to perform many other functions.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node link - create link to file
+!label link
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+link - create link to file
+
+!item [SYNOPSIS] (!nl)
+ERROR link(old, new) (!nl)
+~~~~TEXT *old; (!nl)
+~~~~TEXT *new;
+
+!item [FUNCTION] (!nl)
+link creates a new directory entry for a file with existing name old; the
+added name is new. No checks are made for whether this is a good idea.
+
+!item [RETURNS] (!nl)
+link returns zero if successful, else a negative number, which is the
+Idris error return code, negated.
+
+!item [EXAMPLE]
+!begin_sourcecode
+if (link(old, new) < 0 && unlink(old) < 0)
+    putstr(STDERR, "can't move file\n", NULL);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+unlink
+
+!item [BUGS] (!nl)
+A program executing as superuser can scramble a directory structure by
+injudicious calls on link.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node lseek - set file read/write pointer
+!label lseek
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+lseek - set file read/write pointer
+
+!item [SYNOPSIS] (!nl)
+LONG lseek(fd, offset, sense) (!nl)
+~~~~FILE fd; (!nl)
+~~~~LONG offset; (!nl)
+~~~~COUNT whence;
+
+!item [FUNCTION] (!nl)
+lseek uses the long offset provided to modify the read/write pointer
+for the file fd, under control of sense. If (sense == 0) the pointer is
+set to offset, which should be positive; if (sense == 1) the offset is
+algebraically added to the current pointer; otherwise (sense == 2) of
+necessity and the offset is algebraically added to the length of the
+file in bytes to obtain the new pointer. Idris uses only the low order
+24 bits of the offset; the rest are ignored.
+
+The call lseek(fd, 0L, 1) is guaranteed to leave the file pointer
+unmodified and, more important, to succeed only if lseek calls are both
+acceptable and meaningful for the fd specified. Other lseek calls may
+appear to succeed, but without effect, as when rewinding a terminal.
+
+!item [RETURNS] (!nl)
+lseek returns the resulting offset location if successful, or a negative number,
+which is the Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To read a 512-byte block:
+!begin_sourcecode
+BOOL getblock(buf, blkno)
+TEXT *buf;
+BYTES blkno;
+{
+    lseek(STDIN, (LONG) blkno << 9, 0);
+    return (read(STDIN, buf, 512) != 512);
+}
+!end_sourcecode
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node xx
+!label x
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+chmod - change mode of file
+
+!item [SYNOPSIS] (!nl)
+ERROR x() (!nl)
+~~~~TEXT *fname;
+
+!item [FUNCTION] (!nl)
+
+!item [RETURNS] (!nl)
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+chmod, close, create, open, remove, uniqnm
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!end_node

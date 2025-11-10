@@ -1,5 +1,8 @@
 #include <string.h>
 
+/*
+ * fill memory with a constant byte
+ */
 void *memset(void *_s, register int c, size_t len)
 {
 	register unsigned char *s = (unsigned char *)_s;

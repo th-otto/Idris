@@ -1,5 +1,8 @@
 #include <ctype.h>
 
+/*
+ * internal - control table for various is*() macros
+ */
 const unsigned char _ctasc[256 + 1] = {
 	/* EOF */ 0,
 	/* 00 */ _C,

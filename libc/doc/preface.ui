@@ -1,0 +1,53 @@
+!begin_node Preface
+!html_name preface
+
+The C language was developed at Bell Laboratories by Dennis Ritchie;
+Whitesmiths, Ltd. has endeavored to remain as faithful as possible to
+his language specification. The external specifications of the IDRIS
+operating system, and of most of its utilities, are based heavily on
+those of UNIX, which was also developed at Bell Laboratories by Dennis
+Ritchie and Ken Thompson. Whitesmiths, Ltd. gratefully acknowledges
+the parentage of many of the concepts we have commercialized, and we
+thank Western Electric Co. for waiving patent licensing fees for use
+of the UNIX protection mechanism.
+
+The successful implementation of Whitesmiths' compilers, operating
+systems, and utilities, however, is entirely the work of our
+programming staff and allied consultants.
+
+For the record, UNIX is a trademark of Bell Laboratories; IAS, RSTS/E,
+VAX, VMS, P/OS, PDP-11, RT-11, RSX-11M, and nearly every other term
+with an 11 in it all are trademarks of Digital Equipment Corporation;
+CP/M is a trademark of Digital Research Co.; MC68000 and VERSAdos are
+trademarks of Motorola Inc.; ISIS and iRMX are trademarks of Intel
+Corporation; A-Natural, IDRIS, and ctext are trademarks of Whitesmiths,
+Ltd. C is not.
+
+!begin_center
+Copyright (c) 1978, 1979, 1980, 1981, 1982, 1983, 1981, 1985 (!nl)
+by Whitesmiths, Ltd. (!nl)
+All rights reserved. (!nl)
+!end_center
+
+!begin_center
+SCOPE
+!end_center
+
+This manual is meant to familiarize the more technically sophisticated
+user with the IDRIS program development environment.
+(!link [Section I] [Whitesmithing]) provides tutorial descriptions introducing the environment and tools
+used to build new programs. (!link [Section II] [IDRIS System Interface]) contains descriptions of the
+system calls and other routines that constitute the IDRIS system interface
+across carious machines. (!link [Section III] [Programming File Formats]) details the formats of
+numerous files used by the IDRIS resident or utilities that are of
+particular note to programmers, while (!link [Section IV] [IDRIS Support Library]) documents library
+routines developed for use with the IDRIS utilities.
+
+Tutorials and detailed descriptions of standard utilities, as well as
+the System Administration Guide, may be found in the IDRIS Users'
+Manual, More succinct documentation for the programming utilities, may
+be found in the C Interface Manual for the appropriate target machine;
+and the machine dependent aspects of each IDRIS implementation are
+discussed in the IDRIS Interface Manual for each target machine.
+
+!end_node

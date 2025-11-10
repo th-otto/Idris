@@ -2,7 +2,9 @@
 #include <signal.h>
 #include "libc.h"
 
-
+/*
+ * reset stream status
+ */
 void clearerr(register FILE *stream)
 {
 	if (stream == NULL)

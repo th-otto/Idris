@@ -5,6 +5,9 @@
 #include <pcdecl.h>
 
 
+/*
+ * return name of a terminal
+ */
 char *ttyname(int fd)
 {
 	struct stat st;

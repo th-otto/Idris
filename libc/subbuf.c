@@ -2,6 +2,9 @@
 #include <pcdecl.h>
 #include <string.h>
 
+/*
+ * find occurrence of substring in buffer
+ */
 size_t subbuf(const void *_ps, size_t ns, const void *_pp, size_t _np)
 {
 	register const char *pscan;

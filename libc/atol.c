@@ -4,6 +4,9 @@
 #include <string.h>
 
 
+/*
+ * convert string to long
+ */
 long atol(const char *nptr)
 {
 	long val;

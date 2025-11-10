@@ -1,0 +1,23 @@
+#################
+# Settings
+#################
+
+!language english
+!use_nodes_inside_index  [stg,html]
+!use_label_inside_index  [stg,html]
+!table_alignment left
+!use_udo_index [html]
+
+!use_compressed_tocs [all]
+!use_auto_subtocs    [stg,html]
+!no_effects          [asc]
+
+!html_ignore_8bit
+
+# Target
+!ifdest [stg]
+  !code_target [tos]
+!else
+  !code_target [utf-8]
+!endif
+

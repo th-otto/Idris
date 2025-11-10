@@ -2,8 +2,11 @@
 #include "libc.h"
 
 
+/*
+ * reposition a stream
+ */
 void rewind(FILE *stream)
 {
-	if (fseek(stream, 0L, SEEK_SET) != 0)
+	if (fseek(stream, 0L, SEEK_SET) == 0)
 		stream->flag &= ~(_FIOEOF | _FIOERR);
 }

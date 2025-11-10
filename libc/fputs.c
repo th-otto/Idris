@@ -3,6 +3,9 @@
 #include <string.h>
 #include "libc.h"
 
+/*
+ * output of string
+ */
 int fputs(const char *s, register FILE *stream)
 {
 	register size_t i;

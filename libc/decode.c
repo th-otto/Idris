@@ -20,6 +20,9 @@ static BYTES eputf(void *arg, register const char *s, BYTES count)
 }
 
 
+/*
+ * convert arguments to text under format control
+ */
 BYTES decode(char *s, BYTES n, const char *fmt, ...)
 {
 	struct _mbuf buf;

@@ -6,6 +6,9 @@
 #include <unistd.h>
 #include "libc.h"
 
+/*
+ * get an environment variable
+ */
 char *getenv(const char *p)
 {
 	FAST BYTES l = _lenstr(p);

@@ -11,6 +11,9 @@ static void twodigits(char *s, int val)
 }
 
 
+/*
+ * transform date and time to ASCII
+ */
 char *asctime(register const struct tm *timeptr)
 {
 #define STD_ASCTIME_BUF_SIZE	26
