@@ -30,7 +30,7 @@ All rights reserved. (!nl)
 !end_center
 
 !begin_center
-SCOPE
+!subheading SCOPE
 !end_center
 
 This manual is meant to familiarize the more technically sophisticated
@@ -38,14 +38,14 @@ user with the IDRIS program development environment.
 (!link [Section I] [Whitesmithing]) provides tutorial descriptions introducing the environment and tools
 used to build new programs. (!link [Section II] [IDRIS System Interface]) contains descriptions of the
 system calls and other routines that constitute the IDRIS system interface
-across carious machines. (!link [Section III] [Programming File Formats]) details the formats of
+across various machines. (!link [Section III] [Programming File Formats]) details the formats of
 numerous files used by the IDRIS resident or utilities that are of
 particular note to programmers, while (!link [Section IV] [IDRIS Support Library]) documents library
 routines developed for use with the IDRIS utilities.
 
 Tutorials and detailed descriptions of standard utilities, as well as
 the System Administration Guide, may be found in the IDRIS Users'
-Manual, More succinct documentation for the programming utilities, may
+Manual. More succinct documentation for the programming utilities, may
 be found in the C Interface Manual for the appropriate target machine;
 and the machine dependent aspects of each IDRIS implementation are
 discussed in the IDRIS Interface Manual for each target machine.

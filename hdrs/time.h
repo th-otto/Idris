@@ -46,6 +46,9 @@ typedef unsigned long clock_t;
 typedef unsigned long time_t;
 #endif
 
+#define     HZ      60              /* Ticks/second of the clock */
+#define CLOCKS_PER_SEC  ((clock_t) HZ)
+
 /*	function declarations
  */
 char *asctime __((const struct tm *timeptr));

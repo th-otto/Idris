@@ -1,11 +1,12 @@
 !begin_node IDRIS System Interface
-!html_name system_interface
+!html_name idris_system_interface
 
 !toc !depth 1
 
 ################################################################################
 
 !begin_node Idris system interface
+!html_name system_interface
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -164,6 +165,7 @@ All of the types used in this section should appear in <sys.h>.
 ################################################################################
 
 !begin_node Conventions
+!html_name conventions
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -250,6 +252,7 @@ special devices.
 
 !begin_node _pname - program name
 !label _pname
+!html_name _pname
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -273,6 +276,7 @@ It is used primarily for labelling diagnostic printouts.
 
 !begin_node brk - set system break to address
 !label brk
+!html_name brk
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -313,6 +317,7 @@ sbreak
 
 !begin_node chdir - change working directory
 !label chdir
+!html_name chdir
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -342,6 +347,7 @@ chdir("/tmp");
 
 !begin_node chmod - change mode of file
 !label chmod
+!html_name chmod
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -383,6 +389,7 @@ getmod
 
 !begin_node chown - change owner of file
 !label chown
+!html_name chown
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -419,6 +426,7 @@ getgid, getuid
 
 !begin_node close - close a file
 !label close
+!html_name close
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -458,6 +466,7 @@ creat, open, remove, uniqnm
 
 !begin_node creat - make a new file
 !label creat
+!html_name creat
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -496,6 +505,7 @@ chmod, close, create, open, remove, uniqnm
 
 !begin_node create - open an empty instance of a file
 !label create
+!html_name create
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -542,6 +552,7 @@ close, open, remove, uniqnm
 
 !begin_node dup - duplicate a file descriptor
 !label dup
+!html_name dup
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -579,8 +590,10 @@ close, creat, create, open, pipe
 
 ################################################################################
 
+# FIXME: belongs to support library
 !begin_node execl - execute a file with argument list
 !label execl
+!html_name execl
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -657,8 +670,10 @@ NULs.
 
 ################################################################################
 
+# FIXME: belongs to support library
 !begin_node execv - execute a file with argument vector
 !label execv
+!html_name execv
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -697,6 +712,7 @@ execl
 
 !begin_node exit - terminate program execution
 !label exit
+!html_name exit
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -734,6 +750,7 @@ onexit
 
 !begin_node fork - create a new process
 !label fork
+!html_name fork
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -787,6 +804,7 @@ parent dies. A prolific parent can thus overpopulate the system.
 
 !begin_node fstat - get status of open file
 !label fstat
+!html_name fstat
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -841,6 +859,7 @@ chmod, getmod, stat
 
 !begin_node getcsw - get console switches
 !label getcsw
+!html_name getcsw
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -873,6 +892,7 @@ Many systems have no console switches in real life.
 
 !begin_node getegid - get effective groupid
 !label getegid
+!html_name getegid
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -904,6 +924,7 @@ getgid, setgid
 
 !begin_node geteuid - get effective userid
 !label geteuid
+!html_name geteuid
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -935,6 +956,7 @@ getuid, setuid
 
 !begin_node getgid - get real groupid
 !label getgid
+!html_name getgid
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -966,6 +988,7 @@ getegid, setgid
 
 !begin_node getmod - get mode of file
 !label getmod
+!html_name getmod
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -1000,6 +1023,7 @@ chmod
 
 !begin_node getpid - get processld
 !label getpid
+!html_name getpid
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -1033,6 +1057,7 @@ uniqnm
 
 !begin_node getuid - get real userid
 !label getuid
+!html_name getuid
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -1064,6 +1089,7 @@ geteuid, setuid
 
 !begin_node gtty - get tty status
 !label gtty
+!html_name gtty
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -1183,6 +1209,7 @@ stty
 
 !begin_node kill - send signal to a process
 !label kill
+!html_name kill
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -1249,6 +1276,7 @@ kill is a misnomer, as it can be used to perform many other functions.
 
 !begin_node link - create link to file
 !label link
+!html_name link
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -1288,6 +1316,7 @@ injudicious calls on link.
 
 !begin_node lseek - set file read/write pointer
 !label lseek
+!html_name lseek
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -1335,8 +1364,1282 @@ BYTES blkno;
 
 ################################################################################
 
+# disabled because that function does not exist
+!if 0
+!begin_node mkexec - make file executable
+!label mkexec
+!html_name mkexec
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+mkexec - make file executable
+
+!item [SYNOPSIS] (!nl)
+BOOL mkexec(fname) (!nl)
+~~~~TEXT *fname;
+
+!item [FUNCTION] (!nl)
+mkexec adds "execute" permissions to the file fnarae. "Read" and "write"
+permissions are left unchanged.
+
+!item [RETURNS] (!nl)
+mkexec returns YES if the file fname exists and permits its mode to be
+changed. Otherwise it returns NO.
+
+!item [EXAMPLE]
+!begin_sourcecode
+if (load1() && load2())
+    return (mkexec(xfile));
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+chmod
+
+!end_blist
+
+!end_node
+!endif
+
+################################################################################
+
+!begin_node mknod - make a special inode
+!label mknod
+!html_name mknod
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+mknod - make a special inode
+
+!item [SYNOPSIS] (!nl)
+ERROR mknod(fname, mode, dev) (!nl)
+~~~~TEXT *fname; (!nl)
+~~~~BITS mode; (!nl)
+~~~~DEV dev;
+
+!item [FUNCTION] (!nl)
+mknod creates an empty instance of a file with pathname fname, setting
+its mode bits to mode and its first address entry to dev. If (mode
+0140777) for instance, the new file will be a directory with general
+permissions; dev had better be zero in this case. If (mode ==
+0160644), the new file will be a block special device that can be read
+by all, but written only by the superuser; dev then specifies the
+major/minor device numbers, the minor number in the less significant
+byte.
+
+Only the superuser may perform this call successfully.
+
+!item [RETURNS] (!nl)
+mknod returns zero if successful, else a negative number which is the
+Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+mknod("/dev/tty9", 0120622, major << 8 | minor);
+!end_sourcecode
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node mount - mount a file system
+!label mount
+!html_name mount
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+mount - mount a file system
+
+!item [SYNOPSIS] (!nl)
+ERROR mount(spec, fname, ronly) (!nl)
+~~~~TEXT *spec, fname; (!nl)
+~~~~BOOL ronly;
+
+!item [FUNCTION] (!nl)
+mount associates the root of the filesystem written on the block special
+device spec with the pathname fname; henceforth the mounted filesystem is
+reachable via pathnames through fname. If ronly is nonzero, the
+filesystem is mounted read only, i.e. all files are write protected and
+access times are not updated.
+
+name must already exist; its contents are rendered inaccessible by the
+mount operation.
+
+Only the superuser succeeds with this call.
+
+!item [RETURNS] (!nl)
+mount returns zero if successful, else a negative number which is the
+Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+mount("/dev/rkl", "/usr", 0);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+umount
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node nice - set priority
+!label nice
+!html_name nice
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+nice - set priority
+
+!item [SYNOPSIS] (!nl)
+ERROR nice(pri) (!nl)
+~~~~TINY pri;
+
+!item [FUNCTION] (!nl)
+nice sets the scheduling priority of the process to pri, which must be in
+the range [0, 20] for all but the superuser. The higher the number, the
+lower the priority [sic]; default is zero.
+
+On some implementations, a sufficiently negative pri will lock a process
+into memory, so that it is never swapped out.
+
+!item [RETURNS] (!nl)
+nice returns zero if successful, else a negative number which is the Idris
+error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To be polite when running a long program:
+!begin_sourcecode
+nice(4);
+!end_sourcecode
+
+!item [BUGS] (!nl)
+nice is a misnomer, since it can be used to do unnice things.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+# FIXME: belongs to support library
+!begin_node onexit - call function on program exit
+!label onexit
+!html_name onexit
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+onexit - call function on program exit
+
+!item [SYNOPSIS] (!nl)
+VOID (*onexit())(pfn) (!nl)
+~~~~VOID (*(*pfn)())();
+
+!item [FUNCTION] (!nl)
+onexit registers the function pointed at by pfn, to be called on program
+exit. The function at pfn is obliged to return the pointer returned by
+the onexit call, so that any previously registered functions can also be
+called.
+
+!item [RETURNS] (!nl)
+onexit returns a pointer to another function; it is guaranteed not to be
+NULL.
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+IMPORT VOID (*(*nextguy)())(), (*thisguy())();
+if (!nextguy)
+    nextguy = onexit(&thisguy);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+exit, onintr
+
+!item [BUGS] (!nl)
+The type declarations defy description, and are still wrong.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+# FIXME: belongs to support library
+!begin_node onintr - capture interrupts
+!label onintr
+!html_name onintr
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+onintr - capture interrupts
+
+!item [SYNOPSIS] (!nl)
+VOID onintr(pfn) (!nl)
+~~~~VOID (*pfn)();
+
+!item [FUNCTION] (!nl)
+onintr ensures that the function at pfn is called on a broken pipe, or
+on the occurrence of an interrupt (DEL key) or hangup generated from
+the keyboard of a controlling terminal. Any earlier call to onintr is
+overridden.
+
+The function is called with one integer argument, whose value is always
+zero, and must not return; if it does, a message is output to STDERR and
+an immediate error exit is taken.
+
+If (pfn == NULL) then these interrupts are disabled (turned off). Any
+disabled interrupts are not, however, turned on by a subsequent call with
+pfn not NULL.
+
+!item [RETURNS] (!nl)
+Nothing.
+
+!item [EXAMPLE] (!nl)
+A common use of onintr is to ensure a graceful exit on early termination:
+!begin_sourcecode
+onexit(&rmtemp);
+onintr(&exit);
+...
+VOID rmtemp()
+{
+    remove(uniqnm());
+}
+!end_sourcecode
+Still another use is to provide a way of terminating long printouts, as in
+an interactive editor:
+!begin_sourcecode
+while (!enter(docmd, NULL))
+    putstr(STDOUT, "?\n", NULL);
+...
+VOID docmd()
+{
+    onintr(&leave);
+}
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+onexit
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node open - open a file
+!label open
+!html_name open
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+open - open a file
+
+!item [SYNOPSIS] (!nl)
+FILE open(fname, mode, rsize) (!nl)
+~~~~TEXT *fname; (!nl)
+~~~~COUNT mode; (!nl)
+~~~~BYTES rsize;
+
+!item [FUNCTION] (!nl)
+open opens a file with name fname and assigns a file descriptor to it. If
+(mode == 0) the file is opened for reading, else if (mode == 1) it is
+opened for writing, else (mode == 2) of necessity and the file is opened
+for updating (reading and writing).
+
+rsize is the record size in bytes, which must be nonzero on many systems
+if the file is not to be treated as ASCII text. It is ignored by Idris,
+but should be present for portability.
+
+!item [RETURNS] (!nl)
+open returns a file descriptor for the opened file or a negative number,
+which is the Idris error return code, negated.
+
+!item [EXAMPLE]
+!begin_sourcecode
+if ((fd = open("xeq", WRITE, 1)) < 0)
+    putstr(STDERR, "can't open xeq\n", NULL);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+close, creat
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node pipe - setup a data pipe
+!label pipe
+!html_name pipe
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+pipe - setup a data pipe
+
+!item [SYNOPSIS] (!nl)
+FILE pipe(fds) (!nl)
+~~~~FILE fds[2];
+
+!item [FUNCTION] (!nl)
+pipe sets up a pipeline, i.e. a data transfer mechanism that can be read
+by one file descriptor and written by another. fds[0] is the read file
+descriptor, fds[1] is the write file descriptor.
+
+Since children spawned by fork inherit all open files, it is possible with
+pipe to set up a communication link between processes having a common
+parent. The pipe mechanism synchronizes reading and writing, allowing the
+producer to get ahead up to 4096 bytes before being made to wait.
+
+Reading an empty pipe with no writers left results in an end of file
+return; a pipe with no readers causes a broken pipe signal and, if the
+signal is ignored, causes an error return on subsequent writes.
+
+!item [RETURNS] (!nl)
+pipe writes the read file descriptor in fds[0] and the write file
+descriptor in fds[1] if successful. The value of the function is fds[O]
+if successful or a negative number, which is the Idris error return
+code, negated.
+
+!item [EXAMPLE] (!nl)
+To hook a child to STDOUT:
+!begin_sourcecode
+pipe(fds);
+if (pid = fork())
+{
+    close(STDOUT);
+    dup(fds[1]);
+    close(fds[0]);
+    close(fds[1]);
+}
+else
+{
+    close(STDIN);
+    dup(fds[O]);
+    close(fds[0]);
+    close(fds[l]);
+    exec("child", "child", NULL);
+    exit(NO);
+}
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+close, creat, create, dup, execl, execv, open, read, write
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node profil - set profiler parameters
+!label profil
+!html_name profil
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+profil - set profiler parameters
+
+!item [SYNOPSIS] (!nl)
+VOID profil(buf, size, offset, scale) (!nl)
+~~~~COUNT *buf; (!nl)
+~~~~BYTES size, offset, scale;
+
+!item [FUNCTION] (!nl)
+profil sets the parameters used by the system for execution time profiling
+of the user mode program counter. On each clock tick (60 times per
+second), offset is subtracted from the user program counter and the result
+multiplied by scale, which is taken as an unsigned binary fraction in the
+interval [0, 1), If the result is in the interval [0, size), it is used
+as an index to select the element of buf to increment.
+
+Unlike UNIX, Idris assumes that the binary fraction is always one less
+(when taken as an integer) than a power of two. That is, the resident
+considers only the highest order bit set in scale, and assumes that all
+bits to the right of it are ones. This difference should be transparent
+to all known uses of profil.
+
+If scale is 0, profiling is turned off.
+
+!item [RETURNS] (!nl)
+Nothing.
+
+!item [EXAMPLE] (!nl)
+To profile to a resolution of four code bytes per counter:
+!begin_sourcecode
+profil(buf, size, 0, ((BYTES)-1 >> 2) + 1); /* [sic] */
+!end_sourcecode
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node read - read from a file
+!label read
+!html_name read
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+read - read from a file
+
+!item [SYNOPSIS] (!nl)
+COUNT read(fd, buf, size) (!nl)
+~~~~FILE fd; (!nl)
+~~~~TEXT *buf; (!nl)
+~~~~BYTES size;
+
+!item [FUNCTION] (!nl)
+read reads up to size characters from the file specified by fd into the
+buffer starting at buf.
+
+!item [RETURNS] (!nl)
+If an error occurs, read returns a negative number which is the Idris
+error code, negated; if end of file is encountered, read returns zero;
+otherwise the value returned is between 1 and size, inclusive.
+When reading from a disk file, size bytes are read whenever possible.
+
+!item [EXAMPLE] (!nl)
+To copy a file:
+!begin_sourcecode
+while (0 < (n = read(STDIN, buf, BUFSIZE)))
+    write(STDOUT, buf, n);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+write
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node remove - remove a file
+!label remove
+!html_name remove
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+remove - remove a file
+
+!item [SYNOPSIS] (!nl)
+ERROR remove(fname) (!nl)
+~~~~TEXT *fname;
+
+!item [FUNCTION] (!nl)
+remove deletes the file fname from the Idris directory structure. If no
+other names link to the file, the file is destroyed. If the file is
+opened for any reason, however, destruction will be postponed until the
+last close on the file.
+
+If the file is a directory, remove will not attempt to remove it.
+
+!item [RETURNS] (!nl)
+remove returns zero, if successful, or a negative number, which is the
+Idris error return code, negated.
+
+!item [EXAMPLE]
+!begin_sourcecode
+if (remove("temp.c") < 0)
+    putstr(STDERR, "can't remove temp file\n", NULL);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+creat, unlink
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+# FIXME: belongs to support library
+!begin_node sbreak - set system break
+!label sbreak
+!html_name sbreak
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+sbreak - set system break
+
+!item [SYNOPSIS] (!nl)
+TEXT *sbreak(size) (!nl)
+~~~~BYTES size;
+
+!item [FUNCTION] (!nl)
+sbreak moves the system break, at the top of the data area, algebraically
+up by size bytes, rounded up as necessary to placate memory management
+hardware.
+
+!item [RETURNS] (!nl)
+If successful, sbreak returns a pointer to the start of the added data
+area; otherwise the value returned is NULL.
+
+!item [EXAMPLE]
+!begin_sourcecode
+if (!(p = sbreak(nsyms * sizeof (symbol)}))
+{
+    putstr(STDERR, "not enough room!\n", NULL);
+    exit(NO);
+}
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+brk
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node seek - set file read/write pointer
+!label seek
+!html_name seek
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+seek - set file read/write pointer
+
+!item [SYNOPSIS] (!nl)
+ERROR seek(fd, offset, sense) (!nl)
+~~~~FILE fd; (!nl)
+~~~~COUNT offset, sense;
+
+!item [FUNCTION] (!nl)
+seek uses the offset provided to modify the read/write pointer for the
+file fd, under control of sense. If (sense == 0) the pointer is set to
+offset, which is treated as an unsigned integer; if (sense == 1) the
+offset is algebraically added to the current pointer; if (sense == 2)
+the offset is algebraically added to the length of the file in bytes to
+obtain the new pointer.
+
+If (sense is between 3 and 5 inclusive), the offset is multiplied by 512L
+and the resultant long offset is used with (sense - 3). Idris uses only
+the low order 24 bits of the offset; the rest are ignored. Block offsets
+are primarily of use in machines with short pointers.
+
+!item [RETURNS] (!nl)
+seek returns zero if successful, or a negative number, which is the Idris
+error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To read a 512-byte block:
+!begin_sourcecode
+BOOL getblock(buf, blkno)
+TEXT *buf;
+BYTES blkno;
+{
+    seek(STDIN, blkno, 3);
+    return (read(STDIN, buf, 512) != 512);
+}
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+lseek
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node setgid - set groupid
+!label setgid
+!html_name setgid
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+setgid - set groupid
+
+!item [SYNOPSIS] (!nl)
+ERROR setgid(gid) (!nl)
+~~~~GID gid;
+
+!item [FUNCTION] (!nl)
+setgid sets the groupid, both real and effective, of the current process
+to gid. Only the superuser may change the gid.
+
+!item [RETURNS] (!nl)
+setgid returns zero if successful, else a negative number which is the
+Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To revert effective groupid back to real:
+!begin_sourcecode
+setgid(getgid());
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+getgid
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node setuid - set userld
+!label setuid
+!html_name seuid
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+setuid - set userld
+
+!item [SYNOPSIS] (!nl)
+ERROR setuid(uid) (!nl)
+~~~~UID uid;
+
+!item [FUNCTION] (!nl)
+setuid sets the userid, both real and effective, of the current process to
+uid. Only the superuser may change the uid.
+
+!item [RETURNS] (!nl)
+setuid returns zero if successful, else a negative number which is the
+Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To revert effective userid back to real:
+!begin_sourcecode
+setuid(getuid());
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+getuid
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node signal - capture signals
+!label signal
+!html_name signal
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+signal - capture signals
+
+!item [SYNOPSIS] (!nl)
+VOID (*signal(sig, pfunc))() (!nl)
+~~~~SIG sig; (!nl)
+~~~~VOID (*pfunc)();
+
+!item [FUNCTION] (!nl)
+signal changes the handling of the signal sig according to pfunc. Legal
+values of sig are described under the kill system call. If pfunc is
+NULL, normal system handling occurs, i.e. the process is terminated
+when the signal occurs, possibly with a core dump; if pfunc is NOSIG
+(ie. 1), the signal is ignored; otherwise pfunc is taken as a pointer
+to a code sequence to be entered in the user program when the signal
+occurs.
+
+Note that the code sequence may not, in general, be a C function, since
+registers may not be properly saved and the stack may not be prepared
+for an orderly return; to return properly to the interrupted code, a
+machine dependent code sequence must often be performed. If a system
+call was interrupted and the signal handler returns properly to the
+interrupted code, the system call reports an abnormal termination with
+the EINTR error code.
+
+Except for illegal instruction and trace trap, all signals revert to
+system handling after each occurrence; all signals revert to system
+handling on an execl or execv, but not on a fork.
+
+!item [RETURNS] (!nl)
+signal returns the old pfunc if successful, else -1.
+
+!item [EXAMPLE] (!nl)
+To prevent hangups:
+!begin_sourcecode
+signal(1, NOSIG);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+execl, execv, fork, kill
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node sleep - delay for awhile
+!label sleep
+!html_name sleep
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+sleep - delay for awhile
+
+!item [SYNOPSIS] (!nl)
+VOID sleep(sees) (!nl)
+~~~~UCOUNT sees;
+
+!item [FUNCTION] (!nl)
+sleep suspends execution of the current process for sees seconds.
+
+!item [RETURNS] (!nl)
+sleep returns zero if successful (clock is enabled), or a negative number,
+which is the Idris error return code, negated.
+
+!item [EXAMPLE]
+!begin_sourcecode
+while ((fd = creat("lock", 0444)) < 0)
+    sleep(5);
+!end_sourcecode
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node stat - get status of named file
+!label stat
+!html_name stat
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+stat - get status of named file
+
+!item [SYNOPSIS] (!nl)
+ERROR stat(fname, buf) (!nl)
+~~~~TEXT *fname; (!nl)
+~~~~struct stat *buf;
+
+!item [FUNCTION] (!nl)
+stat obtains the status of the file fname in the structure pointed to by
+buf. The structure is essentially that of a filesystem inode, preceded by
+the device dev and the inode number ino on that device; it is described
+under fstat.
+
+!item [RETURNS] (!nl)
+stat returns zero if successful, or a negative number, which is the Idris
+error return code, negated.
+
+!item [EXAMPLE]
+!begin_sourcecode
+if (stat(av[1], &sbuf) < 0 || !isdir(sbuf.mode))
+    putstr(STDERR, av[1], " is not a directory\n", NULL);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+chmod, fstat, getmod
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node stime - set system time
+!label stime
+!html_name stime
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+stime - set system time
+
+!item [SYNOPSIS] (!nl)
+ERROR stime(time) (!nl)
+~~~~ULONG time;
+
+!item [FUNCTION] (!nl)
+stime sets the system time to time, which is the number of seconds since
+the 1 Jan 1970 epoch. Only the superuser succeeds with this call.
+
+!item [RETURNS] (!nl)
+stime returns zero if successful, else a negative number which is the
+Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To backup an hour:
+!begin_sourcecode
+stime(time() - 60 * 60);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+time
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node stty - set tty status
+!label stty
+!html_name stty
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+stty - set tty status
+
+!item [SYNOPSIS] (!nl)
+ERROR stty(fd, buf) (!nl)
+~~~~FILE fd; (!nl)
+~~~~struct sgtty *buf;
+
+!item [FUNCTION] (!nl)
+stty sets the status of a tty or other character special device« under
+control of the file descriptor fd, to the values in the structure pointed
+at by buf. The structure is the same as described under gtty.
+
+!item [RETURNS] (!nl)
+stty returns zero if successful, else a negative number which is the Idris
+error return code, negated.
+
+!item [EXAMPLE] (!nl)
+To change a tty speed, with minumum perturbation:
+!begin_sourcecode
+gtty(fd, &stat);
+stat.t_speeds &= ~(T_OSPEED|T_ISPEED);
+stat.t_speeds |= ospeed << 8 | ispeed;
+stty(fd, &stat);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+gtty
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node sync - synchronize disks with memory
+!label sync
+!html_name sync
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+sync - synchronize disks with memory
+
+!item [SYNOPSIS] (!nl)
+VOID sync()
+
+!item [FUNCTION] (!nl)
+sync ensures that all delayed writes are performed by the system, so that
+disk integrity is assured before taking the system down. It updates all
+inodes that have been modified since the last sync, and writes all data
+blocks not correctly represented on open or mounted block special devices.
+
+If a filesystera is to be accessed other than through the block special
+file on which it is mounted, sync should first be performed to ensure that
+the disk image is current.
+
+!item [RETURNS] (!nl)
+Nothing.
+
+!item [EXAMPLE] (!nl)
+A simple "sync daemon" is:
+!begin_sourcecode
+FOREVER
+{
+    sync();
+    sleep(30);
+}
+!end_sourcecode
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node time - get system time
+!label time
+!html_name time
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+time - get system time
+
+!item [SYNOPSIS] (!nl)
+ULONG time()
+
+!item [FUNCTION] (!nl)
+time gets the system time, which is the number of seconds since the 1 Jan
+1970 epoch.
+
+!item [RETURNS] (!nl)
+time returns the system time as a long integer.
+
+!item [EXAMPLE] (!nl)
+To backup an hour:
+!begin_sourcecode
+stime(time() - 60 * 60);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+stime
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node times - get process times
+!label times
+!html_name times
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+times - get process times
+
+!item [SYNOPSIS] (!nl)
+ERROR times(buf) (!nl)
+~~~~struct tms *buf;
+
+!item [FUNCTION] (!nl)
+times returns the cumulative times consumed by the current process and all
+its dead children in the structure pointed at by buf. putime is the user
+mode time consumed by the process proper; pstime is its system mode time,
+cutime and cstime are the cumulative user and system times consumed by all
+the children that have been laid to rest by wait system calls, including
+the times of all their children thus interred.
+
+All times are in 1/60 second ticks.
+
+!item [RETURNS] (!nl)
+times writes the process times in the structure pointed at by buf.
+times returns zero if successful, else a negative number which is the
+Idris error return code, negated.
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+times(&vec);
+putfmt("System: %.1f User: %.lfXn", vec.cstime/60.0, vec.cutime/60.0);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+time
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node umount - unmount a filesystem
+!label umount
+!html_name umount
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+umount - unmount a filesystem
+
+!item [SYNOPSIS] (!nl)
+ERROR umount(spec) (!nl)
+~~~~TEXT *spec;
+
+!item [FUNCTION] (!nl)
+umount disassociates the root of the filesystem written on the block
+special device spec with whatever node it was mounted on; henceforth
+the filesystem is no longer reachable via the directory tree.
+
+Only the superuser succeeds with this call.
+
+!item [RETURNS] (!nl)
+umount returns zero if successful, else a negative number which is the
+Idris error return code, negated.
+
+!item [EXAMPLE]
+!begin_sourcecode
+umount("/dev/rk1");
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+mount
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+# FIXME: real uname() missing
+
+################################################################################
+
+# FIXME: belongs to support library
+!begin_node uniqnm - create a unique file name
+!label uniqnm
+!html_name uniqnm
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+uniqnm - create a unique file name
+
+!item [SYNOPSIS] (!nl)
+TEXT *uniqnm()
+
+!item [FUNCTION] (!nl)
+uniqnm returns a pointer to the start of a NUL terminated name which is
+guaranteed not to conflict with normal user filenames, The name is, in
+fact, unique to each Idris process, and may be modified by a suffix, so
+that a family of process-unique files may be dealt with, The name may be
+used as the first argument to a create, or subsequent open, call, so long
+as any such files created are removed before program termination. It is
+considered bad manners to leave scratch files lying about.
+
+!item [RETURNS] (!nl)
+uniqnm returns the same pointer on every call during a given program
+invocation. It takes the form "/tmp/t#####" where ##### is the processid in
+octal. The pointer will never be NULL.
+
+!item [EXAMPLE] (!nl)
+!begin_sourcecode
+if ((fd = create(uniqnm(), WRITE, 1)) < 0)
+    putstr(STDERR, "can't create sort temp\n", NULL);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+close, create, open, remove
+
+!item [BUGS] (!nl)
+A program invoked by the exec system call, without a fork, inherits the
+Idris processid used to generate unique names. Collisions can occur if
+files so named are not meticulously removed.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node unlink - erase link to file
+!label unlink
+!html_name unlink
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+unlink - erase link to file
+
+!item [SYNOPSIS] (!nl)
+ERROR unlink(fname) (!nl)
+~~~~TEXT *fname;
+
+!item [FUNCTION] (!nl)
+unlink removes the link specified by the file fname. No checks are made
+for whether this is a good idea. Only the superuser may unlink a directory.
+
+!item [RETURNS] (!nl)
+unlink returns zero if successful» else a negative number, which is the
+Idris error return code, negated.
+
+!item [EXAMPLE]
+!begin_sourcecode
+if(!isdir(getmod(file)))
+    unlink(file);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+link, remove
+
+!item [BUGS] (!nl)
+A program executing as superuser can scramble a directory structure by
+injudicious calls on unlink.
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node wait - wait for child to terminate
+!label wait
+!html_name wait
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+wait - wait for child to terminate
+
+!item [SYNOPSIS] (!nl)
+PID wait(pstat) (!nl)
+~~~~COUNT *pstat;
+
+!item [FUNCTION] (!nl)
+wait suspends execution of the calling program until a child process
+terminates, so that it can return the child's termination status at
+pstat and its processid as the value of the function. Children remain
+in limbo (zombie status, actually) until laid to rest by a waiting
+parent.
+
+The status returned contains the number of the terminating signal, if any,
+in its less significant byte, and the status reported back by the child's
+exit call in its more significant byte. By convention, a status word of
+all zeros means normal termination; if (*pstat & 0200) then a core dump
+has been made,
+
+!item [RETURNS] (!nl)
+wait returns the processid of the child whose status is written at pstat,
+if any, else -1 if the caller has no children,
+
+!item [EXAMPLE]
+!begin_sourcecode
+if (0 < (pid = forkO))
+    while (wait(&status) != pid)
+        ;
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+fork
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node write - write to a file
+!label write
+!html_name write
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+write - write to a file
+
+!item [SYNOPSIS] (!nl)
+COUNT write(fd, buf, size) (!nl)
+~~~~FILE fd; (!nl)
+~~~~TEXT *buf; (!nl)
+~~~~BYTES size;
+
+!item [FUNCTION] (!nl)
+write writes size characters starting at buf to the file specified by fd.
+
+!item [RETURNS] (!nl)
+If an error occurs, write returns a negative number which is the Idris
+error code, negated; otherwise the value returned should be size.
+
+!item [EXAMPLE] (!nl)
+To copy a file:
+!begin_sourcecode
+while (0 < (n = read(STDIN, buf, size)))
+    write(STDOUT, buf, n);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+read
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node xecl - execute a file with argument list
+!label xecl
+!html_name xecl
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+xecl - execute a file with argument list
+
+!item [SYNOPSIS] (!nl)
+COUNT xecl(fname, sin, sout, flags, sO, si, ..., NULL) (!nl)
+~~~~TEXT *fname; (!nl)
+~~~~FILE sin, sout; (!nl)
+~~~~COUNT flags; (!nl)
+~~~~TEXT *s0, *s1, ...
+
+!item [FUNCTION] (!nl)
+xecl invokes the program file fname, connecting its STDIN to sin and
+STDOUT to sout and passing it the string arguments s0, si, ... If
+(!(flags & 3)) fname is invoked as a new process; xecl will wait until
+the command has completed and will return its status to the calling
+program. If (flags & 1) fname is invoked as a new process and xecl will
+not wait, but will return the processid of the child. If (flags & 2)
+fname is invoked in place of the current process, whose image is forever
+gone. In this case, xecl will never return to the caller.
+
+To the value of flags may be added a 4 if the processing of interrupt and
+quit signals for fname is to revert to system handling. The value of
+flags may also be incremented by 8 if the effective userid is to be made
+the real userid before fname is executed. If sin is not equal to STDIN,
+or if sout is not equal to STDOUT, the file (sin or sout) is closed before
+xecl returns.
+
+If fname does not contain a '/', then xecl will search an arbitrary series
+of directories for the file specified, by prepending to fname each path
+specified by the global variable _paths before trying to execute it.
+_paths is of type pointer to TEXT, and points to a NUL terminated series
+of directory paths separated by '|'s.
+
+If the file eventually found has execute permission, but is not in
+executable format, /bin/sh is invoked with the current prefixed version
+of fname as its first argument and, following fname, an argument vector
+composed of s0, si, ...
+
+!item [RETURNS] (!nl)
+If fname cannot be invoked, xecl will fail. If (!(flags & 3)) xecl
+returns YES if the command executed successfully, otherwise NO; if
+(flags & 1) xecl returns the id of the child process, if one exists,
+otherwise zero; if (flags & 2) xecl will never return to the caller.
+
+In all cases, if fname cannot be executed, an appropriate error message
+is written to STDERR.
+
+!item [EXAMPLE]
+!begin_sourcecode
+if (!xecl(pgm, STDIN, create(file, WRITE), 0, f1, f2, NULL))
+    putstr(STDERR, pgm, " failed\n", NULL);
+!end_sourcecode
+
+!item [SEE ALSO] (!nl)
+xecv
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+!begin_node xecv - execute a file with argument vector
+!label xecv
+!html_name xecv
+
+!begin_blist [NAME]
+!item [NAME] (!nl)
+xecv - execute a file with argument vector
+
+!item [SYNOPSIS] (!nl)
+COUNT xecv(fname, sin, scut, flags, av) (!nl)
+~~~~TEXT *fname;
+~~~~FILE sin, sout; (!nl)
+~~~~COUNT flags; (!nl)
+~~~~TEXT **av;
+
+!item [FUNCTION] (!nl)
+xecv invokes the program file fname, connecting its STDIN to sin and
+STDOUT to sout and passing it the string arguments specified in the NULL
+terminated vector av. Its behavior is otherwise identical to xecl.
+
+!item [SEE ALSO] (!nl)
+xecl
+
+!end_blist
+
+!end_node
+
+################################################################################
+
+# template for copy/paste
+!if 0
+
 !begin_node xx
 !label x
+!html_name x
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -1362,5 +2665,6 @@ chmod, close, create, open, remove, uniqnm
 !end_node
 
 ################################################################################
+!endif
 
 !end_node

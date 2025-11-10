@@ -9,8 +9,11 @@ WHITESMITH_DOC = \
 	system_interface.ui \
 	programming_file_formats.ui \
 	support_library.ui \
+	appendix.ui \
 	$(empty)
 
 html/index.html: $(WHITESMITH_DOC)
 	$(UDO) --html -o $@ $<
 
+clean::
+	$(RM) html/*.html html/udo_* html/*.ulh

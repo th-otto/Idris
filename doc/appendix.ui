@@ -1,0 +1,45 @@
+!begin_node Structures
+
+!toc !depth 1
+
+################################################################################
+
+!begin_node struct stat
+!begin_sourcecode
+struct stat {
+    UCOUNT dev;
+    UCOUNT ino;
+    BITS mode;
+    UTINY nlinks;
+    UID uid, gid;
+    UTINY msize;
+    UCOUNT lsize, addr[8];
+    ULONG actime, modtime;
+};
+!end_sourcecode
+!end_node
+
+################################################################################
+
+!begin_node struct sgtty
+!begin_sourcecode
+struct sgtty {
+    BITS t_speeds;
+    TEXT t_erase, t_kill;
+    BITS t_mode;
+};
+!end_sourcecode
+!end_node
+
+################################################################################
+
+!begin_node struct tms
+!begin_sourcecode
+struct tms {
+    UCOUNT putime, pstime;
+    ULONG cutime, cstime;
+};
+!end_sourcecode
+!end_node
+
+!end_node

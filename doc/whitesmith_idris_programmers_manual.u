@@ -28,4 +28,8 @@
 !include programming_file_formats.ui
 !include support_library.ui
 
+!begin_appendix
+!include appendix.ui
+!end_appendix
+
 !end_document

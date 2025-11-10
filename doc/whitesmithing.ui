@@ -6,6 +6,8 @@
 ################################################################################
 
 !begin_node Process - rules for an Idris program
+!html_name process
+
 !begin_blist [NAME]
 !item [NAME] (!nl)
 Process - rules for an Idris program
@@ -192,6 +194,7 @@ partial last line).
 ################################################################################
 
 !begin_node Link - using link and related tools
+!html_name linktool
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
@@ -323,6 +326,8 @@ Manual for each target machine.
 ################################################################################
 
 !begin_node Compile - using the multi-pass compiler driver
+!html_name compiler
+
 !begin_blist [NAME]
 !item [NAME] (!nl)
 Compile - using the multi-pass compiler driver
@@ -651,6 +656,8 @@ named programs is run is to use a changed version of the script.
 ################################################################################
 
 !begin_node Debug - using the binary editor db
+!html_name debugger
+
 !begin_blist [NAME]
 !item [NAME] (!nl)
 Debug - using the binary editor db
@@ -1016,6 +1023,7 @@ instructions.
 ################################################################################
 
 !begin_node Headers - standard include files
+!html_name headers
 
 !begin_blist [NAME]
 !item [NAME] (!nl)
