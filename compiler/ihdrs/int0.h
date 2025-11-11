@@ -3,7 +3,7 @@
  */
 
 #ifndef __WCONFIG__
-#include "wconfig.h"
+#include <wconfig.h>
 #endif
 
 /*	the types

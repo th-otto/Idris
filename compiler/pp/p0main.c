@@ -90,9 +90,12 @@ static char *getln(INCL *pi)
 	strchar = '\0';
 	s = buf;
 	pf = pi->pfio;
-	while (fgets(buf, BUFSIZ, pf) != NULL)
-	{
+	if (fgets(buf, BUFSIZ, pf) == NULL)
+		i = 0;
+	else
 		i = strlen(buf);
+	while (i > 0)
+	{
 		if (!cflag && *s == '\\' && 1 < i && s[1] == '\n')
 		{
 			++pi->nline;

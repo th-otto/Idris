@@ -211,6 +211,36 @@ TLIST *doexp(TLIST *qs)
 }
 
 
+static char *findinclude(const char *name, size_t n)
+{
+	char *pp;
+	char *q;
+	FILE *fd;
+	char *s;
+	size_t i;
+
+	q = xmalloc(strlen(iprefix) + n + 1);
+	for (s = iprefix; *s; s += (s[i]) ? i + 1 : i)
+	{
+		pp = strchr(s, '|');
+		if (pp == NULL)
+			i = strlen(s);
+		else
+			i = pp - s;
+		memcpy(q, s, i);
+		memcpy(q + i, name, n);
+		q[i + n] = '\0';
+		if ((fd = fopen(q, "r")) != NULL)
+		{
+			fclose(fd);
+			return q;
+		}
+	}
+	free(q);
+	return NULL;
+}
+
+
 /*
  * get an included file name
  */
@@ -218,9 +248,6 @@ char *getfname(TLIST *p)
 {
 	char *q;
 	char *s;
-	size_t n;
-	size_t i;
-	char *pp;
 	FILE *fd;
 
 	if (p->type == PIDENT)
@@ -231,28 +258,16 @@ char *getfname(TLIST *p)
 	{
 		q = buybuf(p->text + 1, p->ntext - 1);
 		q[p->ntext - 2] = '\0';
+		if ((fd = fopen(q, "r")) == NULL)
+		{
+			free(q);
+			q = findinclude(p->text + 1, p->ntext - 2);
+		}
 	} else if (punct(p, '<'))
 	{
 		for (s = p->next->text; *s != '>' && !ISWHITE(*s); ++s)
 			;
-		n = s - p->next->text;
-		q = xmalloc(strlen(iprefix) + n + 1);
-		for (s = iprefix; *s; s += (s[i]) ? i + 1 : i)
-		{
-			pp = strchr(s, '|');
-			if (pp == NULL)
-				i = strlen(s);
-			else
-				i = pp - s;
-			memcpy(q, s, i);
-			memcpy(q + i, p->next->text, n);
-			q[i + n] = '\0';
-			if ((fd = fopen(q, "r")) != NULL)
-			{
-				fclose(fd);
-				break;
-			}
-		}
+		q = findinclude(p->next->text, s - p->next->text);
 	} else
 	{
 		q = NULL;
@@ -327,6 +342,8 @@ INCL *nxtfile(void)
 			fd = stdin;
 		else if ((fd = fopen(fname, "r")) == NULL)
 			p0error("can't open %s", fname);
+		else
+			break;
 	}
 	pi = xmalloc(sizeof(*pi));
 	pi->next = NULL;
@@ -342,31 +359,6 @@ INCL *nxtfile(void)
 	pi->nline = 0;
 	pi->pfio = fd;
 	return pi;
-}
-
-
-/*
- * put the argument defines into the buffer
- */
-static void pargs(const char *s, int n)
-{
-#if 0
-	FIO *p;
-
-	p = &pincl->pfio;
-	for (; 0 < n && p->_nleft < (BUFSIZ - 1); --n, ++p->_nleft)
-		if ((p->_buf[p->_nleft] = *s++) == '\n')
-			--pincl->nline;
-	if (0 < n && p->_nleft < BUFSIZ)
-	{
-		p->_buf[p->_nleft++] = '\n';
-		p0error("too many -d arguments");
-	}
-	p->_pnext = p->_buf;
-#else
-	(void)s;
-	(void)n;
-#endif
 }
 
 
@@ -399,26 +391,26 @@ void predef(ARGS *p)
 	int i;
 	char *s;
 	char *n;
-	char pch = pchar;
-
+	size_t len;
+	char *defn;
+	static char one[] = "1";
+	
 	for (i = 0; (int)p->ntop < NDARGS - i; ++i)
 	{
 		s = p->anames[(NDARGS - 1) - i];
-		pargs(&pch, 1);
-		pargs("define ", 7);
 		n = strchr(s, '=');
 		if (n == NULL)
 		{
-			pargs(s, strlen(s));
-			pargs(" 1", 2);
+			len = strlen(s);
+			n = one;
 		} else
 		{
-			pargs(s, n - s);
-			pargs(" ", 1);
-			s = n + 1;
-			pargs(s, strlen(s));
+			len = n - s;
+			n++;
 		}
-		pargs("\n", 1);
+		defn = xmalloc(strlen(n) + 1);
+		strcpy(defn, n);
+		install(s, len, defn);
 	}
 }
 
