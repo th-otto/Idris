@@ -2,10 +2,8 @@
  *	copyright (c) 1978 by Whitesmiths, Ltd.
  */
 
-#ifdef LONGNAME
-#define LENNAME	32
-#else
-#define LENNAME	8
+#ifndef __WCONFIG__
+#include "wconfig.h"
 #endif
 
 /*	the quasi types

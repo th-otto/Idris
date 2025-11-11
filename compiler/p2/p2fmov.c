@@ -350,13 +350,13 @@ BOOL opick(p, code, match, ty)
 	{
 	TINY by;
 
-	code =& BYTMASK;
+	code =& 0xff;
 	if (code <= 014 || 0374 <= code)
 		return (iscons(p) && (by = code) == p->e.v.bias);
 	else if (code == 015)
-		return (iscons(p) && !(p->e.v.bias & ~BYTMASK));
+		return (iscons(p) && !(p->e.v.bias & ~0xff));
 	else if (code == 016)
-		return (iscons(p) && !(p->e.v.bias & BYTMASK));
+		return (iscons(p) && !(p->e.v.bias & 0xff));
 	else if (code == 017)
 		return (iscons(p));
 	else if ((code & 017) < ty || match && ty < (code & 017))
@@ -393,7 +393,7 @@ TEXT *pick(p, match)
 		rty = equtype[rty];
 	for (q = bintab[i]; *q; ++q)
 		{
-		q00 = q[0][0] & BYTMASK;
+		q00 = q[0][0] & 0xff;
 		if (q[0][2] & 0100 && mty)
 			;
 		else if (opick(p->e.o.left, q00, match, lty)
@@ -411,7 +411,7 @@ BITS twant(code)
 	{
 	IMPORT BITS wantab[];
 
-	if (0374 <= (code =& BYTMASK))
+	if (0374 <= (code =& 0xff))
 		return (wantab[0]);
 	else
 		return (wantab[code >> 4]);

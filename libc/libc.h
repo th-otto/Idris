@@ -124,3 +124,7 @@ extern onexit_t _fnext;
 extern struct tmpfile *_tfile;
 extern char _rbuf[];
 extern char *end; /* WTF */
+extern double _dtens[];
+extern short _maxprec;
+extern short _ntens;
+extern double _dzero;

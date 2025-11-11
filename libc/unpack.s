@@ -1,3 +1,18 @@
+* int _unpack(double *d)
+* {
+* 	ieee_double_shape_type *u;
+* 	int exp;
+* 
+* 	u = (ieee_double_shape_type *)d;
+* 	exp = u->parts.msw.m.signexp;
+* 	if (exp != 0)
+* 	{
+* 		exp = ((exp >> 4) & 0x7ff) - 0x3fe;
+* 		u->parts.msw.m.signexp &= 0x800F;
+* 		u->parts.msw.m.signexp |= 0x3FE0;
+* 	}
+* 	return exp;
+* }
 	.text
 	.globl __unpack
 __unpack:

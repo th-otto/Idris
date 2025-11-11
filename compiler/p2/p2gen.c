@@ -153,7 +153,7 @@ VOID genad(p, up, byte)
 		if (!refs)
 			{
 			off =>> up << 3;
-			if (byte && ((off =& BYTMASK) == 1))
+			if (byte && ((off =& 0xff) == 1))
 				off = 0401;
 			}
 		else
@@ -391,7 +391,7 @@ VOID putos(ty, s1, s2)
 	{
 	TEXT tbuf[10];
 
-	tbuf[stob(tbuf, ty >> 4 & 077 | ty >> 2 & ~BYTMASK, 8)] = '\0';
+	tbuf[stob(tbuf, ty >> 4 & 077 | ty >> 2 & ~0xff, 8)] = '\0';
 	chput(s1, tbuf, s2, NULL);
 	}
 

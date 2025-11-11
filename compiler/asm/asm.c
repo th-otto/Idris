@@ -399,7 +399,7 @@ COUNT putval(code, p)
 	case Jc:
 		return (jcvals[pty - CNZ]);
 	case N:
-		return (p->val & BYTMASK);
+		return (p->val & 0xff);
 	default:
 		err("putval!");
 		return (0);

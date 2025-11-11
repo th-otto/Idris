@@ -5,7 +5,8 @@
 /*
  * free space on the heap
  */
-void (lfree)(void *addr)
+void *_lfree(void *addr, void *link)
 {
 	free(addr);
+	return link;
 }

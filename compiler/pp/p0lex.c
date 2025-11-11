@@ -1,355 +1,386 @@
 /*	LEXICAL ANALYSIS FOR C
  *	copyright (c) 1978 by Whitesmiths, Ltd.
  */
-#include <std.h>
+#ifdef __GNUC__
+# define _GNU_SOURCE
+# define _dtento(x, exp) ((x) * exp10(exp))
+#endif
+#include <stdlib.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
 #include "int0.h"
 #include "int01.h"
+#include "util.h"
+#include "pp.h"
+
+#ifdef __GNUC__
+# define _dtento(x, exp) ((x) * exp10(exp))
+#endif
 
 /*	the keyword table
  */
-LOCAL PRETAB keytab[] {
-	"\2do", LDO,
-	"\2if", LIF,
-	"\3for", LFOR,
-	"\3int", LINT,
-	"\4auto", LAUTO,
-	"\4case", LCASE,
-	"\4char", LCHAR,
-	"\4else", LELSE,
-	"\4goto", LGOTO,
-	"\4long", LLONG,
-	"\5break", LBREAK,
-	"\5float", LFLOAT,
-	"\5short", LSHORT,
-	"\5union", LUNION,
-	"\5while", LWHILE,
-	"\6double", LDOUBLE,
-	"\6extern", LEXTERN,
-	"\6return", LRETURN,
-	"\6sizeof", LSIZEOF,
-	"\6static", LSTATIC,
-	"\6struct", LSTRUCT,
-	"\6switch", LSWITCH,
-	"\7default", LDFAULT,
-	"\7typedef", LTYPDEF,
-	"\10continue", LCONTIN,
-	"\10register", LREG,
-	"\10unsigned", LUNSIGN,
-	};
 #define NKEYS	27
+static PRETAB keytab[NKEYS] = {
+	{ "\2do", LDO },
+	{ "\2if", LIF },
+	{ "\3for", LFOR },
+	{ "\3int", LINT },
+	{ "\4auto", LAUTO },
+	{ "\4case", LCASE },
+	{ "\4char", LCHAR },
+	{ "\4else", LELSE },
+	{ "\4goto", LGOTO },
+	{ "\4long", LLONG },
+	{ "\5break", LBREAK },
+	{ "\5float", LFLOAT },
+	{ "\5short", LSHORT },
+	{ "\5union", LUNION },
+	{ "\5while", LWHILE },
+	{ "\6double", LDOUBLE },
+	{ "\6extern", LEXTERN },
+	{ "\6return", LRETURN },
+	{ "\6sizeof", LSIZEOF },
+	{ "\6static", LSTATIC },
+	{ "\6struct", LSTRUCT },
+	{ "\6switch", LSWITCH },
+	{ "\7default", LDFAULT },
+	{ "\7typedef", LTYPDEF },
+	{ "\10continue", LCONTIN },
+	{ "\10register", LREG },
+	{ "\10unsigned", LUNSIGN }
+};
 
-/* find first non-base digit
+
+/*
+ * find first non-base digit
  */
-BYTES firnon(s, n, base)
-	FAST TEXT *s;
-	BYTES n;
-	COUNT base;
-	{
-	FAST COUNT dig, i;
+static size_t firnon(char *s, int n, int base)
+{
+	int dig, i;
 
 	for (i = 0; i < n; ++i, ++s)
-		{
-		if (isdigit(*s))
+	{
+		if (ISDIGIT(*s))
 			dig = *s - '0';
-		else if (isalpha(*s))
-			dig = tolower(*s) + (10 - 'a');
+		else if (ISUPPER(*s))
+			dig = *s + (10 - 'A');
+		else if (ISLOWER(*s))
+			dig = *s + (10 - 'a');
 		else
 			break;
 		if (base <= dig)
 			break;
-		}
-	return (i);
 	}
+	return i;
+}
 
-/*	accumulate double number
+
+/*
+ * accumulate double number
  */
-BYTES flaccum(s, pd, nd)
-	FAST TEXT *s;
-	DOUBLE *pd;
-	FAST COUNT nd;
-	{
-	IMPORT DOUBLE _dtens[];
-	FAST BYTES n;
+static size_t flaccum(char *s, double *pd, int nd)
+{
+	int n;
 
-	for (n = 0; n < nd && isdigit(*s); ++n, ++s)
-		*pd = *pd * _dtens[1] + (*s - '0');
-	return (n);
-	}
+	for (n = 0; n < nd && ISDIGIT(*s); ++n, ++s)
+		*pd = *pd * 10.0 + (*s - '0');
+	return n;
+}
 
-/*	put lexeme for '...'
+
+/*
+ * put lexeme for '...'
  */
-TLIST *lexchars(p)
-	FAST TLIST *p;
-	{
-	FAST BYTES i, n;
-	LONG lo;
-	TINY sbuf[STRSIZE];
-	TINY ty;
+static TLIST *lexchars(TLIST *p)
+{
+	size_t i, n;
+	int32_t lo;
+	char sbuf[STRSIZE];
+	char ty;
 
 	n = doesc(sbuf, p->text, p->ntext) - 2;
 	for (i = (n < 4) ? 1 : n - 3, lo = 0; i <= n; ++i)
-		lo = lo << 8 | sbuf[i] & BYTMASK;
+		lo = (lo << 8) | (sbuf[i] & 0xff);
 	switch (n)
-		{
+	{
 	case 0:
 		ty = LCNUM;
 		break;
 	case 1:
-		ty = (0 <= sbuf[1]) ? LCNUM : LSNUM;
+		ty = 0 <= sbuf[1] ? LCNUM : LSNUM;
 		break;
 	case 2:
-		ty = (0 <= sbuf[1]) ? LSNUM : LUSNUM;
+		ty = 0 <= sbuf[1] ? LSNUM : LUSNUM;
 		break;
 	default:
-		ty = (lo < 0) ? LULNUM : LLNUM;
-		}
-	putcode("c4", ty, &lo);
-	return (p->next);
+		ty = lo < 0 ? LULNUM : LLNUM;
+		break;
 	}
+	putcode("c4", ty, &lo);
+	return p->next;
+}
 
-/*	put out floating constant
+
+/*
+ * move to next lexeme for floating constant if necessary
  */
-TLIST *lexfloat(p)
+static char *lexfnxt(TLIST **pp, char *s)
+{
 	TLIST *p;
-	{
-	IMPORT DOUBLE _dzero, dtento();
-	FAST BYTES n;
-	FAST TEXT *s;
-	BOOL minus;
-	COUNT exp, x;
-	DOUBLE dnum;
 
+	p = *pp;
+	if (p->text + p->ntext <= s)
+	{
+		p = p->next;
+		*pp = p;
+		return p->text;
+	} else
+		return s;
+}
+
+
+/*
+ * put out floating constant
+ */
+static TLIST *lexfloat(TLIST *p)
+{
+	size_t n;
+	char *s;
+	BOOL minus;
+	int exp;
+	short x;
+	double dnum;
+	
 	s = p->text;
-	dnum = _dzero;
-	s =+ flaccum(s, &dnum, p->ntext);
+	dnum = 0.0;
+	s += flaccum(s, &dnum, p->ntext);
 	s = lexfnxt(&p, s);
 	if (*s == '.')
-		{
+	{
 		p = p->next, s = p->text;
 		n = flaccum(s, &dnum, p->ntext);
 		exp = -n;
-		s =+ n;
-		}
-	else
+		s += n;
+	} else
+	{
 		exp = 0;
+	}
 	s = lexfnxt(&p, s);
-	if (tolower(*s) == 'e')
-		{
+	if (*s == 'e' || *s == 'E')
+	{
 		++s;
 		s = lexfnxt(&p, s);
-		minus = NO;
+		minus = FALSE;
 		if (*s == '+')
+		{
 			++s;
-		else if (*s == '-')
-			{
+		} else if (*s == '-')
+		{
 			++s;
-			minus = YES;
-			}
-		s = lexfnxt(&p, s);
-		s =+ btos(s, p->ntext - (s - p->text), &x, 10);
-		if (minus)
-			exp =- x;
-		else
-			exp =+ x;
+			minus = TRUE;
 		}
-	dnum = dtento(dnum, exp);
+		s = lexfnxt(&p, s);
+		s += _btos(s, p->ntext - (s - p->text), &x, 10);
+		if (minus)
+			exp -= x;
+		else
+			exp += x;
+	}
+	dnum = _dtento(dnum, exp);
 	putcode("c8", LDNUM, &dnum);
 	if (s == p->text)
 		;
 	else if (p->text + p->ntext == s)
 		p = p->next;
 	else
-		{
-		p = p->next;
-		perror("illegal float constant");
-		}
-	return (p);
-	}
-
-/*	move to next lexeme for floating constant if necessary
- */
-TEXT *lexfnxt(pp, s)
-	TLIST **pp;
-	TEXT *s;
 	{
-	FAST TLIST *p;
-
-	p = *pp;
-	if (p->text + p->ntext <= s)
-		{
 		p = p->next;
-		*pp = p;
-		return (p->text);
-		}
-	else
-		return (s);
+		p0error("illegal float constant");
 	}
+	return p;
+}
 
-/*	put lexeme for identifier or keyword
+
+/*
+ * put lexeme for identifier or keyword
  */
-TLIST *lexident(p)
-	FAST TLIST *p;
-	{
-	IMPORT PRETAB keytab[];
-	FAST BYTES n;
-	FAST LEX tok;
+static TLIST *lexident(TLIST *p)
+{
+	size_t n;
+	LEX tok;
 
 	n = min(p->ntext, LENNAME);
-	if (tok = scntab(keytab, NKEYS, p->text, n))
+	if ((tok = scntab(keytab, NKEYS, p->text, n)) != 0)
 		putcode("c", tok);
 	else
-		putcode("ccb", LIDENT, n, p->text, n);
-	return (p->next);
-	}
+		putcode("ccb", LIDENT, n, p->text, (int)n);
+	return p->next;
+}
 
-/*	put a long or integer constant
+
+/*
+ * put a long or integer constant
  */
-TLIST *lexint(p, base, nskip)
-	FAST TLIST *p;
-	COUNT base;
-	BYTES nskip;
-	{
-	FAST BOOL signed;
-	FAST BYTES n;
-	COUNT snum, unum;
-	LONG lnum;
-	TINY cnum, ty;
+static TLIST *lexint(TLIST *p, int base, size_t nskip)
+{
+	BOOL issigned;
+	size_t n;
+	int snum;
+	int unum;
+	long lnum;
+	int32_t inum;
+	char cnum, ty;
 
-	signed = (base == 10);
+	issigned = base == 10;
+
 	n = p->ntext - nskip;
-	if (btol(p->text + nskip, n, &lnum, base) < n)
-		perror("illegal constant %b", p->text, p->ntext);
-	unum = (ULONG)lnum >> 16;
+	if (_btol(p->text + nskip, n, &lnum, base) < n)
+		p0error("illegal constant %s", p->text);
+	unum = (unsigned long) lnum >> 16;
 	snum = lnum;
 	cnum = snum;
-	if (tolower(p->text[p->ntext - 1]) == 'l' ||
-		signed && snum != lnum || !signed && unum)
-		ty = (signed || 0 <= lnum) ? LLNUM : LULNUM;
-	else if (signed && cnum != snum || !signed && (snum & ~BYTMASK))
-		ty = (signed || 0 <= snum) ? LSNUM : LUSNUM;
+	if (p->text[p->ntext - 1] == 'l' || p->text[p->ntext - 1] == 'L' || (issigned && snum != lnum) || (!issigned && unum))
+		ty = (issigned || 0 <= lnum) ? LLNUM : LULNUM;
+	else if ((issigned && cnum != snum) || (!issigned && (snum & ~0xff)))
+		ty = (issigned || 0 <= snum) ? LSNUM : LUSNUM;
 	else
-		ty = (signed || 0 <= cnum) ? LCNUM : LSNUM;
-	putcode("c4", ty, &lnum);
-	return (p->next);
-	}
+		ty = (issigned || 0 <= cnum) ? LCNUM : LSNUM;
+	inum = lnum;
+	putcode("c4", ty, &inum);
+	return p->next;
+}
 
-/*	put lexeme for integer or float
+
+/*
+ * put lexeme for integer or float
  */
-TLIST *lexnum(p)
-	FAST TLIST *p;
-	{
-	FAST BYTES n;
+static TLIST *lexnum(TLIST *p)
+{
+	size_t n;
 
 	n = firnon(p->text, p->ntext, 10);
-	if (punct(p, '.') || n < p->ntext && tolower(p->text[n]) == 'e'
-		|| punct(p->next, '.'))
-		return (lexfloat(p));
+	if (punct(p, '.') || (n < p->ntext && (p->text[n] == 'e' || p->text[n] == 'E')) || punct(p->next, '.'))
+		return lexfloat(p);
 	else if (p->text[0] != '0')
-		return (lexint(p, 10, 0));
-	else if (1 < p->ntext && tolower(p->text[1]) == 'x')
-		return (lexint(p, 16, 2));
+		return lexint(p, 10, 0);
+	else if (1 < p->ntext && (p->text[1] == 'x' || p->text[1] == 'X'))
+		return lexint(p, 16, 2);
 	else
-		return (lexint(p, 8, 1));
-	}
+		return lexint(p, 8, 1);
+}
 
-/*	put lexeme for punctuation
+
+/*
+ * put lexeme for punctuation
  */
-TLIST *lexpunct(p)
-	TLIST *p;
-	{
+static TLIST *lexpunct(TLIST *p)
+{
 	putcode("c", dopunct(&p));
-	return (p);
-	}
+	return p;
+}
 
-/*	put lexeme for "..."
+
+/*
+ * put lexeme for "..."
  */
-TLIST *lexstring(p)
-	FAST TLIST *p;
-	{
-	COUNT n;
-	TEXT sbuf[STRSIZE];
+static TLIST *lexstring(TLIST *p)
+{
+	int16_t n;
+	char sbuf[STRSIZE];
 
 	n = doesc(sbuf, p->text, p->ntext) - 2;
 	putcode("c2b", LSTRING, &n, &sbuf[1], n);
-	return (p->next);
-	}
+	return p->next;
+}
 
-/*	put lexemes to stdout
+
+/*
+ * put lexemes to stdout
  */
-VOID putcode(fmt, args)
-	TEXT *fmt, *args;
+void putcode(const char *fmt, ...)
+{
+	const char *f;
+	char *q;
+	int i;
+	va_list args;
+	
+	va_start(args, fmt);
+	for (f = fmt; *f; ++f)
 	{
-	FAST BYTES *p;
-	FAST TEXT *f, *q;
-	COUNT i;
-
-	for (f = fmt, p = &args; *f; ++f)
 		if (*f == 'c')
-			putch(*p++ & BYTMASK);
-		else
-			{
-			q = *p++;
-			i = (*f == 'b') ? *p++ : (*f == 'p') ? lenstr(q) : *f - '0';
+		{
+			putchar(va_arg(args, int) & 0xff);
+		} else
+		{
+			q = va_arg(args, char *);
+			i = *f == 'b' ? va_arg(args, int) : *f == 'p' ? (int)strlen(q) : *f - '0';
 			while (0 <= --i)
-				putch(*q++ & BYTMASK);
-			}
+				putchar(*q++ & 0xff);
+		}
 	}
+	va_end(args);
+}
 
-/*	put a line without #'s
+
+/*
+ * put a line without #'s
  */
-VOID putls(p)
-	FAST TLIST *p;
-	{
-	IMPORT BOOL xflag, v6flag;
-	IMPORT INCL *pincl;
-	IMPORT BOOL pflag;
-	FAST TLIST *q;
-	INTERN COUNT xlno;
+void putls(TLIST *p)
+{
+	TLIST *q;
+	static int xlno;
 
 	if (!xflag)
-		{
+	{
 		if (!v6flag)
+		{
 			;
-		else if (pincl->fname)
-			putlin("\1", 1);
-		else
+		} else if (pincl->fname)
+		{
+			fputs("\1", stdout);
+		} else
+		{
 			while (++xlno < pincl->nline)
-				putlin("\n", 1);
-		for (q = p; ; q = q->next)
-			{
-			putlin(q->white, q->nwhite);
+				fputs("\n", stdout);
+		}
+		for (q = p;; q = q->next)
+		{
+			fwrite(q->white, q->nwhite, 1, stdout);
 			if (!q->next)
 				break;
-			putlin(q->text, q->ntext);
-			}
-		putlin("\n", 1);
+			fwrite(q->text, q->ntext, 1, stdout);
 		}
-	else
-		{
+		fputs("\n", stdout);
+	} else
+	{
 		if (p->type != PEOL)
-			{
+		{
 			if (pincl)
-				putcode("c2", LLINENO, &pincl->nline);
-			if (pflag)
-				{
-				pflag = NO;
-				if (pincl)
-					putcode("ccp", LIFILE,
-					(pincl->fname) ? lenstr(pincl->fname) : 0,
-					(pincl->fname) ? pincl->fname : "");
-				}
+			{
+				int16_t nline = pincl->nline;
+				putcode("c2", LLINENO, &nline);
 			}
-		for (; p->type != PEOL; )
+			if (pflag)
+			{
+				pflag = FALSE;
+				if (pincl)
+					putcode("ccp", LIFILE, pincl->fname ? (int)strlen(pincl->fname) : 0, pincl->fname ? pincl->fname : "");
+			}
+		}
+		for (; p->type != PEOL;)
+		{
 			if (p->type == PIDENT)
 				p = lexident(p);
 			else if (p->type == PSTRING)
 				p = lexstring(p);
 			else if (p->type == PCHCON)
 				p = lexchars(p);
-			else if (p->type == PNUM ||
-				(punct(p, '.') && p->next->type == PNUM))
+			else if (p->type == PNUM || (punct(p, '.') && p->next->type == PNUM))
 				p = lexnum(p);
 			else
 				p = lexpunct(p);
 		}
 	}
+}

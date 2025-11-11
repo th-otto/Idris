@@ -97,7 +97,7 @@ LABEL pcase(at)
 VOID pcode(c)
 	COUNT c;
 	{
-	putch(c & BYTMASK);
+	putch(c & 0xff);
 	}
 
 /*	put data name
@@ -228,7 +228,7 @@ LABEL pjf(q, fb, tb)
 	else if (q->op == LNOT)
 		return (pjt(q->e.o.left, tb, fb));
 	else if (relops[i = scnstr(relops, q->op)])
-		fb = pjc(reflip[i] & BYTMASK, q->e.o.left, q->e.o.right, fb);
+		fb = pjc(reflip[i] & 0xff, q->e.o.left, q->e.o.right, fb);
 	else
 		fb = pjc(LISEQ, q, &zeterm, fb);
 	plabel(tb);

@@ -215,7 +215,7 @@ VOID relseg(fd)
 			}
 		else
 			{
-			i = cb[0].cbase->val + (cb[0].cbuf[0] & BYTMASK)
+			i = cb[0].cbase->val + (cb[0].cbuf[0] & 0xff)
 				+ (cb[0].cbuf[1] << 8);
 			b = (COUNT)cb[0].cbase->base;
 			cb[0].cbuf[0] = i;

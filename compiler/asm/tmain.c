@@ -157,7 +157,7 @@ err("/getal %ac", c);
 		return (t);
 	else if (tval = scntab(valtab, NVALS, tname, i))
 		{
-		tval =& BYTMASK;
+		tval =& 0xff;
 		return (N);
 		}
 	else

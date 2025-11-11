@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "util.h"
 
 BOOL lsfmt = FALSE;
@@ -204,4 +205,39 @@ void _error(const char *s1, const char *s2)
 {
 	_remark(s1, s2);
 	exit(1);
+}
+
+
+size_t _btol(const char *s, size_t n, long *l, int base)
+{
+	char buf[40];
+	char *end;
+	
+	*l = 0;
+	if (n == 0 || n >= sizeof(buf))
+		return 0;
+	memcpy(buf, s, n);
+	buf[sizeof(buf) - 1] = '\0';
+	*l = strtol(buf, &end, base);
+	return end - buf;
+}
+
+
+size_t _btoi(const char *s, size_t n, int *i, int base)
+{
+	long l;
+	
+	n = _btol(s, n, &l, base);
+	*i = l;
+	return n;
+}
+
+
+size_t _btos(const char *s, size_t n, short *i, int base)
+{
+	long l;
+	
+	n = _btol(s, n, &l, base);
+	*i = l;
+	return n;
 }

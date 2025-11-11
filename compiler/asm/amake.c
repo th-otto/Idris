@@ -237,9 +237,9 @@ META getesc(tchar)
 			return (i);
 			}
 		else
-			return (c & BYTMASK);
+			return (c & 0xff);
 	default:
-		return ((c == tchar) ? -1 : c & BYTMASK);
+		return ((c == tchar) ? -1 : c & 0xff);
 		}
 	cherr("missing", tchar);
 	bchar(c);

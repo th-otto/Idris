@@ -351,7 +351,7 @@ LOCAL VOID setcode(q, inst, hdr, size)
 	CODE *hdr;
 	BYTES size;
 	{
-	q->inst = inst & BYTMASK;
+	q->inst = inst & 0xff;
 	q->c.hdr = hdr;
 	q->size = size;
 	}

@@ -409,7 +409,7 @@ COUNT getch()
 	if (nin <= 0)
 		return (nin = -1);
 	--nin;
-	return (*bnext++ & BYTMASK);
+	return (*bnext++ & 0xff);
 	}
 
 /*	put a character buffered

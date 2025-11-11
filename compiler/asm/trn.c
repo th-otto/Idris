@@ -190,7 +190,7 @@ TERM *litlbl(p, lbl)
 VOID putbyte(c)
 	META c;
 	{
-	putfmt("\tdb %i\n", c & BYTMASK);
+	putfmt("\tdb %i\n", c & 0xff);
 	}
 
 /*	put program footer
@@ -330,7 +330,7 @@ VOID putval(code, p)
 				putfmt("%i", p->val);
 			}
 		else if (code == N)
-			putfmt("%i", p->val & BYTMASK);
+			putfmt("%i", p->val & 0xff);
 		else
 			putfmt("%i", p->val);
 		}

@@ -313,7 +313,7 @@ LABEL jf(p, fb, tb, set)
 	case LGEQ:
 	case LISEQ:
 	case LNOTEQ:
-		jc(0, flpops[scnstr(lexops, p->op)] & BYTMASK, fb,
+		jc(0, flpops[scnstr(lexops, p->op)] & 0xff, fb,
 			p->e.o.left, p->e.o.right, set);
 		break;
 	default:
@@ -352,7 +352,7 @@ LABEL jt(p, fb, tb, set)
 	case LGEQ:
 	case LISEQ:
 	case LNOTEQ:
-		jc(0, cmpops[scnstr(lexops, p->op)] & BYTMASK,
+		jc(0, cmpops[scnstr(lexops, p->op)] & 0xff,
 			tb, p->e.o.left, p->e.o.right, set);
 		break;
 	default:

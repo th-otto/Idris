@@ -109,7 +109,7 @@ TERM *mbin()
 	else if (gettok(&tok)->type != LGETS)
 		baktok(&tok);
 	else if (gop = getsops[scnstr(binops, op)])
-		op = gop & BYTMASK;
+		op = gop & 0xff;
 	else
 		baktok(&tok);
 	return (buyop(op, NULL, NULL));
@@ -284,7 +284,7 @@ TERM *mterm(mand)
 	case LMINUS:
 	case LNOT:
 	case LCOMP:
-		return (buyop(unops[scnstr(untoks, tok.type)] & BYTMASK,
+		return (buyop(unops[scnstr(untoks, tok.type)] & 0xff,
 			mterm(YES), 0));
 	case LINCR:
 	case LDECR:

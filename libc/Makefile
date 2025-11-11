@@ -100,7 +100,9 @@ LIBB_OBJS = \
 	abs.o \
 	b_astat.o \
 	b_cstat.o \
+	_addexp.o \
 	brk.o \
+	cfcon.o \
 	chkio.o \
 	chdir.o \
 	close.o \
@@ -115,6 +117,7 @@ LIBB_OBJS = \
 	doclose.o \
 	doread.o \
 	dowrite.o \
+	_dtento.o \
 	dup.o \
 	error.o \
 	fabs.o \
@@ -195,6 +198,7 @@ LIBC_OBJS = \
 	cmpstr.o \
 	cwd.o \
 	decode.o \
+	dtento.o \
 	encode.o \
 	fdopen.o \
 	fileno.o \
@@ -203,6 +207,7 @@ LIBC_OBJS = \
 	getf.o \
 	getflags.o \
 	doesc.o \
+	frelst.o \
 	getin.o \
 	getfmt.o \
 	getl.o \
@@ -211,6 +216,7 @@ LIBC_OBJS = \
 	instr.o \
 	itols.o \
 	lfree.o \
+	_lfree.o \
 	lstoi.o \
 	lstol.o \
 	lstou.o \

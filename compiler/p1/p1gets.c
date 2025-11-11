@@ -27,7 +27,7 @@ LEX alt(p)
 	gettok(&tok);
 	if (!(lex = p[scnstr(p, tok.type)]))
 		baktok(&tok);
-	return (lex & BYTMASK);
+	return (lex & 0xff);
 	}
 
 /*	put a token back onto the input stream stack
@@ -75,7 +75,7 @@ COUNT getch()
 	if (nin <= 0)
 		return (nin = EOF);
 	--nin;
-	return (*bnext++ & BYTMASK);
+	return (*bnext++ & 0xff);
 	}
 
 /*	get a series of characters

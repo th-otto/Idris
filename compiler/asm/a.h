@@ -1,7 +1,10 @@
 /*	HEADER FILE FOR A NATURAL
  *	copyright (c) 1979 by Whitesmiths, Ltd.
  */
-#define LENNAME	8
+#ifndef __WCONFIG__
+#include "wconfig.h"
+#endif
+
 #define MAXNAME	64
 #define MAXSTR	127
 #define NSYM	64

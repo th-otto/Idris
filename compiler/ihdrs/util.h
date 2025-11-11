@@ -40,6 +40,10 @@ void ltols(unsigned char *pl, int32_t lo);
 
 void *buybuf(const void *s, size_t n);
 
+size_t _btos(const char *s, size_t n, short *i, int base);
+size_t _btoi(const char *s, size_t n, int *i, int base);
+size_t _btol(const char *s, size_t n, long *l, int base);
+
 int usage(const char *msg);
 char *getflags(int *pac, char ***pav, const char *fmt, ...);
 size_t getlin(char *s, size_t n);

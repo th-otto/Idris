@@ -2,6 +2,10 @@
  *	copyright (c) 1979 by Whitesmiths, Ltd.
  */
 
+#ifndef __WCONFIG__
+#include "wconfig.h"
+#endif
+
 /*	the quasi types
  */
 #define LABEL	short
@@ -26,7 +30,6 @@
 /*	parameters
  */
 #define AUTOFF	6
-#define LENNAME	8
 
 #define ISDATA	1
 #define ISLITS	2

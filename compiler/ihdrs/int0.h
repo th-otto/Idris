@@ -2,10 +2,8 @@
  *	copyright (c) 1978 by Whitesmiths, Ltd.
  */
 
-#ifdef LONGNAME
-#define LENNAME	32
-#else
-#define LENNAME	8
+#ifndef __WCONFIG__
+#include "wconfig.h"
 #endif
 
 /*	the types
@@ -39,7 +37,7 @@
 #define INCL	struct incl
 
 struct incl {
-	char *next;
+	struct incl *next;
 	char *fname;
 	int nline;
 	FILE *pfio;
@@ -50,7 +48,7 @@ struct incl {
 #define PRETAB	struct pretab
 
 struct pretab {
-	char *prename;
+	const char *prename;
 	LEX pretype;
 };
 
@@ -59,7 +57,7 @@ struct pretab {
 #define TLIST	struct tlist
 
 struct tlist {
-	char *next;
+	struct tlist *next;
 	LEX type;
 	char *white;
 	size_t nwhite;
@@ -72,7 +70,7 @@ struct tlist {
 #define ALIST	struct alist
 
 struct alist {
-	char *next;
+	struct alist *next;
 	TLIST *astart;
 	TLIST *aend;
 };
@@ -84,7 +82,7 @@ struct alist {
 #define STRSIZE	512
 
 struct def {
-	char *next;
+	struct def *next;
 	size_t dnlen;
 	char *defn;
 	char dname[LENNAME];
