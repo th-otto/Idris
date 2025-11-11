@@ -251,6 +251,7 @@ special devices.
 ################################################################################
 
 !begin_node _pname - program name
+!ignore_index
 !label _pname
 !html_name _pname
 
@@ -275,6 +276,7 @@ It is used primarily for labelling diagnostic printouts.
 ################################################################################
 
 !begin_node brk - set system break to address
+!ignore_index
 !label brk
 !html_name brk
 
@@ -316,6 +318,7 @@ sbreak
 ################################################################################
 
 !begin_node chdir - change working directory
+!ignore_index
 !label chdir
 !html_name chdir
 
@@ -346,6 +349,7 @@ chdir("/tmp");
 ################################################################################
 
 !begin_node chmod - change mode of file
+!ignore_index
 !label chmod
 !html_name chmod
 
@@ -388,6 +392,7 @@ getmod
 ################################################################################
 
 !begin_node chown - change owner of file
+!ignore_index
 !label chown
 !html_name chown
 
@@ -425,6 +430,7 @@ getgid, getuid
 ################################################################################
 
 !begin_node close - close a file
+!ignore_index
 !label close
 !html_name close
 
@@ -465,6 +471,7 @@ creat, open, remove, uniqnm
 ################################################################################
 
 !begin_node creat - make a new file
+!ignore_index
 !label creat
 !html_name creat
 
@@ -504,6 +511,7 @@ chmod, close, create, open, remove, uniqnm
 ################################################################################
 
 !begin_node create - open an empty instance of a file
+!ignore_index
 !label create
 !html_name create
 
@@ -551,6 +559,7 @@ close, open, remove, uniqnm
 ################################################################################
 
 !begin_node dup - duplicate a file descriptor
+!ignore_index
 !label dup
 !html_name dup
 
@@ -592,6 +601,7 @@ close, creat, create, open, pipe
 
 # FIXME: belongs to support library
 !begin_node execl - execute a file with argument list
+!ignore_index
 !label execl
 !html_name execl
 
@@ -672,6 +682,7 @@ NULs.
 
 # FIXME: belongs to support library
 !begin_node execv - execute a file with argument vector
+!ignore_index
 !label execv
 !html_name execv
 
@@ -711,6 +722,7 @@ execl
 ################################################################################
 
 !begin_node exit - terminate program execution
+!ignore_index
 !label exit
 !html_name exit
 
@@ -749,6 +761,7 @@ onexit
 ################################################################################
 
 !begin_node fork - create a new process
+!ignore_index
 !label fork
 !html_name fork
 
@@ -803,6 +816,7 @@ parent dies. A prolific parent can thus overpopulate the system.
 ################################################################################
 
 !begin_node fstat - get status of open file
+!ignore_index
 !label fstat
 !html_name fstat
 
@@ -858,6 +872,7 @@ chmod, getmod, stat
 ################################################################################
 
 !begin_node getcsw - get console switches
+!ignore_index
 !label getcsw
 !html_name getcsw
 
@@ -891,6 +906,7 @@ Many systems have no console switches in real life.
 ################################################################################
 
 !begin_node getegid - get effective groupid
+!ignore_index
 !label getegid
 !html_name getegid
 
@@ -923,6 +939,7 @@ getgid, setgid
 ################################################################################
 
 !begin_node geteuid - get effective userid
+!ignore_index
 !label geteuid
 !html_name geteuid
 
@@ -955,6 +972,7 @@ getuid, setuid
 ################################################################################
 
 !begin_node getgid - get real groupid
+!ignore_index
 !label getgid
 !html_name getgid
 
@@ -987,6 +1005,7 @@ getegid, setgid
 ################################################################################
 
 !begin_node getmod - get mode of file
+!ignore_index
 !label getmod
 !html_name getmod
 
@@ -1022,6 +1041,7 @@ chmod
 ################################################################################
 
 !begin_node getpid - get processld
+!ignore_index
 !label getpid
 !html_name getpid
 
@@ -1056,6 +1076,7 @@ uniqnm
 ################################################################################
 
 !begin_node getuid - get real userid
+!ignore_index
 !label getuid
 !html_name getuid
 
@@ -1088,6 +1109,7 @@ geteuid, setuid
 ################################################################################
 
 !begin_node gtty - get tty status
+!ignore_index
 !label gtty
 !html_name gtty
 
@@ -1208,6 +1230,7 @@ stty
 ################################################################################
 
 !begin_node kill - send signal to a process
+!ignore_index
 !label kill
 !html_name kill
 
@@ -1275,6 +1298,7 @@ kill is a misnomer, as it can be used to perform many other functions.
 ################################################################################
 
 !begin_node link - create link to file
+!ignore_index
 !label link
 !html_name link
 
@@ -1315,6 +1339,7 @@ injudicious calls on link.
 ################################################################################
 
 !begin_node lseek - set file read/write pointer
+!ignore_index
 !label lseek
 !html_name lseek
 
@@ -1367,6 +1392,7 @@ BYTES blkno;
 # disabled because that function does not exist
 !if 0
 !begin_node mkexec - make file executable
+!ignore_index
 !label mkexec
 !html_name mkexec
 
@@ -1403,6 +1429,7 @@ chmod
 ################################################################################
 
 !begin_node mknod - make a special inode
+!ignore_index
 !label mknod
 !html_name mknod
 
@@ -1444,6 +1471,7 @@ mknod("/dev/tty9", 0120622, major << 8 | minor);
 ################################################################################
 
 !begin_node mount - mount a file system
+!ignore_index
 !label mount
 !html_name mount
 
@@ -1487,6 +1515,7 @@ umount
 ################################################################################
 
 !begin_node nice - set priority
+!ignore_index
 !label nice
 !html_name nice
 
@@ -1527,6 +1556,7 @@ nice is a misnomer, since it can be used to do unnice things.
 
 # FIXME: belongs to support library
 !begin_node onexit - call function on program exit
+!ignore_index
 !label onexit
 !html_name onexit
 
@@ -1569,6 +1599,7 @@ The type declarations defy description, and are still wrong.
 
 # FIXME: belongs to support library
 !begin_node onintr - capture interrupts
+!ignore_index
 !label onintr
 !html_name onintr
 
@@ -1630,6 +1661,7 @@ onexit
 ################################################################################
 
 !begin_node open - open a file
+!ignore_index
 !label open
 !html_name open
 
@@ -1673,6 +1705,7 @@ close, creat
 ################################################################################
 
 !begin_node pipe - setup a data pipe
+!ignore_index
 !label pipe
 !html_name pipe
 
@@ -1736,6 +1769,7 @@ close, creat, create, dup, execl, execv, open, read, write
 ################################################################################
 
 !begin_node profil - set profiler parameters
+!ignore_index
 !label profil
 !html_name profil
 
@@ -1780,6 +1814,7 @@ profil(buf, size, 0, ((BYTES)-1 >> 2) + 1); /* [sic] */
 ################################################################################
 
 !begin_node read - read from a file
+!ignore_index
 !label read
 !html_name read
 
@@ -1820,6 +1855,7 @@ write
 ################################################################################
 
 !begin_node remove - remove a file
+!ignore_index
 !label remove
 !html_name remove
 
@@ -1860,6 +1896,7 @@ creat, unlink
 
 # FIXME: belongs to support library
 !begin_node sbreak - set system break
+!ignore_index
 !label sbreak
 !html_name sbreak
 
@@ -1899,6 +1936,7 @@ brk
 ################################################################################
 
 !begin_node seek - set file read/write pointer
+!ignore_index
 !label seek
 !html_name seek
 
@@ -1950,6 +1988,7 @@ lseek
 ################################################################################
 
 !begin_node setgid - set groupid
+!ignore_index
 !label setgid
 !html_name setgid
 
@@ -1985,6 +2024,7 @@ getgid
 ################################################################################
 
 !begin_node setuid - set userld
+!ignore_index
 !label setuid
 !html_name seuid
 
@@ -2020,6 +2060,7 @@ getuid
 ################################################################################
 
 !begin_node signal - capture signals
+!ignore_index
 !label signal
 !html_name signal
 
@@ -2072,6 +2113,7 @@ execl, execv, fork, kill
 ################################################################################
 
 !begin_node sleep - delay for awhile
+!ignore_index
 !label sleep
 !html_name sleep
 
@@ -2103,6 +2145,7 @@ while ((fd = creat("lock", 0444)) < 0)
 ################################################################################
 
 !begin_node stat - get status of named file
+!ignore_index
 !label stat
 !html_name stat
 
@@ -2141,6 +2184,7 @@ chmod, fstat, getmod
 ################################################################################
 
 !begin_node stime - set system time
+!ignore_index
 !label stime
 !html_name stime
 
@@ -2176,6 +2220,7 @@ time
 ################################################################################
 
 !begin_node stty - set tty status
+!ignore_index
 !label stty
 !html_name stty
 
@@ -2216,6 +2261,7 @@ gtty
 ################################################################################
 
 !begin_node sync - synchronize disks with memory
+!ignore_index
 !label sync
 !html_name sync
 
@@ -2256,6 +2302,7 @@ FOREVER
 ################################################################################
 
 !begin_node time - get system time
+!ignore_index
 !label time
 !html_name time
 
@@ -2289,6 +2336,7 @@ stime
 ################################################################################
 
 !begin_node times - get process times
+!ignore_index
 !label times
 !html_name times
 
@@ -2331,6 +2379,7 @@ time
 ################################################################################
 
 !begin_node umount - unmount a filesystem
+!ignore_index
 !label umount
 !html_name umount
 
@@ -2373,6 +2422,7 @@ mount
 
 # FIXME: belongs to support library
 !begin_node uniqnm - create a unique file name
+!ignore_index
 !label uniqnm
 !html_name uniqnm
 
@@ -2418,6 +2468,7 @@ files so named are not meticulously removed.
 ################################################################################
 
 !begin_node unlink - erase link to file
+!ignore_index
 !label unlink
 !html_name unlink
 
@@ -2457,6 +2508,7 @@ injudicious calls on unlink.
 ################################################################################
 
 !begin_node wait - wait for child to terminate
+!ignore_index
 !label wait
 !html_name wait
 
@@ -2502,6 +2554,7 @@ fork
 ################################################################################
 
 !begin_node write - write to a file
+!ignore_index
 !label write
 !html_name write
 
@@ -2539,6 +2592,7 @@ read
 ################################################################################
 
 !begin_node xecl - execute a file with argument list
+!ignore_index
 !label xecl
 !html_name xecl
 
@@ -2606,6 +2660,7 @@ xecv
 ################################################################################
 
 !begin_node xecv - execute a file with argument vector
+!ignore_index
 !label xecv
 !html_name xecv
 
@@ -2638,6 +2693,7 @@ xecl
 !if 0
 
 !begin_node xx
+!ignore_index
 !label x
 !html_name x
 

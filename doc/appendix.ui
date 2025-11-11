@@ -42,4 +42,16 @@ struct tms {
 !end_sourcecode
 !end_node
 
+################################################################################
+
+!begin_node struct _prof
+!begin_sourcecode
+struct _prof {
+    UCOUNT config, esize; 
+    BYTES pbuf, psize, offset, scale, tbias, ebias;
+    TEXT *fname;
+};
+!end_sourcecode
+!end_node
+
 !end_node
