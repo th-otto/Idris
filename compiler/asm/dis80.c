@@ -116,11 +116,6 @@ BOOL disasm(fd, fn)
 	FILE fd;
 	TEXT *fn;
 	{
-	IMPORT BOOL ifl;
-	IMPORT SYMBOL *symtab;
-	IMPORT TEXT *mapc();
-	IMPORT UCOUNT dbias, dsize, tbias, tsize;
-
 	if (!chkmagic(fd))
 		return (remark("bad file format: ", fn));
 	gethdr(fd);
@@ -145,7 +140,6 @@ UTINY getby(fd, idx)
 	FILE fd;
 	COUNT idx;
 	{
-	IMPORT IOBUF ibuf[];
 	FAST IOBUF *p = &ibuf[idx];
 
 	if (!p->n)
@@ -166,8 +160,6 @@ UTINY getby(fd, idx)
 VOID gethdr(fd)
 	FILE fd;
 	{
-	IMPORT UCOUNT bsize, dbias, dsize, sbytes;
-	IMPORT UCOUNT ssize, tbias, tsize, xstos();
 	TEXT bhdr[HSIZE - 2];
 
 	fread(fd, bhdr, HSIZE - 2);
@@ -185,9 +177,6 @@ VOID gethdr(fd)
 VOID getsym(fd)
 	FILE fd;
 	{
-	IMPORT COUNT numsym;
-	IMPORT SYMBOL *symtab;
-	IMPORT UCOUNT dsize, sbytes, tsize, xstos();
 	FAST COUNT i;
 	FAST SYMBOL *ps;
 	COUNT entsize = {VALSIZE + FLGSIZE + LENNAME};
@@ -206,8 +195,6 @@ VOID getsym(fd)
  */
 VOID initbuf()
 	{
-	IMPORT IOBUF ibuf[];
-	IMPORT UCOUNT dsize, sbytes, tsize;
 	FAST IOBUF *p, *q;
 	INTERN UTINY bufs[2][IBSIZE];
 
@@ -229,7 +216,6 @@ BOOL main(ac, av)
 	BYTES ac;
 	TEXT **av;
 	{
-	IMPORT BOOL cfl, ifl, manyfls, success;
 	FAST FILE fd;
 
 	getflags(&ac, &av, "c,i:F <files>", &cfl, &ifl);
@@ -258,8 +244,6 @@ BOOL main(ac, av)
  */
 TEXT *mapc()
 	{
-	IMPORT BOOL ifl;
-
 	return(ifl ? "?@" : ".$");
 	}
 
@@ -269,9 +253,6 @@ VOID mapsyms(s, bias)
 	TEXT *s;
 	COUNT bias;
 	{
-	IMPORT COUNT numsym;
-	IMPORT SYMBOL *symtab;
-	IMPORT TEXT cseg[], dseg[];
 	FAST COUNT j;
 	FAST TEXT *q;
 	FAST SYMBOL *ps;
@@ -320,10 +301,6 @@ BOOL putsect(fd, nin, bias, hdr, flags)
 	TEXT *hdr;
 	BITS flags;
 	{
-	IMPORT COUNT numsym;
-	IMPORT SYMBOL *symtab;
-	IMPORT TEXT cseg[], dseg[];
-	IMPORT UCOUNT bsize, dbias, dsize, tbias, tsize;
 	FAST BITS b, co;
 	FAST UCOUNT nabs;
 	SYMBOL *p;
@@ -408,8 +385,6 @@ VOID putsyms(fmt, mask, val)
 	TEXT *fmt;
 	BITS mask, val;
 	{
-	IMPORT COUNT numsym;
-	IMPORT SYMBOL *symtab;
 	FAST COUNT i;
 	FAST SYMBOL *ps;
 

@@ -17,9 +17,6 @@ VOID putexpr(q, indent)
 	FAST EXPR *q;
 	COUNT indent;
 	{
-	IMPORT BOOL pflag;
-	IMPORT TEXT *tyname[];
-	IMPORT TINY tytab[];
 	FAST BITS ty;
 	FAST COUNT i;
 
@@ -52,7 +49,6 @@ VOID putterm(q, indent)
 	FAST EXPR *q;
 	COUNT indent;
 	{
-	IMPORT BOOL pflag;
 	FAST COUNT i;
 
 	if (!pflag)
@@ -80,9 +76,6 @@ VOID putterm(q, indent)
 VOID putaddr(ad)
 	FAST ADDR *ad;
 	{
-	IMPORT TEXT *tyname[];
-	IMPORT TINY tytab[];
-
 	putfmt("%p", tyname[scnstr(tytab, ad->ty & 017)]);
 	putfmt(", (%i)%b+%os[%oc]",
 		ad->refs, ad->nm, inbuf(ad->nm, LENNAME, "\0"), ad->bias, ad->idx);
@@ -93,10 +86,6 @@ VOID putaddr(ad)
 VOID putfmt(fmt, args)
 	TEXT *fmt, *args;
 	{
-	IMPORT BOOL pflag;
-	IMPORT COUNT putl();
-	IMPORT FIO stdout;
-
 	if (!pflag)
 		return;
 	_putf(&putl, &stdout, fmt, &args);

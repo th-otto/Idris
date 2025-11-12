@@ -194,9 +194,6 @@ VOID emit(tab, leave)
 	HEADER *tab;
 	TEXT *leave;
 	{
-	IMPORT BYTES choff;
-	IMPORT TEXT *jtext[];
-	IMPORT TINY brops[];
 	FAST CODE *q;
 	FAST HEADER *p;
 
@@ -242,8 +239,6 @@ BITS fgen(p, reg, set, tab, rmatch)
 	TEXT **tab;
 	BOOL rmatch;
 	{
-	IMPORT TEXT noname[], *ptmov[];
-	IMPORT TINY ctab[], xtab[];
 	FAST TEXT *q;
 	BITS xreg, uses;
 	COUNT idx, lcode, rcode;
@@ -371,8 +366,6 @@ TEXT *pick(p, match)
 	FAST EXPR *p;
 	BOOL match;
 	{
-	IMPORT TEXT *(*bintab[])[];
-	IMPORT TINY binops[], equtype[], optytab[], regtype[];
 	FAST COUNT i;
 	FAST TEXT **q;
 	BITS lty, rty, mty;
@@ -409,8 +402,6 @@ TEXT *pick(p, match)
 BITS twant(code)
 	BITS code;
 	{
-	IMPORT BITS wantab[];
-
 	if (0374 <= (code =& 0xff))
 		return (wantab[0]);
 	else

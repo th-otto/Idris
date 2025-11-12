@@ -25,8 +25,6 @@ LOCAL TEXT *jcname[] {
 VOID define(q, p)
 	FAST TERM *q, *p;
 	{
-	IMPORT TERM *cobase, *dabase, *elc;
-	IMPORT TEXT *cseg, *dseg;
 	FAST TERM *pseg;
 	LEX pty;
 
@@ -71,8 +69,6 @@ VOID dobin(l, r, ot)
 	TERM *l, *r;
 	LEX ot;
 	{
-	IMPORT CODETAB *tabtab[];
-	IMPORT LEX bincodes[];
 	FAST CODETAB *tab;
 	FAST COUNT i;
 	FAST TEXT *s;
@@ -137,9 +133,6 @@ VOID dobin(l, r, ot)
 VOID dolit(p)
 	FAST TERM *p;
 	{
-	IMPORT LIT *littab;
-	IMPORT TERM *cobase;
-	IMPORT TEXT string[];
 	FAST LIT *q;
 	FAST TERM *pseg;
 	INTERN COUNT crs;
@@ -198,9 +191,6 @@ VOID putbyte(c)
 VOID putftr(p)
 	FAST TERM *p;
 	{
-	IMPORT LIT *littab;
-	IMPORT TERM *cobase;
-	IMPORT TEXT *cseg, *sname;
 	FAST LIT *q;
 	FAST TEXT *s;
 	TERM term;
@@ -251,9 +241,6 @@ VOID putftr(p)
 VOID puthdr(s)
 	FAST TEXT *s;
 	{
-	IMPORT BOOL iflag;
-	IMPORT TERM *cobase;
-	IMPORT TEXT *cseg;
 	FAST COUNT i;
 
 	addsym("stack")->base = cobase;
@@ -291,9 +278,6 @@ VOID putval(code, p)
 	LEX code;
 	FAST TERM *p;
 	{
-	IMPORT BOOL iflag;
-	IMPORT TEXT *crname[], *irname[], *jcname[];
-	IMPORT TINY crlist[], irlist[];
 	FAST COUNT i;
 	FAST LEX pty;
 

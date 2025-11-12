@@ -69,10 +69,6 @@ LABEL crs()
 LEX gtbody(qb)
 	FAST CODE **qb;
 	{
-	IMPORT BITS regmin, regset;
-	IMPORT BYTES lineno;
-	IMPORT COUNT nlabels;
-	IMPORT BYTES autmin, autoff;
 	FAST HEADER *p;
 	COUNT swskips;
 	EXPR *r, *s;
@@ -169,7 +165,6 @@ LEX gtbody(qb)
 HEADER *lookup(label)
 	FAST LABEL label;
 	{
-	IMPORT HEADER *labtab;
 	FAST HEADER *p, **qb;
 
 	for (qb = &labtab; p = *qb; qb = &p->next)
@@ -190,15 +185,6 @@ BOOL main(ac, av)
 	BYTES ac;
 	TEXT **av;
 	{
-	IMPORT BITS regmin, regset;
-	IMPORT BOOL ckflag, farflag, pflag;
-	IMPORT BYTES choff, xmask, yellow;
-	IMPORT COUNT nlabels;
-	IMPORT EXPR exzero;
-	IMPORT FILE errfd;
-	IMPORT HEADER *labtab;
-	IMPORT BYTES autmin, autoff;
-	IMPORT TEXT funname[], *ofile;
 	FAST HEADER *p;
 	COUNT size;
 	LABEL prof;
@@ -361,7 +347,6 @@ LOCAL VOID setcode(q, inst, hdr, size)
 VOID shorten(tab)
 	HEADER *tab;
 	{
-	IMPORT TINY brops[], jncops[];
 	FAST CODE *q;
 	FAST HEADER *p;
 	BYTES osize, pc;

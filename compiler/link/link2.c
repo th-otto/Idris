@@ -14,13 +14,6 @@ LONG docode(outbuf, rdbuf, ns, pp, pbhdr, bias, nin, ninit)
 	BHDR *pbhdr;
 	LONG bias, nin, ninit;
 	{
-	IMPORT BHDR obhdr;
-	IMPORT BOOL longint;
-	IMPORT BYTES xfl;
-	IMPORT LONG xstol();
-	IMPORT UCOUNT xstos();
-	IMPORT ULONG bsiz, dsiz, tsiz;
-	IMPORT BOOL lsfmt;
 	FAST UCOUNT b;
 	FAST COUNT co;
 	FAST SYMBOL *p;
@@ -161,8 +154,6 @@ LONG docode(outbuf, rdbuf, ns, pp, pbhdr, bias, nin, ninit)
  */
 VOID drcopy()
 	{
-	IMPORT FILE tfd;
-	IMPORT IOBUF obuf[];
 	FAST COUNT i, n;
 	FAST TEXT *p;
 	LONG nin = obuf[DREL].off;
@@ -183,9 +174,6 @@ VOID drcopy()
  */
 VOID *endeup()
 	{
-	IMPORT FILE tfd;
-	IMPORT VOID *(*nxtexit)();
-
 	close(tfd);
 	remove(uname());
 	return (nxtexit);
@@ -197,11 +185,6 @@ BOOL link1(fd, mand)
 	FILE fd;
 	BOOL mand;
 	{
-	IMPORT BOOL longint;
-	IMPORT BYTES xfl;
-	IMPORT COUNT lenname;
-	IMPORT LONG rebias(), xstol();
-	IMPORT ULONG bsiz, dsiz, tsiz;
 	FAST COUNT i;
 	FAST SYMBOL *q;
 	FAST TEXT *p;
@@ -270,14 +253,6 @@ BOOL link1(fd, mand)
 VOID link2(loff)
 	LONG loff;
 	{
-	IMPORT BHDR obhdr;
-	IMPORT BYTES xfl;
-	IMPORT BOOL lsfmt, txtrev;
-	IMPORT COUNT lenname;
-	IMPORT FILE ifd;
-	IMPORT IOBUF ibuf[2];
-	IMPORT LONG docode(), iseek, xstol();
-	IMPORT ULONG bsiz, dsiz, tsiz;
 	FAST COUNT i;
 	FAST SYMBOL *q;
 	FAST TEXT *p;
@@ -337,14 +312,6 @@ BOOL main(ac, av)
 	BYTES ac;
 	TEXT **av;
 	{
-	IMPORT BOOL afl, cfl, dfl, hfl, ifl, ok, rfl, tfl;
-	IMPORT BYTES dround, tfill, xfl;
-	IMPORT ULONG bbias, bpad, dbias, tbias;
-	IMPORT IOBUF ibuf[2], obuf[3];
-	IMPORT LIBLIST llist;
-	IMPORT LONG drmask;
-	IMPORT TEXT *endbss, *enddata, *endtext, *ofile, *sizbss, *sizdat, *siztxt;
-	IMPORT ULIST ulist;
 	FAST COUNT i;
 	FAST TEXT *s;
 	TEXT buf[6][L_BUFSIZE];
@@ -385,15 +352,6 @@ BOOL main(ac, av)
  */
 BOOL mid1()
 	{
-	IMPORT BHDR obhdr;
-	IMPORT BOOL dfl, longint, ok, tfl;
-	IMPORT BYTES tfill;
-	IMPORT ULONG bbias, bpad, dbias, tbias;
-	IMPORT COUNT lenname, nsyms, nund;
-	IMPORT LONG drmask, rebias();
-	IMPORT SYMBOL *stabs[];
-	IMPORT TEXT *endbss, *enddata, *endtext, *sizbss, *sizdat, *siztxt;
-	IMPORT ULONG bsiz, dsiz, tsiz;
 	FAST COUNT i;
 	FAST SYMBOL *p;
 	LONG tfmask = (1L << tfill) - 1;
@@ -446,16 +404,6 @@ BOOL mid1()
  */
 BOOL mid2()
 	{
-	IMPORT BHDR obhdr;
-	IMPORT BOOL afl, cfl, hfl, longint, ok, rfl, tfl;
-	IMPORT COUNT lenname, nsyms;
-	IMPORT FILE ofd, tfd;
-	IMPORT IOBUF obuf[2];
-	IMPORT TEXT *uname();
-	IMPORT UCOUNT binhdr;
-	IMPORT SYMBOL *stabs[];
-	IMPORT TEXT *ofile;
-	IMPORT VOID *endeup(), exit(), *(*nxtexit)();
 	FAST COUNT i, k;
 	FAST SYMBOL *p;
 	LONG loff;
@@ -527,9 +475,6 @@ BOOL pass1(ac, av)
 	BYTES ac;
 	TEXT **av;
 	{
-	IMPORT BOOL ok;
-	IMPORT TEXT *fname;
-	IMPORT UCOUNT binhdr, gtmagic();
 	FAST COUNT hsize;
 	UCOUNT header;
 	FAST FILE fd;
@@ -580,10 +525,6 @@ BOOL pass2(ac, av)
 	BYTES ac;
 	TEXT **av;
 	{
-	IMPORT BOOL afl, cfl, ok, rfl;
-	IMPORT FILE ifd, tfd;
-	IMPORT LONG liboff[];
-	IMPORT UCOUNT binhdr, gtmagic();
 	UCOUNT header;
 	LONG loff, *lptr;
 

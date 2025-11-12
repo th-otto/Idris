@@ -150,7 +150,6 @@ LOCAL TINY jcvals[] {002, 012, 022, 032, 042, 052, 062, 072,
 VOID define(q, p)
 	FAST TERM *q, *p;
 	{
-	IMPORT TERM *cobase, *dabase, *elc;
 	FAST TERM *pseg;
 	LEX pty;
 	TEXT *msg;
@@ -199,8 +198,6 @@ VOID dobin(l, r, ot)
 	TERM *l, *r;
 	LEX ot;
 	{
-	IMPORT CODETAB *tabtab[];
-	IMPORT LEX bincodes[];
 	FAST CODETAB *tab;
 	FAST COUNT i;
 	FAST TEXT *s;
@@ -292,8 +289,6 @@ COUNT temp;
 VOID dolit(p)
 	FAST TERM *p;
 	{
-	IMPORT LIT *littab;
-	IMPORT TEXT string[];
 	FAST LIT *q;
 	FAST TERM *pseg;
 
@@ -324,8 +319,6 @@ VOID dolit(p)
 VOID putbyte(c)
 	META c;
 	{
-	IMPORT TERM *elc;
-
 	putcode(DATA, c);
 	++elc->val;
 	elc->base->val = elc->val;
@@ -335,8 +328,6 @@ VOID putbyte(c)
  */
 VOID putftr()
 	{
-	IMPORT LIT *littab;
-	IMPORT TERM *cobase, *dabase, *elc;
 	FAST LIT *q;
 	FAST TEXT *s;
 	COUNT n;
@@ -370,8 +361,6 @@ VOID putftr()
 VOID putsp(val)
 	COUNT val;
 	{
-	IMPORT TERM *elc;
-
 	if (val < 0)
 		err("can't backup .");
 	else
@@ -385,7 +374,6 @@ COUNT putval(code, p)
 	LEX code;
 	FAST TERM *p;
 	{
-	IMPORT TINY crlist[], irlist[], jcvals[];
 	FAST COUNT i;
 	FAST LEX pty;
 
@@ -411,8 +399,6 @@ COUNT putval(code, p)
 VOID putword(p)
 	TERM *p;
 	{
-	IMPORT TERM *elc;
-
 	if (p->base)
 		putcode(RELOC, p->base);
 	putbyte(p->val);

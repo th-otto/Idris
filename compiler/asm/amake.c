@@ -49,9 +49,6 @@ TERM *addsym(s)
 VOID bchar(c)
 	META c;
 	{
-	IMPORT COUNT lno, ncback;
-	IMPORT META chstk[];
-
 	chstk[ncback++] = c;
 	if (c == '\n')
 		--lno;
@@ -63,7 +60,6 @@ BOOL bmatch(code, p)
 	LEX code;
 	FAST TERM *p;
 	{
-	IMPORT TINY crlist[], irlist[];
 	FAST LEX pty;
 
 	pty = p->ty & TMASK;
@@ -124,7 +120,6 @@ VOID dounop(p, t)
 	TERM *p;
 	LEX t;
 	{
-	IMPORT TERM **hash();
 	FAST LEX pseg, pty;
 	FAST TERM *q;
 
@@ -195,9 +190,6 @@ VOID err(msg)
  */
 META gchar()
 	{
-	IMPORT COUNT lno, ncback;
-	IMPORT FIO *infio;
-	IMPORT META chstk[];
 	FAST META c;
 
 	c = (0 < ncback) ? chstk[--ncback] : gtc(infio);
@@ -250,7 +242,6 @@ META getesc(tchar)
  */
 LEX gtok()
 	{
-	IMPORT COUNT tval;
 	FAST COUNT shift;
 	FAST LEX t;
 	FAST META c;
@@ -357,8 +348,6 @@ BOOL isdig(c)
 VOID nmerr(msg, name)
 	TEXT *msg, *name;
 	{
-	IMPORT COUNT lno, nerrors;
-	IMPORT TEXT *_pname;
 	FAST COUNT i;
 	TEXT buf[6];
 
@@ -412,8 +401,6 @@ LEX scntab(p, hi, s, n)
 VOID strcat(c)
 	COUNT c;
 	{
-	IMPORT TEXT string[];
-
 	if (string[0] < MAXSTR-1)
 		string[++string[0]] = c;
 	else

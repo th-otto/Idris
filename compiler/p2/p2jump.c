@@ -22,7 +22,6 @@ BITS boolify(p, q, l, r, want, set)
 	FAST EXPR *l, *r;
 	BITS want, set;
 	{
-	IMPORT EXPR exzero;
 	EXPR ex, left, right;
 	LABEL lbl1, lbl2;
 
@@ -142,7 +141,6 @@ BYTES fnargs(p, set)
 	FAST EXPR *p;
 	BITS set;
 	{
-	IMPORT TINY bytype[], regtype[];
 	FAST BYTES size;
 
 	if (p->op == DALIST)
@@ -200,9 +198,6 @@ CODE **jc(qb, tok, p, l, r, set)
 	FAST EXPR *l, *r;
 	BITS set;
 	{
-	IMPORT BYTES choff;
-	IMPORT TEXT *jtext[];
-	IMPORT TINY brops[];
 	BITS ty;
 	BYTES savoff;
 	EXPR ex;
@@ -272,9 +267,6 @@ CODE **jcond(qb, tok, p, l, r)
 	HEADER *p;
 	EXPR *l, *r;
 	{
-	IMPORT BITS regset;
-	IMPORT EXPR *exlist;
-
 #ifdef DEBUG
 putfmt("/jcond %o %o %o %o\n", tok, p->op, l->op, r->op);
 putexpr(l, 1);
@@ -292,9 +284,6 @@ LABEL jf(p, fb, tb, set)
 	FAST LABEL fb, tb;
 	BITS set;
 	{
-	IMPORT EXPR exzero;
-	IMPORT TINY flpops[], lexops[];
-
 	if (!fb)
 		fb = crs();
 	switch (p->op)
@@ -331,9 +320,6 @@ LABEL jt(p, fb, tb, set)
 	FAST LABEL fb, tb;
 	BITS set;
 	{
-	IMPORT EXPR exzero;
-	IMPORT TINY cmpops[], lexops[];
-
 	if (!tb)
 		tb = crs();
 	switch (p->op)
@@ -368,7 +354,6 @@ LABEL jt(p, fb, tb, set)
 VOID setfn(p)
 	FAST EXPR *p;
 	{
-	IMPORT TINY regtype[];
 	FAST TINY idx;
 
 	if ((p->e.v.ty & 017) <= XUSHORT)

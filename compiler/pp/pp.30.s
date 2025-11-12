@@ -263,7 +263,7 @@ x19e_4:
 [000002d8] 6710                      beq.s      x19e_8
 x19e_7:
 [000002da] 2ebc 0002 0114            move.l     #$00025664,(a7)
-[000002e0] 4eb9 0000 310e            jsr        _perror
+[000002e0] 4eb9 0000 310e            jsr        _p0error
 [000002e6] 6000 feac                 bra        x19e_3
 x19e_8:
 [000002ea] 7001                      moveq.l    #1,d0
@@ -354,7 +354,7 @@ _dodef_6:
 [000003e0] 2e0c                      move.l     a4,d7
 [000003e2] 6600 0088                 bne        _dodef_8
 [000003e6] 2ebc 0002 015d            move.l     #$000256AD,(a7)
-[000003ec] 4eb9 0000 310e            jsr        _perror
+[000003ec] 4eb9 0000 310e            jsr        _p0error
 [000003f2] 426e fff4                 clr.w      -12(a6)
 [000003f6] 286e 0008                 movea.l    8(a6),a4
 [000003fa] 6090                      bra.s      _dodef_9
@@ -417,7 +417,7 @@ _dodef_15:
 [00000496] bc87                      cmp.l      d7,d6
 [00000498] 6c3a                      bge.s      _dodef_16
 [0000049a] 2ebc 0002 0145            move.l     #$00025695,(a7)
-[000004a0] 4eb9 0000 310e            jsr        _perror
+[000004a0] 4eb9 0000 310e            jsr        _p0error
 _dodef_13:
 [000004a6] 2d4c ffee                 move.l     a4,-18(a6)
 _dodef_30:
@@ -443,7 +443,7 @@ _dodef_16:
 [000004e6] be86                      cmp.l      d6,d7
 [000004e8] 6cbc                      bge.s      _dodef_13
 [000004ea] 2ebc 0002 012c            move.l     #$0002567C,(a7)
-[000004f0] 4eb9 0000 310e            jsr        _perror
+[000004f0] 4eb9 0000 310e            jsr        _p0error
 [000004f6] 60ae                      bra.s      _dodef_13
 _dodef_17:
 [000004f8] 2e0c                      move.l     a4,d7
@@ -770,7 +770,7 @@ _doif:
 [00000858] 4aae 000c                 tst.l      12(a6)
 [0000085c] 660e                      bne.s      _doif_1
 [0000085e] 2ebc 0002 0182            move.l     #$000256D2,(a7)
-[00000864] 4eb9 0000 310e            jsr        _perror
+[00000864] 4eb9 0000 310e            jsr        _p0error
 [0000086a] 602a                      bra.s      _doif_2
 _doif_1:
 [0000086c] 486e fffc                 pea.l      -4(a6)
@@ -784,7 +784,7 @@ _doif_1:
 [00000886] be92                      cmp.l      (a2),d7
 [00000888] 671c                      beq.s      _doif_3
 [0000088a] 2ebc 0002 0174            move.l     #$000256C4,(a7)
-[00000890] 4eb9 0000 310e            jsr        _perror
+[00000890] 4eb9 0000 310e            jsr        _p0error
 _doif_2:
 [00000896] 26ae 0008                 move.l     8(a6),(a3)
 [0000089a] 2e2e fff8                 move.l     -8(a6),d7
@@ -949,7 +949,7 @@ _getargs_14:
 [00000a52] 6000 ff28                 bra        _getargs_15
 _getargs_3:
 [00000a56] 2ebc 0002 0198            move.l     #$000256E8,(a7)
-[00000a5c] 4eb9 0000 310e            jsr        _perror
+[00000a5c] 4eb9 0000 310e            jsr        _p0error
 [00000a62] 246e 000c                 movea.l    12(a6),a2
 [00000a66] 4292                      clr.l      (a2)
 [00000a68] 2e2e 0008                 move.l     8(a6),d7
@@ -1209,7 +1209,7 @@ _dopunct_3:
 [00000d40] 1e12                      move.b     (a2),d7
 [00000d42] 2e87                      move.l     d7,(a7)
 [00000d44] 2f3c 0002 062c            move.l     #$00025B7C,-(a7)
-[00000d4a] 4eb9 0000 310e            jsr        _perror
+[00000d4a] 4eb9 0000 310e            jsr        _p0error
 [00000d50] 588f                      addq.l     #4,a7
 [00000d52] 246e 0008                 movea.l    8(a6),a2
 [00000d56] 2495                      move.l     (a5),(a2)
@@ -1251,7 +1251,7 @@ _eval_1:
 [00000da4] 0cad 0000 0002 0004       cmpi.l     #$00000002,4(a5)
 [00000dac] 6716                      beq.s      _eval_3
 [00000dae] 2ebc 0002 0642            move.l     #$00025B92,(a7)
-[00000db4] 4eb9 0000 310e            jsr        _perror
+[00000db4] 4eb9 0000 310e            jsr        _p0error
 [00000dba] 4287                      clr.l      d7
 _eval_2:
 [00000dbc] 4cdf 2001                 movem.l    (a7)+,d0/a5
@@ -1551,7 +1551,7 @@ _extail_24:
 [000010ee] 6610                      bne.s      _extail_26
 _extail_25:
 [000010f0] 2ebc 0002 0712            move.l     #$00025C62,(a7)
-[000010f6] 4eb9 0000 310e            jsr        _perror
+[000010f6] 4eb9 0000 310e            jsr        _p0error
 [000010fc] 4287                      clr.l      d7
 [000010fe] 6028                      bra.s      _extail_27
 _extail_26:
@@ -1563,7 +1563,7 @@ _extail_28:
 [00001110] 2d6e fff8 fffc            move.l     -8(a6),-4(a6)
 [00001116] 6000 fe58                 bra        _extail_7
 [0000111a] 2ebc 0002 06fa            move.l     #$00025C4A,(a7)
-[00001120] 4eb9 0000 310e            jsr        _perror
+[00001120] 4eb9 0000 310e            jsr        _p0error
 [00001126] 4287                      clr.l      d7
 _extail_27:
 [00001128] 4cdf 0031                 movem.l    (a7)+,d0/d4-d5
@@ -1656,7 +1656,7 @@ _exterm_5:
 [00001214] 2d47 fdfc                 move.l     d7,-516(a6)
 [00001218] 664c                      bne.s      _exterm_8
 [0000121a] 2ebc 0002 073e            move.l     #$00025C8E,(a7)
-[00001220] 4eb9 0000 310e            jsr        _perror
+[00001220] 4eb9 0000 310e            jsr        _p0error
 [00001226] 4287                      clr.l      d7
 [00001228] 60d4                      bra.s      _exterm_7
 _exterm_6:
@@ -1673,7 +1673,7 @@ _exterm_6:
 [0000124c] 6710                      beq.s      _exterm_10
 _exterm_9:
 [0000124e] 2ebc 0002 0751            move.l     #$00025CA1,(a7)
-[00001254] 4eb9 0000 310e            jsr        _perror
+[00001254] 4eb9 0000 310e            jsr        _p0error
 [0000125a] 4287                      clr.l      d7
 [0000125c] 60a0                      bra.s      _exterm_7
 _exterm_10:
@@ -1724,7 +1724,7 @@ _exterm_18:
 [000012c2] 0cae 0000 00de fdfc       cmpi.l     #$000000DE,-516(a6)
 [000012ca] 67d8                      beq.s      _exterm_14
 [000012cc] 2ebc 0002 0726            move.l     #$00025C76,(a7)
-[000012d2] 4eb9 0000 310e            jsr        _perror
+[000012d2] 4eb9 0000 310e            jsr        _p0error
 [000012d8] 60ca                      bra.s      _exterm_14
 
 _bton:
@@ -1825,7 +1825,7 @@ _bton_7:
 [000013e6] 2ead 0014                 move.l     20(a5),(a7)
 [000013ea] 2f2d 0010                 move.l     16(a5),-(a7)
 [000013ee] 2f3c 0002 095a            move.l     #$00025EAA,-(a7)
-[000013f4] 4eb9 0000 310e            jsr        _perror
+[000013f4] 4eb9 0000 310e            jsr        _p0error
 [000013fa] 508f                      addq.l     #8,a7
 [000013fc] 6034                      bra.s      _bton_10
 _bton_8:
@@ -2157,7 +2157,7 @@ _lexfloat_17:
 [0000175c] 246e 0008                 movea.l    8(a6),a2
 [00001760] 2d52 0008                 move.l     (a2),8(a6)
 [00001764] 2ebc 0002 0972            move.l     #$00025EC2,(a7)
-[0000176a] 4eb9 0000 310e            jsr        _perror
+[0000176a] 4eb9 0000 310e            jsr        _p0error
 [00001770] 60de                      bra.s      _lexfloat_12
 
 _lexfnxt:
@@ -2708,7 +2708,7 @@ _getex_3:
 [00001d88] 4aae 0008                 tst.l      8(a6)
 [00001d8c] 671e                      beq.s      _getex_5
 [00001d8e] 2ebc 0002 0cae            move.l     #$000261FE,(a7)
-[00001d94] 4eb9 0000 310e            jsr        _perror
+[00001d94] 4eb9 0000 310e            jsr        _p0error
 [00001d9a] 6010                      bra.s      _getex_5
 _getex_4:
 [00001d9c] 2e2d 0004                 move.l     4(a5),d7
@@ -2763,7 +2763,7 @@ _getex_6:
 [00001e3c] 2ead 0014                 move.l     20(a5),(a7)
 [00001e40] 2f2d 0010                 move.l     16(a5),-(a7)
 [00001e44] 2f3c 0002 0ca6            move.l     #$000261F6,-(a7)
-[00001e4a] 4eb9 0000 310e            jsr        _perror
+[00001e4a] 4eb9 0000 310e            jsr        _p0error
 [00001e50] 508f                      addq.l     #8,a7
 [00001e52] 6000 ff10                 bra        _getex_1
 _getex_7:
@@ -2856,7 +2856,7 @@ _getinl_5:
 [00001f78] 4ab9 0002 0cc2            tst.l      $00026212
 [00001f7e] 6726                      beq.s      _getinl_6
 [00001f80] 2ebc 0002 0cd0            move.l     #$00026220,(a7)
-[00001f86] 4eb9 0000 310e            jsr        _perror
+[00001f86] 4eb9 0000 310e            jsr        _p0error
 [00001f8c] 42b9 0002 0cc2            clr.l      $00026212
 [00001f92] 4297                      clr.l      (a7)
 [00001f94] 2f3c 0002 0cce            move.l     #$0002621E,-(a7)
@@ -2944,7 +2944,7 @@ _getln_2:
 [00002096] 6092                      bra.s      _getln_5
 _getln_3:
 [00002098] 2ebc 0002 0cec            move.l     #$0002623C,(a7)
-[0000209e] 4eb9 0000 310e            jsr        _perror
+[0000209e] 4eb9 0000 310e            jsr        _p0error
 [000020a4] 244d                      movea.l    a5,a2
 [000020a6] d5ee 0010                 adda.l     16(a6),a2
 [000020aa] 14bc 000a                 move.b     #$0A,(a2)
@@ -3092,7 +3092,7 @@ _main_7:
 [000022ce] 2ead 0014                 move.l     20(a5),(a7)
 [000022d2] 2f2d 0010                 move.l     16(a5),-(a7)
 [000022d6] 2f3c 0002 0cf8            move.l     #$00026248,-(a7)
-[000022dc] 4eb9 0000 310e            jsr        _perror
+[000022dc] 4eb9 0000 310e            jsr        _p0error
 [000022e2] 508f                      addq.l     #8,a7
 [000022e4] 4297                      clr.l      (a7)
 [000022e6] 2f0d                      move.l     a5,-(a7)
@@ -3319,7 +3319,7 @@ _putgr_26:
 [000024f4] 6000 fe36                 bra        _putgr_9
 _putgr_33:
 [000024f8] 2ebc 0002 0d86            move.l     #$000262D6,(a7)
-[000024fe] 4eb9 0000 310e            jsr        _perror
+[000024fe] 4eb9 0000 310e            jsr        _p0error
 [00002504] 6000 fe26                 bra        _putgr_9
 
 _putns:
@@ -3384,7 +3384,7 @@ x25c4_2:
 [000025c8] 0c92 0000 0003            cmpi.l     #$00000003,(a2)
 [000025ce] 670e                      beq.s      x25c4_1
 [000025d0] 2ebc 0002 0e3d            move.l     #$0002638D,(a7)
-[000025d6] 4eb9 0000 310e            jsr        _perror
+[000025d6] 4eb9 0000 310e            jsr        _p0error
 [000025dc] 60d2                      bra.s      x25c4_2
 x25c4_1:
 [000025de] 2d55 fffc                 move.l     (a5),-4(a6)
@@ -3461,7 +3461,7 @@ x25c4_6:
 [0000269e] d5d5                      adda.l     (a5),a2
 [000026a0] 2f12                      move.l     (a2),-(a7)
 [000026a2] 2f3c 0002 0e30            move.l     #$00026380,-(a7)
-[000026a8] 4eb9 0000 310e            jsr        _perror
+[000026a8] 4eb9 0000 310e            jsr        _p0error
 [000026ae] 508f                      addq.l     #8,a7
 [000026b0] 6000 fefe                 bra        x25c4_2
 [000026b4] 2455                      movea.l    (a5),a2
@@ -3469,7 +3469,7 @@ x25c4_6:
 [000026b8] 0c92 0000 0003            cmpi.l     #$00000003,(a2)
 [000026be] 6710                      beq.s      x25c4_7
 [000026c0] 2ebc 0002 0e25            move.l     #$00026375,(a7)
-[000026c6] 4eb9 0000 310e            jsr        _perror
+[000026c6] 4eb9 0000 310e            jsr        _p0error
 [000026cc] 6000 fee2                 bra        x25c4_2
 x25c4_7:
 [000026d0] 45f8 0014                 lea.l      ($00000014).w,a2
@@ -3488,7 +3488,7 @@ x25c4_7:
 [000026fc] 671a                      beq.s      x25c4_8
 [000026fe] 2e8c                      move.l     a4,(a7)
 [00002700] 2f3c 0002 0e13            move.l     #$00026363,-(a7)
-[00002706] 4eb9 0000 310e            jsr        _perror
+[00002706] 4eb9 0000 310e            jsr        _p0error
 [0000270c] 588f                      addq.l     #4,a7
 [0000270e] 42b9 0002 0a5a            clr.l      $00025FAA
 [00002714] 6000 fe9a                 bra        x25c4_2
@@ -3557,7 +3557,7 @@ x25c4_10:
 [000027e6] 0c92 0000 0004            cmpi.l     #$00000004,(a2)
 [000027ec] 6700 0132                 beq        x25c4_12
 [000027f0] 2ebc 0002 0df4            move.l     #$00026344,(a7)
-[000027f6] 4eb9 0000 310e            jsr        _perror
+[000027f6] 4eb9 0000 310e            jsr        _p0error
 [000027fc] 6000 fdb2                 bra        x25c4_2
 x25c4_11:
 [00002800] 2455                      movea.l    (a5),a2
@@ -3703,7 +3703,7 @@ x25c4_18:
 [000029c8] 0c92 0000 0002            cmpi.l     #$00000002,(a2)
 [000029ce] 6724                      beq.s      x25c4_20
 [000029d0] 2ebc 0002 0de3            move.l     #$00026333,(a7)
-[000029d6] 4eb9 0000 310e            jsr        _perror
+[000029d6] 4eb9 0000 310e            jsr        _p0error
 [000029dc] 6016                      bra.s      x25c4_20
 x25c4_19:
 [000029de] 2479 0002 0a6c            movea.l    $00025FBC,a2
@@ -3744,7 +3744,7 @@ x25c4_21:
 [00002a62] 0c92 0000 0002            cmpi.l     #$00000002,(a2)
 [00002a68] 6700 fb46                 beq        x25c4_2
 [00002a6c] 2ebc 0002 0dd6            move.l     #$00026326,(a7)
-[00002a72] 4eb9 0000 310e            jsr        _perror
+[00002a72] 4eb9 0000 310e            jsr        _p0error
 [00002a78] 6000 fb36                 bra        x25c4_2
 [00002a7c] 2e8d                      move.l     a5,(a7)
 [00002a7e] 4eb9 0000 1b42            jsr        _putls
@@ -3790,7 +3790,7 @@ _fatal:
 [00002b00] 4e56 fffc                 link       a6,#-4
 [00002b04] 2eae 000c                 move.l     12(a6),(a7)
 [00002b08] 2f2e 0008                 move.l     8(a6),-(a7)
-[00002b0c] 4eb9 0000 310e            jsr        _perror
+[00002b0c] 4eb9 0000 310e            jsr        _p0error
 [00002b12] 588f                      addq.l     #4,a7
 [00002b14] 4297                      clr.l      (a7)
 [00002b16] 4eb9 0000 0080            jsr        _exit
@@ -4332,7 +4332,7 @@ _perrfmt_3:
 [00003108] 528c                      addq.l     #1,a4
 [0000310a] 6000 fec0                 bra        _perrfmt_8
 
-_perror:
+_p0error:
 [0000310e] 4e56 fff8                 link       a6,#-8
 [00003112] 23fc 0002 0a7a 0002 0a74  move.l     #$00025FCA,$00025FC4
 [0000311c] 2e39 0002 0a62            move.l     $00025FB2,d7
@@ -4341,39 +4341,39 @@ _perror:
 [00003126] 598a                      subq.l     #4,a2
 [00003128] d5f9 0002 0a70            adda.l     $00025FC0,a2
 [0000312e] 4a92                      tst.l      (a2)
-[00003130] 660c                      bne.s      _perror_1
+[00003130] 660c                      bne.s      _p0error_1
 [00003132] 2ebc 0002 1084            move.l     #$000265D4,(a7)
 [00003138] 4eba fe80                 jsr        _perrfmt(pc)
-[0000313c] 6076                      bra.s      _perror_2
-_perror_1:
+[0000313c] 6076                      bra.s      _p0error_2
+_p0error_1:
 [0000313e] 2ebc 0002 1067            move.l     #$000265B7,(a7)
 [00003144] 4ab9 0002 0a6c            tst.l      $00025FBC
-[0000314a] 670e                      beq.s      _perror_3
+[0000314a] 670e                      beq.s      _p0error_3
 [0000314c] 2479 0002 0a6c            movea.l    $00025FBC,a2
 [00003152] 508a                      addq.l     #8,a2
 [00003154] 3e12                      move.w     (a2),d7
 [00003156] 48c7                      ext.l      d7
-[00003158] 6008                      bra.s      _perror_4
-_perror_3:
+[00003158] 6008                      bra.s      _p0error_4
+_p0error_3:
 [0000315a] 3e39 0002 0a66            move.w     $00025FB6,d7
 [00003160] 48c7                      ext.l      d7
-_perror_4:
+_p0error_4:
 [00003162] 2f07                      move.l     d7,-(a7)
 [00003164] 2f3c 0002 1069            move.l     #$000265B9,-(a7)
 [0000316a] 4ab9 0002 0a6c            tst.l      $00025FBC
-[00003170] 670c                      beq.s      _perror_5
+[00003170] 670c                      beq.s      _p0error_5
 [00003172] 2479 0002 0a6c            movea.l    $00025FBC,a2
 [00003178] 588a                      addq.l     #4,a2
 [0000317a] 2e12                      move.l     (a2),d7
-[0000317c] 6014                      bra.s      _perror_6
-_perror_5:
+[0000317c] 6014                      bra.s      _p0error_6
+_p0error_5:
 [0000317e] 2e39 0002 0a62            move.l     $00025FB2,d7
 [00003184] e587                      asl.l      #2,d7
 [00003186] 2447                      movea.l    d7,a2
 [00003188] 598a                      subq.l     #4,a2
 [0000318a] d5f9 0002 0a70            adda.l     $00025FC0,a2
 [00003190] 2e12                      move.l     (a2),d7
-_perror_6:
+_p0error_6:
 [00003192] 2f07                      move.l     d7,-(a7)
 [00003194] 2f3c 0002 106b            move.l     #$000265BB,-(a7)
 [0000319a] 2f39 0002 0a4e            move.l     $00025F9E,-(a7)
@@ -4381,7 +4381,7 @@ _perror_6:
 [000031a6] 2f3c 0002 1075            move.l     #$000265C5,-(a7)
 [000031ac] 4eba fe0c                 jsr        _perrfmt(pc)
 [000031b0] 4fef 001c                 lea.l      28(a7),a7
-_perror_2:
+_p0error_2:
 [000031b4] 2eae 0010                 move.l     16(a6),(a7)
 [000031b8] 2f2e 000c                 move.l     12(a6),-(a7)
 [000031bc] 2f2e 0008                 move.l     8(a6),-(a7)
@@ -4403,14 +4403,14 @@ _perror_2:
 [00003204] 4fef 000c                 lea.l      12(a7),a7
 [00003208] 54ae fffc                 addq.l     #2,-4(a6)
 [0000320c] 4ab9 0002 0a2e            tst.l      $00025F7E
-[00003212] 671e                      beq.s      _perror_7
+[00003212] 671e                      beq.s      _p0error_7
 [00003214] 2eae fffc                 move.l     -4(a6),(a7)
 [00003218] 2f3c 0002 0a78            move.l     #$00025FC8,-(a7)
 [0000321e] 4878 00fe                 pea.l      ($000000FE).w
 [00003222] 2f3c 0002 1062            move.l     #$000265B2,-(a7)
 [00003228] 4eb9 0000 19aa            jsr        _putcode
 [0000322e] 4fef 000c                 lea.l      12(a7),a7
-_perror_7:
+_p0error_7:
 [00003232] 4e5e                      unlk       a6
 [00003234] 4e75                      rts
 
@@ -4482,7 +4482,7 @@ _predef_3:
 [000032e8] 2e85                      move.l     d5,(a7)
 [000032ea] 2f0c                      move.l     a4,-(a7)
 [000032ec] 2f3c 0002 108a            move.l     #$000265DA,-(a7)
-[000032f2] 4eba fe1a                 jsr        _perror(pc)
+[000032f2] 4eba fe1a                 jsr        _p0error(pc)
 [000032f6] 508f                      addq.l     #8,a7
 [000032f8] 6020                      bra.s      _predef_6
 _predef_5:
@@ -4965,7 +4965,7 @@ _stotl_46:
 [000037a2] 1e12                      move.b     (a2),d7
 [000037a4] 2e87                      move.l     d7,(a7)
 [000037a6] 2f3c 0002 10a8            move.l     #$000265F8,-(a7)
-[000037ac] 4eba f960                 jsr        _perror(pc)
+[000037ac] 4eba f960                 jsr        _p0error(pc)
 [000037b0] 588f                      addq.l     #4,a7
 [000037b2] 6000 fea2                 bra        _stotl_6
 _stotl_44:
@@ -10992,7 +10992,7 @@ _writerr:
 00002e8a T _lookup
 00002efe T _nxtfile
 00002fba T _perrfmt
-0000310e T _perror
+0000310e T _p0error
 00003236 T _predef
 00003322 T _ptline
 0000336e T _scntab

@@ -193,18 +193,6 @@ static TLIST *getincl(void)
 }
 
 
-void *frelst(void *p, void *plast)
-{
-	while (p != NULL && p != plast)
-	{
-		void *next = *((void **)p);
-		free(p);
-		p = next;
-	}
-	return p;
-}
-
-
 /*
  * get an expanded token list
  */

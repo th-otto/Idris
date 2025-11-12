@@ -35,8 +35,6 @@ GLOBAL EXPR exzero {0};
 BOOL adequ(pl, pr)
 	FAST ADDR *pl, *pr;
 	{
-	IMPORT TINY equtype[];
-
 	if (pl->idx != pr->idx || pl->refs != pr->refs || pl->idx == XSP)
 		;
 	else if (equtype[pl->ty & 017] != equtype[pr->ty & 017])
@@ -54,8 +52,6 @@ BITS binop(p, want, set, tab)
 	BITS want, set;
 	UTINY *tab;
 	{
-	IMPORT BYTES choff;
-	IMPORT TINY regtype[];
 	FAST EXPR *l, *r;
 	BITS lvol, lwant, rvol, rwant, savset, lty, rty;
 	BOOL done, wvol;
@@ -151,7 +147,6 @@ BITS fix(p, want, set, ty)
 	FAST EXPR *p;
 	BITS want, set, ty;
 	{
-	IMPORT BITS regset;
 	FAST EXPR *l, *r;
 
 #ifdef DEBUG
@@ -260,9 +255,6 @@ BITS force(p, want, set, ty)
 	BITS want, set;
 	FAST LEX ty;
 	{
-	IMPORT FTAB ftab[];
-	IMPORT TEXT *deref[], *reref[], *intreg[], *ptmov[];
-	IMPORT TINY bytype[], regtype[];
 	FAST FTAB *q;
 
 #ifdef DEBUG
@@ -337,7 +329,6 @@ BITS ftyp(p, want, set, ty)
 	BITS want, set;
 	FAST LEX ty;
 	{
-	IMPORT TINY equtype[], regtype[];
 	FAST BITS reg;
 	BITS junk;
 	EXPR ex;
@@ -383,7 +374,6 @@ BITS getsop(p, want, set, pwant)
 	FAST EXPR *p;
 	BITS want, set, pwant;
 	{
-	IMPORT TEXT *ptmov[];
 	FAST EXPR *l = p->e.o.left;
 	FAST EXPR *r = p->e.o.right;
 	BITS bwant, lgot, savset;
@@ -563,9 +553,6 @@ CODE **void(qb, r)
 	FAST CODE **qb;
 	FAST EXPR *r;
 	{
-	IMPORT BITS regset;
-	IMPORT BYTES choff;
-	IMPORT EXPR *exlist;
 	FAST BYTES chsave;
 
 #ifdef DEBUG

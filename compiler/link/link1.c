@@ -130,9 +130,6 @@ SYMBOL *addend(name, flags, value)
 VOID addlib(loff)
 	LONG loff;
 	{
-	IMPORT COUNT nlibs;
-	IMPORT LONG liboff[];
-
 	if (MAXLIBS <= nlibs)
 		error("library table full", NULL);
 	liboff[nlibs++] = loff;
@@ -145,8 +142,6 @@ SYMBOL *addsym(name, flags, value)
 	COUNT flags;
 	LONG value;
 	{
-	IMPORT COUNT lenname, nsyms;
-	IMPORT SYMBOL *stabs[];
 	FAST COUNT i, j;
 	FAST SYMBOL *p;
 
@@ -187,9 +182,6 @@ VOID addusym(name)
 UTINY getby(idx)
 	COUNT idx;
 	{
-	IMPORT FILE ifd;
-	IMPORT IOBUF ibuf[];
-	IMPORT LONG iseek;
 	FAST IOBUF *p = &ibuf[idx];
 	LONG nseek;
 
@@ -218,8 +210,6 @@ FILE gtlfiles(pac, pav)
 	BYTES *pac;
 	TEXT ***pav;
 	{
-	IMPORT LIBLIST llist;
-	IMPORT TEXT *fname;
 	FILE fd;
 	INTERN BYTES index;
 	INTERN TEXT libnam[64];
@@ -257,9 +247,6 @@ FILE gtlfiles(pac, pav)
 UCOUNT gtmagic(fd)
 	FILE fd;
 	{
-	IMPORT BOOL longint, lsfmt, txtrev;
-	IMPORT COUNT lenname;
-	IMPORT UCOUNT binhdr;
 	UCOUNT hdr;
 	UTINY header[2];
 
@@ -289,11 +276,6 @@ SYMBOL *gtsyms(fd, pbhdr)
 	FILE fd;
 	FAST BHDR *pbhdr;
 	{
-	IMPORT BOOL longint;
-	IMPORT BYTES xfl;
-	IMPORT LONG xstol();
-	IMPORT UCOUNT xstos();
-	IMPORT ULONG tsiz, dsiz;
 	FAST SYMBOL *ps;
 	COUNT hsize = longint ? 26 : 14;
 	LONG off;
@@ -360,8 +342,6 @@ SYMBOL *gtsyms(fd, pbhdr)
 SYMBOL *lookup(name)
 	TEXT *name;
 	{
-	IMPORT COUNT lenname, nsyms;
-	IMPORT SYMBOL *stabs[];
 	FAST COUNT i;
 	FAST SYMBOL *p;
 
@@ -381,7 +361,6 @@ LONG rebias(flags, tb, db, bb)
 	COUNT flags;
 	LONG tb, db, bb;
 	{
-	IMPORT ULONG bsiz, dsiz, tsiz;
 	FAST LONG val;
 
 	switch (flags & 03)
@@ -407,9 +386,6 @@ VOID relby(idx, by)
 	FAST COUNT idx;
 	TEXT by;
 	{
-	IMPORT BOOL afl, rfl;
-	IMPORT FILE ofd, tfd;
-	IMPORT IOBUF obuf[];
 	FAST COUNT n;
 	FAST IOBUF *p = &obuf[idx & 3];
 	BOOL drain = idx & DRAIN;
@@ -442,7 +418,6 @@ VOID relint(idx, val)
 	COUNT idx;
 	LONG val;
 	{
-	IMPORT BOOL longint, lsfmt;
 	FAST COUNT i, wo;
 	TEXT buf[4];
 
@@ -465,7 +440,6 @@ VOID relint(idx, val)
 VOID relsym(p)
 	FAST SYMBOL *p;
 	{
-	IMPORT BOOL afl, cfl;
 	FAST COUNT k;
 
 	relint(WRMI|TREL, p->value);
@@ -479,8 +453,6 @@ VOID relsym(p)
 VOID relwd(idx, wo)
 	COUNT idx, wo;
 	{
-	IMPORT BOOL lsfmt;
-
 	if (lsfmt)
 		{
 		relby(idx, wo);
@@ -498,9 +470,6 @@ VOID relwd(idx, wo)
 VOID xremark(s1, s2)
 	TEXT *s1, *s2;
 	{
-	IMPORT BOOL ok;
-	IMPORT COUNT lenname;
-	IMPORT TEXT *fname;
 	INTERN TEXT buf[16];
 
 	buf[cpybuf(buf, s2, lenname)] = '\0';
@@ -513,7 +482,6 @@ VOID xremark(s1, s2)
 LONG xstol(s)
 	FAST UTINY *s;
 	{
-	IMPORT BOOL lsfmt;
 	FAST COUNT i;
 	LONG val;
 
@@ -532,7 +500,6 @@ LONG xstol(s)
 UCOUNT xstos(s)
 	FAST UTINY *s;
 	{
-	IMPORT BOOL lsfmt;
 	FAST UCOUNT val;
 
 	if (lsfmt)

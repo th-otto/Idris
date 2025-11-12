@@ -53,13 +53,13 @@ It also matches
 the ALIST of the definition to the arguments of the
 original call, and patches those tokens into place.
 The code:
-.DS
+.EX
 	for (px = pa->astart; px != pa->aend; px = px->next)
 		{
 		*qb = buytl(px, r->next);
 		qb = &(*qb)->next;
 		}
-.DE
+.EE
 .LP
 is the heart of the matter.
 .LP

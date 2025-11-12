@@ -309,7 +309,6 @@ GLOBAL TEXT *(*bintab[])[] {timtab, divtab, modtab, plutab, mintab,
 VOID csect(nsect)
 	COUNT nsect;
 	{
-	IMPORT BYTES xmask;
 	INTERN COUNT osect {1};
 
 	nsect = (nsect & xmask) ? 1 : 0;
@@ -417,7 +416,6 @@ COUNT getch()
 VOID putch(c)
 	COUNT c;
 	{
-	IMPORT FILE outfd;
 	INTERN COUNT nout {0};
 	INTERN TEXT buf[128];
 

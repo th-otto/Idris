@@ -55,6 +55,5 @@ extern int argc;
 extern char **argv;
 
 
-void *frelst(void *p, void *plast);
 double dtento(double x, int exp);
 void *xmalloc(size_t n);

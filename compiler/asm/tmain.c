@@ -137,9 +137,6 @@ GLOBAL TEXT string[MAXSTR+1] {0};
 LEX getal(c)
 	META c;
 	{
-	IMPORT COUNT tval;
-	IMPORT PRETAB keytab[], valtab[];
-	IMPORT TERM *symtab, *tptr;
 	FAST COUNT i;
 	FAST LEX t;
 	FAST TERM *q;
@@ -187,7 +184,6 @@ err("/getal %ac", c);
 LEX getop(c)
 	META c;
 	{
-	IMPORT PRETAB optab[];
 	FAST COUNT i;
 	FAST LEX t;
 	TEXT op[3];
@@ -237,7 +233,6 @@ VOID gstring(p, mes)
 	FAST TERM *p;
 	TEXT *mes;
 	{
-	IMPORT COUNT tval;
 	FAST LEX t;
 
 	switch (p->ty)
@@ -263,7 +258,6 @@ LEX gterm(p, mesg)
 	FAST TERM *p;
 	TEXT *mesg;
 	{
-	IMPORT TERM *cobase, *dabase, *elc, *tptr;
 	FAST LEX t;
 	FAST TERM *q;
 	LEX u;
@@ -353,11 +347,6 @@ BOOL main(ac, av)
 	COUNT ac;
 	TEXT **av;
 	{
-	IMPORT BOOL iflag, outmode;
-	IMPORT COUNT nerrors;
-	IMPORT FIO stderr, stdin, stdout;
-	IMPORT TERM *elc, *symtab;
-	IMPORT TEXT *oname, *sname, string[];
 	FAST LEX t, ty;
 	FAST TEXT *s;
 	COUNT i;
@@ -422,7 +411,6 @@ BOOL main(ac, av)
 TEXT *opname(t)
 	FAST LEX t;
 	{
-	IMPORT PRETAB keytab[], optab[];
 	FAST PRETAB *p;
 
 	for (p = optab; p->prename; ++p)

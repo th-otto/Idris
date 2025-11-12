@@ -48,10 +48,10 @@ union val {
 #define ATTR	struct attr
 
 struct attr {
-	char *next;		/* SHDB ATTR * */
+	struct attr *next;		/* SHDB ATTR * */
 	union {
 		long m;
-		char *stab;	/* SHDB SYMBOL * */
+		struct symbol *stab;	/* SHDB SYMBOL * */
 		struct {
 			unsigned char boff;
 			unsigned char bsize;
@@ -64,7 +64,7 @@ struct attr {
 #define CASE	struct kase
 
 struct kase {
-	char *next;
+	struct kase *next;
 	LABEL clabel;
 	long cvalue;
 };
@@ -74,16 +74,16 @@ struct kase {
 #define SYMBOL struct symbol
 
 struct symbol {
-	char *next;
+	struct symbol *next;
 	ATTR *at;
 	VAL n;
 	unsigned short ty;
 	LEX sc;
 	union {
-		char *tagtab;	/* SHDB SYMBOL * */
+		struct symbol *tagtab;	/* SHDB SYMBOL * */
 		signed char reg;
 		LABEL label;
-		LONG offset;
+		long offset;
 	} s;
 };
 
@@ -93,15 +93,17 @@ struct symbol {
 #define TERM	struct term
 
 struct term {
-	char *next;
+	struct term *next;
 	ATTR *at;
 	VAL n;
 	unsigned short ty;
+	/* ^^^ must be same as first 4 members of struct symbol */
 	LEX op;
+	/* ^^^ must be same type and location as sc in struct symbol */
 	union {
 		ATTR l;
 		struct {
-			char *left, *right, *mid;	/* SHDB TERM * */
+			struct term *left, *right, *mid;	/* SHDB TERM * */
 		} o;
 		struct {
 			long bias;

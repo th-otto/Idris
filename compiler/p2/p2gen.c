@@ -60,8 +60,6 @@ BITS gen(p, l, r, tab, set)
 	TEXT *tab;
 	BITS set;
 	{
-	IMPORT TEXT *(*gfun[])();
-	IMPORT TINY equtype[], regtype[];
 	BITS code, flags, ty;
 	TINY idx;
 
@@ -133,8 +131,6 @@ VOID genad(p, up, byte)
 	COUNT up;
 	BOOL byte;
 	{
-	IMPORT TEXT *dnname[], *upname[], *uptab[];
-	IMPORT TINY cxtab[], xtab[];
 	FAST TINY idx, refs;
 	BYTES off;
 	COUNT i;
@@ -410,8 +406,5 @@ TEXT *utobits(p)
 TEXT *xnm(idx)
 	FAST TINY idx;
 	{
-	IMPORT TEXT *xname[];
-	IMPORT TINY xtab[];
-
 	return (xname[scnstr(xtab, idx)]);
 	}

@@ -36,8 +36,6 @@ LOCAL OBUF obuf[2] {0};
 VOID drain(seg)
 	COUNT seg;
 	{
-	IMPORT CBUF cb[];
-	IMPORT FIO *outfio[];
 	FAST CBUF *pcb = &cb[seg];
 
 	if (pcb->count || pcb->ccode == CEND)
@@ -53,9 +51,6 @@ VOID drain(seg)
 VOID putcode(code, arg)
 	COUNT code, arg;
 	{
-	IMPORT BOOL dseg;
-	IMPORT CBUF cb[];
-	IMPORT FIO *outfio[];
 	FAST COUNT i;
 
 	switch (code)
@@ -92,8 +87,6 @@ VOID relby(oseg, b)
 	COUNT oseg;
 	TINY b;
 	{
-	IMPORT FILE ofd;
-	IMPORT OBUF obuf[];
 	FAST COUNT n;
 	FAST OBUF *p = &obuf[oseg & 01];
 	INTERN LONG off;
@@ -122,10 +115,6 @@ VOID relby(oseg, b)
 VOID relout(csize, dsize)
 	BYTES csize, dsize;
 	{
-	IMPORT FILE tfd[];
-	IMPORT FIO *outfio[];
-	IMPORT OBUF obuf[];
-	IMPORT TERM *cobase, *dabase, *psym[];
 	FAST COUNT k, n;
 	FAST TERM *p;
 	COUNT u;
@@ -192,8 +181,6 @@ VOID relout(csize, dsize)
 VOID relseg(fd)
 	FILE fd;
 	{
-	IMPORT CBUF cb[];
-	IMPORT FIO *infio;
 	FAST COUNT b, i, n;
 	UCOUNT nabs;
 
@@ -293,8 +280,6 @@ VOID tread(buf, count)
 	FAST TEXT *buf;
 	FAST COUNT count;
 	{
-	IMPORT FIO *infio;
-
 	while (0 <= --count)
 		*buf++ = gtc(infio);
 	}

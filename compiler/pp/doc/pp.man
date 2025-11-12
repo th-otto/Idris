@@ -46,9 +46,9 @@ Section I of the C Programmers' Manual.
 The presence of a secondary preprocessor control character permits
 two levels of parameterization.
 For instance, the invocation
-.DS
+.EX
 	pp -c -p@
-.DE
+.EE
 .LP
 will expand define and ifdef conditionals, leaving all # commands
 and comments intact;
@@ -56,7 +56,7 @@ invoking pp with no arguments would expand both @ and # commands.
 The flag -s# would effectively disable the secondary control character.
 .EG
 The standard style for writing C programs is:
-
+.EX
 	/* name of program
 	 */
 	#include <std.h>
@@ -65,7 +65,7 @@ The standard style for writing C programs is:
 
 	COUNT things[MAXN];
 	etc.
-
+.EE
 .FI
 The use of uppercase only identifiers is not required by pp,
 but is strongly recommended to distinguish parameters from normal

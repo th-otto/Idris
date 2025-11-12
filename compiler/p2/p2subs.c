@@ -50,8 +50,6 @@ VOID chwrite(s, n)
 	TEXT *s;
 	BYTES n;
 	{
-	IMPORT BYTES choff;
-	IMPORT CHBUF *chbase;
 	FAST COUNT i;
 	FAST CHBUF **qb, *q;
 
@@ -83,8 +81,6 @@ putfmt("<<%i|%b>>", choff, s, i);
  */
 TEXT *chread()
 	{
-	IMPORT BYTES choff;
-	IMPORT CHBUF *chbase;
 	FAST COUNT i;
 	FAST CHBUF *q;
 	FAST TEXT *s;
@@ -227,7 +223,6 @@ LEX gcode()
  */
 EXPR *gexpr()
 	{
-	IMPORT EXPR *exlist, exzero;
 	FAST COUNT n;
 	FAST EXPR *q;
 	FAST TEXT *s;
@@ -426,9 +421,6 @@ LEX needch()
 VOID panic(s)
 	TEXT *s;
 	{
-	IMPORT BYTES lineno;
-	IMPORT FILE errfd;
-	IMPORT TEXT *_pname, funname[];
 	TEXT buf[10], *f;
 
 	buf[itob(buf, lineno, 10)] = '\0';
@@ -458,8 +450,6 @@ BITS pref(want, need)
 TINY rtox(r)
 	BITS r;
 	{
-	IMPORT BITS rtab[];
-	IMPORT TINY xtab[];
 	FAST COUNT i;
 
 	if (r)
@@ -476,9 +466,6 @@ VOID setad(p, ty, idx, refs)
 	BITS ty;
 	TINY idx, refs;
 	{
-	IMPORT TEXT noname[];
-	IMPORT TINY regtype[];
-
 	p->got = 0;
 	p->f.ty = regtype[ty & 017];
 	cpybuf(p->f.nm, noname, LENNAME);
@@ -523,8 +510,6 @@ BITS treg(p, want, set)
 	FAST EXPR *p;
 	BITS want, set;
 	{
-	IMPORT BYTES autmin, autoff;
-
 	if ((set & (HL|BC)) != (HL|BC))
 		return (0);
 	set =| xtor(p->f.idx);
@@ -543,8 +528,5 @@ BITS treg(p, want, set)
 TINY xtor(x)
 	TINY x;
 	{
-	IMPORT BITS rtab[];
-	IMPORT TINY xtab[];
-
 	return (!x ? 0 : rtab[scnstr(xtab, x & 077)] & ~AUTIDX);
 	}

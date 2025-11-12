@@ -5,42 +5,42 @@
 /*	the types
 		op = ((UNOP | BINOP) & type)
  */
-#define BINOP	0200
-#define UNOP	0100
+#define BINOP	0x80
+#define UNOP	0x40
 
 /*	the operators
  */
-#define LAND	0301
-#define LANDAND	0202
-#define LCOMP	0103
-#define LDECR	0104
-#define LDIVIDE	0205
-#define LGAND	0206
-#define LGDIV	0207
-#define LGETS	0210
-#define LGLSH	0211
-#define LGRSH	0212
-#define LGMIN	0213
-#define LGMOD	0214
-#define LGOR	0215
-#define LGPLU	0216
-#define LGREAT	0217
-#define LGEQ	0220
-#define LGTIM	0221
-#define LGXOR	0222
-#define LINCR	0123
-#define LISEQ	0224
-#define LLESS	0225
-#define LLEQ	0226
-#define LLSHIFT	0227
-#define LMINUS	0330
-#define LMODULO	0231
-#define LNOT	0132
-#define LNOTEQ	0233
-#define LOR		0234
-#define LOROR	0235
-#define LPLUS	0336
-#define LQUERY	0237
-#define LRSHIFT	0240
-#define LTIMES	0342
-#define LXOR	0243
+#define LAND    (BINOP | UNOP | 1)
+#define LANDAND (BINOP | 2)
+#define LCOMP   (UNOP  | 3)
+#define LDECR   (UNOP  | 4)
+#define LDIVIDE (BINOP | 5)
+#define LGAND   (BINOP | 6)
+#define LGDIV   (BINOP | 7)
+#define LGETS   (BINOP | 8)
+#define LGLSH   (BINOP | 9)
+#define LGRSH   (BINOP | 10)
+#define LGMIN   (BINOP | 11)
+#define LGMOD   (BINOP | 12)
+#define LGOR    (BINOP | 13)
+#define LGPLU   (BINOP | 14)
+#define LGREAT  (BINOP | 15)
+#define LGEQ    (BINOP | 16)
+#define LGTIM   (BINOP | 17)
+#define LGXOR   (BINOP | 18)
+#define LINCR   (UNOP  | 19)
+#define LISEQ   (BINOP | 20)
+#define LLESS   (BINOP | 21)
+#define LLEQ    (BINOP | 22)
+#define LLSHIFT (BINOP | 23)
+#define LMINUS  (BINOP | UNOP | 24)
+#define LMODULO (BINOP | 25)
+#define LNOT    (UNOP  | 26)
+#define LNOTEQ  (BINOP | 27)
+#define LOR     (BINOP | 28)
+#define LOROR   (BINOP | 29)
+#define LPLUS   (BINOP | UNOP | 30)
+#define LQUERY  (BINOP | 31)
+#define LRSHIFT (BINOP | 32)
+#define LTIMES  (BINOP | UNOP | 33)
+#define LXOR    (BINOP | 34)

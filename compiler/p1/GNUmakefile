@@ -13,14 +13,14 @@ CFLAGS = -Os -fomit-frame-pointer \
 LDFLAGS =
 
 # Commands
-CMDS = pp
+CMDS = p1
 
 all: $(CMDS)
 
-PPOBJ = p0eval.o p0lex.o p0main.o p0subs.o util.o getflags.o
+P1OBJ = p1data.o p1expr.o p1func.o p1gets.o p1main.o p1puts.o p1red.o p1subs.o p1type.o util.o getflags.o
 
-pp: $(PPOBJ)
-	$(CC) $(CFLAGS) -o $@ $(PPOBJ) $(LDFLAGS) -lm
+p1: $(P1OBJ)
+	$(CC) $(CFLAGS) -o $@ $(P1OBJ) $(LDFLAGS)
 
 util.o: util.c ../util/util.c
 getflags.o: getflags.c ../util/getflags.c

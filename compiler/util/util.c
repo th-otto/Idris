@@ -241,3 +241,49 @@ size_t _btos(const char *s, size_t n, short *i, int base)
 	*i = l;
 	return n;
 }
+
+
+/*
+ * scan string for character
+ */
+size_t _scnstr(const unsigned char *s, unsigned char c)
+{
+	const unsigned char *str = s;
+
+	for (;;)
+	{
+		if (*str == c)
+			break;
+		if (*str++ == 0)
+		{
+			str--;
+			break;
+		}
+	}
+	return str - s;
+}
+
+
+/*
+ * free a list of allocated cells
+ */
+void *frelst(void *p, void *plast)
+{
+	while (p != NULL && p != plast)
+	{
+		void *next = *((void **)p);
+		free(p);
+		p = next;
+	}
+	return p;
+}
+
+
+void *listalloc(size_t n, void *link)
+{
+	void *p;
+	
+	p = xmalloc(n);
+	*((void **)p) = link; /* ->next */
+	return p;
+}

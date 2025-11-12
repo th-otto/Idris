@@ -263,7 +263,7 @@ x19e_4:
 [000002d8] 6710                      beq.s      x19e_8
 x19e_7:
 [000002da] 2ebc 0000 57c2            move.l     #$0000AE70,(a7) "bad defined syntax"
-[000002e0] 4eb9 0000 324a            jsr        _perror
+[000002e0] 4eb9 0000 324a            jsr        _p0error
 [000002e6] 6000 feac                 bra        x19e_3
 x19e_8:
 [000002ea] 7001                      moveq.l    #1,d0
@@ -354,7 +354,7 @@ _dodef_6:
 [000003e0] 2e0c                      move.l     a4,d7
 [000003e2] 6600 0088                 bne        _dodef_8
 [000003e6] 2ebc 0000 580b            move.l     #$0000AEB9,(a7) "bad #define arguments"
-[000003ec] 4eb9 0000 324a            jsr        _perror
+[000003ec] 4eb9 0000 324a            jsr        _p0error
 [000003f2] 426e fff4                 clr.w      -12(a6)
 [000003f6] 286e 0008                 movea.l    8(a6),a4
 [000003fa] 6090                      bra.s      _dodef_9
@@ -417,7 +417,7 @@ _dodef_15:
 [00000496] bc87                      cmp.l      d7,d6
 [00000498] 6c3a                      bge.s      _dodef_16
 [0000049a] 2ebc 0000 57f3            move.l     #$0000AEA1,(a7) "too few macro arguments"
-[000004a0] 4eb9 0000 324a            jsr        _perror
+[000004a0] 4eb9 0000 324a            jsr        _p0error
 _dodef_13:
 [000004a6] 2d4c ffee                 move.l     a4,-18(a6)
 _dodef_30:
@@ -443,7 +443,7 @@ _dodef_16:
 [000004e6] be86                      cmp.l      d6,d7
 [000004e8] 6cbc                      bge.s      _dodef_13
 [000004ea] 2ebc 0000 57da            move.l     #$0000AE88,(a7) "too many macro arguments"
-[000004f0] 4eb9 0000 324a            jsr        _perror
+[000004f0] 4eb9 0000 324a            jsr        _p0error
 [000004f6] 60ae                      bra.s      _dodef_13
 _dodef_17:
 [000004f8] 2e0c                      move.l     a4,d7
@@ -770,7 +770,7 @@ _doif:
 [00000858] 4aae 000c                 tst.l      12(a6)
 [0000085c] 660e                      bne.s      _doif_1
 [0000085e] 2ebc 0000 5830            move.l     #$0000AEDE,(a7) "$if expects arguments"
-[00000864] 4eb9 0000 324a            jsr        _perror
+[00000864] 4eb9 0000 324a            jsr        _p0error
 [0000086a] 602a                      bra.s      _doif_2
 _doif_1:
 [0000086c] 486e fffc                 pea.l      -4(a6)
@@ -784,7 +784,7 @@ _doif_1:
 [00000886] be92                      cmp.l      (a2),d7
 [00000888] 671c                      beq.s      _doif_3
 [0000088a] 2ebc 0000 5822            move.l     #$0000AED0,(a7) "bad $if(test)"
-[00000890] 4eb9 0000 324a            jsr        _perror
+[00000890] 4eb9 0000 324a            jsr        _p0error
 _doif_2:
 [00000896] 26ae 0008                 move.l     8(a6),(a3)
 [0000089a] 2e2e fff8                 move.l     -8(a6),d7
@@ -949,7 +949,7 @@ _getargs_14:
 [00000a52] 6000 ff28                 bra        _getargs_15
 _getargs_3:
 [00000a56] 2ebc 0000 5846            move.l     #$0000AEF4,(a7) "bad macro arguments"
-[00000a5c] 4eb9 0000 324a            jsr        _perror
+[00000a5c] 4eb9 0000 324a            jsr        _p0error
 [00000a62] 246e 000c                 movea.l    12(a6),a2
 [00000a66] 4292                      clr.l      (a2)
 [00000a68] 2e2e 0008                 move.l     8(a6),d7
@@ -1209,7 +1209,7 @@ _dopunct_3:
 [00000d40] 1e12                      move.b     (a2),d7
 [00000d42] 2e87                      move.l     d7,(a7)
 [00000d44] 2f3c 0000 5cda            move.l     #$0000B388,-(a7) "illegal character: %c"
-[00000d4a] 4eb9 0000 324a            jsr        _perror
+[00000d4a] 4eb9 0000 324a            jsr        _p0error
 [00000d50] 588f                      addq.l     #4,a7
 [00000d52] 246e 0008                 movea.l    8(a6),a2
 [00000d56] 2495                      move.l     (a5),(a2)
@@ -1251,7 +1251,7 @@ _eval_1:
 [00000da4] 0cad 0000 0002 0004       cmpi.l     #$00000002,4(a5)
 [00000dac] 6716                      beq.s      _eval_3
 [00000dae] 2ebc 0000 5cf0            move.l     #$0000B39E,(a7) "illegal #if expression"
-[00000db4] 4eb9 0000 324a            jsr        _perror
+[00000db4] 4eb9 0000 324a            jsr        _p0error
 [00000dba] 4287                      clr.l      d7
 _eval_2:
 [00000dbc] 4cdf 2001                 movem.l    (a7)+,d0/a5
@@ -1551,7 +1551,7 @@ _extail_24:
 [000010ee] 6610                      bne.s      _extail_26
 _extail_25:
 [000010f0] 2ebc 0000 5dc0            move.l     #$0000B46E,(a7) "illegal ? : in #if"
-[000010f6] 4eb9 0000 324a            jsr        _perror
+[000010f6] 4eb9 0000 324a            jsr        _p0error
 [000010fc] 4287                      clr.l      d7
 [000010fe] 6028                      bra.s      _extail_27
 _extail_26:
@@ -1563,7 +1563,7 @@ _extail_28:
 [00001110] 2d6e fff8 fffc            move.l     -8(a6),-4(a6)
 [00001116] 6000 fe58                 bra        _extail_7
 [0000111a] 2ebc 0000 5da8            move.l     #$0000B456,(a7) "illegal operator in #if"
-[00001120] 4eb9 0000 324a            jsr        _perror
+[00001120] 4eb9 0000 324a            jsr        _p0error
 [00001126] 4287                      clr.l      d7
 _extail_27:
 [00001128] 4cdf 0031                 movem.l    (a7)+,d0/d4-d5
@@ -1656,7 +1656,7 @@ _exterm_5:
 [00001214] 2d47 fdfc                 move.l     d7,-516(a6)
 [00001218] 664c                      bne.s      _exterm_8
 [0000121a] 2ebc 0000 5dec            move.l     #$0000B49A,(a7) "illegal #if syntax"
-[00001220] 4eb9 0000 324a            jsr        _perror
+[00001220] 4eb9 0000 324a            jsr        _p0error
 [00001226] 4287                      clr.l      d7
 [00001228] 60d4                      bra.s      _exterm_7
 _exterm_6:
@@ -1673,7 +1673,7 @@ _exterm_6:
 [0000124c] 6710                      beq.s      _exterm_10
 _exterm_9:
 [0000124e] 2ebc 0000 5dff            move.l     #$0000B4AD,(a7) "missing ) in #if"
-[00001254] 4eb9 0000 324a            jsr        _perror
+[00001254] 4eb9 0000 324a            jsr        _p0error
 [0000125a] 4287                      clr.l      d7
 [0000125c] 60a0                      bra.s      _exterm_7
 _exterm_10:
@@ -1724,7 +1724,7 @@ _exterm_18:
 [000012c2] 0cae 0000 00de fdfc       cmpi.l     #$000000DE,-516(a6)
 [000012ca] 67d8                      beq.s      _exterm_14
 [000012cc] 2ebc 0000 5dd4            move.l     #$0000B482,(a7) "illegal unary op in #if"
-[000012d2] 4eb9 0000 324a            jsr        _perror
+[000012d2] 4eb9 0000 324a            jsr        _p0error
 [000012d8] 60ca                      bra.s      _exterm_14
 
 _bton:
@@ -1825,7 +1825,7 @@ _bton_7:
 [000013e6] 2ead 0014                 move.l     20(a5),(a7)
 [000013ea] 2f2d 0010                 move.l     16(a5),-(a7)
 [000013ee] 2f3c 0000 600a            move.l     #$0000B6B8,-(a7) "illegal integer %b"
-[000013f4] 4eb9 0000 324a            jsr        _perror
+[000013f4] 4eb9 0000 324a            jsr        _p0error
 [000013fa] 508f                      addq.l     #8,a7
 [000013fc] 6034                      bra.s      _bton_10
 _bton_8:
@@ -2157,7 +2157,7 @@ _lexfloat_17:
 [0000175c] 246e 0008                 movea.l    8(a6),a2
 [00001760] 2d52 0008                 move.l     (a2),8(a6)
 [00001764] 2ebc 0000 6022            move.l     #$0000B6D0,(a7) "illegal float constant"
-[0000176a] 4eb9 0000 324a            jsr        _perror
+[0000176a] 4eb9 0000 324a            jsr        _p0error
 [00001770] 60de                      bra.s      _lexfloat_12
 
 _lexfnxt:
@@ -2790,7 +2790,7 @@ _getex_3:
 [00001ec0] 4aae 0008                 tst.l      8(a6)
 [00001ec4] 671e                      beq.s      _getex_5
 [00001ec6] 2ebc 0000 6476            move.l     #$0000BB24,(a7) "#line inside macro"
-[00001ecc] 4eb9 0000 324a            jsr        _perror
+[00001ecc] 4eb9 0000 324a            jsr        _p0error
 [00001ed2] 6010                      bra.s      _getex_5
 _getex_4:
 [00001ed4] 2e2d 0004                 move.l     4(a5),d7
@@ -2845,7 +2845,7 @@ _getex_6:
 [00001f74] 2ead 0014                 move.l     20(a5),(a7)
 [00001f78] 2f2d 0010                 move.l     16(a5),-(a7)
 [00001f7c] 2f3c 0000 646e            move.l     #$0000BB1C,-(a7) "bad #%b"
-[00001f82] 4eb9 0000 324a            jsr        _perror
+[00001f82] 4eb9 0000 324a            jsr        _p0error
 [00001f88] 508f                      addq.l     #8,a7
 [00001f8a] 6000 ff10                 bra        _getex_1
 _getex_7:
@@ -2931,7 +2931,7 @@ _getinl_4:
 [0000209a] 4ab9 0000 648a            tst.l      $0000BB38
 [000020a0] 6726                      beq.s      _getinl_5
 [000020a2] 2ebc 0000 7494            move.l     #$0000CB42,(a7) "unbalanced comment in file"
-[000020a8] 4eb9 0000 324a            jsr        _perror
+[000020a8] 4eb9 0000 324a            jsr        _p0error
 [000020ae] 42b9 0000 648a            clr.l      $0000BB38
 [000020b4] 4297                      clr.l      (a7)
 [000020b6] 2f3c 0000 7492            move.l     #$0000CB40,-(a7)
@@ -3018,7 +3018,7 @@ _getln_2:
 [000021b2] 6092                      bra.s      _getln_5
 _getln_3:
 [000021b4] 2ebc 0000 74b0            move.l     #$0000CB5E,(a7) "folded line"
-[000021ba] 4eb9 0000 324a            jsr        _perror
+[000021ba] 4eb9 0000 324a            jsr        _p0error
 [000021c0] 244d                      movea.l    a5,a2
 [000021c2] d5ee 0010                 adda.l     16(a6),a2
 [000021c6] 14bc 000a                 move.b     #$0A,(a2)
@@ -3167,7 +3167,7 @@ _main_7:
 [000023f0] 2ead 0014                 move.l     20(a5),(a7)
 [000023f4] 2f2d 0010                 move.l     16(a5),-(a7)
 [000023f8] 2f3c 0000 74bc            move.l     #$0000CB6A,-(a7) "misplaced #%b"
-[000023fe] 4eb9 0000 324a            jsr        _perror
+[000023fe] 4eb9 0000 324a            jsr        _p0error
 [00002404] 508f                      addq.l     #8,a7
 [00002406] 4297                      clr.l      (a7)
 [00002408] 2f0d                      move.l     a5,-(a7)
@@ -3394,7 +3394,7 @@ _putgr_26:
 [00002616] 6000 fe36                 bra        _putgr_9
 _putgr_33:
 [0000261a] 2ebc 0000 7550            move.l     #$0000CBFE,(a7) "missing #endif"
-[00002620] 4eb9 0000 324a            jsr        _perror
+[00002620] 4eb9 0000 324a            jsr        _p0error
 [00002626] 6000 fe26                 bra        _putgr_9
 
 _putns:
@@ -3459,7 +3459,7 @@ x26e6_2:
 [000026ea] 0c92 0000 0003            cmpi.l     #$00000003,(a2)
 [000026f0] 670e                      beq.s      x26e6_1
 [000026f2] 2ebc 0000 7607            move.l     #$0000CCB5,(a7) "bad #define"
-[000026f8] 4eb9 0000 324a            jsr        _perror
+[000026f8] 4eb9 0000 324a            jsr        _p0error
 [000026fe] 60d2                      bra.s      x26e6_2
 x26e6_1:
 [00002700] 2d55 fffc                 move.l     (a5),-4(a6)
@@ -3536,7 +3536,7 @@ x26e6_6:
 [000027c0] d5d5                      adda.l     (a5),a2
 [000027c2] 2f12                      move.l     (a2),-(a7)
 [000027c4] 2f3c 0000 75fa            move.l     #$0000CCA8,-(a7) "redefined %b"
-[000027ca] 4eb9 0000 324a            jsr        _perror
+[000027ca] 4eb9 0000 324a            jsr        _p0error
 [000027d0] 508f                      addq.l     #8,a7
 [000027d2] 6000 fefe                 bra        x26e6_2
 [000027d6] 2455                      movea.l    (a5),a2
@@ -3544,7 +3544,7 @@ x26e6_6:
 [000027da] 0c92 0000 0003            cmpi.l     #$00000003,(a2)
 [000027e0] 6710                      beq.s      x26e6_7
 [000027e2] 2ebc 0000 75ef            move.l     #$0000CC9D,(a7) "bad #undef"
-[000027e8] 4eb9 0000 324a            jsr        _perror
+[000027e8] 4eb9 0000 324a            jsr        _p0error
 [000027ee] 6000 fee2                 bra        x26e6_2
 x26e6_7:
 [000027f2] 45f8 0014                 lea.l      ($00000014).w,a2
@@ -3563,7 +3563,7 @@ x26e6_7:
 [0000281e] 671a                      beq.s      x26e6_8
 [00002820] 2e8c                      move.l     a4,(a7)
 [00002822] 2f3c 0000 75dd            move.l     #$0000CC8B,-(a7) "can',$27,'t #include %p"
-[00002828] 4eb9 0000 324a            jsr        _perror
+[00002828] 4eb9 0000 324a            jsr        _p0error
 [0000282e] 588f                      addq.l     #4,a7
 [00002830] 42b9 0000 6222            clr.l      $0000B8D0
 [00002836] 6000 fe9a                 bra        x26e6_2
@@ -3637,7 +3637,7 @@ x26e6_10:
 [00002922] 0c92 0000 0004            cmpi.l     #$00000004,(a2)
 [00002928] 6700 0132                 beq        x26e6_12
 [0000292c] 2ebc 0000 75be            move.l     #$0000CC6C,(a7) "bad #line"
-[00002932] 4eb9 0000 324a            jsr        _perror
+[00002932] 4eb9 0000 324a            jsr        _p0error
 [00002938] 6000 fd98                 bra        x26e6_2
 x26e6_11:
 [0000293c] 2455                      movea.l    (a5),a2
@@ -3783,7 +3783,7 @@ x26e6_18:
 [00002b04] 0c92 0000 0002            cmpi.l     #$00000002,(a2)
 [00002b0a] 6724                      beq.s      x26e6_20
 [00002b0c] 2ebc 0000 75ad            move.l     #$0000CC5B,(a7) "bad #line syntax"
-[00002b12] 4eb9 0000 324a            jsr        _perror
+[00002b12] 4eb9 0000 324a            jsr        _p0error
 [00002b18] 6016                      bra.s      x26e6_20
 x26e6_19:
 [00002b1a] 2479 0000 6234            movea.l    $0000B8E2,a2
@@ -3824,7 +3824,7 @@ x26e6_21:
 [00002b9e] 0c92 0000 0002            cmpi.l     #$00000002,(a2)
 [00002ba4] 6700 fb2c                 beq        x26e6_2
 [00002ba8] 2ebc 0000 75a0            move.l     #$0000CC4E,(a7) "bad #xxx"
-[00002bae] 4eb9 0000 324a            jsr        _perror
+[00002bae] 4eb9 0000 324a            jsr        _p0error
 [00002bb4] 6000 fb1c                 bra        x26e6_2
 [00002bb8] 2e8d                      move.l     a5,(a7)
 [00002bba] 4eb9 0000 1c34            jsr        _putls
@@ -3870,7 +3870,7 @@ _fatal:
 [00002c3c] 4e56 fffc                 link       a6,#-4
 [00002c40] 2eae 000c                 move.l     12(a6),(a7)
 [00002c44] 2f2e 0008                 move.l     8(a6),-(a7)
-[00002c48] 4eb9 0000 324a            jsr        _perror
+[00002c48] 4eb9 0000 324a            jsr        _p0error
 [00002c4e] 588f                      addq.l     #4,a7
 [00002c50] 4297                      clr.l      (a7)
 [00002c52] 4eb9 0000 0080            jsr        _exit
@@ -4412,7 +4412,7 @@ _perrfmt_3:
 [00003244] 528c                      addq.l     #1,a4
 [00003246] 6000 fec0                 bra        _perrfmt_8
 
-_perror:
+_p0error:
 [0000324a] 4e56 fff8                 link       a6,#-8
 [0000324e] 23fc 0000 6242 0000 623c  move.l     #$0000B8F0,$0000B8EA
 [00003258] 2e39 0000 622a            move.l     _argc,d7
@@ -4421,39 +4421,39 @@ _perror:
 [00003262] 598a                      subq.l     #4,a2
 [00003264] d5f9 0000 6238            adda.l     _argv,a2
 [0000326a] 4a92                      tst.l      (a2)
-[0000326c] 660c                      bne.s      _perror_1
+[0000326c] 660c                      bne.s      _p0error_1
 [0000326e] 2ebc 0000 784e            move.l     #$0000CEFC,(a7)
 [00003274] 4eba fe80                 jsr        _perrfmt(pc)
-[00003278] 6076                      bra.s      _perror_2
-_perror_1:
+[00003278] 6076                      bra.s      _p0error_2
+_p0error_1:
 [0000327a] 2ebc 0000 7831            move.l     #$0000CEDF,(a7)
 [00003280] 4ab9 0000 6234            tst.l      $0000B8E2
-[00003286] 670e                      beq.s      _perror_3
+[00003286] 670e                      beq.s      _p0error_3
 [00003288] 2479 0000 6234            movea.l    $0000B8E2,a2
 [0000328e] 508a                      addq.l     #8,a2
 [00003290] 4287                      clr.l      d7
 [00003292] 3e12                      move.w     (a2),d7
-[00003294] 6008                      bra.s      _perror_4
-_perror_3:
+[00003294] 6008                      bra.s      _p0error_4
+_p0error_3:
 [00003296] 4287                      clr.l      d7
 [00003298] 3e39 0000 622e            move.w     $0000B8DC,d7
-_perror_4:
+_p0error_4:
 [0000329e] 2f07                      move.l     d7,-(a7)
 [000032a0] 2f3c 0000 7833            move.l     #$0000CEE1,-(a7)
 [000032a6] 4ab9 0000 6234            tst.l      $0000B8E2
-[000032ac] 670c                      beq.s      _perror_5
+[000032ac] 670c                      beq.s      _p0error_5
 [000032ae] 2479 0000 6234            movea.l    $0000B8E2,a2
 [000032b4] 588a                      addq.l     #4,a2
 [000032b6] 2e12                      move.l     (a2),d7
-[000032b8] 6014                      bra.s      _perror_6
-_perror_5:
+[000032b8] 6014                      bra.s      _p0error_6
+_p0error_5:
 [000032ba] 2e39 0000 622a            move.l     _argc,d7
 [000032c0] e587                      asl.l      #2,d7
 [000032c2] 2447                      movea.l    d7,a2
 [000032c4] 598a                      subq.l     #4,a2
 [000032c6] d5f9 0000 6238            adda.l     _argv,a2
 [000032cc] 2e12                      move.l     (a2),d7
-_perror_6:
+_p0error_6:
 [000032ce] 2f07                      move.l     d7,-(a7)
 [000032d0] 2f3c 0000 7835            move.l     #$0000CEE3,-(a7)
 [000032d6] 2f39 0000 6216            move.l     $0000B8C4,-(a7)
@@ -4461,7 +4461,7 @@ _perror_6:
 [000032e2] 2f3c 0000 783f            move.l     #$0000CEED,-(a7)
 [000032e8] 4eba fe0c                 jsr        _perrfmt(pc)
 [000032ec] 4fef 001c                 lea.l      28(a7),a7
-_perror_2:
+_p0error_2:
 [000032f0] 2eae 0010                 move.l     16(a6),(a7)
 [000032f4] 2f2e 000c                 move.l     12(a6),-(a7)
 [000032f8] 2f2e 0008                 move.l     8(a6),-(a7)
@@ -4483,14 +4483,14 @@ _perror_2:
 [00003340] 4fef 000c                 lea.l      12(a7),a7
 [00003344] 54ae fffc                 addq.l     #2,-4(a6)
 [00003348] 4ab9 0000 61f6            tst.l      _xflag
-[0000334e] 671e                      beq.s      _perror_7
+[0000334e] 671e                      beq.s      _p0error_7
 [00003350] 2eae fffc                 move.l     -4(a6),(a7)
 [00003354] 2f3c 0000 6240            move.l     #$0000B8EE,-(a7)
 [0000335a] 4878 00fe                 pea.l      ($000000FE).w
 [0000335e] 2f3c 0000 782c            move.l     #$0000CEDA,-(a7)
 [00003364] 4eb9 0000 19aa            jsr        _putcode
 [0000336a] 4fef 000c                 lea.l      12(a7),a7
-_perror_7:
+_p0error_7:
 [0000336e] 4e5e                      unlk       a6
 [00003370] 4e75                      rts
 
@@ -4562,7 +4562,7 @@ _predef_3:
 [00003424] 2e85                      move.l     d5,(a7)
 [00003426] 2f0c                      move.l     a4,-(a7)
 [00003428] 2f3c 0000 7854            move.l     #$0000CF02,-(a7) "-d %b redefined"
-[0000342e] 4eba fe1a                 jsr        _perror(pc)
+[0000342e] 4eba fe1a                 jsr        _p0error(pc)
 [00003432] 508f                      addq.l     #8,a7
 [00003434] 6020                      bra.s      _predef_6
 _predef_5:
@@ -5045,7 +5045,7 @@ _stotl_46:
 [000038de] 1e12                      move.b     (a2),d7
 [000038e0] 2e87                      move.l     d7,(a7)
 [000038e2] 2f3c 0000 7872            move.l     #$0000CF20,-(a7) "unbalanced %c"
-[000038e8] 4eba f960                 jsr        _perror(pc)
+[000038e8] 4eba f960                 jsr        _p0error(pc)
 [000038ec] 588f                      addq.l     #4,a7
 [000038ee] 6000 fea2                 bra        _stotl_6
 _stotl_44:
@@ -15431,7 +15431,7 @@ _argv:
 00002fc6 T _lookup
 0000303a T _nxtfile
 000030f6 T _perrfmt
-0000324a T _perror
+0000324a T _p0error
 00003372 T _predef
 0000345e T _ptline
 000034aa T _scntab

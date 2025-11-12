@@ -52,3 +52,6 @@ BOOL _remark(const char *s1, const char *s2);
 void _error(const char *s1, const char *s2);
 void *xmalloc(size_t n);
 BOOL getin(int *pac, char ***pav);
+size_t _scnstr(const unsigned char *str, unsigned char c);
+void *frelst(void *p, void *plast);
+void *listalloc(size_t n, void *link);

@@ -16,7 +16,7 @@ getln for the next line.
 .LP
 The code in getln whichs builds the line without continuations
 and comments is somewhat twisty; in pseudo-code:
-
+.EX
 	get a buffer full
 	while (still characters in the buffer)
 		if (last char is '\')
@@ -37,6 +37,7 @@ and comments is somewhat twisty; in pseudo-code:
 		else
 			walk past one char
 
+.EE
 .LP
 free and frelst calls are freely sprinkled throughout
 p0main.c and to some extent throughout p0subs.c.
