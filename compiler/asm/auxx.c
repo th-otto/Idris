@@ -33,10 +33,10 @@ LOCAL OBUF obuf[2] {0};
 
 /*	drain a temp file buffer
  */
-VOID drain(seg)
+void drain(seg)
 	COUNT seg;
 	{
-	FAST CBUF *pcb = &cb[seg];
+	CBUF *pcb = &cb[seg];
 
 	if (pcb->count || pcb->ccode == CEND)
 		{
@@ -48,10 +48,10 @@ VOID drain(seg)
 
 /*	put stuff to temp file
  */
-VOID putcode(code, arg)
+void putcode(code, arg)
 	COUNT code, arg;
 	{
-	FAST COUNT i;
+	COUNT i;
 
 	switch (code)
 		{
@@ -83,13 +83,13 @@ VOID putcode(code, arg)
 
 /*	put a relocation byte
  */
-VOID relby(oseg, b)
+void relby(oseg, b)
 	COUNT oseg;
 	TINY b;
 	{
-	FAST COUNT n;
-	FAST OBUF *p = &obuf[oseg & 01];
-	INTERN LONG off;
+	COUNT n;
+	OBUF *p = &obuf[oseg & 01];
+	static LONG off;
 
 	if (p->n < BUFSIZE && oseg <= 1)
 		;
@@ -112,11 +112,11 @@ VOID relby(oseg, b)
 
 /*	map temp file to relocatable output
  */
-VOID relout(csize, dsize)
+void relout(csize, dsize)
 	BYTES csize, dsize;
 	{
-	FAST COUNT k, n;
-	FAST TERM *p;
+	COUNT k, n;
+	TERM *p;
 	COUNT u;
 
 	cobase->val = 0;
@@ -178,16 +178,16 @@ VOID relout(csize, dsize)
 
 /*	put a segment with relocation
  */
-VOID relseg(fd)
+void relseg(fd)
 	FILE fd;
 	{
-	FAST COUNT b, i, n;
+	COUNT b, i, n;
 	UCOUNT nabs;
 
 	lseek(fd, 0L, 0);
 	finit(infio, fd, READ);
 	nabs = 0;
-	FOREVER
+	for (;;)
 		{
 		tread(&cb[0], HDRSIZ);
 		if (cb[0].ccode == CEND)
@@ -249,10 +249,10 @@ VOID relseg(fd)
 
 /*	put a symbol to object file
  */
-VOID relsym(p)
-	FAST TERM *p;
+void relsym(p)
+	TERM *p;
 	{
-	FAST COUNT m;
+	COUNT m;
 
 	relwd(HIBUF, p->val);
 	m = ((COUNT)p->base < 4) ? (COUNT)p->base | 004 : 0;
@@ -267,7 +267,7 @@ VOID relsym(p)
 
 /*	put a relocation word
  */
-VOID relwd(oseg, w)
+void relwd(oseg, w)
 	COUNT oseg, w;
 	{
 	relby(oseg, w);
@@ -276,9 +276,9 @@ VOID relwd(oseg, w)
 
 /*	read with test
  */
-VOID tread(buf, count)
-	FAST TEXT *buf;
-	FAST COUNT count;
+void tread(buf, count)
+	TEXT *buf;
+	COUNT count;
 	{
 	while (0 <= --count)
 		*buf++ = gtc(infio);

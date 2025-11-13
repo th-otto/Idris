@@ -22,10 +22,10 @@ LOCAL TEXT *jcname[] {
 
 /*	define q as p
  */
-VOID define(q, p)
-	FAST TERM *q, *p;
+void define(q, p)
+	TERM *q, *p;
 	{
-	FAST TERM *pseg;
+	TERM *pseg;
 	LEX pty;
 
 	if (!q)
@@ -65,13 +65,13 @@ VOID define(q, p)
 
 /*	do binary operator
  */
-VOID dobin(l, r, ot)
+void dobin(l, r, ot)
 	TERM *l, *r;
 	LEX ot;
 	{
-	FAST CODETAB *tab;
-	FAST COUNT i;
-	FAST TEXT *s;
+	CODETAB *tab;
+	COUNT i;
+	TEXT *s;
 	LEX t;
 	TERM term, *x;
 
@@ -130,12 +130,12 @@ VOID dobin(l, r, ot)
 
 /*	do a literal operator
  */
-VOID dolit(p)
-	FAST TERM *p;
+void dolit(p)
+	TERM *p;
 	{
-	FAST LIT *q;
-	FAST TERM *pseg;
-	INTERN COUNT crs;
+	LIT *q;
+	TERM *pseg;
+	static COUNT crs;
 
 	pseg = p->base;
 	for (q = littab; q; q = q->t.next)
@@ -163,10 +163,10 @@ VOID dolit(p)
 /*	make a literal label into a name
  */
 TERM *litlbl(p, lbl)
-	FAST TERM *p;
-	FAST COUNT lbl;
+	TERM *p;
+	COUNT lbl;
 	{
-	FAST COUNT i;
+	COUNT i;
 
 	p->nm[0] = '_';
 	p->nm[1] = '_';
@@ -180,7 +180,7 @@ TERM *litlbl(p, lbl)
 
 /*	put a byte
  */
-VOID putbyte(c)
+void putbyte(c)
 	META c;
 	{
 	putfmt("\tdb %i\n", c & 0xff);
@@ -188,11 +188,11 @@ VOID putbyte(c)
 
 /*	put program footer
  */
-VOID putftr(p)
-	FAST TERM *p;
+void putftr(p)
+	TERM *p;
 	{
-	FAST LIT *q;
-	FAST TEXT *s;
+	LIT *q;
+	TEXT *s;
 	TERM term;
 	TEXT c;
 
@@ -238,10 +238,10 @@ VOID putftr(p)
 
 /*	put program header
  */
-VOID puthdr(s)
-	FAST TEXT *s;
+void puthdr(s)
+	TEXT *s;
 	{
-	FAST COUNT i;
+	COUNT i;
 
 	addsym("stack")->base = cobase;
 	addsym("memory")->base = cobase;
@@ -256,10 +256,10 @@ VOID puthdr(s)
 
 /*	put zeros for space
  */
-VOID putsp(val)
+void putsp(val)
 	COUNT val;
 	{
-	FAST COUNT i, j;
+	COUNT i, j;
 
 	if (val & 1)
 		putfmt("\tdb\t0\n");
@@ -274,12 +274,12 @@ VOID putsp(val)
 
 /* put an operand value
  */
-VOID putval(code, p)
+void putval(code, p)
 	LEX code;
-	FAST TERM *p;
+	TERM *p;
 	{
-	FAST COUNT i;
-	FAST LEX pty;
+	COUNT i;
+	LEX pty;
 
 	pty = p->ty & TMASK;
 	switch (code)
@@ -322,7 +322,7 @@ VOID putval(code, p)
 
 /*	put a word constant
  */
-VOID putword(p)
+void putword(p)
 	TERM *p;
 	{
 	putfmt("\tdw ");

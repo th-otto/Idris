@@ -121,7 +121,7 @@ GLOBAL FILE tfd[2] {-1, -1};
 GLOBAL FIO *infio {NULL};
 GLOBAL FIO *outfio[2] {NULL};
 LOCAL TEXT *oname {NULL};
-LOCAL VOID *onext {NULL};
+LOCAL void *onext {NULL};
 
 /*	symbol control
  */
@@ -138,9 +138,9 @@ GLOBAL TEXT string[MAXSTR+1] {0};
 LEX getal(c)
 	META c;
 	{
-	FAST COUNT i;
-	FAST LEX t;
-	FAST TERM *q;
+	COUNT i;
+	LEX t;
+	TERM *q;
 	TEXT tname[LENNAME];
 
 	tname[0] = c;
@@ -182,8 +182,8 @@ LEX getal(c)
 LEX getop(c)
 	META c;
 	{
-	FAST COUNT i;
-	FAST LEX t;
+	COUNT i;
+	LEX t;
 	TEXT op[3];
 
 	op[0] = c;
@@ -199,10 +199,10 @@ LEX getop(c)
 /*	get an expression
  */
 LEX gexpr(p, mand)
-	FAST TERM *p;
+	TERM *p;
 	BOOL mand;
 	{
-	FAST LEX t, u;
+	LEX t, u;
 	TERM term;
 
 	t = gterm(p, mand ? "expression" : NULL);
@@ -224,11 +224,11 @@ LEX gexpr(p, mand)
 
 /*	concatenate a string
  */
-VOID gstring(p, mes)
-	FAST TERM *p;
+void gstring(p, mes)
+	TERM *p;
 	TEXT *mes;
 	{
-	FAST LEX t;
+	LEX t;
 
 	switch (p->ty)
 		{
@@ -250,11 +250,11 @@ VOID gstring(p, mes)
 /*	get a term
  */
 LEX gterm(p, mesg)
-	FAST TERM *p;
+	TERM *p;
 	TEXT *mesg;
 	{
-	FAST LEX t;
-	FAST TERM *q;
+	LEX t;
+	TERM *q;
 	LEX u;
 	TERM term;
 
@@ -336,9 +336,9 @@ LEX gterm(p, mesg)
 /*	hash to proper symbol table
  */
 TERM **hash(s)
-	FAST TEXT *s;
+	TEXT *s;
 	{
-	FAST COUNT i, n;
+	COUNT i, n;
 
 	for (n = 0, i = LENNAME; 0 <= --i && *s; )
 		n =+ *s++;
@@ -351,8 +351,8 @@ BOOL main(ac, av)
 	COUNT ac;
 	TEXT **av;
 	{
-	FAST LEX t, ty;
-	FAST TEXT *s;
+	LEX t, ty;
+	TEXT *s;
 	COUNT i;
 	TERM term;
 	TEXT nbuf[MAXNAME];
@@ -421,9 +421,9 @@ BOOL main(ac, av)
 /*	convert token back to name
  */
 TEXT *opname(t)
-	FAST LEX t;
+	LEX t;
 	{
-	FAST PRETAB *p;
+	PRETAB *p;
 
 	for (p = optab; p->prename; ++p)
 		if (p->pretype == t)
@@ -437,9 +437,9 @@ TEXT *opname(t)
 
 /*	cleanup temp files on exit
  */
-VOID *tclose()
+void *tclose()
 	{
-	FAST COUNT i;
+	COUNT i;
 
 	for (i = 2; 0 <= --i; )
 		{
@@ -454,8 +454,8 @@ VOID *tclose()
 TEXT *tname(n)
 	COUNT n;
 	{
-	INTERN TEXT buf[MAXNAME];
-	INTERN TEXT suf[2];
+	static TEXT buf[MAXNAME];
+	static TEXT suf[2];
 
 	suf[0] = n + '0';
 	cpystr(buf, uname(), suf, NULL);

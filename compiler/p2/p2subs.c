@@ -1,154 +1,222 @@
 /*	INPUT AND UTILITY ROUTINES
  *	copyright (c) 1979 by Whitesmiths, Ltd.
  */
-#include <std.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
 #include "int2.h"
 #include "int12.h"
 #include "int012.h"
+#include "util.h"
+#include "p2.h"
 
 /*	type tables
  */
-GLOBAL TINY bytype[] {0, 2, 2, 2, 2, 2, 4, 4, 4, 4, 8};
-GLOBAL TINY equtype[] {0, XUCHAR, XUCHAR, XUSHORT, XSFIELD, XUSHORT,
-		XULONG, XLFIELD, XULONG, XFLOAT, XDOUBLE};
-GLOBAL TINY regtype[] {0, XSHORT, XSHORT, XSHORT, XUSHORT, XUSHORT,
-		XLONG, XULONG, XULONG, XDOUBLE, XDOUBLE};
+TINY bytype[] = { 0, 2, 2, 2, 2, 2, 4, 4, 4, 4, 8 };
+
+TINY equtype[] = { 0, XUCHAR, XUCHAR, XUSHORT, XSFIELD, XUSHORT, XULONG, XLFIELD, XULONG, XFLOAT, XDOUBLE };
+
+TINY regtype[] = { 0, XSHORT, XSHORT, XSHORT, XUSHORT, XUSHORT,	XLONG, XULONG, XULONG, XDOUBLE, XDOUBLE };
 
 /*	the nameless name
  */
-GLOBAL TEXT noname[] {0, 0, 0, 0, 0, 0, 0, 0};
+char noname[LENNAME];
 
 /*	relational operator mapping tables
  */
-GLOBAL TINY cmpops[] {GLESS, GLEQ, GGREAT, GGEQ, GISEQ, GNOTEQ, 0};
-GLOBAL TINY flpops[] {GGEQ, GGREAT, GLEQ, GLESS, GNOTEQ, GISEQ};
-GLOBAL TINY lexops[] {LLESS, LLEQ, LGREAT, LGEQ, LISEQ, LNOTEQ, 0};
+TINY cmpops[] = { GLESS, GLEQ, GGREAT, GGEQ, GISEQ, GNOTEQ, 0 };
+TINY flpops[] = { GGEQ, GGREAT, GLEQ, GLESS, GNOTEQ, GISEQ };
+TINY lexops[] = { LLESS, LLEQ, LGREAT, LGEQ, LISEQ, LNOTEQ, 0 };
 
 /*	the character pool stuff
  */
 #define CHBUF struct chbuf
 
-struct chbuf {
-	TEXT *next;
-	TEXT cbuf[01000];
-	} *chbase {NULL};
+static struct chbuf
+{
+	struct chbuf *next;
+	char cbuf[512];
+} *chbase;
 
-/*	put strings to character pool
+
+/*
+ * write buffer to character pool
  */
-VOID chput(args)
-	TEXT *args;
+void chwrite(const char *s, size_t n)
+{
+	int i;
+	int nn;
+	CHBUF **qb;
+	CHBUF *q;
+
+	q = 0;
+	for (; 0 < n; n -= i)
 	{
-	FAST TEXT **p;
-
-	for (p = &args; *p; ++p)
-		chwrite(*p, lenstr(*p));
-	}
-
-/*	write buffer to character pool
- */
-VOID chwrite(s, n)
-	TEXT *s;
-	BYTES n;
-	{
-	FAST COUNT i;
-	FAST CHBUF **qb, *q;
-
-	for (; 0 < n; n =- i)
-		{
 		for (i = choff >> 9, qb = &chbase; 0 <= i; --i)
-			{
+		{
 			if (!*qb)
-				{
-				*qb = alloc(sizeof (**qb), NULL);
-				(*qb)->cbuf[0777] = '\0';
-				}
+			{
+				*qb = xmalloc(sizeof(**qb));
+				(*qb)->next = NULL;
+				(*qb)->cbuf[511] = '\0';
+			}
 			q = *qb;
 			qb = &(*qb)->next;
-			}
-		i = choff & 0777;
-		i = cpybuf(&q->cbuf[i], s, min(0777 - i, n));
-#ifdef DEBUG
-putfmt("<<%i|%b>>", choff, s, i);
-#endif
-		choff =+ i;
-		if ((choff & 0777) == 0777)
-			++choff;
-		s =+ i;
 		}
+		i = choff & 511;
+		nn = min(511 - (unsigned int)i, n);
+		memcpy(&q->cbuf[i], s, nn);
+		i = nn;
+#ifdef DEBUG
+		putfmt("<<%ld|%.*s>>", (long)choff, i, s);
+#endif
+		choff += i;
+		if ((choff & 511) == 511)
+			++choff;
+		s += i;
 	}
+}
 
-/*	read from character pool
+
+/*
+ * put strings to character pool
  */
-TEXT *chread()
-	{
-	FAST COUNT i;
-	FAST CHBUF *q;
-	FAST TEXT *s;
+void chput(const char *s1, ...)
+{
+	va_list args;
+	const char *p;
+
+	p = s1;
+	va_start(args, s1);
+	for (; p; p = va_arg(args, const char *))
+		 chwrite(p, strlen(p));
+
+	va_end(args);
+}
+
+
+/*
+ * read from character pool
+ */
+char *chread(void)
+{
+	int i;
+	CHBUF *q;
+	char *s;
 
 	for (i = choff >> 9, q = chbase; q && 0 < i; --i)
 		q = q->next;
 	if (q)
-		{
-		s = &q->cbuf[choff & 0777];
-		choff = choff + 01000 & ~0777;
-		}
-	else
-		panic("CHREAD");
-	return (s);
-	}
-
-/*	copy address structure
- */
-VOID cpyad(pl, pr)
-	FAST ADDR *pl, *pr;
 	{
+		s = &q->cbuf[choff & 511];
+		choff = (choff + 512) & ~511;
+	} else
+	{
+		panic("CHREAD");
+	}
+	return s;
+}
+
+
+/*
+ * copy address structure
+ */
+void cpyad(ADDR *pl, ADDR *pr)
+{
 	pl->ty = pr->ty;
-	cpybuf(pl->nm, pr->nm, LENNAME);
+	memcpy(pl->nm, pr->nm, LENNAME);
 	pl->bias = pr->bias;
 	pl->idx = pr->idx;
 	pl->refs = pr->refs;
-	}
+}
 
-/*	convert floating to DEC format
- */
-BOOL decflt(d, dble)
-	FAST TEXT *d;
-	BOOL dble;
+
+static int _fcan(char *d)
+{
+	int i;
+	int exp;
+
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+	if (d[0] == 0 && d[1] == 0)
+		return 0;
+	exp = (d[0] & 127) << 4;
+	exp |= (d[1] & 0xf0) >> 4;
+	d[0] &= 0x80;
+	d[1] = (d[1] & 0x0f) | 0x10;
+	for (i = 1; i < 7; i++)
 	{
-	FAST COUNT i, t;
-	COUNT exp;
+		d[i] = (d[i] << 3) | ((d[i + 1] >> 5) & 7);
+	}
+	d[7] = d[7] << 3;
+#else
+	if (d[6] == 0 && d[7] == 0)
+		return 0;
+	exp = (d[7] & 127) << 4;
+	exp |= (d[6] & 0xf0) >> 4;
+	d[7] &= 0x80;
+	d[6] = (d[6] & 0x0f) | 0x10;
+	for (i = 6; i > 0; i--)
+	{
+		d[i] = (d[i] << 3) | ((d[i - 1] >> 5) & 7);
+	}
+	d[0] = d[0] << 3;
+#endif
+	return exp - 1022;
+}
 
-	exp = _fcan(d) + 0200;
+
+/*
+ * convert floating to DEC format
+ */
+static BOOL decflt(char *d, BOOL dble)
+{
+	int i;
+	int t;
+	int exp;
+
+	exp = _fcan(d) + 128;
 	if (!d[1])
-		return (NO);
+		return FALSE;
 	if (!dble)
+	{
 		for (i = 4; i < 8; ++i)
 			d[i] = 0;
-	d[0] =| exp >> 1 & 0177;
-	d[1] = exp << 7 | d[1] & 0177;
-	for (i = 0; i < 8; i =+ 2)
-		t = d[i], d[i] = d[i + 1], d[i + 1] = t;
-	return (d[4] || d[5] || d[6] || d[7]);
 	}
-
-/*	get a function token, putting data
- */
-LEX gcode()
+	d[0] |= (exp >> 1) & 0177;
+	d[1] = (exp << 7) | (d[1] & 0177);
+	for (i = 0; i < 8; i += 2)
 	{
-	FAST COUNT i, n;
-	FAST LEX c;
-	COUNT num;
-	LONG lo;
-	TEXT name[LENNAME+1];
+		t = d[i];
+		d[i] = d[i + 1];
+		d[i + 1] = t;
+	}
+	return d[4] || d[5] || d[6] || d[7];
+}
 
-	FOREVER
+
+/*
+ * get a function token, putting data
+ */
+LEX gcode(void)
+{
+	int i;
+	int n;
+	LEX c;
+	int num;
+	long lo;
+	char name[LENNAME + 1];
+
+	for (;;)
+	{
 		switch (c = getch())
-			{
+		{
 		case GADDR:
-		case GADDR+1:
-		case GADDR+2:
-		case GADDR+3:
-		case GADDR+4:
+		case GADDR + 1:
+		case GADDR + 2:
+		case GADDR + 3:
+		case GADDR + 4:
 			gname(name);
 			gint(&lo);
 			num = lo;
@@ -168,9 +236,9 @@ LEX gcode()
 		case GLITS:
 		case GSWTAB:
 			n = needch();
-			if ( c == GDATA )
+			if (c == GDATA)
 				csect(ISDATA);
-			else if ( c == GNDATA )
+			else if (c == GNDATA)
 				csect(ISNDATA);
 			else
 				csect(ISLITS);
@@ -185,29 +253,27 @@ LEX gcode()
 			else if (n == 2)
 				putasm("&%o\n", num);
 			else
-				putasm("&%o,&%o\n", (COUNT)(lo >> 16), num);
+				putasm("&%o,&%o\n", (int) (lo >> 16), num);
 			break;
 		case GFLOAT:
 			n = needch();
 			for (i = 0; i < 8; ++i)
 				name[i] = needch();
 			decflt(name, n == 8);
-			putasm("&%o,&%o", lstoi(&name[0]),
-				lstoi(&name[2]));
+			putasm("&%o,&%o", lstoi((uint16_t *)&name[0]), lstoi((uint16_t *)&name[2]));
 			if (4 < n)
-				putasm(",&%o,&%o", lstoi(&name[4]),
-					lstoi(&name[6]));
+				putasm(",&%o,&%o", lstoi((uint16_t *)&name[4]), lstoi((uint16_t *)&name[6]));
 			putasm("\n");
 			break;
 		case GSTRING:
 			n = needch();
 			while (0 <= n)
-				{
+			{
 				putasm("%o", (n <= 0) ? 0 : needch());
 				for (i = 1; 0 <= --n && i < 8; ++i)
 					putasm(",%o", (n <= 0) ? 0 : needch());
 				putasm("\n");
-				}
+			}
 			break;
 		case GSPACE:
 			gint(&lo);
@@ -215,40 +281,45 @@ LEX gcode()
 			putasm(".:=.[%o]\n", num);
 			break;
 		default:
-			return (c);
-			}
+			return c;
+		}
 	}
+}
 
-/*	get an expression tree
+
+/*
+ * get an expression tree
  */
-EXPR *gexpr()
-	{
-	FAST COUNT n;
-	FAST EXPR *q;
-	FAST TEXT *s;
-	LONG bias;
-	INTERN TINY gidx[] {XBC, X2, X3, X4, XDE, XDE, X0, X0, 0};
-	INTERN TINY grx[] {INTRET, R2, R3, R4, ARGIDX, AUTIDX, FLTRET, LONGRET, 0};
+EXPR *gexpr(void)
+{
+	int n;
+	EXPR *q;
+	char *s;
+	long bias;
+	static TINY gidx[] = { XBC, X2, X3, X4, XDE, XDE, X0, X0, 0 };
+	static TINY grx[] = { INTRET, R2, R3, R4, ARGIDX, AUTIDX, FLTRET, LONGRET, 0 };
 
-	q = alloc(sizeof (*q), exlist), exlist = q;
+	q = xmalloc(sizeof(*q));
+	q->next = exlist;
+	exlist = q;
 	q->got = 0;
 	q->op = needch();
 	if ((q->e.v.ty = needch()) == XSFIELD || q->e.v.ty == XLFIELD)
-		{
-		q->e.v.ty =| needch() << 4;
-		q->e.v.ty =| needch() << 10;
-		}
-	else if ((q->e.v.ty & 017) == XPTRTO)
+	{
+		q->e.v.ty |= needch() << 4;
+		q->e.v.ty |= needch() << 10;
+	} else if ((q->e.v.ty & 15) == XPTRTO)
+	{
 		q->e.v.ty = XUSHORT;
+	}
 	if (q->op)
-		{
+	{
 		q->e.o.left = gexpr();
 		if (q->op == LQUERY)
 			q->e.o.mid = gexpr();
 		q->e.o.right = (q->op & BINOP) ? gexpr() : &exzero;
-		}
-	else
-		{
+	} else
+	{
 		for (n = needch(), s = q->e.v.nm; 0 < n; --n)
 			*s++ = needch();
 		while (s < &q->e.v.nm[LENNAME])
@@ -256,100 +327,104 @@ EXPR *gexpr()
 		gint(&bias);
 		q->e.v.bias = bias;
 		if ((n = needch()) == ARGIDX)
-			q->e.v.bias =+ 4;
+			q->e.v.bias += 4;
 		else if (n == AUTIDX)
-			q->e.v.bias =- AUTOFF;
-		q->e.v.idx = gidx[scnstr(grx, n)];
+			q->e.v.bias -= AUTOFF;
+		q->e.v.idx = gidx[_scnstr(grx, n)];
 		q->e.v.refs = needch();
 		s = q->e.v.nm;
 		if (q->e.v.ty == XDOUBLE && !q->e.v.refs && !q->e.v.idx)
-			{
-			decflt(s, YES);
+		{
+			decflt(s, TRUE);
 			csect(ISLITS);
 			s = ln(crs());
 			putasm("%p:&%o,&%o,&%o,&%o\n", s,
-				lstoi(&q->e.v.nm[0]), lstoi(&q->e.v.nm[2]),
-				lstoi(&q->e.v.nm[4]), lstoi(&q->e.v.nm[6]));
-			cpystr(q->e.v.nm, s, NULL);
+				lstoi((uint16_t *)&q->e.v.nm[0]), lstoi((uint16_t *)&q->e.v.nm[2]), lstoi((uint16_t *)&q->e.v.nm[4]), lstoi((uint16_t *)&q->e.v.nm[6]));
+			strcpy(q->e.v.nm, s);
 			q->e.v.bias = 0;
 			q->e.v.refs = 1;
-			}
-		else if (*s == '>')
+		} else if (*s == '>')
+		{
 			*s = '#';
+		}
 		if ((q->e.v.ty == XLONG || q->e.v.ty == XULONG) && iscons(q))
-			{
+		{
 			csect(ISLITS);
-			cpystr(q->e.v.nm, ln(crs()), NULL);
-			putasm("%p:&%o,&%o\n", q->e.v.nm, 
-				(COUNT)(bias >> 16), q->e.v.bias);
+			strcpy(q->e.v.nm, ln(crs()));
+			putasm("%p:&%o,&%o\n", q->e.v.nm, (int) (bias >> 16), q->e.v.bias);
 			q->e.v.bias = 0;
 			q->e.v.refs = 1;
-			}
 		}
-	return (q);
 	}
+	return q;
+}
 
-/*	get an integer
+
+/*
+ *get an integer
  */
-VOID gint(s)
-	FAST TEXT *s;
-	{
-	FAST BYTES i;
+void gint(long *l)
+{
+	int i;
+	char *s = (char *) l;
 
-	for (i = 0; i < 4; ++i)
+	for (i = 0; i < (int) sizeof(*l); ++i)
 		*s++ = needch();
-	}
+}
 
-/*	get a label
+
+/*
+ * get a label
  */
-LABEL glabel()
-	{
-	FAST TEXT *p;
+LABEL glabel(void)
+{
+	char *p;
 	LABEL l;
 
-	p = &l;
+	p = (char *) &l;
 	*p++ = needch();
 	*p = needch();
-	return (l);
-	}
+	return l;
+}
 
-/*	get a name
+
+/*
+ * get a name
  */
-TEXT *gname(s)
-	TEXT *s;
-	{
-	FAST BYTES n;
-	FAST TEXT *q;
+char *gname(char *s)
+{
+	size_t n;
+	char *q;
 
 	q = s;
-	if (n = needch())
-		{
+	if ((n = needch()) != 0)
+	{
 		if ((*q = needch()) != '>')
-			{
+		{
 			q[1] = q[0];
 			*q++ = '$';
-			}
-		else
+		} else
 			*q = '#';
 		++q;
 		while (0 < --n)
 			*q++ = needch();
-		}
-	*q = '\0';
-	return (s);
 	}
+	*q = '\0';
+	return s;
+}
 
-/*	classify address of fixed expression
+
+/*
+ * classify address of fixed expression
  */
-BITS gotten(p)
-	FAST EXPR *p;
-	{
-	FAST BITS got;
-	FAST COUNT refs;
+BITS gotten(EXPR *p)
+{
+	BITS got;
+	int refs;
 
 	refs = p->f.refs;
 	switch (p->f.idx)
-		{
+	{
 	case 0:
 		got = (refs || p->f.nm[0]) ? WMEM : WBC;
 		break;
@@ -371,162 +446,166 @@ BITS gotten(p)
 		break;
 	default:
 		got = refs ? WTERM : WMEM;
-		}
-	return (got);
 	}
+	return got;
+}
 
-/*	test for constant term
- */
-BOOL iscons(p)
-	FAST EXPR *p;
-	{
-	return (!p->op && !p->e.v.nm[0] && !p->e.v.idx && !p->e.v.refs);
-	}
 
-/*	make a name from label
+/*
+ * test for constant term
  */
-TEXT *ln(label)
-	FAST LABEL label;
-	{
-	FAST TEXT *s;
-	INTERN TEXT name[8];
+BOOL iscons(EXPR *p)
+{
+	return !p->op && !p->e.v.nm[0] && !p->e.v.idx && !p->e.v.refs;
+}
+
+
+/*
+ * make a name from label
+ */
+char *ln(LABEL label)
+{
+	char *s;
+	static char name[8];
 
 	name[0] = '#';
 	for (s = name + 1; label; ++s)
-		{
-		*s = (label & 07) + '0';
-		label =>> 3;
-		}
-	*s = '\0';
-	return (name);
-	}
-
-/*	need a character
- */
-LEX needch()
 	{
-	FAST LEX c;
+		*s = (label & 07) + '0';
+		label >>= 3;
+	}
+	*s = '\0';
+	return name;
+}
+
+
+/*
+ * need a character
+ */
+LEX needch(void)
+{
+	LEX c;
 
 	if ((c = getch()) == EOF)
-		{
-		panic("EOF");
-		exit(NO);
-		}
-	else
-		return (c);
-	}
-
-/*	put a panic error message
- */
-VOID panic(s)
-	TEXT *s;
 	{
-	TEXT buf[10], *f;
+		panic("EOF");
+		exit(1);
+	}
+	return c;
+}
 
-	buf[itob(buf, lineno, 10)] = '\0';
+
+/*
+ * put a panic error message
+ */
+void panic(const char *s)
+{
+	char buf[30];
+	char *f;
+
+	sprintf(buf, "%d", lineno);
 	if (*funname == '$')
 		f = funname + 1;
 	else
 		f = funname;
-	putstr(errfd, _pname, ": PANIC ", s, " ", f,
-		*f ? "() " : "", "line ", buf, "!\n", NULL);
+	fprintf(errfd, "%s: PANIC %s %s%sline %d!\n", _pname, s, f, *f ? "() " : "", lineno);
 #ifdef DEBUG
 	chput("/PANIC ", s, ";", NULL);
 #else
-	exit(NO);
+	exit(1);
 #endif
-	}
+}
 
-/*	prefer wants but look to needs
- */
-BITS pref(want, need)
-	BITS want, need;
-	{
-	return (((want =& need) ? want : need) & ~GJUNK);
-	}
 
-/*	convert register mask to index number
+/*
+ * prefer wants but look to needs
  */
-TINY rtox(r)
-	BITS r;
-	{
-	FAST COUNT i;
+BITS pref(BITS want, BITS need)
+{
+	return ((want &= need) ? want : need) & ~GJUNK;
+}
+
+
+/*
+ * convert register mask to index number
+ */
+TINY rtox(BITS r)
+{
+	int i;
 
 	if (r)
 		for (i = 0; rtab[i]; ++i)
 			if (rtab[i] == r)
-				return (xtab[i]);
-	return (0);
-	}
+				return xtab[i];
+	return 0;
+}
 
-/*	set allocated address
+
+/*
+ * set allocated address
  */
-VOID setad(p, ty, idx, refs)
-	FAST EXPR *p;
-	BITS ty;
-	TINY idx, refs;
-	{
+void setad(EXPR *p, BITS ty, TINY idx, TINY refs)
+{
 	p->got = 0;
 	p->f.ty = regtype[ty & 017];
-	cpybuf(p->f.nm, noname, LENNAME);
+	memcpy(p->f.nm, noname, LENNAME);
 	p->f.bias = 0;
 	p->f.idx = idx;
 	p->f.refs = refs;
-	}
+}
 
-/*	liberate a register, if possible
+
+/*
+ * convert index number to register mask
  */
-BITS tempify(p, want, set)
-	FAST EXPR *p;
-	BITS want, set;
-	{
-	FAST BITS ty;
+TINY xtor(TINY x)
+{
+	return !x ? 0 : rtab[_scnstr(xtab, x & 077)] & ~AUTIDX;
+}
+
+
+/*
+ * tempify a long or double on the stack
+ */
+static BITS treg(EXPR *p, BITS set)
+{
+	if ((set & (HL | BC)) != (HL | BC))
+		return 0;
+	set |= xtor(p->f.idx);
+	autoff -= 8;
+	if (autoff < autmin)
+		autmin = autoff;
+	chput("hl=", NULL);
+	putnb("", (size_t) autoff);
+	chput("+de->bc;sp=>hl<=bc;\4\n", NULL);
+	p->f.idx = XSP;
+	return set;
+}
+
+
+/*
+ * liberate a register, if possible
+ */
+BITS tempify(EXPR *p, BITS want, BITS set)
+{
+	BITS ty;
 
 #ifdef DEBUG
-putfmt("/tempify %o %o\n", want, set);
-putterm(p, 1);
+	printf("/tempify 0x%x 0x%x\n", want, set);
+	putterm(p, 1);
 #endif
 	if (!(p->got & GVOL))
-		return (0);
-	else if (p->f.refs)
-		{
+		return 0;
+	if (p->f.refs)
+	{
 		if (xtor(p->f.idx) & RS)
-			return (treg(p, want, set));
+			return treg(p, set);
 		--p->f.refs;
 		ty = p->f.ty, p->f.ty = XUSHORT;
 		set = force(p, WSTACK | (want & GJUNK), set, XUSHORT);
 		p->f.ty = ty;
 		++p->f.refs;
-		return (set);
-		}
-	else
-		return (force(p, ((want & VOLSET) ? WSTACK : WPSTK)
-			| want & GJUNK, set, p->f.ty));
+		return set;
 	}
-
-/*	tempify a long or double on the stack
- */
-BITS treg(p, want, set)
-	FAST EXPR *p;
-	BITS want, set;
-	{
-	if ((set & (HL|BC)) != (HL|BC))
-		return (0);
-	set =| xtor(p->f.idx);
-	autoff =- 8;
-	if (autoff < autmin)
-		autmin = autoff;
-	chput("hl=", NULL);
-	putnb("", (BYTES)autoff);
-	chput("+de->bc;sp=>hl<=bc;\4\n", NULL);
-	p->f.idx = XSP;
-	return (set);
-	}
-
-/*	convert index number to register mask
- */
-TINY xtor(x)
-	TINY x;
-	{
-	return (!x ? 0 : rtab[scnstr(xtab, x & 077)] & ~AUTIDX);
-	}
+	return force(p, ((want & VOLSET) ? WSTACK : WPSTK) | (want & GJUNK), set, p->f.ty);
+}

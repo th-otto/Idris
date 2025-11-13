@@ -50,4 +50,5 @@ double _sqrt(double x, const char *err);
 double _exp(double x, int rad, const char *err);
 int _unpack(double *x);
 double _addexp(double d, int n, const char *msg);
+int _fcan(char *d);
 

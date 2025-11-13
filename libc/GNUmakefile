@@ -197,6 +197,8 @@ LIBB_OBJS = \
 	xeq.o \
 	xecv.o \
 	inheap.o \
+	\
+	_fcan.o \
 	$(empty)
 
 LIBC_OBJS = \

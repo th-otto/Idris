@@ -147,13 +147,13 @@ LOCAL TINY jcvals[] {002, 012, 022, 032, 042, 052, 062, 072,
 
 /*	define q as p
  */
-VOID define(q, p)
-	FAST TERM *q, *p;
+void define(q, p)
+	TERM *q, *p;
 	{
-	FAST TERM *pseg;
+	TERM *pseg;
 	LEX pty;
 	TEXT *msg;
-	INTERN TEXT buf[LENNAME+1];
+	static TEXT buf[LENNAME+1];
 
 	if (!q)
 		err("constant redefined");
@@ -194,13 +194,13 @@ VOID define(q, p)
 
 /*	do binary operator
  */
-VOID dobin(l, r, ot)
+void dobin(l, r, ot)
 	TERM *l, *r;
 	LEX ot;
 	{
-	FAST CODETAB *tab;
-	FAST COUNT i;
-	FAST TEXT *s;
+	CODETAB *tab;
+	COUNT i;
+	TEXT *s;
 	COUNT n;
 	LEX t;
 	TERM term, *x;
@@ -286,11 +286,11 @@ COUNT temp;
 
 /*	do a literal operator
  */
-VOID dolit(p)
-	FAST TERM *p;
+void dolit(p)
+	TERM *p;
 	{
-	FAST LIT *q;
-	FAST TERM *pseg;
+	LIT *q;
+	TERM *pseg;
 
 	pseg = p->base;
 	for (q = littab; q; q = q->t.next)
@@ -316,7 +316,7 @@ VOID dolit(p)
 
 /*	put a byte
  */
-VOID putbyte(c)
+void putbyte(c)
 	META c;
 	{
 	putcode(DATA, c);
@@ -326,10 +326,10 @@ VOID putbyte(c)
 
 /*	put program footer
  */
-VOID putftr()
+void putftr()
 	{
-	FAST LIT *q;
-	FAST TEXT *s;
+	LIT *q;
+	TEXT *s;
 	COUNT n;
 	TERM term;
 	TEXT c;
@@ -358,7 +358,7 @@ VOID putftr()
 
 /*	put zeros for space
  */
-VOID putsp(val)
+void putsp(val)
 	COUNT val;
 	{
 	if (val < 0)
@@ -372,10 +372,10 @@ VOID putsp(val)
  */
 COUNT putval(code, p)
 	LEX code;
-	FAST TERM *p;
+	TERM *p;
 	{
-	FAST COUNT i;
-	FAST LEX pty;
+	COUNT i;
+	LEX pty;
 
 	pty = p->ty & TMASK;
 	switch (code)
@@ -396,7 +396,7 @@ COUNT putval(code, p)
 
 /*	put a word constant
  */
-VOID putword(p)
+void putword(p)
 	TERM *p;
 	{
 	if (p->base)

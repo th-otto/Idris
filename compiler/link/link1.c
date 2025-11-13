@@ -100,9 +100,9 @@ SYMBOL *addend(name, flags, value)
 	UCOUNT flags;
 	LONG value;
 	{
-	FAST COUNT i;
-	FAST SYMBOL *p;
-	FAST TEXT *n;
+	COUNT i;
+	SYMBOL *p;
+	TEXT *n;
 	TEXT buf[16];
 
 	p = NULL;
@@ -127,7 +127,7 @@ SYMBOL *addend(name, flags, value)
 
 /*	add offset to library vector
  */
-VOID addlib(loff)
+void addlib(loff)
 	LONG loff;
 	{
 	if (MAXLIBS <= nlibs)
@@ -142,8 +142,8 @@ SYMBOL *addsym(name, flags, value)
 	COUNT flags;
 	LONG value;
 	{
-	FAST COUNT i, j;
-	FAST SYMBOL *p;
+	COUNT i, j;
+	SYMBOL *p;
 
 	if (MAXSYMS <= nsyms)
 		error("symbol table full", NULL);
@@ -160,11 +160,11 @@ SYMBOL *addsym(name, flags, value)
 
 /*	add -u symbol to table
  */
-VOID addusym(name)
+void addusym(name)
 	TEXT *name;
 	{
-	FAST COUNT i;
-	FAST TEXT *p;
+	COUNT i;
+	TEXT *p;
 	TEXT buf[16];
 	
 	if (name)
@@ -182,7 +182,7 @@ VOID addusym(name)
 UTINY getby(idx)
 	COUNT idx;
 	{
-	FAST IOBUF *p = &ibuf[idx];
+	IOBUF *p = &ibuf[idx];
 	LONG nseek;
 
 	if (p->n <= p->start)
@@ -211,9 +211,9 @@ FILE gtlfiles(pac, pav)
 	TEXT ***pav;
 	{
 	FILE fd;
-	INTERN BYTES index;
-	INTERN TEXT libnam[64];
-	INTERN TEXT libroot[] {"/lib/lib"};
+	static BYTES index;
+	static TEXT libnam[64];
+	static TEXT libroot[] {"/lib/lib"};
 
 	if (!pac)
 		{
@@ -274,9 +274,9 @@ UCOUNT gtmagic(fd)
  */
 SYMBOL *gtsyms(fd, pbhdr)
 	FILE fd;
-	FAST BHDR *pbhdr;
+	BHDR *pbhdr;
 	{
-	FAST SYMBOL *ps;
+	SYMBOL *ps;
 	COUNT hsize = longint ? 26 : 14;
 	LONG off;
 	TEXT bhdr[26];
@@ -342,8 +342,8 @@ SYMBOL *gtsyms(fd, pbhdr)
 SYMBOL *lookup(name)
 	TEXT *name;
 	{
-	FAST COUNT i;
-	FAST SYMBOL *p;
+	COUNT i;
+	SYMBOL *p;
 
 	for (i = 0; i < nsyms; ++i, ++p)
 		{
@@ -361,7 +361,7 @@ LONG rebias(flags, tb, db, bb)
 	COUNT flags;
 	LONG tb, db, bb;
 	{
-	FAST LONG val;
+	LONG val;
 
 	switch (flags & 03)
 		{
@@ -382,14 +382,14 @@ LONG rebias(flags, tb, db, bb)
 
 /*	put relocatable byte
  */
-VOID relby(idx, by)
-	FAST COUNT idx;
+void relby(idx, by)
+	COUNT idx;
 	TEXT by;
 	{
-	FAST COUNT n;
-	FAST IOBUF *p = &obuf[idx & 3];
+	COUNT n;
+	IOBUF *p = &obuf[idx & 3];
 	BOOL drain = idx & DRAIN;
-	INTERN LONG off[2];
+	static LONG off[2];
 
 	if ((afl || rfl) && (idx & (WRMI|DREL&TREL)) == (DREL&TREL))
 		return;
@@ -414,11 +414,11 @@ VOID relby(idx, by)
 
 /*	put relocatable short or long
  */
-VOID relint(idx, val)
+void relint(idx, val)
 	COUNT idx;
 	LONG val;
 	{
-	FAST COUNT i, wo;
+	COUNT i, wo;
 	TEXT buf[4];
 
 	if (!longint)
@@ -437,10 +437,10 @@ VOID relint(idx, val)
 
 /*	put a symbol
  */
-VOID relsym(p)
-	FAST SYMBOL *p;
+void relsym(p)
+	SYMBOL *p;
 	{
-	FAST COUNT k;
+	COUNT k;
 
 	relint(WRMI|TREL, p->value);
 	relby(WRMI|TREL, (afl || cfl) ? EXTERN|p->flags & DEFD : p->flags);
@@ -450,7 +450,7 @@ VOID relsym(p)
 
 /*	put relocatable word
  */
-VOID relwd(idx, wo)
+void relwd(idx, wo)
 	COUNT idx, wo;
 	{
 	if (lsfmt)
@@ -467,10 +467,10 @@ VOID relwd(idx, wo)
 
 /*	complain and remember failure
  */
-VOID xremark(s1, s2)
+void xremark(s1, s2)
 	TEXT *s1, *s2;
 	{
-	INTERN TEXT buf[16];
+	static TEXT buf[16];
 
 	buf[cpybuf(buf, s2, lenname)] = '\0';
 	putstr(STDOUT, fname, (*fname != '\0' ? ": " : ""), s1, buf, "\n", NULL);
@@ -480,9 +480,9 @@ VOID xremark(s1, s2)
 /*	get long in proper byte order
  */
 LONG xstol(s)
-	FAST UTINY *s;
+	UTINY *s;
 	{
-	FAST COUNT i;
+	COUNT i;
 	LONG val;
 
 	val = 0;
@@ -498,9 +498,9 @@ LONG xstol(s)
 /*	get short in proper byte order
  */
 UCOUNT xstos(s)
-	FAST UTINY *s;
+	UTINY *s;
 	{
-	FAST UCOUNT val;
+	UCOUNT val;
 
 	if (lsfmt)
 		val = s[0] | s[1] << 8;

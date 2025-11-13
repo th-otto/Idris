@@ -25,10 +25,10 @@ LOCAL META chstk[3] {0};
 /*	add a symbol to table
  */
 TERM *addsym(s)
-	FAST TEXT *s;
+	TEXT *s;
 	{
-	FAST COUNT i;
-	FAST TERM *q;
+	COUNT i;
+	TERM *q;
 
 	q = alloc(sizeof (*q), symtab);
 	symtab = q;
@@ -45,7 +45,7 @@ TERM *addsym(s)
 
 /*	put back a char
  */
-VOID bchar(c)
+void bchar(c)
 	META c;
 	{
 	chstk[nback++] = c;
@@ -55,9 +55,9 @@ VOID bchar(c)
  */
 BOOL bmatch(code, p)
 	LEX code;
-	FAST TERM *p;
+	TERM *p;
 	{
-	FAST LEX pty;
+	LEX pty;
 
 	pty = p->ty & TMASK;
 	switch (code)
@@ -81,12 +81,12 @@ BOOL bmatch(code, p)
 
 /*	do a subscript []
  */
-VOID dosub(q, p)
-	FAST TERM *q, *p;
+void dosub(q, p)
+	TERM *q, *p;
 	{
-	FAST LEX pty;
-	INTERN TINY is[] {IIX, IIY, N, NN, INN, 0};
-	INTERN TINY was[] {IX, IY, N, NN, INN, 0};
+	LEX pty;
+	static TINY is[] {IIX, IIY, N, NN, INN, 0};
+	static TINY was[] {IX, IY, N, NN, INN, 0};
 
 	pty = p->ty & TMASK;
 	if (p->base || !nn(pty))
@@ -102,12 +102,12 @@ VOID dosub(q, p)
 
 /*	do a unary operator
  */
-VOID dounop(p, t)
+void dounop(p, t)
 	TERM *p;
 	LEX t;
 	{
-	FAST LEX pseg, pty;
-	FAST TERM *q;
+	LEX pseg, pty;
+	TERM *q;
 
 	p->ty =& ~PUBF;
 	pseg = (LEX)p->base;
@@ -166,7 +166,7 @@ VOID dounop(p, t)
 
 /*	put an error message
  */
-VOID err(fmt, arg)
+void err(fmt, arg)
 	TEXT *fmt, *arg;
 	{
 	putf(&stderr, "%i: ", lno);
@@ -179,7 +179,7 @@ VOID err(fmt, arg)
  */
 META gchar()
 	{
-	FAST META c;
+	META c;
 
 	if (0 < nback)
 		return (chstk[--nback]);
@@ -197,8 +197,8 @@ META gchar()
 META getesc(tchar)
 	META tchar;
 	{
-	FAST COUNT i;
-	FAST META c;
+	COUNT i;
+	META c;
 
 	switch (c = gchar())
 		{
@@ -236,11 +236,11 @@ META getesc(tchar)
  */
 LEX gtok()
 	{
-	FAST COUNT shift;
-	FAST LEX t;
-	FAST META c;
+	COUNT shift;
+	LEX t;
+	META c;
 
-	FOREVER
+	for (;;)
 		{
 		c = gchar();
 		while (c != '\n' && c != EOF && iswhite(c))
@@ -324,7 +324,7 @@ LEX gtok()
 /*	test for alphanumeric
  */
 BOOL isal(c)
-	FAST COUNT c;
+	COUNT c;
 	{
 	return (isalpha(c) || c == '.' || c == '_');
 	}
@@ -332,7 +332,7 @@ BOOL isal(c)
 /*	test for digit
  */
 BOOL isdig(c)
-	FAST COUNT c;
+	COUNT c;
 	{
 	return (isdigit(c));
 	}
@@ -353,8 +353,8 @@ LEX scntab(p, hi, s, n)
 	TEXT *s;
 	BYTES n;
 	{
-	FAST BYTES j;
-	FAST TEXT *q, *r;
+	BYTES j;
+	TEXT *q, *r;
 	BYTES i, lo;
 	COUNT x;
 
@@ -378,7 +378,7 @@ LEX scntab(p, hi, s, n)
 
 /*	concatenate to static string
  */
-VOID strcat(c)
+void strcat(c)
 	COUNT c;
 	{
 	if (string[0] < MAXSTR-1)
@@ -393,7 +393,7 @@ VOID strcat(c)
 /*	convert to lowercase
  */
 META tolow(c)
-	FAST META c;
+	META c;
 	{
 	return (tolower(c));
 	}

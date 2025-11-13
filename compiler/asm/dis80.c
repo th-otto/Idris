@@ -87,9 +87,9 @@ TEXT *_pname {"dis80"};
 /*	find actual length of a name
  */
 BYTES actlen(s)
-	FAST TEXT *s;
+	TEXT *s;
 	{
-	FAST BYTES i;
+	BYTES i;
 
 	for (i = 0; i < LENNAME && *s++; ++i)
 		;
@@ -140,7 +140,7 @@ UTINY getby(fd, idx)
 	FILE fd;
 	COUNT idx;
 	{
-	FAST IOBUF *p = &ibuf[idx];
+	IOBUF *p = &ibuf[idx];
 
 	if (!p->n)
 		{
@@ -157,7 +157,7 @@ UTINY getby(fd, idx)
 
 /*	get header information from file
  */
-VOID gethdr(fd)
+void gethdr(fd)
 	FILE fd;
 	{
 	TEXT bhdr[HSIZE - 2];
@@ -174,11 +174,11 @@ VOID gethdr(fd)
 
 /*	get symbol table and set table stats
  */
-VOID getsym(fd)
+void getsym(fd)
 	FILE fd;
 	{
-	FAST COUNT i;
-	FAST SYMBOL *ps;
+	COUNT i;
+	SYMBOL *ps;
 	COUNT entsize = {VALSIZE + FLGSIZE + LENNAME};
 
 	numsym = sbytes / entsize;
@@ -193,10 +193,10 @@ VOID getsym(fd)
 
 /*	initialize input buffers
  */
-VOID initbuf()
+void initbuf()
 	{
-	FAST IOBUF *p, *q;
-	INTERN UTINY bufs[2][IBSIZE];
+	IOBUF *p, *q;
+	static UTINY bufs[2][IBSIZE];
 
 	p = &ibuf[CODBUF];
 	q = &ibuf[RELBUF];
@@ -216,7 +216,7 @@ BOOL main(ac, av)
 	BYTES ac;
 	TEXT **av;
 	{
-	FAST FILE fd;
+	FILE fd;
 
 	getflags(&ac, &av, "c,i:F <files>", &cfl, &ifl);
 	if (cfl && ifl)
@@ -249,13 +249,13 @@ TEXT *mapc()
 
 /*	map symbols for proper output
  */
-VOID mapsyms(s, bias)
+void mapsyms(s, bias)
 	TEXT *s;
 	COUNT bias;
 	{
-	FAST COUNT j;
-	FAST TEXT *q;
-	FAST SYMBOL *ps;
+	COUNT j;
+	TEXT *q;
+	SYMBOL *ps;
 	COUNT i;
 
 	for (i = 0, ps = symtab; i < numsym; ++i, ++ps)
@@ -276,10 +276,10 @@ VOID mapsyms(s, bias)
 
 /*	put out code bytes
  */
-VOID putby(c)
+void putby(c)
 	COUNT c;
 	{
-	INTERN COUNT nb {0};
+	static COUNT nb {0};
 
 	if (0 <= c)
 		{
@@ -301,8 +301,8 @@ BOOL putsect(fd, nin, bias, hdr, flags)
 	TEXT *hdr;
 	BITS flags;
 	{
-	FAST BITS b, co;
-	FAST UCOUNT nabs;
+	BITS b, co;
+	UCOUNT nabs;
 	SYMBOL *p;
 	TEXT *s;
 	UCOUNT i, n, val;
@@ -381,12 +381,12 @@ BOOL putsect(fd, nin, bias, hdr, flags)
 
 /*	output symbols
  */
-VOID putsyms(fmt, mask, val)
+void putsyms(fmt, mask, val)
 	TEXT *fmt;
 	BITS mask, val;
 	{
-	FAST COUNT i;
-	FAST SYMBOL *ps;
+	COUNT i;
+	SYMBOL *ps;
 
 	for (i = 0, ps = symtab; i < numsym; ++i, ++ps)
 		if ((ps->fl & mask) == val)
@@ -396,9 +396,9 @@ VOID putsyms(fmt, mask, val)
 /*	get a short in proper byte order
  */
 UCOUNT xstos(s)
-	FAST UTINY *s;
+	UTINY *s;
 	{
-	FAST UCOUNT val;
+	UCOUNT val;
 
 	val = s[0] | s[1] << 8;
 	return (val);

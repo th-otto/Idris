@@ -100,65 +100,65 @@
 #define ADDR	struct addr
 
 struct addr {
-	BITS ty;
-	TEXT nm[LENNAME];
-	BYTES bias;
-	TINY idx, refs;
-	};
+	unsigned short ty;
+	char nm[LENNAME];
+	size_t bias;
+	unsigned char idx;
+	unsigned char refs;
+};
 
 /*	the expression element
  */
 #define EXPR	struct expr
 
 struct expr {
-	TEXT *next;
+	struct expr *next;
 	LEX op;
-	BITS got;
+	unsigned short got;
 	ADDR f;
 	UNION {
 		struct {
-			BITS ty;
-			TEXT *left, *right, *mid;	/* SHDB EXPR * */
-			} o;
+			unsigned short ty;
+			struct expr *left, *right, *mid;	/* SHDB EXPR * */
+		} o;
 		ADDR v;
-		} e;
-	};
+	} e;
+};
 
 /*	the code list element
  */
 #define CODE	struct code
+#define HEADER	struct header
 
 struct code {
-	TEXT *next;
+	struct code *next;
 	LEX inst;
-	UNION {
-		BYTES lbl;
-		TEXT *hdr;	/* SHDB HEADER * */
-		BYTES choff;
-		} c;
-	BYTES size;
-	};
+	union {
+		size_t lbl;
+		HEADER *hdr;
+		size_t choff;
+	} c;
+	size_t size;
+};
 
 /*	the code header table element
  */
-#define HEADER	struct header
-
 struct header {
-	TEXT *next;
+	struct header *next;
 	CODE *first;
 	LABEL label;
-	BYTES offset;
-	COUNT nrefs;
-	BITS flags;
-	BYTES lineno;
-	};
+	size_t offset;
+	int nrefs;
+	unsigned short flags;
+	int lineno;
+};
 
 /*	the force table structure
  */
 #define FTAB	struct force
 
 struct force {
-	BITS fwant, fset;
-	COUNT fty;
-	TEXT **ftab;
-	};
+	unsigned short fwant, fset;
+	int fty;
+	const unsigned char **ftab;
+};

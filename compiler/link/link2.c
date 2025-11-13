@@ -4,7 +4,7 @@
 #include <std.h>
 #include "link.h"
 
-VOID *(*nxtexit)() {NULL};
+void *(*nxtexit)() {NULL};
 
 /*	do code relocation for text or data segment
  */
@@ -14,14 +14,14 @@ LONG docode(outbuf, rdbuf, ns, pp, pbhdr, bias, nin, ninit)
 	BHDR *pbhdr;
 	LONG bias, nin, ninit;
 	{
-	FAST UCOUNT b;
-	FAST COUNT co;
-	FAST SYMBOL *p;
+	UCOUNT b;
+	COUNT co;
+	SYMBOL *p;
 	COUNT i, wo;
 	LONG n, nabs, val;
 	TEXT buf[4];
 	LONG zz;
-	INTERN BOOL n16k = NO;
+	static BOOL n16k = NO;
 
 	for (nabs = 0; co = getby(HIBUF); nin =- n)
 		if (co < 32)
@@ -152,10 +152,10 @@ LONG docode(outbuf, rdbuf, ns, pp, pbhdr, bias, nin, ninit)
 
 /*	copy data relocation bits
  */
-VOID drcopy()
+void drcopy()
 	{
-	FAST COUNT i, n;
-	FAST TEXT *p;
+	COUNT i, n;
+	TEXT *p;
 	LONG nin = obuf[DREL].off;
 
 	lseek(tfd, 0L, 0);
@@ -172,7 +172,7 @@ VOID drcopy()
 
 /*	clean up on exit
  */
-VOID *endeup()
+void *endeup()
 	{
 	close(tfd);
 	remove(uname());
@@ -185,9 +185,9 @@ BOOL link1(fd, mand)
 	FILE fd;
 	BOOL mand;
 	{
-	FAST COUNT i;
-	FAST SYMBOL *q;
-	FAST TEXT *p;
+	COUNT i;
+	SYMBOL *q;
+	TEXT *p;
 	BHDR bhdr;
 	COUNT nb, ns, nv;
 	LONG val;
@@ -250,17 +250,17 @@ BOOL link1(fd, mand)
 
 /*	second module link, do code relocation
  */
-VOID link2(loff)
+void link2(loff)
 	LONG loff;
 	{
-	FAST COUNT i;
-	FAST SYMBOL *q;
-	FAST TEXT *p;
+	COUNT i;
+	SYMBOL *q;
+	TEXT *p;
 	BHDR bhdr;
 	COUNT nb, ns, nv;
 	SYMBOL **pp;
 	TEXT *ps;
-	INTERN LONG nabs[2];
+	static LONG nabs[2];
 	BOOL svlsfmt;
 
 	ps = gtsyms(ifd, &bhdr);
@@ -312,8 +312,8 @@ BOOL main(ac, av)
 	BYTES ac;
 	TEXT **av;
 	{
-	FAST COUNT i;
-	FAST TEXT *s;
+	COUNT i;
+	TEXT *s;
 	TEXT buf[6][L_BUFSIZE];
 
 	getflags(&ac, &av,
@@ -352,8 +352,8 @@ BOOL main(ac, av)
  */
 BOOL mid1()
 	{
-	FAST COUNT i;
-	FAST SYMBOL *p;
+	COUNT i;
+	SYMBOL *p;
 	LONG tfmask = (1L << tfill) - 1;
 	SYMBOL *pebss, *psbss;
 
@@ -404,8 +404,8 @@ BOOL mid1()
  */
 BOOL mid2()
 	{
-	FAST COUNT i, k;
-	FAST SYMBOL *p;
+	COUNT i, k;
+	SYMBOL *p;
 	LONG loff;
 
 	if ((ofd = create(ofile, WRITE, 1)) < 0)
@@ -475,9 +475,9 @@ BOOL pass1(ac, av)
 	BYTES ac;
 	TEXT **av;
 	{
-	FAST COUNT hsize;
+	COUNT hsize;
 	UCOUNT header;
-	FAST FILE fd;
+	FILE fd;
 	LONG loff;
 	TEXT lhdr[26];
 	TEXT nsize;
