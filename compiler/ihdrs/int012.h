@@ -44,3 +44,16 @@
 #define LRSHIFT (BINOP | 32)
 #define LTIMES  (BINOP | UNOP | 33)
 #define LXOR    (BINOP | 34)
+
+/*  magic bytes between passes
+ */
+#define P1MAGIC 0xbd
+#define P2MAGIC 0xbe
+#define XRMAGIC 0xbf
+
+/*  the line and error token common in all passes
+ */
+#define LIFILE  023
+#define LLINENO 024
+#define LERROR  0376
+#define LLINE   0375

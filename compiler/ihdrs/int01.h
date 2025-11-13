@@ -52,8 +52,8 @@
  */
 #define LDNUM	0021
 #define LIDENT	0022
-#define LIFILE	0023
-#define LLINENO	0024
+/* #define LIFILE	0023 now in int012.h */
+/* #define LLINENO	0024 now in int012.h */
 #define LLNUM	0025
 #define LSNUM	0026
 #define LSTRING	0027

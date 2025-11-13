@@ -8,6 +8,7 @@ TOOLS = \
 	ps \
 	show0 \
 	settime \
+	echo \
 	$(empty)
 
 all: $(TOOLS)
@@ -32,6 +33,9 @@ false: false.o
 
 true: true.o
 	$(CC) -o$@ true.o
+
+echo: echo.o
+	$(CC) -o$@ echo.o
 
 xbios.o: xbios.s
 	$(CC) +o xbios.s

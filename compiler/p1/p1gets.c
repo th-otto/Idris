@@ -6,6 +6,7 @@
 #include <string.h>
 #include "int1.h"
 #include "int01.h"
+#include "int012.h"
 #include "util.h"
 #include "p1.h"
 
