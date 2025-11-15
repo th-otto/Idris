@@ -42,8 +42,9 @@
 #define LPLUS   (BINOP | UNOP | 30)
 #define LQUERY  (BINOP | 31)
 #define LRSHIFT (BINOP | 32)
-#define LTIMES  (BINOP | UNOP | 33)
-#define LXOR    (BINOP | 34)
+/* 33 unused */
+#define LTIMES  (BINOP | UNOP | 34)
+#define LXOR    (BINOP | 35)
 
 /*  magic bytes between passes
  */
@@ -53,7 +54,7 @@
 
 /*  the line and error token common in all passes
  */
-#define LIFILE  023
-#define LLINENO 024
-#define LERROR  0376
-#define LLINE   0375
+#define LIFILE  19
+#define LLINENO 20
+#define LERROR  254
+#define LLINE   253

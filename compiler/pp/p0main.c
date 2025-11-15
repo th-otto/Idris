@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "int0.h"
+#include "int01.h"
+#include "int012.h"
 #include "util.h"
 #include "pp.h"
 
@@ -24,15 +26,23 @@
 	-x => put lexemes, not lines.
 	-6 => put SOH, extra newlines for v6 compiler
  */
-static BOOL cflag = FALSE;
 static ARGS pdefs = { NDARGS, { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL } };
 static char *ofile = NULL;
+BOOL errflag = FALSE;
+BOOL liflag = FALSE;
+BOOL oldflag = FALSE;
+BOOL pasflag = FALSE;
+BOOL stdflag = FALSE;
 BOOL xflag = FALSE;
-BOOL v6flag = FALSE;
-char pchar = '#';
-static char schar = '@';
+static int pchar = '#';
+static int schar = 0;
+int inif = 0;
+int inincl = 0;
+unsigned char escname[] = "\4$esc";
 char *iprefix = "|";
+char *mapfile = NULL;
 const char *_pname = "pp";
+int pasline = 0;
 
 /*	FILE CONTROL:
 	argc = no of file args left
@@ -44,150 +54,129 @@ const char *_pname = "pp";
 */
 char **argv = NULL;
 int argc = 0;
+int lineno = 0;
 FILE *errfd;
+FILE *outfd;
 INCL *pincl = NULL;
 int nerrors = 0;
 BOOL pflag = FALSE;
 
 /*	the table of predefined #keywords
  */
-#define NPPS	18
-static PRETAB pptab[] = {
+static PRETAB const pptab[] = {
 	{ "\2IF", PIF },
 	{ "\2if", PIF },
+	{ "\4ELIF", PELIF },
 	{ "\4ELSE", PELSE },
 	{ "\4LINE", PLINE },
+	{ "\4elif", PELIF },
 	{ "\4else", PELSE },
 	{ "\4line", PLINE },
 	{ "\5ENDIF", PENDIF },
+	{ "\5ERROR", PERROR },
 	{ "\5IFDEF", PIFDEF },
 	{ "\5UNDEF", PUNDEF },
 	{ "\5endif", PENDIF },
+	{ "\5error", PERROR },
 	{ "\5ifdef", PIFDEF },
 	{ "\5undef", PUNDEF },
 	{ "\6DEFINE", PDEFINE },
 	{ "\6IFNDEF", PIFNDEF },
+	{ "\6PRAGMA", PPRAGMA },
 	{ "\6define", PDEFINE },
 	{ "\6ifndef", PIFNDEF },
+	{ "\6pragma", PPRAGMA },
 	{ "\7INCLUDE", PINCLUD },
 	{ "\7include", PINCLUD }
 };
 
 /*
  * get a full line into the I/O buffer
- *		sans continuations and comments
+ *		sans continuations
  */
-static char *getln(INCL *pi)
+static size_t getln(INCL *pi, char *buf, size_t maxlen)
 {
 	int i;
 	FILE *pf;
 	char *s;
-	int j, k;
-	static char buf[BUFSIZ];
-	char strchar;
-	char *savs;
-
-	strchar = '\0';
+	
 	s = buf;
 	pf = pi->pfio;
-	if (fgets(buf, BUFSIZ, pf) == NULL)
-		i = 0;
-	else
-		i = strlen(buf);
-	while (i > 0)
+	for (;;)
 	{
-		if (!cflag && *s == '\\' && 1 < i && s[1] == '\n')
+		if ((size_t)(s - buf + 2) > maxlen)
 		{
-			++pi->nline;
-			if (fgets(s, BUFSIZ - (s - buf), pf) == NULL)
-				i = 0;
-			else
-				i = (int)strlen(s);
-			for (savs = s; 0 < i && *s != '\n' && ISWHITE(*s); --i)
-				++s;
-			if (savs != s)
-			{
-				memmove(savs, s, i);
-				s = savs;
-			}
-		} else if (!cflag && *s == '\\')
-		{
-			s += 2;
-			i -= 2;
-		} else if (!cflag && !strchar && *s == '/' && 1 < i && s[1] == '*')
-		{
-			for (j = 2; j < i - 1; ++j)
-				if (s[j] == '*' && s[j + 1] == '/')
-					break;
-			if (j < i - 1)
-			{
-				*s++ = ' ';
-				i -= j + 2;
-				for (k = 0; k < i; ++k)
-					s[k] = s[k + j + 1];
-			} else if (fgets(s + 2, BUFSIZ - (s + 2 - buf), pf) == NULL)
-			{
-				p0error("missing */");
-				break;
-			} else
-			{
-				++pi->nline;
-				i = (int)strlen(s);
-			}
-		} else if (*s == '\n')
-		{
-			++pi->nline;
-			return buf;
-		} else
-		{
-			if (!cflag && (*s == '"' || *s == '\''))
-			{
-				if (strchar == *s)
-					strchar = '\0';
-				else if (!strchar)
-					strchar = *s;
-			}
-			++s;
-			--i;
+			p0error("line too long");
+			break;
 		}
+		if (fgets(s, maxlen - (s - buf), pf) == NULL)
+			break;
+		++pi->nline;
+		lineno = pi->nline;
+		i = (int)strlen(s);
+		s += i;
+		if (i < 1 || s[-2] != '\\' || s[-1] != '\n')
+			break;
+		s -= 2;
 	}
+	*s = '\0';
 	if (s == buf)
-		return NULL;
-	else
-	{
-		p0error("truncated line");
-		buf[BUFSIZ - 1] = '\n';
-		return buf;
-	}
+		return 0;
+	if (s < &buf[maxlen])
+		return s - buf;
+	p0error("folded line");
+	buf[maxlen] = '\n';
+	buf[maxlen + 1] = '\0';
+	return maxlen + 1;
 }
 
 
 /*
  * get an included line, as a token list
  */
-static TLIST *getincl(void)
+/* XXX V3.2 different */
+#define LINEBUFSIZE BUFSIZ
+static TLIST *getinl(BOOL contline)
 {
-	char *s;
+	size_t n;
+	static char *linebuf;
+	static size_t bufstart;
+	static BOOL in_comment;
 
+	if (linebuf == NULL)
+		linebuf = xmalloc(LINEBUFSIZE);
+	if (!contline)
+		bufstart = 0;
 	for (;;)
 	{
 		if (!pincl)
 			pincl = nxtfile();
 		if (!pincl)
 			return NULL;
-		if ((s = getln(pincl)) != NULL)
+		if ((n = getln(pincl, linebuf + bufstart, LINEBUFSIZE - bufstart)) != 0)
 		{
-			return stotl(s);
+			bufstart += n;
+			return stotl(linebuf + bufstart - n, &in_comment);
+		} else if (in_comment)
+		{
+			p0error("unbalanced comment in file");
+			in_comment = FALSE;
+			return stotl("\n", NULL);
 		} else
 		{
 			INCL *next;
 			
+			++pincl->nline;
+			ptline();
 			fclose(pincl->pfio);
 			free(pincl->fname);
 			next = pincl->next;
 			free(pincl);
 			pincl = next;
 			pflag = TRUE;
+			putfile();
+			if (inincl != 0)
+				--inincl;
 		}
 	}
 }
@@ -196,22 +185,22 @@ static TLIST *getincl(void)
 /*
  * get an expanded token list
  */
-static TLIST *getex(void)
+TLIST *getex(BOOL flag)
 {
 	TLIST *p;
 	LEX tok;
 
-	if ((p = getincl()) != NULL)
+	if ((p = getinl(flag)) != NULL)
 	{
-		if (punct(p, pchar) || punct(p, schar))
+		if (PUNCT(p, pchar) || PUNCT(p, schar))
 		{
+			if (flag)
+			{
+				p0error("#line inside macro");
+			}
 			if ((tok = scntab(pptab, sizeof(pptab) / sizeof(pptab[0]), p->next->text, p->next->ntext)) != 0)
 			{
-				TLIST *next;
-				
-				next = p->next;
-				free(p);
-				p = next;
+				p = fretlist(p, p->next);
 				p->type = tok;
 			} else
 			{
@@ -220,20 +209,33 @@ static TLIST *getex(void)
 		}
 		switch (p->type)
 		{
+		case PINCLUD:
+			p = doexp(p, NULL);
+			break;
 		case PDEFINE:
 		case PUNDEF:
-		case PINCLUD:
 		case PSHARP:
+			break;
+		case PIF:
+		case PELIF:
+			++inif;
+			p = doexp(p, NULL);
+			--inif;
 			break;
 		case PIFDEF:
 		case PIFNDEF:
 			if (p->next->type != PIDENT)
-				p0error("bad #%s", p->text);
-			else if (!lookup(p->next->text, p->next->ntext))
-				p->next = frelst(p->next, NULL);
+			{
+				p0error("bad #%.*s", (int)p->ntext, p->text);
+			} else if (!lookup(p->next->text, p->next->ntext, NULL))
+			{
+				if (scntab(bltintab, 3, p->next->text, p->next->ntext) == 0) /* excludes __LINE__ */
+					p->next = fretlist(p->next, NULL);
+			}
 			break;
 		default:
-			p = doexp(p);
+			if (!flag)
+				p = doexp(p, NULL);
 			break;
 		}
 	}
@@ -248,18 +250,49 @@ static void putns(TLIST *p)
 {
 	char *fname;
 	TLIST *q;
+	TLIST *qend;
 	FILE *fd;
+	int lineno;
+	int16_t len;
+	char *pasname;
+	char *pd;
 
 	switch (p->type)
 	{
+	case PERROR:
+		for (q = p; q->type != PEOL; q = q->next)
+			;
+		if (!xflag)
+		{
+			fputc('#', outfd);
+			putls(p);
+		} else
+		{
+			if (!oldflag)
+			{
+				/* +2 to include leading and terminating quote */
+				len = q->text - p->text + 2;
+				putcode("c2b", LERROR, &len, p->text - 1, len);
+			}
+		}
+		break;
 	case PDEFINE:
 		if (p->next->type != PIDENT)
+		{
 			p0error("bad #define");
-		else
+		} else
 		{
 			for (q = p->next; q->next; q = q->next)
 				;
-			install(p->next->text, p->next->ntext, buybuf(p->next->next->white, q->text + q->ntext - p->next->next->white));
+			len = q->text + q->ntext - p->next->next->white;
+			if (!stdflag || (pd = lookup(p->next->text, p->next->ntext, NULL)) == NULL)
+			{
+				install(p->next->text, p->next->ntext, buybuf(p->next->next->white, len));
+			} else
+			{
+				if (memcmp(pd, p->next->next->white, len) != 0)
+					p0error("redefined %.*s", (int)p->next->ntext, p->next->text);
+			}
 		}
 		break;
 	case PUNDEF:
@@ -269,10 +302,8 @@ static void putns(TLIST *p)
 			undef(p->next->text, p->next->ntext);
 		break;
 	case PINCLUD:
-		if (!(fname = getfname(p->next)))
-		{
-			p0error("bad #include");
-		} else if ((fd = fopen(fname, "r")) == NULL)
+		fname = getfinclude(p->next);
+		if ((fd = fopen(fname, "r")) == NULL)
 		{
 			p0error("can't #include %s", fname);
 			free(fname);
@@ -280,6 +311,12 @@ static void putns(TLIST *p)
 		{
 			INCL *incl;
 			
+			ptline();
+#if 0 /* XXX v3.2 */
+			pflag = TRUE;
+			lastln = 0;
+			putfile();
+#endif
 			incl = xmalloc(sizeof(*pincl));
 			incl->next = pincl;
 			incl->fname = fname;
@@ -287,25 +324,86 @@ static void putns(TLIST *p)
 			incl->pfio = fd;
 			pincl = incl;
 			pflag = TRUE;
+			++inincl;
+#if 0 /* XXX v3.2 */
+			putfile();
+#endif
 		}
 		break;
 	case PLINE:
-		if (p->next->type != PNUM)
+		if (PUNCT(p->next, '='))
+		{
+			if (!xflag)
+			{
+				p->text--;
+				p->ntext++;
+				putls(p);
+			} else
+			{
+				q = p->next->next;
+				qend = q;
+				while (!PUNCT(qend, ':') && qend->type != PEOL)
+					qend = qend->next;
+				if (qend != q)
+				{
+					pasline = 0;
+					pasname = buybuf(q->text, qend->text - q->text + 1);
+					pasname[qend->text - q->text] = '\0';
+					pflag = TRUE;
+					if (pincl->fname != NULL)
+						free(pincl->fname);
+					pincl->fname = pasname;
+					putfile();
+				}
+				qend = qend->next;
+				lineno = bton(qend, NULL, NULL);
+				pincl->nline = lineno;
+				pasline = 0;
+				ptline();
+				pasline = 1;
+			}
+		} else if (p->next->type != PNUM)
 		{
 			p0error("bad #line");
 		} else
 		{
-			int i;
-			
-			_btoi(p->next->text, p->next->ntext, &i, 10);
-			pincl->nline = i;
-			if ((fname = getfname(p->next->next)) != NULL)
+			lineno = bton(p->next, NULL, NULL);
+			pincl->nline = lineno;
+			q = p->next->next;
+			if (q->type != PEOL)
 			{
-				pflag = TRUE;
-				if (pincl->fname)
-					free(pincl->fname);
-				pincl->fname = fname;
+				if (q->type == PSTRING)
+				{
+					pasname = buybuf(q->text + 1, q->ntext - 1);
+					pasname[q->ntext - 2] = '\0';
+					pflag = TRUE;
+					if (pincl->fname)
+						free(pincl->fname);
+					pincl->fname = pasname;
+					q = q->next;
+				}
+				if (q->type != PEOL)
+					p0error("bad #line syntax");
+				if (!xflag)
+				{
+					p->text -= 1;
+					p->ntext += 1;
+					putls(p);
+				}
 			}
+		}
+		break;
+	case PPRAGMA:
+		if (!xflag)
+		{
+			p->text -= 1;
+			p->ntext += 1;
+			putls(p);
+		} else
+		{
+			putcode("c", LPRAGMA);
+			putls(p->next);
+			putcode("c", LPRAGMA);
 		}
 		break;
 	case PSHARP:
@@ -316,7 +414,7 @@ static void putns(TLIST *p)
 		putls(p);
 		break;
 	}
-	frelst(p, NULL);
+	fretlist(p, NULL);
 }
 
 
@@ -327,15 +425,15 @@ static TLIST *putgr(TLIST *p, BOOL skip)
 {
 	BOOL doit;
 
-	while (p && p->type != PELSE && p->type != PENDIF)
+	while (p && p->type != PELSE && p->type != PENDIF && p->type != PELIF)
 	{
 		if (p->type != PIF && p->type != PIFDEF && p->type != PIFNDEF)
 		{
 			if (skip)
-				frelst(p, NULL);
+				fretlist(p, NULL);
 			else
 				putns(p);
-			p = getex();
+			p = getex(FALSE);
 		} else
 		{
 			if (p->type == PIF)
@@ -344,19 +442,34 @@ static TLIST *putgr(TLIST *p, BOOL skip)
 				doit = (p->next != 0);
 			else
 				doit = (p->next == 0);
-			frelst(p, NULL);
-			p = putgr(getex(), skip || !doit);
+			fretlist(p, NULL);
+			p = putgr(getex(FALSE), skip || !doit);
+			while (p && p->type == PELIF)
+			{
+				if (!doit)
+				{
+					doit = skip ? FALSE : eval(p->next);
+					fretlist(p, NULL);
+					p = putgr(getex(FALSE), skip || !doit);
+				} else
+				{
+					fretlist(p, NULL);
+					p = putgr(getex(FALSE), skip || doit);
+				}
+			}
 			if (p && p->type == PELSE)
 			{
-				frelst(p, NULL);
-				p = putgr(getex(), skip || doit);
+				fretlist(p, NULL);
+				p = putgr(getex(FALSE), skip || doit);
 			}
 			if (p && p->type == PENDIF)
 			{
-				frelst(p, NULL);
-				p = getex();
+				fretlist(p, NULL);
+				p = getex(FALSE);
 			} else
+			{
 				p0error("missing #endif");
+			}
 		}
 	}
 	return p;
@@ -373,25 +486,53 @@ int main(int ac, char **av)
 	argv = av;
 	argc = ac;
 	errfd = stderr;
-	getflags(&argc, &argv, "c,d*>i*,o*,p?,s?,x,6:F <files>",
-		&cflag, &pdefs, &iprefix, &ofile, &pchar, &schar, &xflag, &v6flag);
-	if ((pincl = nxtfile()) != NULL)
-		predef(&pdefs);
+	outfd = stdout;
+	getflags(&argc, &argv, "d*>err,i*,+lincl,+map*,+old,o*,+pas,p?,+std,s?,x:F <files>",
+		&pdefs, &errflag, &iprefix, &liflag, &mapfile, &oldflag, &ofile, &pasflag, &pchar, &stdflag, &schar, &xflag);
 	if (ofile)
 	{
-		if ((stdout = freopen(ofile, xflag ? "wb" : "w", stdout)) == NULL)
+		if ((outfd = fopen(ofile, xflag ? "wb" : "w")) == NULL)
 		{
-			p0error("bad output file");
+			p0error("can't create %s", ofile);
 		} else
 		{
 			errfd = stdout;
 		}
 	}
-	while ((p = putgr(getex(), FALSE)) != NULL)
+	if (xflag && !oldflag)
 	{
-		p0error("misplaced #%s", p->text);
-		frelst(p, NULL);
+		putcode("c", P1MAGIC);
+		putcode("ccp", LIFILE, (int)strlen(argv[argc - 1]), argv[argc - 1]);
 	}
-	fclose(stdout);
-	return nerrors == 0 ? 0 : 1;
+	if (argc == 0)
+		pincl = inpfile(stdin, "-");
+	else
+		pincl = nxtfile();
+	putfile();
+	predef(&pdefs);
+#if SUPPORT_CMAP
+	if (mapfile != NULL)
+	{
+		FILE *fp;
+		
+		if ((fp = fopen(mapfile, "rb")) == NULL)
+		{
+			fatal("can't open map file: %s", mapfile);
+		} else
+		{
+			if (fread(cmap, 1, 256, fp) != 256)
+			{
+				fatal("can't read map file: %s", mapfile);
+			}
+			fclose(fp);
+		}
+	}
+#endif
+	while ((p = putgr(getex(FALSE), FALSE)) != NULL)
+	{
+		p0error("misplaced #%.*s", (int)p->ntext, p->text);
+		fretlist(p, NULL);
+	}
+	fclose(outfd);
+	return nerrors == 0 /* || !errflag */ ? 0 : 1;
 }

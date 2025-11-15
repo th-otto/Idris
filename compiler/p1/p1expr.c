@@ -302,7 +302,7 @@ static TERM *mterm(BOOL mand)
 		cpynm(l->n.an, lblname(crs()));
 		q = buyterm(l->ty, l->at, l->n.an, 0L, 0, 1);
 		break;
-	case LDNUM:
+	case LDDOUBLE:
 		q = buyterm(TDOUBLE, NULL, tok.t.an, 0L, 0, 0);
 		break;
 	case LTIMES:

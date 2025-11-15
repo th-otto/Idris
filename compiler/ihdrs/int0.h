@@ -8,25 +8,37 @@
 
 /*	the types
  */
-#define PCHCON	1
-#define PEOL	2
-#define PIDENT	3
-#define PNUM	4
-#define PPUNCT	5
-#define PSTRING	6
+#define PCHCON	 1
+#define PEOL	 2
+#define PIDENT	 3
+#define PNUM	 4
+#define PPUNCT	 5
+#define PSTRING	 6
+#define PQEOL    7
+#define PQSTRING 8
 
 /*	the keywords
  */
 #define PDEFINE	10
-#define PELSE	11
-#define PENDIF	12
-#define PIF		13
-#define PIFDEF	14
-#define PIFNDEF	15
-#define PINCLUD	16
-#define PLINE	17
-#define PSHARP	18
-#define PUNDEF	19
+#define PELIF   11
+#define PELSE	12
+#define PENDIF	13
+#define PIF		14
+#define PIFDEF	15
+#define PIFNDEF	16
+#define PINCLUD	17
+#define PLINE	18
+#define PPRAGMA 19
+#define PSHARP	20
+#define PUNDEF	21
+#define PERROR  22
+
+/*	the builtins
+ */
+#define PBIF      30
+#define PBFILE    31
+#define PBLINE    32
+#define PBDEFINED 33
 
 /*	the token type
  */
@@ -83,8 +95,9 @@ struct alist {
 
 struct def {
 	struct def *next;
-	size_t dnlen;
 	char *defn;
+	size_t dnlen;
+	int inexpand;
 	char dname[LENNAME];
 };
 

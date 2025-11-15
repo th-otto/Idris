@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "int2.h"
-#include "int012.h"
 #include "int12.h"
+#include "int012.h"
 #include "util.h"
 #include "p2.h"
 

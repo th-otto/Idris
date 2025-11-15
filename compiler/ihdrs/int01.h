@@ -3,75 +3,87 @@
  */
 
 /*	the types and mask
-		cons = (MASK & type == CONS)
+		cons = ((MASK & type) == CONS)
  */
-#define MASK	0360
-#define CONS	0020
+#define MASK	0xf0
+#define CONS	0x10
 
 /*	the keywords
  */
-#define LAUTO	0041
-#define LBREAK	0042
-#define LCASE	0043
-#define LCHAR	0044
-#define LCONTIN	0045
-#define LDFAULT	0046
-#define LDO		0047
-#define LDOUBLE	0050
-#define LELSE	0051
-#define LEXTERN	0052
-#define LFLOAT	0053
-#define LFOR	0054
-#define LGOTO	0055
-#define LIF		0056
-#define LINT	0057
-#define LLONG	0060
-#define LREG	0061
-#define LRETURN	0062
-#define LSHORT	0063
-#define LSTATIC	0064
-#define LSTRUCT	0065
-#define LSWITCH	0066
-#define LTYPDEF	0067
-#define LUNION	0070
-#define LUNSIGN	0071
-#define LWHILE	0072
+#define LAUTO	  33
+#define LBREAK	  34
+#define LCASE	  35
+#define LCHAR	  36
+#define LCONTIN	  37
+#define LDFAULT	  38
+#define LDO		  39
+#define LDOUBLE	  40
+#define LELSE	  41
+#define LEXTERN	  42
+#define LFLOAT	  43
+#define LFOR	  44
+#define LGOTO	  45
+#define LIF		  46
+#define LINT	  47
+#define LLONG	  48
+#define LREG	  49
+#define LRETURN	  50
+#define LSHORT	  51
+#define LSTATIC	  52
+#define LSTRUCT	  53
+#define LSWITCH	  54
+#define LTYPDEF	  55
+#define LUNION	  56
+#define LUNSIGN	  57
+#define LWHILE	  58
+#define LCONST    59
+#define LENUM     60
+#define LSIGNED   61
+#define LVOID     62
+#define LVOLATILE 63
 
 /*	pseudo keyword
  */
-#define LSIZEOF	0141
+#define LNOSIDE 96
+#define LSIZEOF	97
 
 /*	created lexemes, can't be input
  */
-#define DARG	0073
-#define DEXTERN	0074
-#define DSTATIC	0075
-#define FSTATIC 0076
+#define DARG	59
+#define DEXTERN	60
+#define DSTATIC	61
+#define FSTATIC 62
 
 /*	the constants
  */
-#define LDNUM	0021
-#define LIDENT	0022
-/* #define LIFILE	0023 now in int012.h */
-/* #define LLINENO	0024 now in int012.h */
-#define LLNUM	0025
-#define LSNUM	0026
-#define LSTRING	0027
-#define LCNUM	0030
-#define LULNUM	0031
-#define LUSNUM	0032
-#define LUCNUM	0033
+#define LDLDOUBLE	16
+#define LDDOUBLE 17
+#define LIDENT	18
+/* #define LIFILE	19 now in int012.h */
+/* #define LLINENO	20 now in int012.h */
+#define LLNUM	21
+#define LSNUM	22
+#define LSTRING	23
+#define LCNUM	24
+#define LULNUM	25
+#define LUSNUM	26
+#define LUCNUM	27
+#define LPRAGMA 29
+#define LDFLOAT	30
 
 /*	the punctuation
  */
-#define LCOLON	0001
-#define LCOMMA	0002
-#define LDOT	0003
-#define LLBRACK	0004
-#define LLCURLY	0005
-#define LLPAREN	0006
-#define LPOINTS	0007
-#define LRBRACK	0010
-#define LRCURLY	0011
-#define LRPAREN	0012
-#define LSCOLON	0013
+#define LCOLON	1
+#define LCOMMA	2
+#define LDOT	3
+#define LLBRACK	4
+#define LLCURLY	5
+#define LLPAREN	6
+#define LPOINTS	7
+#define LRBRACK	8
+#define LRCURLY	9
+#define LRPAREN	10
+#define LSCOLON	11
+#define LAT     12
+#define LDOTS   13
+#define LRANGE  14

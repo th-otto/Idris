@@ -13,48 +13,32 @@
 #define ISDIGIT(c) ((c) >= '0' && (c) <= '9')
 
 
-unsigned char const digfr[] = "0123456789abcdefABCDEF";
-unsigned char const digto[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 10, 11, 12, 13, 14, 15 };
-
 /*	escape sequences for c
  */
-static char const eschars[] = "btnvfrBTNVFR(!)^";	/* ASCII */
+static char eschars[] = "btnvfrBTNVFR(!)^";	/* ASCII */
 
-static char const escodes[] = {
-	0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d,
-	0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d,
-	0x7b, 0x7c, 0x7d, 0x7e
+static char escodes[] = {
+	010, 011, 012, 013, 014, 015, 010, 011, 012,
+	013, 114, 015, 0173, 0174, 0175, 0176
 };
 
 /*	the priority tables
  */
-static char const ipri[] = {
-	LTIMES,	LDIVIDE, LMODULO,
-	LPLUS, LMINUS,
-	LLSHIFT, LRSHIFT,
-	LLESS, LLEQ, LGREAT, LGEQ,
-	LISEQ, LNOTEQ,
-	LAND,
-	LXOR,
-	LOR,
-	LANDAND,
-	LOROR,
-	LQUERY,
-	0
+static char ipri[] = {
+	LTIMES, LDIVIDE, LMODULO, LPLUS, LMINUS, LLSHIFT, LRSHIFT,
+	LLESS, LLEQ, LGREAT, LGEQ, LISEQ, LNOTEQ,
+	LAND, LXOR, LOR, LANDAND, LOROR, LQUERY, 0
 };
 
-static char const opri[] = {
-	14, 14, 14,
-	13, 13,
-	12, 12,
-	11, 11, 11, 11,
-	10, 10,
+static char opri[] = {
+	14, 14, 14, 13, 13, 12, 12,
+	11, 11, 11, 11, 10, 10,
 	9, 8, 7, 6, 5, 4
 };
 
 /*	the operator table
  */
-static PRETAB const optab[] = {
+static PRETAB optab[] = {
 	{ "\1!", LNOT },
 	{ "\1%", LMODULO },
 	{ "\1&", LAND },
@@ -80,116 +64,80 @@ static PRETAB const optab[] = {
 	{ "\1}", LRCURLY },
 	{ "\1~", LCOMP },
 	{ "\2!=", LNOTEQ },
-	{ "\2%=", LGMOD },
 	{ "\2&&", LANDAND },
-	{ "\2&=", LGAND },
-	{ "\2*=", LGTIM },
-	{ "\2++", LINCR },
-	{ "\2+=", LGPLU },
-	{ "\2--", LDECR },
-	{ "\2-=", LGMIN },
-	{ "\2->", LPOINTS },
-	{ "\2/=", LGDIV },
-	{ "\2<<", LLSHIFT },
-	{ "\2<=", LLEQ },
-	{ "\2==", LISEQ },
-	{ "\2>=", LGEQ },
-	{ "\2>>", LRSHIFT },
-	{ "\2^=", LGXOR },
-	{ "\2|=", LGOR },
-	{ "\2||", LOROR },
-	{ "\3...", LDOTS },
-	{ "\3<<=", LGLSH },
-	{ "\3>>=", LGRSH },
-};
-
-static PRETAB const optabold[] = {
-	{ "\1@",  LAT },
 	{ "\2(<", LLCURLY },
 	{ "\2(|", LLBRACK },
-	{ "\2..", LRANGE },
+	{ "\2++", LINCR },
+	{ "\2--", LDECR },
+	{ "\2->", LPOINTS },
+	{ "\2<<", LLSHIFT },
+	{ "\2<=", LLEQ },
 	{ "\2=%", LGMOD },
 	{ "\2=&", LGAND },
 	{ "\2=*", LGTIM },
 	{ "\2=+", LGPLU },
 	{ "\2=-", LGMIN },
 	{ "\2=/", LGDIV },
+	{ "\2==", LISEQ },
 	{ "\2=^", LGXOR },
 	{ "\2=|", LGOR },
 	{ "\2>)", LRCURLY },
+	{ "\2>=", LGEQ },
+	{ "\2>>", LRSHIFT },
 	{ "\2\\!", LOR },
 	{ "\2\\(", LLCURLY },
 	{ "\2\\)", LRCURLY },
 	{ "\2\\^", LCOMP },
 	{ "\2|)", LRBRACK },
+	{ "\2||", LOROR },
 	{ "\3=<<", LGLSH },
 	{ "\3=>>", LGRSH },
 	{ "\3\\!!", LOROR },
 };
 
-
-/*
- * do escape character processing
+/*	do escape character processing
  */
-size_t dobesc(char *buf, char *s, size_t n)
+size_t doesc(char *buf, char *s, size_t n)
 {
 	char *q;
-	char *end;
-	size_t parsed;
-	size_t j;
+	size_t i, j;
+	short sum;
 	const char *p;
-	size_t pos;
-	unsigned char c;
 
 	q = buf;
-	parsed = -2;
-	for (end = &s[max(n, 2)]; s < end; )
+	n = max(n, 2);
+	for (i = 0; i < n; ++i)
 	{
-		if (*s != '\\' || s + 1 == end)
+		if (*s != '\\')
 		{
-			c = cmap(*s);
+			*q++ = *s++;
 		} else if ((p = strchr(eschars, *++s)) != NULL)
 		{
-			c = cmap(escodes[(int)(p - eschars)]);
-		} else if (*s == 'x')
+			*q++ = escodes[(int)(p - eschars)];
+			++s;
+			++i;
+		} else if (ISDIGIT(*s))
 		{
-			for (c = 0, j = 0; j < 3 && ++s < end; ++j)
-			{
-				pos = _scnstr(digfr, *s);
-				if (digfr[pos] == '\0')
-				{
-					s--;
-					break;
-				}
-				c = (c << 4) + digto[pos];
-			}
+			for (sum = 0, j = 0; j < 3 && ISDIGIT(*s); ++j, ++s)
+				sum = (sum << 3) + (*s - '0');
+			*q++ = 0xff & sum;
+			i += j;
+		} else if (*s == 'x' || *s == 'X')
+		{
+			j = _btos(++s, 3, &sum, 16);
+			*q++ = 0xff & sum;
+			i += j + 1;
+			s += j;
 		} else
 		{
-			s--;
-			for (c = 0, j = 0; j < 3 && ++s < end; ++j)
-			{
-				pos = _scnstr(digfr, *s);
-				if (pos >= 8)
-				{
-					break;
-				}
-				c = (c << 3) + (*s - '0');
-			}
-			if (j == 0)
-				c = cmap(*s);
-			else
-				s--;
+			*q++ = *s++;
+			++i;
 		}
-		*q++ = c;
-		parsed++;
-		s++;
 	}
-	return parsed;					/* assert 2 <= (q - buf) */
+	return q - buf;					/* assert 2 <= (q - buf) */
 }
 
-
-/*
- * parse an operator
+/*	parse an operator
  */
 LEX dopunct(TLIST **pp)
 {
@@ -204,8 +152,7 @@ LEX dopunct(TLIST **pp)
 	for (n = 1, q = p->next; n < 3 && q->type == PPUNCT && q->nwhite == 0; ++n, q = q->next)
 		buf[n] = *q->text;
 	for (; 0 < n; --n)
-		if ((tok = scntab(optab, sizeof(optab) / sizeof(optab[0]), buf, n)) != 0 ||
-			(!stdflag && (tok = scntab(optabold, sizeof(optabold) / sizeof(optabold[0]), buf, n)) != 0))
+		if ((tok = scntab(optab, sizeof(optab) / sizeof(optab[0]), buf, n)) != 0)
 			break;
 	if (n <= 0)
 	{
@@ -221,9 +168,9 @@ LEX dopunct(TLIST **pp)
 	}
 }
 
+static TLIST *expr(TLIST *p, long *plv);
 
-/*
- * test for operator
+/*	test for operator
  */
 static LEX exop(TLIST **pp, LEX mask)
 {
@@ -239,106 +186,60 @@ static LEX exop(TLIST **pp, LEX mask)
 	return 0;
 }
 
-
-long bton(TLIST *p, BOOL *islong, BOOL *isunsigned)
-{
-	char *s;
-	size_t n;
-	BOOL longflag;
-	BOOL unsignedflag;
-	int base;
-	int pos;
-	int val;
-	
-	s = p->text;
-	n = p->ntext;
-	if (n > 0 && s[0] != '0')
-	{
-		base = 10;
-	} else if (n > 1 && (s[1] == 'x' || s[1] == 'X'))
-	{
-		base = 16;
-		s += 2;
-		n -= 2;
-	} else
-	{
-		base = 8;
-	}
-	val = 0;
-	while (n > 0 && digfr[pos = _scnstr(digfr, *s)] != '\0')
-	{
-		pos = digto[pos];
-		if (pos >= base)
-			break;
-		val = val * base + pos;
-		s++;
-		n--;
-	}
-	unsignedflag = FALSE;
-	longflag = FALSE;
-	while (n > 0)
-	{
-		if ((*s == 'l' || *s == 'L') && !longflag)
-		{
-			longflag = TRUE;
-		} else if ((*s == 'u' || *s == 'U') && !unsignedflag)
-		{
-			unsignedflag = TRUE;
-		} else
-		{
-			break;
-		}
-		s++;
-		n--;
-	}
-	if (n != 0)
-	{
-		p0error("illegal integer %.*s", (int)p->ntext, p->text);
-	}
-	if (islong)
-		*islong = longflag;
-	if (isunsigned)
-		*isunsigned = unsignedflag;
-	return val;
-}
-
-
-/*
- * parse a term
+/*	parse a term
  */
 static TLIST *exterm(TLIST *p, long *plv)
 {
 	size_t n;
 	char *s;
-	char sbuf[STRSIZE + 2];
+	int base;
+	char sbuf[STRSIZE];
 	LEX op;
 	
 	if (p->type == PNUM)
 	{
-		*plv = bton(p, NULL, NULL);
+		s = p->text;
+		n = p->ntext;
+		if (*s != '0')
+		{
+			base = 10;
+		} else if (1 < n && (s[1] == 'x' || s[1] == 'X'))
+		{
+			base = 16;
+			s += 2;
+			n -= 2;
+		} else
+		{
+			base = 8;
+		}
+		if (_btol(s, n, plv, base) != n)
+		{
+			p0error("illegal number in #if");
+			*plv = 0;
+		}
 		return p->next;
 	} else if (p->type == PCHCON)
 	{
 		s = &sbuf[1];
-		n = dobesc(sbuf, p->text, p->ntext) - 2;
+		n = doesc(sbuf, p->text, p->ntext) - 2;
 		for (*plv = 0; n; ++s, --n)
 			*plv = (*plv << 8) | (*s & 0xff);
 		return p->next;
-	} else if (PUNCT(p, '('))
+	} else if (punct(p, '('))
 	{
-		if ((p = expr(p->next, plv)) == NULL)
+		if (!(p = expr(p->next, plv)))
 			return NULL;
-		if (!PUNCT(p, ')'))
+		else if (!punct(p, ')'))
 		{
 			p0error("missing ) in #if");
 			return NULL;
-		}
-		return p->next;
-	} else if ((op = exop(&p, UNOP)) == 0)
+		} else
+			return p->next;
+	} else if (!(op = exop(&p, UNOP)))
 	{
 		p0error("illegal #if syntax");
 		return NULL;
-	} else if ((p = exterm(p, plv)) == NULL)
+	} else if (!(p = exterm(p, plv)))
 	{
 		return NULL;
 	} else
@@ -356,8 +257,7 @@ static TLIST *exterm(TLIST *p, long *plv)
 }
 
 
-/*
- * compute operator priority
+/*	compute operator priority
  */
 static int expri(LEX op)
 {
@@ -368,9 +268,7 @@ static int expri(LEX op)
 	return opri[(int)(p - ipri)];
 }
 
-
-/*
- * parse a DTB... tail
+/*	parse a DTB... tail
  */
 static TLIST *extail(int lpr, long *plv, LEX *pop, TLIST *p)
 {
@@ -383,7 +281,7 @@ static TLIST *extail(int lpr, long *plv, LEX *pop, TLIST *p)
 
 	for (rop = *pop; lpr < (mpr = expri(rop)); *pop = rop)
 	{
-		if ((p = exterm(p, &rv)) == NULL)
+		if (!(p = exterm(p, &rv)))
 			;
 		else if (mpr < expri(rop = exop(&p, BINOP)))
 			p = extail(mpr, &rv, &rop, p);
@@ -449,7 +347,7 @@ static TLIST *extail(int lpr, long *plv, LEX *pop, TLIST *p)
 			lv = (lv || rv);
 			break;
 		case LQUERY:
-			if (!PUNCT(p, ':') || (p = expr(p->next, &mv)) == NULL)
+			if (!punct(p, ':') || !(p = expr(p->next, &mv)))
 			{
 				p0error("illegal ? : in #if");
 				return NULL;
@@ -470,15 +368,13 @@ static TLIST *extail(int lpr, long *plv, LEX *pop, TLIST *p)
 	return p;
 }
 
-
-/*
- * parse a (sub)expression
+/*	parse a (sub)expression
  */
-TLIST *expr(TLIST *p, long *plv)
+static TLIST *expr(TLIST *p, long *plv)
 {
 	LEX op;
 
-	if ((p = exterm(p, plv)) == NULL)
+	if (!(p = exterm(p, plv)))
 		return NULL;
 	else if ((op = exop(&p, BINOP)) != 0)
 		return extail(0, plv, &op, p);
@@ -486,15 +382,13 @@ TLIST *expr(TLIST *p, long *plv)
 		return p;
 }
 
-
-/*
- * evaluate an expression
+/* evaluate an expression
  */
 BOOL eval(TLIST *p)
 {
 	long lv;
 
-	if ((p = expr(p, &lv)) == NULL)
+	if (!(p = expr(p, &lv)))
 		return FALSE;
 	if (p->type != PEOL)
 	{

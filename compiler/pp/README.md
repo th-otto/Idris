@@ -1,0 +1,14 @@
+- new keywords recognized:
+  - signed
+  - volatile
+  - const
+  - void
+  - enum
+  - $noside
+- new preprocessor commands handled:
+  - #elif
+  - #error
+  - #pragma
+- old operators (=- etc.) only recognized when -std is not specified
+- pascal style comments only recognized with -pas flag
+- support for character table mapping

@@ -26,6 +26,9 @@ p1: $(P1OBJ)
 p1pr: $(P1PROBJ)
 	$(CC) $(CFLAGS) -o $@ $(P1PROBJ) $(LDFLAGS)
 
+$(P1OBJ): p1.h ../ihdrs/int1.h ../ihdrs/int01.h ../ihdrs/int12.h ../ihdrs/int012.h
+$(P1PROBJ): int2p.h ../ihdrs/int12.h ../ihdrs/int012.h
+
 util.o: util.c ../util/util.c
 getflags.o: getflags.c ../util/getflags.c
 

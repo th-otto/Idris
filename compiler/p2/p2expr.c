@@ -580,6 +580,6 @@ CODE **exvoid(CODE **qb, EXPR *r)
 		panic("void");
 	chput("`", NULL);
 	exlist = frelst(exlist, NULL);
-	*qb = buycode(GCODE, (CODE *)chsave, CODSIZE); /* WTF */
+	*qb = buycode(GCODE, (HEADER *)chsave, CODSIZE); /* WTF */
 	return &(*qb)->next;
 }

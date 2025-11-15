@@ -4,6 +4,12 @@
 #endif
 typedef int BOOL;
 
+#ifndef __attribute__
+#ifndef __GNUC__
+#define __attribute__(x)
+#endif
+#endif
+
 extern BOOL lsfmt;
 extern const char *_pname;
 

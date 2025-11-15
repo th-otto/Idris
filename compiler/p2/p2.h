@@ -1,9 +1,3 @@
-#ifndef __attribute__
-#ifndef __GNUC__
-#define __attribute__(x)
-#endif
-#endif
-
 typedef unsigned short BITS;
 typedef unsigned char TINY;
 

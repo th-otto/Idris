@@ -1,4 +1,4 @@
-; a_magic   = 0x992d
+; a_magic   = 0x992d (symbol length: 11)
 ; a_text    = 0x0000b10e
 ; a_data    = 0x00001b9c
 ; a_bss     = 0x00000000
@@ -18,12 +18,12 @@ start:
 [0000000a] e598                      rol.l      #2,d0
 [0000000c] 5880                      addq.l     #4,d0
 [0000000e] d1af 0008                 add.l      d0,8(a7)
-[00000012] 23ef 0008 0002 0072       move.l     8(a7),$0002B180
+[00000012] 23ef 0008 0002 0072       move.l     8(a7),_environ
 [0000001a] 4a97                      tst.l      (a7)
 [0000001c] 6726                      beq.s      start_1
 [0000001e] 206f 0004                 movea.l    4(a7),a0
 [00000022] 2050                      movea.l    (a0),a0
-[00000024] 23c8 0002 0cc0            move.l     a0,$0002BDCE
+[00000024] 23c8 0002 0cc0            move.l     a0,__pname
 start_3:
 [0000002a] 0c10 003a                 cmpi.b     #$3A,(a0)
 [0000002e] 670c                      beq.s      start_2
@@ -34,25 +34,25 @@ start_3:
 [0000003a] 6008                      bra.s      start_1
 start_2:
 [0000003c] 4218                      clr.b      (a0)+
-[0000003e] 23c8 0002 007a            move.l     a0,$0002B188
+[0000003e] 23c8 0002 007a            move.l     a0,__paths
 start_1:
-[00000044] 4879 0002 006c            pea.l      $0002B17A "PATH"
+[00000044] 4879 0002 006c            pea.l      $0002006C "PATH"
 [0000004a] 4eb9 0000 a6da            jsr        _getenv
 [00000050] 4a9f                      tst.l      (a7)+
 [00000052] 4a87                      tst.l      d7
 [00000054] 6706                      beq.s      start_4
-[00000056] 23c7 0002 007a            move.l     d7,$0002B188
+[00000056] 23c7 0002 007a            move.l     d7,__paths
 start_4:
-[0000005c] 0cb9 0000 0001 0002 1b66  cmpi.l     #$00000001,$0002CC74
+[0000005c] 0cb9 0000 0001 0002 1b66  cmpi.l     #$00000001,__stop
 [00000066] 660a                      bne.s      start_5
-[00000068] 23fc 0002 1b9c 0002 1b66  move.l     #$0002E846,$0002CC74
+[00000068] 23fc 0002 1b9c 0002 1b66  move.l     #$0002CCAA,__stop
 start_5:
 [00000072] 4eb9 0000 4f46            jsr        _main
 [00000078] 2e87                      move.l     d7,(a7)
 [0000007a] 4eb9 0000 0080            jsr        _exit
 
 _exit:
-[00000080] 2e39 0002 007e            move.l     $0002B18C,d7
+[00000080] 2e39 0002 007e            move.l     $0002007E,d7
 _exit_2:
 [00000086] 0c87 0000 00aa            cmpi.l     #_onexit,d7
 [0000008c] 670a                      beq.s      _exit_1
@@ -74,13 +74,13 @@ _exit_4:
 [000000a8] 4e41                      trap       #1
 
 _onexit:
-[000000aa] 2e39 0002 007e            move.l     $0002B18C,d7
-[000000b0] 23ef 0004 0002 007e       move.l     4(a7),$0002B18C
+[000000aa] 2e39 0002 007e            move.l     $0002007E,d7
+[000000b0] 23ef 0004 0002 007e       move.l     4(a7),$0002007E
 [000000b8] 4e75                      rts
 
 seterr:
 [000000ba] 4487                      neg.l      d7
-[000000bc] 23c7 0002 0076            move.l     d7,$0002B184
+[000000bc] 23c7 0002 0076            move.l     d7,_errno
 [000000c2] 7eff                      moveq.l    #-1,d7
 [000000c4] 4ed0                      jmp        (a0)
 
@@ -98,7 +98,7 @@ _alias:
 [000000e8] 6612                      bne.s      _alias_2
 _alias_1:
 [000000ea] 486d 0010                 pea.l      16(a5)
-[000000ee] 2f3c 0002 00a8            move.l     #$0002B1B6,-(a7) "alias defined"
+[000000ee] 2f3c 0002 00a8            move.l     #$000200A8,-(a7) "alias defined"
 [000000f4] 4eb9 0000 3c8a            jsr        _nmerr
 [000000fa] 508f                      addq.l     #8,a7
 _alias_2:
@@ -114,7 +114,7 @@ _alias_2:
 [0000011a] 6712                      beq.s      _alias_4
 _alias_3:
 [0000011c] 486d 0010                 pea.l      16(a5)
-[00000120] 2f3c 0002 009e            move.l     #$0002B1AC,-(a7) "bad alias"
+[00000120] 2f3c 0002 009e            move.l     #$0002009E,-(a7) "bad alias"
 [00000126] 4eb9 0000 3c8a            jsr        _nmerr
 [0000012c] 508f                      addq.l     #8,a7
 _alias_4:
@@ -189,11 +189,11 @@ _arinit_3:
 [000001fa] 6652                      bne.s      _arinit_4
 [000001fc] 45f8 0010                 lea.l      ($00000010).w,a2
 [00000200] d5ee 000c                 adda.l     12(a6),a2
-[00000204] 33d2 0002 00b8            move.w     (a2),$0002B1C6
+[00000204] 33d2 0002 00b8            move.w     (a2),$000200B8
 [0000020a] 6742                      beq.s      _arinit_4
 [0000020c] 4297                      clr.l      (a7)
-[0000020e] 2f39 0002 0d1e            move.l     $0002BE2C,-(a7)
-[00000214] 2f3c 0002 00b6            move.l     #$0002B1C4,-(a7)
+[0000020e] 2f39 0002 0d1e            move.l     _littab,-(a7)
+[00000214] 2f3c 0002 00b6            move.l     #$000200B6,-(a7)
 [0000021a] 4eb9 0000 847e            jsr        _lookup
 [00000220] 508f                      addq.l     #8,a7
 [00000222] 2a47                      movea.l    d7,a5
@@ -235,7 +235,7 @@ _arinit_5:
 [00000288] 538a                      subq.l     #1,a2
 [0000028a] be8a                      cmp.l      a2,d7
 [0000028c] 6c16                      bge.s      _arinit_6
-[0000028e] 2ebc 0002 00ba            move.l     #$0002B1C8,(a7) "string initializer too long"
+[0000028e] 2ebc 0002 00ba            move.l     #$000200BA,(a7) "string initializer too long"
 [00000294] 4eb9 0000 3e84            jsr        _p1error
 [0000029a] 45f8 000a                 lea.l      ($0000000A).w,a2
 [0000029e] d5ee 0008                 adda.l     8(a6),a2
@@ -286,7 +286,7 @@ _arinit_8:
 [00000324] 2485                      move.l     d5,(a2)
 [00000326] 6090                      bra.s      _arinit_11
 _arinit_10:
-[00000328] 4ab9 0002 009a            tst.l      $0002B1A8
+[00000328] 4ab9 0002 009a            tst.l      $0002009A
 [0000032e] 6600 ff24                 bne        _arinit_12
 [00000332] 4878 0002                 pea.l      ($00000002).w
 [00000336] 4eb9 0000 332e            jsr        _eat
@@ -334,7 +334,7 @@ _datend_3:
 _datend_2:
 [000003a6] 4a84                      tst.l      d4
 [000003a8] 66f8                      bne.s      _datend_3
-[000003aa] 2ebc 0002 00d6            move.l     #$0002B1E4,(a7) "too many initializers"
+[000003aa] 2ebc 0002 00d6            move.l     #$000200D6,(a7) "too many initializers"
 [000003b0] 4eb9 0000 3e84            jsr        _p1error
 [000003b6] 7801                      moveq.l    #1,d4
 [000003b8] 60e8                      bra.s      _datend_3
@@ -371,7 +371,7 @@ _datinit_4:
 [0000040a] 2ead 0004                 move.l     4(a5),(a7)
 [0000040e] 4eb9 0000 78b4            jsr        _bound
 [00000414] 2d47 fff8                 move.l     d7,-8(a6)
-[00000418] 2d79 0002 0cea fffc       move.l     $0002BDF8,-4(a6)
+[00000418] 2d79 0002 0cea fffc       move.l     _attlist,-4(a6)
 [00000420] 4aae 000c                 tst.l      12(a6)
 [00000424] 6626                      bne.s      _datinit_5
 [00000426] 4878 0001                 pea.l      ($00000001).w
@@ -397,14 +397,14 @@ _datinit_5:
 [00000462] 6630                      bne.s      _datinit_8
 _datinit_7:
 [00000464] 486d 0010                 pea.l      16(a5)
-[00000468] 2f3c 0002 00ec            move.l     #$0002B1FA,-(a7) "redefined"
+[00000468] 2f3c 0002 00ec            move.l     #$000200EC,-(a7) "redefined"
 [0000046e] 4eb9 0000 3c8a            jsr        _nmerr
 [00000474] 508f                      addq.l     #8,a7
 _datinit_12:
 [00000476] 4aae 000c                 tst.l      12(a6)
 [0000047a] 6772                      beq.s      _datinit_9
 [0000047c] 4297                      clr.l      (a7)
-[0000047e] 2f3c 0002 0082            move.l     #$0002B190,-(a7)
+[0000047e] 2f3c 0002 0082            move.l     #$00020082,-(a7)
 [00000484] 2f2d 0004                 move.l     4(a5),-(a7)
 [00000488] 4eb9 0000 053c            jsr        _dinit
 [0000048e] 508f                      addq.l     #8,a7
@@ -445,17 +445,17 @@ _datinit_9:
 [000004fc] 508f                      addq.l     #8,a7
 [000004fe] 4eb9 0000 5aa6            jsr        _pend
 [00000504] 4878 0001                 pea.l      ($00000001).w
-[00000508] 2f3c 0002 0082            move.l     #$0002B190,-(a7)
+[00000508] 2f3c 0002 0082            move.l     #$00020082,-(a7)
 [0000050e] 4eb9 0000 085a            jsr        _ginit
 [00000514] 508f                      addq.l     #8,a7
 _datinit_10:
 [00000516] 4eb9 0000 5a8c            jsr        _pdend
 _datinit_6:
 [0000051c] 2eae fffc                 move.l     -4(a6),(a7)
-[00000520] 2f39 0002 0cea            move.l     $0002BDF8,-(a7)
+[00000520] 2f39 0002 0cea            move.l     _attlist,-(a7)
 [00000526] 4eb9 0000 8332            jsr        _frealst
 [0000052c] 588f                      addq.l     #4,a7
-[0000052e] 23c7 0002 0cea            move.l     d7,$0002BDF8
+[0000052e] 23c7 0002 0cea            move.l     d7,_attlist
 [00000534] 4cdf 3001                 movem.l    (a7)+,d0/a4-a5
 [00000538] 4e5e                      unlk       a6
 [0000053a] 4e75                      rts
@@ -470,7 +470,7 @@ _dinit:
 [00000552] 4284                      clr.l      d4
 [00000554] 1812                      move.b     (a2),d4
 [00000556] 42ae ffe8                 clr.l      -24(a6)
-[0000055a] 2d79 0002 0cea fffc       move.l     $0002BDF8,-4(a6)
+[0000055a] 2d79 0002 0cea fffc       move.l     _attlist,-4(a6)
 [00000562] 0c84 0000 0041            cmpi.l     #$00000041,d4
 [00000568] 6616                      bne.s      _dinit_1
 [0000056a] 2eae 0010                 move.l     16(a6),(a7)
@@ -483,7 +483,7 @@ _dinit:
 _dinit_1:
 [00000580] 0c84 0000 0048            cmpi.l     #$00000048,d4
 [00000586] 6660                      bne.s      _dinit_3
-[00000588] bbfc 0002 0082            cmpa.l     #$0002B190,a5
+[00000588] bbfc 0002 0082            cmpa.l     #$00020082,a5
 [0000058e] 6758                      beq.s      _dinit_3
 [00000590] 2eae 0010                 move.l     16(a6),(a7)
 [00000594] 2f0d                      move.l     a5,-(a7)
@@ -511,7 +511,7 @@ _dinit_2:
 [000005e0] 4eba fd70                 jsr        _datend(pc)
 [000005e4] 6000 0250                 bra        _dinit_4
 _dinit_3:
-[000005e8] bbfc 0002 0082            cmpa.l     #$0002B190,a5
+[000005e8] bbfc 0002 0082            cmpa.l     #$00020082,a5
 [000005ee] 6712                      beq.s      _dinit_5
 [000005f0] 4297                      clr.l      (a7)
 [000005f2] 2f0d                      move.l     a5,-(a7)
@@ -535,7 +535,7 @@ _dinit_5:
 [00000626] 6788                      beq.s      _dinit_2
 _dinit_6:
 [00000628] 2e04                      move.l     d4,d7
-[0000062a] 41f9 0002 00f6            lea.l      $0002B204,a0
+[0000062a] 41f9 0002 00f6            lea.l      $000200F6,a0
 [00000630] 4ef9 0000 a7dc            jmp        a.switch
 [00000636] 45f8 000a                 lea.l      ($0000000A).w,a2
 [0000063a] d5ee 0008                 adda.l     8(a6),a2
@@ -570,7 +570,7 @@ _dinit_6:
 [00000692] 4a87                      tst.l      d7
 [00000694] 6610                      bne.s      _dinit_8
 _dinit_7:
-[00000696] 2ebc 0002 01d8            move.l     #$0002B2E6,(a7) "illegal integer initializer"
+[00000696] 2ebc 0002 01d8            move.l     #$000201D8,(a7) "illegal integer initializer"
 [0000069c] 4eb9 0000 3e84            jsr        _p1error
 [000006a2] 6000 ff0c                 bra        _dinit_2
 _dinit_8:
@@ -595,7 +595,7 @@ _dinit_8:
 [000006ea] 588f                      addq.l     #4,a7
 [000006ec] 4a87                      tst.l      d7
 [000006ee] 660c                      bne.s      _dinit_9
-[000006f0] 2ebc 0002 01b7            move.l     #$0002B2C5,(a7) "illegal pointer initializer type"
+[000006f0] 2ebc 0002 01b7            move.l     #$000201B7,(a7) "illegal pointer initializer type"
 [000006f6] 4eb9 0000 3e84            jsr        _p1error
 _dinit_9:
 [000006fc] 4287                      clr.l      d7
@@ -616,7 +616,7 @@ _dinit_10:
 [0000072a] 4a87                      tst.l      d7
 [0000072c] 6710                      beq.s      _dinit_12
 _dinit_11:
-[0000072e] 2ebc 0002 019b            move.l     #$0002B2A9,(a7) "illegal pointer initializer"
+[0000072e] 2ebc 0002 019b            move.l     #$0002019B,(a7) "illegal pointer initializer"
 [00000734] 4eb9 0000 3e84            jsr        _p1error
 [0000073a] 6000 fe74                 bra        _dinit_2
 _dinit_12:
@@ -675,7 +675,7 @@ _dinit_13:
 [000007e8] 2d47 fff4                 move.l     d7,-12(a6)
 [000007ec] 6022                      bra.s      _dinit_16
 _dinit_14:
-[000007ee] 2ebc 0002 0180            move.l     #$0002B28E,(a7) "illegal double initializer"
+[000007ee] 2ebc 0002 0180            move.l     #$00020180,(a7) "illegal double initializer"
 [000007f4] 4eb9 0000 3e84            jsr        _p1error
 [000007fa] 6000 fdb4                 bra        _dinit_2
 _dinit_15:
@@ -690,15 +690,15 @@ _dinit_16:
 [0000081c] 588f                      addq.l     #4,a7
 [0000081e] 2d47 ffe8                 move.l     d7,-24(a6)
 [00000822] 6000 fd8c                 bra        _dinit_2
-[00000826] 2ebc 0002 016e            move.l     #$0002B27C,(a7) "cannot initialize"
+[00000826] 2ebc 0002 016e            move.l     #$0002016E,(a7) "cannot initialize"
 [0000082c] 4eb9 0000 3e84            jsr        _p1error
 [00000832] 6000 fd7c                 bra        _dinit_2
 _dinit_4:
 [00000836] 2eae fffc                 move.l     -4(a6),(a7)
-[0000083a] 2f39 0002 0cea            move.l     $0002BDF8,-(a7)
+[0000083a] 2f39 0002 0cea            move.l     _attlist,-(a7)
 [00000840] 4eb9 0000 8332            jsr        _frealst
 [00000846] 588f                      addq.l     #4,a7
-[00000848] 23c7 0002 0cea            move.l     d7,$0002BDF8
+[00000848] 23c7 0002 0cea            move.l     d7,_attlist
 [0000084e] 2e2e ffec                 move.l     -20(a6),d7
 [00000852] 4cdf 2031                 movem.l    (a7)+,d0/d4-d5/a5
 [00000856] 4e5e                      unlk       a6
@@ -710,9 +710,9 @@ _ginit:
 [00000862] 2a6e 0008                 movea.l    8(a6),a5
 [00000866] 4aae 000c                 tst.l      12(a6)
 [0000086a] 6716                      beq.s      _ginit_1
-[0000086c] 4ab9 0002 009a            tst.l      $0002B1A8
+[0000086c] 4ab9 0002 009a            tst.l      $0002009A
 [00000872] 6716                      beq.s      _ginit_2
-[00000874] 2ebc 0002 020d            move.l     #$0002B31B,(a7) "excess repeated initializers"
+[00000874] 2ebc 0002 020d            move.l     #$0002020D,(a7) "excess repeated initializers"
 [0000087a] 4eb9 0000 3e84            jsr        _p1error
 [00000880] 6008                      bra.s      _ginit_2
 _ginit_1:
@@ -721,13 +721,13 @@ _ginit_1:
 [00000886] 2e0d                      move.l     a5,d7
 [00000888] 606a                      bra.s      _ginit_4
 _ginit_2:
-[0000088a] 42b9 0002 009a            clr.l      $0002B1A8
+[0000088a] 42b9 0002 009a            clr.l      $0002009A
 [00000890] 60f0                      bra.s      _ginit_1
 _ginit_3:
-[00000892] 4ab9 0002 009a            tst.l      $0002B1A8
+[00000892] 4ab9 0002 009a            tst.l      $0002009A
 [00000898] 664e                      bne.s      _ginit_5
 [0000089a] 7001                      moveq.l    #1,d0
-[0000089c] 23c0 0002 009a            move.l     d0,$0002B1A8
+[0000089c] 23c0 0002 009a            move.l     d0,$0002009A
 [000008a2] 4285                      clr.l      d5
 _ginit_9:
 [000008a4] 4ab9 0002 0b8e            tst.l      _stdflag
@@ -746,12 +746,12 @@ _ginit_9:
 [000008d2] 4a87                      tst.l      d7
 [000008d4] 664c                      bne.s      _ginit_7
 [000008d6] 42ad 0008                 clr.l      8(a5)
-[000008da] 2ebc 0002 01f8            move.l     #$0002B306,(a7) "illegal repeat count"
+[000008da] 2ebc 0002 01f8            move.l     #$000201F8,(a7) "illegal repeat count"
 [000008e0] 4eb9 0000 3e84            jsr        _p1error
 [000008e6] 6050                      bra.s      _ginit_8
 _ginit_5:
-[000008e8] 53b9 0002 009a            subq.l     #1,$0002B1A8
-[000008ee] 2e39 0002 01f4            move.l     $0002B302,d7
+[000008e8] 53b9 0002 009a            subq.l     #1,$0002009A
+[000008ee] 2e39 0002 01f4            move.l     $000201F4,d7
 _ginit_4:
 [000008f4] 4cdf 2021                 movem.l    (a7)+,d0/d5/a5
 [000008f8] 4e5e                      unlk       a6
@@ -759,18 +759,18 @@ _ginit_4:
 _ginit_6:
 [000008fc] 2e85                      move.l     d5,(a7)
 [000008fe] 4eb9 0000 0be6            jsr        _gexpr
-[00000904] 23c7 0002 01f4            move.l     d7,$0002B302
-[0000090a] 4ab9 0002 009a            tst.l      $0002B1A8
+[00000904] 23c7 0002 01f4            move.l     d7,$000201F4
+[0000090a] 4ab9 0002 009a            tst.l      $0002009A
 [00000910] 6680                      bne.s      _ginit_3
 [00000912] 4878 0002                 pea.l      ($00000002).w
 [00000916] 4eb9 0000 332e            jsr        _eat
 [0000091c] 588f                      addq.l     #4,a7
 [0000091e] 6000 ff72                 bra        _ginit_3
 _ginit_7:
-[00000922] 2eb9 0002 009a            move.l     $0002B1A8,(a7)
+[00000922] 2eb9 0002 009a            move.l     $0002009A,(a7)
 [00000928] 2f2d 0008                 move.l     8(a5),-(a7)
 [0000092c] 4eb9 0000 ade4            jsr        a.lmul
-[00000932] 23d7 0002 009a            move.l     (a7),$0002B1A8
+[00000932] 23d7 0002 009a            move.l     (a7),$0002009A
 _ginit_8:
 [00000938] 4878 0008                 pea.l      ($00000008).w
 [0000093c] 4eb9 0000 3c08            jsr        _need
@@ -894,7 +894,7 @@ _stinit_7:
 [00000a8c] 6700 ff28                 beq        _stinit_3
 [00000a90] 2e0d                      move.l     a5,d7
 [00000a92] 6700 ff22                 beq        _stinit_3
-[00000a96] 4ab9 0002 009a            tst.l      $0002B1A8
+[00000a96] 4ab9 0002 009a            tst.l      $0002009A
 [00000a9c] 6600 feea                 bne        _stinit_10
 [00000aa0] 4aae fff4                 tst.l      -12(a6)
 [00000aa4] 6600 fee2                 bne        _stinit_10
@@ -909,7 +909,7 @@ _stinit_9:
 [00000ac0] 4eb9 0000 83b6            jsr        _iscons
 [00000ac6] 4a87                      tst.l      d7
 [00000ac8] 660e                      bne.s      _stinit_11
-[00000aca] 2ebc 0002 022a            move.l     #$0002B338,(a7) "illegal field initializer"
+[00000aca] 2ebc 0002 022a            move.l     #$0002022A,(a7) "illegal field initializer"
 [00000ad0] 4eb9 0000 3e84            jsr        _p1error
 [00000ad6] 602c                      bra.s      _stinit_12
 _stinit_11:
@@ -934,7 +934,7 @@ _stinit_12:
 [00000b06] 99cc                      suba.l     a4,a4
 [00000b08] 4aae 0010                 tst.l      16(a6)
 [00000b0c] 6700 ff54                 beq        _stinit_8
-[00000b10] 4ab9 0002 009a            tst.l      $0002B1A8
+[00000b10] 4ab9 0002 009a            tst.l      $0002009A
 [00000b16] 6600 ff06                 bne        _stinit_13
 [00000b1a] 4878 0002                 pea.l      ($00000002).w
 [00000b1e] 4eb9 0000 332e            jsr        _eat
@@ -980,7 +980,7 @@ _cons_1:
 [00000b80] 4eb9 0000 83b6            jsr        _iscons
 [00000b86] 4a87                      tst.l      d7
 [00000b88] 6616                      bne.s      _cons_3
-[00000b8a] 2ebc 0002 02c2            move.l     #$0002B3D0,(a7) "constant required"
+[00000b8a] 2ebc 0002 02c2            move.l     #$000202C2,(a7) "constant required"
 [00000b90] 4eb9 0000 3e84            jsr        _p1error
 [00000b96] 4287                      clr.l      d7
 _cons_2:
@@ -994,10 +994,10 @@ _cons_3:
 _gelist:
 [00000ba6] 4e56 fffc                 link       a6,#-4
 [00000baa] 4297                      clr.l      (a7)
-[00000bac] 2f39 0002 0d32            move.l     $0002BE40,-(a7)
+[00000bac] 2f39 0002 0d32            move.l     _exlist,-(a7)
 [00000bb2] 4eb9 0000 8372            jsr        _fretlst
 [00000bb8] 588f                      addq.l     #4,a7
-[00000bba] 23c7 0002 0d32            move.l     d7,$0002BE40
+[00000bba] 23c7 0002 0d32            move.l     d7,_exlist
 [00000bc0] 2eae 0008                 move.l     8(a6),(a7)
 [00000bc4] 4eb9 0000 0da8            jsr        _melist
 [00000bca] 2e87                      move.l     d7,(a7)
@@ -1012,10 +1012,10 @@ _gelist:
 _gexpr:
 [00000be6] 4e56 fffc                 link       a6,#-4
 [00000bea] 4297                      clr.l      (a7)
-[00000bec] 2f39 0002 0d32            move.l     $0002BE40,-(a7)
+[00000bec] 2f39 0002 0d32            move.l     _exlist,-(a7)
 [00000bf2] 4eb9 0000 8372            jsr        _fretlst
 [00000bf8] 588f                      addq.l     #4,a7
-[00000bfa] 23c7 0002 0d32            move.l     d7,$0002BE40
+[00000bfa] 23c7 0002 0d32            move.l     d7,_exlist
 [00000c00] 2eae 0008                 move.l     8(a6),(a7)
 [00000c04] 4eb9 0000 0e02            jsr        _mexpr
 [00000c0a] 2e87                      move.l     d7,(a7)
@@ -1047,7 +1047,7 @@ _gtest:
 _mbin:
 [00000c5a] 4e56 fffa                 link       a6,#-6
 [00000c5e] 48e7 8c04                 movem.l    d0/d4-d5/a5,-(a7)
-[00000c62] 2ebc 0002 0244            move.l     #$0002B352,(a7)
+[00000c62] 2ebc 0002 0244            move.l     #$00020244,(a7)
 [00000c68] 4eb9 0000 3192            jsr        _alt
 [00000c6e] 2807                      move.l     d7,d4
 [00000c70] 6604                      bne.s      _mbin_1
@@ -1090,11 +1090,11 @@ _mbin_3:
 [00000cde] 6038                      bra.s      _mbin_5
 _mbin_4:
 [00000ce0] 2e84                      move.l     d4,(a7)
-[00000ce2] 2f3c 0002 0244            move.l     #$0002B352,-(a7)
+[00000ce2] 2f3c 0002 0244            move.l     #$00020244,-(a7)
 [00000ce8] 4eb9 0000 a7a6            jsr        _scnstr
 [00000cee] 588f                      addq.l     #4,a7
 [00000cf0] 2447                      movea.l    d7,a2
-[00000cf2] d5fc 0002 0263            adda.l     #$0002B371,a2
+[00000cf2] d5fc 0002 0263            adda.l     #$00020263,a2
 [00000cf8] 1a12                      move.b     (a2),d5
 [00000cfa] 4885                      ext.w      d5
 [00000cfc] 48c5                      ext.l      d5
@@ -1119,7 +1119,7 @@ _mbin_5:
 _mcast:
 [00000d2c] 4e56 ffee                 link       a6,#-18
 [00000d30] 48e7 8004                 movem.l    d0/a5,-(a7)
-[00000d34] 42b9 0002 02be            clr.l      $0002B3CC
+[00000d34] 42b9 0002 02be            clr.l      _freeexpr
 [00000d3a] 4297                      clr.l      (a7)
 [00000d3c] 486e ffee                 pea.l      -18(a6)
 [00000d40] 4eb9 0000 4d4c            jsr        _gscty
@@ -1127,7 +1127,7 @@ _mcast:
 [00000d48] 4a87                      tst.l      d7
 [00000d4a] 660c                      bne.s      _mcast_1
 [00000d4c] 7001                      moveq.l    #1,d0
-[00000d4e] 23c0 0002 02be            move.l     d0,$0002B3CC
+[00000d4e] 23c0 0002 02be            move.l     d0,_freeexpr
 [00000d54] 4287                      clr.l      d7
 [00000d56] 6048                      bra.s      _mcast_2
 _mcast_1:
@@ -1137,7 +1137,7 @@ _mcast_1:
 [00000d66] 508f                      addq.l     #8,a7
 [00000d68] 2a47                      movea.l    d7,a5
 [00000d6a] 7001                      moveq.l    #1,d0
-[00000d6c] 23c0 0002 02be            move.l     d0,$0002B3CC
+[00000d6c] 23c0 0002 02be            move.l     d0,_freeexpr
 [00000d72] 4878 000a                 pea.l      ($0000000A).w
 [00000d76] 4eb9 0000 3c08            jsr        _need
 [00000d7c] 588f                      addq.l     #4,a7
@@ -1221,7 +1221,7 @@ _mident:
 [00000e46] 4e56 0000                 link       a6,#0
 [00000e4a] 48e7 800c                 movem.l    d0/a4-a5,-(a7)
 [00000e4e] 4297                      clr.l      (a7)
-[00000e50] 2f39 0002 0d2e            move.l     $0002BE3C,-(a7)
+[00000e50] 2f39 0002 0d2e            move.l     _symtab,-(a7)
 [00000e56] 2f2e 0008                 move.l     8(a6),-(a7)
 [00000e5a] 4eb9 0000 847e            jsr        _lookup
 [00000e60] 508f                      addq.l     #8,a7
@@ -1234,7 +1234,7 @@ _mident:
 [00000e72] 4eb9 0000 7a78            jsr        _buysym
 [00000e78] 4fef 000c                 lea.l      12(a7),a7
 [00000e7c] 2a47                      movea.l    d7,a5
-[00000e7e] 2ebc 0002 0d2e            move.l     #$0002BE3C,(a7)
+[00000e7e] 2ebc 0002 0d2e            move.l     #_symtab,(a7)
 [00000e84] 2f0d                      move.l     a5,-(a7)
 [00000e86] 4eb9 0000 774e            jsr        _addsym
 [00000e8c] 588f                      addq.l     #4,a7
@@ -1251,7 +1251,7 @@ _mident_1:
 [00000eae] 396d 000c 0012            move.w     12(a5),18(a4)
 [00000eb4] 4287                      clr.l      d7
 [00000eb6] 1e2d 000e                 move.b     14(a5),d7
-[00000eba] 41f9 0002 02d4            lea.l      $0002B3E2,a0
+[00000eba] 41f9 0002 02d4            lea.l      $000202D4,a0
 [00000ec0] 4ef9 0000 a7dc            jmp        a.switch
 [00000ec6] 426c 0010                 clr.w      16(a4)
 [00000eca] 45ed 0010                 lea.l      16(a5),a2
@@ -1281,10 +1281,10 @@ xedc_1:
 [00000f20] 296d 0008 0008            move.l     8(a5),8(a4)
 [00000f26] 60aa                      bra.s      xedc_1
 [00000f28] 486d 0010                 pea.l      16(a5)
-[00000f2c] 2f3c 0002 032c            move.l     #$0002B43A,-(a7) "illegal use of typedef"
+[00000f2c] 2f3c 0002 032c            move.l     #$0002032C,-(a7) "illegal use of typedef"
 [00000f32] 4eb9 0000 3c8a            jsr        _nmerr
 [00000f38] 508f                      addq.l     #8,a7
-[00000f3a] 297c 0002 0dc2 0004       move.l     #$0002BED0,4(a4)
+[00000f3a] 297c 0002 0dc2 0004       move.l     #_atint,4(a4)
 [00000f42] 608e                      bra.s      xedc_1
 
 _mtail:
@@ -1301,12 +1301,12 @@ _mtail_3:
 [00000f68] 4287                      clr.l      d7
 [00000f6a] 1e12                      move.b     (a2),d7
 [00000f6c] 2e87                      move.l     d7,(a7)
-[00000f6e] 2f3c 0002 0244            move.l     #$0002B352,-(a7)
+[00000f6e] 2f3c 0002 0244            move.l     #$00020244,-(a7)
 [00000f74] 4eb9 0000 a7a6            jsr        _scnstr
 [00000f7a] 588f                      addq.l     #4,a7
 [00000f7c] 2a07                      move.l     d7,d5
 [00000f7e] 2445                      movea.l    d5,a2
-[00000f80] d5fc 0002 029f            adda.l     #$0002B3AD,a2
+[00000f80] d5fc 0002 029f            adda.l     #$0002029F,a2
 [00000f86] 1e12                      move.b     (a2),d7
 [00000f88] 4887                      ext.w      d7
 [00000f8a] 48c7                      ext.l      d7
@@ -1314,7 +1314,7 @@ _mtail_3:
 [00000f90] bc87                      cmp.l      d7,d6
 [00000f92] 6c68                      bge.s      _mtail_1
 [00000f94] 2445                      movea.l    d5,a2
-[00000f96] d5fc 0002 0281            adda.l     #$0002B38F,a2
+[00000f96] d5fc 0002 0281            adda.l     #$00020281,a2
 [00000f9c] 1812                      move.b     (a2),d4
 [00000f9e] 4884                      ext.w      d4
 [00000fa0] 48c4                      ext.l      d4
@@ -1330,11 +1330,11 @@ _mtail_3:
 [00000fc2] 4287                      clr.l      d7
 [00000fc4] 1e12                      move.b     (a2),d7
 [00000fc6] 2e87                      move.l     d7,(a7)
-[00000fc8] 2f3c 0002 0244            move.l     #$0002B352,-(a7)
+[00000fc8] 2f3c 0002 0244            move.l     #$00020244,-(a7)
 [00000fce] 4eb9 0000 a7a6            jsr        _scnstr
 [00000fd4] 588f                      addq.l     #4,a7
 [00000fd6] 2447                      movea.l    d7,a2
-[00000fd8] d5fc 0002 029f            adda.l     #$0002B3AD,a2
+[00000fd8] d5fc 0002 029f            adda.l     #$0002029F,a2
 [00000fde] 1e12                      move.b     (a2),d7
 [00000fe0] 4887                      ext.w      d7
 [00000fe2] 48c7                      ext.l      d7
@@ -1376,7 +1376,7 @@ _mterm:
 [00001042] 2447                      movea.l    d7,a2
 [00001044] 4287                      clr.l      d7
 [00001046] 1e12                      move.b     (a2),d7
-[00001048] 41f9 0002 0358            lea.l      $0002B466,a0
+[00001048] 41f9 0002 0358            lea.l      $00020358,a0
 [0000104e] 4ef9 0000 a7dc            jmp        a.switch
 [00001054] 2eae fff6                 move.l     -10(a6),(a7)
 [00001058] 4eba fdec                 jsr        _mident(pc)
@@ -1423,10 +1423,10 @@ x106e_1:
 [000010d8] 4878 0004                 pea.l      ($00000004).w
 [000010dc] 4eb9 0000 571a            jsr        _crx
 [000010e2] 588f                      addq.l     #4,a7
-[000010e4] 33c7 0002 0346            move.w     d7,$0002B454
+[000010e4] 33c7 0002 0346            move.w     d7,$00020346
 [000010ea] 4878 0034                 pea.l      ($00000034).w
-[000010ee] 2f3c 0002 0344            move.l     #$0002B452,-(a7)
-[000010f4] 2f3c 0002 0d7a            move.l     #$0002BE88,-(a7)
+[000010ee] 2f3c 0002 0344            move.l     #$00020344,-(a7)
+[000010f4] 2f3c 0002 0d7a            move.l     #_atichar,-(a7)
 [000010fa] 4878 0041                 pea.l      ($00000041).w
 [000010fe] 4eb9 0000 79aa            jsr        _buyattr
 [00001104] 508f                      addq.l     #8,a7
@@ -1439,7 +1439,7 @@ x106e_1:
 [0000111c] 4eb9 0000 3252            jsr        _defspace
 [00001122] 508f                      addq.l     #8,a7
 [00001124] 3947 000c                 move.w     d7,12(a4)
-[00001128] 2ebc 0002 0d1e            move.l     #$0002BE2C,(a7)
+[00001128] 2ebc 0002 0d1e            move.l     #_littab,(a7)
 [0000112e] 2f0c                      move.l     a4,-(a7)
 [00001130] 4eb9 0000 774e            jsr        _addsym
 [00001136] 588f                      addq.l     #4,a7
@@ -1459,7 +1459,7 @@ x106e_1:
 [00001164] 4eb9 0000 7aec            jsr        _buyterm
 [0000116a] 4fef 0014                 lea.l      20(a7),a7
 [0000116e] 2a47                      movea.l    d7,a5
-[00001170] 3b79 0002 0346 0010       move.w     $0002B454,16(a5)
+[00001170] 3b79 0002 0346 0010       move.w     $00020346,16(a5)
 [00001178] 3b6c 000c 0012            move.w     12(a4),18(a5)
 [0000117e] 6000 fede                 bra        x106e_2
 [00001182] 4297                      clr.l      (a7)
@@ -1478,17 +1478,17 @@ x106e_1:
 [000011a4] 1e2e fff4                 move.b     -12(a6),d7
 [000011a8] 0c47 0010                 cmpi.w     #$0010,d7
 [000011ac] 6608                      bne.s      x106e_3
-[000011ae] 2e3c 0002 0e2e            move.l     #$0002BF3C,d7
+[000011ae] 2e3c 0002 0e2e            move.l     #_atldoubl,d7
 [000011b4] 601a                      bra.s      x106e_4
 x106e_3:
 [000011b6] 4287                      clr.l      d7
 [000011b8] 1e2e fff4                 move.b     -12(a6),d7
 [000011bc] 0c47 0011                 cmpi.w     #$0011,d7
 [000011c0] 6608                      bne.s      x106e_5
-[000011c2] 2e3c 0002 0e1c            move.l     #$0002BF2A,d7
+[000011c2] 2e3c 0002 0e1c            move.l     #_atdouble,d7
 [000011c8] 6006                      bra.s      x106e_4
 x106e_5:
-[000011ca] 2e3c 0002 0e0a            move.l     #$0002BF18,d7
+[000011ca] 2e3c 0002 0e0a            move.l     #_atfloat,d7
 x106e_4:
 [000011d0] 2f07                      move.l     d7,-(a7)
 [000011d2] 4eb9 0000 7aec            jsr        _buyterm
@@ -1504,11 +1504,11 @@ x106e_4:
 [000011f2] 4287                      clr.l      d7
 [000011f4] 1e2e fff4                 move.b     -12(a6),d7
 [000011f8] 2f07                      move.l     d7,-(a7)
-[000011fa] 2f3c 0002 0348            move.l     #$0002B456,-(a7)
+[000011fa] 2f3c 0002 0348            move.l     #$00020348,-(a7)
 [00001200] 4eb9 0000 a7a6            jsr        _scnstr
 [00001206] 508f                      addq.l     #8,a7
 [00001208] 2447                      movea.l    d7,a2
-[0000120a] d5fc 0002 0350            adda.l     #$0002B45E,a2
+[0000120a] d5fc 0002 0350            adda.l     #$00020350,a2
 [00001210] 4287                      clr.l      d7
 [00001212] 1e12                      move.b     (a2),d7
 [00001214] 2f07                      move.l     d7,-(a7)
@@ -1520,7 +1520,7 @@ x106e_4:
 [00001226] 42a7                      clr.l      -(a7)
 [00001228] 4878 0001                 pea.l      ($00000001).w
 [0000122c] 42a7                      clr.l      -(a7)
-[0000122e] 2f3c 0002 0dc2            move.l     #$0002BED0,-(a7)
+[0000122e] 2f3c 0002 0dc2            move.l     #_atint,-(a7)
 [00001234] 4eb9 0000 7aec            jsr        _buyterm
 [0000123a] 4fef 0014                 lea.l      20(a7),a7
 [0000123e] 2f07                      move.l     d7,-(a7)
@@ -1585,7 +1585,7 @@ x106e_9:
 [000012ec] 2f0d                      move.l     a5,-(a7)
 [000012ee] 4eb9 0000 85aa            jsr        _setad
 [000012f4] 4fef 0010                 lea.l      16(a7),a7
-[000012f8] 2b7c 0002 0dc2 0004       move.l     #$0002BED0,4(a5)
+[000012f8] 2b7c 0002 0dc2 0004       move.l     #_atint,4(a5)
 [00001300] 6000 fd5c                 bra        x106e_2
 x106e_10:
 [00001304] 486e fff4                 pea.l      -12(a6)
@@ -1607,13 +1607,13 @@ x106e_10:
 [0000133e] 588f                      addq.l     #4,a7
 [00001340] 4aae 0008                 tst.l      8(a6)
 [00001344] 672a                      beq.s      x106e_11
-[00001346] 2ebc 0002 0410            move.l     #$0002B51E,(a7) "missing expression"
+[00001346] 2ebc 0002 0410            move.l     #$00020410,(a7) "missing expression"
 [0000134c] 4eb9 0000 3e84            jsr        _p1error
 [00001352] 4297                      clr.l      (a7)
 [00001354] 42a7                      clr.l      -(a7)
 [00001356] 42a7                      clr.l      -(a7)
 [00001358] 42a7                      clr.l      -(a7)
-[0000135a] 2f3c 0002 0dc2            move.l     #$0002BED0,-(a7)
+[0000135a] 2f3c 0002 0dc2            move.l     #_atint,-(a7)
 [00001360] 4eb9 0000 7aec            jsr        _buyterm
 [00001366] 4fef 0010                 lea.l      16(a7),a7
 [0000136a] 2a47                      movea.l    d7,a5
@@ -1635,7 +1635,7 @@ _mtrail_4:
 [00001392] 2447                      movea.l    d7,a2
 [00001394] 4287                      clr.l      d7
 [00001396] 1e12                      move.b     (a2),d7
-[00001398] 41f9 0002 0424            lea.l      $0002B532,a0
+[00001398] 41f9 0002 0424            lea.l      $00020424,a0
 [0000139e] 4ef9 0000 a7dc            jmp        a.switch
 [000013a4] 4297                      clr.l      (a7)
 [000013a6] 42a7                      clr.l      -(a7)
@@ -1656,7 +1656,7 @@ _mtrail_3:
 [000013d4] 588f                      addq.l     #4,a7
 [000013d6] 4a87                      tst.l      d7
 [000013d8] 6734                      beq.s      _mtrail_2
-[000013da] 2ebc 0002 0e40            move.l     #$0002BF4E,(a7)
+[000013da] 2ebc 0002 0e40            move.l     #_atvoid,(a7)
 [000013e0] 4878 0001                 pea.l      ($00000001).w
 [000013e4] 4eba fa1c                 jsr        _mexpr(pc)
 [000013e8] 588f                      addq.l     #4,a7
@@ -1722,9 +1722,9 @@ _mtrail_6:
 [000014aa] 588f                      addq.l     #4,a7
 [000014ac] 4a87                      tst.l      d7
 [000014ae] 6616                      bne.s      _mtrail_7
-[000014b0] 2ebc 0002 045c            move.l     #$0002B56A,(a7) "missing member name"
+[000014b0] 2ebc 0002 045c            move.l     #$0002045C,(a7) "missing member name"
 [000014b6] 4eb9 0000 3e84            jsr        _p1error
-[000014bc] 2d7c 0002 077c fffc       move.l     #$0002B88A,-4(a6)
+[000014bc] 2d7c 0002 077c fffc       move.l     #_noname,-4(a6)
 [000014c4] 601c                      bra.s      _mtrail_8
 _mtrail_7:
 [000014c6] 246e fffc                 movea.l    -4(a6),a2
@@ -1741,7 +1741,7 @@ _mtrail_8:
 [000014e4] 42a7                      clr.l      -(a7)
 [000014e6] 42a7                      clr.l      -(a7)
 [000014e8] 2f2e fffc                 move.l     -4(a6),-(a7)
-[000014ec] 2f3c 0002 0dc2            move.l     #$0002BED0,-(a7)
+[000014ec] 2f3c 0002 0dc2            move.l     #_atint,-(a7)
 [000014f2] 4eb9 0000 7aec            jsr        _buyterm
 [000014f8] 4fef 0010                 lea.l      16(a7),a7
 [000014fc] 2b47 000c                 move.l     d7,12(a5)
@@ -1751,7 +1751,7 @@ _mtrail_8:
 [00001508] 42a7                      clr.l      -(a7)
 [0000150a] 4878 0001                 pea.l      ($00000001).w
 [0000150e] 42a7                      clr.l      -(a7)
-[00001510] 2f3c 0002 0dc2            move.l     #$0002BED0,-(a7)
+[00001510] 2f3c 0002 0dc2            move.l     #_atint,-(a7)
 [00001516] 4eb9 0000 7aec            jsr        _buyterm
 [0000151c] 4fef 0014                 lea.l      20(a7),a7
 [00001520] 2f07                      move.l     d7,-(a7)
@@ -1783,12 +1783,12 @@ _numattr:
 [0000156a] 48e7 8400                 movem.l    d0/d5,-(a7)
 [0000156e] 0cae 0000 0019 0008       cmpi.l     #$00000019,8(a6)
 [00001576] 6608                      bne.s      _numattr_1
-[00001578] 2e3c 0002 0df8            move.l     #$0002BF06,d7
+[00001578] 2e3c 0002 0df8            move.l     #_atulong,d7
 [0000157e] 6010                      bra.s      _numattr_2
 _numattr_1:
 [00001580] 0cae 0000 0015 0008       cmpi.l     #$00000015,8(a6)
 [00001588] 660e                      bne.s      _numattr_3
-[0000158a] 2e3c 0002 0de6            move.l     #$0002BEF4,d7
+[0000158a] 2e3c 0002 0de6            move.l     #_atlong,d7
 _numattr_2:
 [00001590] 4cdf 0021                 movem.l    (a7)+,d0/d5
 [00001594] 4e5e                      unlk       a6
@@ -1826,14 +1826,14 @@ _numattr_5:
 [000015e4] 2e05                      move.l     d5,d7
 [000015e6] e587                      asl.l      #2,d7
 [000015e8] 2447                      movea.l    d7,a2
-[000015ea] d5fc 0002 0470            adda.l     #$0002B57E,a2
+[000015ea] d5fc 0002 0470            adda.l     #$00020470,a2
 [000015f0] 2e12                      move.l     (a2),d7
 [000015f2] 600e                      bra.s      _numattr_11
 _numattr_10:
 [000015f4] 2e05                      move.l     d5,d7
 [000015f6] e587                      asl.l      #2,d7
 [000015f8] 2447                      movea.l    d7,a2
-[000015fa] d5fc 0002 0488            adda.l     #$0002B596,a2
+[000015fa] d5fc 0002 0488            adda.l     #$00020488,a2
 [00001600] 2e12                      move.l     (a2),d7
 _numattr_11:
 [00001602] 608c                      bra.s      _numattr_2
@@ -1871,7 +1871,7 @@ _addcase_2:
 [0000164e] 2e12                      move.l     (a2),d7
 [00001650] beae 000c                 cmp.l      12(a6),d7
 [00001654] 66f0                      bne.s      _addcase_5
-[00001656] 2ebc 0002 04e2            move.l     #$0002B5F0,(a7) "duplicate case value"
+[00001656] 2ebc 0002 04e2            move.l     #$000204E2,(a7) "duplicate case value"
 [0000165c] 4eb9 0000 3e84            jsr        _p1error
 [00001662] 4297                      clr.l      (a7)
 [00001664] 2f0c                      move.l     a4,-(a7)
@@ -1904,10 +1904,10 @@ _autinit:
 [000016bc] 2e0c                      move.l     a4,d7
 [000016be] 6756                      beq.s      _autinit_1
 [000016c0] 4287                      clr.l      d7
-[000016c2] 3e39 0002 04a0            move.w     $0002B5AE,d7
+[000016c2] 3e39 0002 04a0            move.w     _regset,d7
 [000016c8] 2e87                      move.l     d7,(a7)
 [000016ca] 4eb9 0000 60fe            jsr        _pregs
-[000016d0] 2eb9 0002 04a2            move.l     $0002B5B0,(a7)
+[000016d0] 2eb9 0002 04a2            move.l     _autoff,(a7)
 [000016d6] 4eb9 0000 59b0            jsr        _pauto
 [000016dc] 2d6d 0004 ffe8            move.l     4(a5),-24(a6)
 [000016e2] 4287                      clr.l      d7
@@ -1960,7 +1960,7 @@ _dbfile:
 [0000176a] 4e56 fffa                 link       a6,#-6
 [0000176e] 4297                      clr.l      (a7)
 [00001770] 42a7                      clr.l      -(a7)
-[00001772] 2f39 0002 04f8            move.l     $0002B606,-(a7)
+[00001772] 2f39 0002 04f8            move.l     $000204F8,-(a7)
 [00001778] 4878 0002                 pea.l      ($00000002).w
 [0000177c] 4eb9 0000 571a            jsr        _crx
 [00001782] 588f                      addq.l     #4,a7
@@ -1978,16 +1978,16 @@ _dbfile:
 [000017ac] 4eb9 0000 61ca            jsr        _pstr
 [000017b2] 588f                      addq.l     #4,a7
 [000017b4] 4297                      clr.l      (a7)
-[000017b6] 2f3c 0002 0dd4            move.l     #$0002BEE2,-(a7)
+[000017b6] 2f3c 0002 0dd4            move.l     #_atunsign,-(a7)
 [000017bc] 4eb9 0000 78b4            jsr        _bound
 [000017c2] 588f                      addq.l     #4,a7
 [000017c4] 2f07                      move.l     d7,-(a7)
-[000017c6] 2f39 0002 04f8            move.l     $0002B606,-(a7)
+[000017c6] 2f39 0002 04f8            move.l     $000204F8,-(a7)
 [000017cc] 4878 0002                 pea.l      ($00000002).w
 [000017d0] 4eb9 0000 571a            jsr        _crx
 [000017d6] 588f                      addq.l     #4,a7
-[000017d8] 33c7 0002 04a8            move.w     d7,$0002B5B6
-[000017de] 3e39 0002 04a8            move.w     $0002B5B6,d7
+[000017d8] 33c7 0002 04a8            move.w     d7,_dbfilab
+[000017de] 3e39 0002 04a8            move.w     _dbfilab,d7
 [000017e4] 48c7                      ext.l      d7
 [000017e6] 2f07                      move.l     d7,-(a7)
 [000017e8] 4eb9 0000 5a30            jsr        _pdata
@@ -2010,8 +2010,8 @@ _dbfile:
 [0000181e] 4878 0002                 pea.l      ($00000002).w
 [00001822] 4eb9 0000 571a            jsr        _crx
 [00001828] 588f                      addq.l     #4,a7
-[0000182a] 33c7 0002 04aa            move.w     d7,$0002B5B8
-[00001830] 3e39 0002 04aa            move.w     $0002B5B8,d7
+[0000182a] 33c7 0002 04aa            move.w     d7,_dbfulab
+[00001830] 3e39 0002 04aa            move.w     _dbfulab,d7
 [00001836] 48c7                      ext.l      d7
 [00001838] 2f07                      move.l     d7,-(a7)
 [0000183a] 4eb9 0000 58e0            jsr        _pad
@@ -2031,7 +2031,7 @@ _dbfunc:
 _dbfunc_1:
 [00001860] 4297                      clr.l      (a7)
 [00001862] 42a7                      clr.l      -(a7)
-[00001864] 2f39 0002 04fe            move.l     $0002B60C,-(a7)
+[00001864] 2f39 0002 04fe            move.l     $000204FE,-(a7)
 [0000186a] 4878 0002                 pea.l      ($00000002).w
 [0000186e] 4eb9 0000 571a            jsr        _crx
 [00001874] 588f                      addq.l     #4,a7
@@ -2050,10 +2050,10 @@ _dbfunc_1:
 [0000189c] 4eb9 0000 61ca            jsr        _pstr
 [000018a2] 588f                      addq.l     #4,a7
 [000018a4] 4878 0001                 pea.l      ($00000001).w
-[000018a8] 2f39 0002 04fe            move.l     $0002B60C,-(a7)
+[000018a8] 2f39 0002 04fe            move.l     $000204FE,-(a7)
 [000018ae] 4eb9 0000 61ca            jsr        _pstr
 [000018b4] 508f                      addq.l     #8,a7
-[000018b6] 3e39 0002 04a6            move.w     $0002B5B4,d7
+[000018b6] 3e39 0002 04a6            move.w     _dbline,d7
 [000018bc] 48c7                      ext.l      d7
 [000018be] 2d47 fffa                 move.l     d7,-6(a6)
 [000018c2] 3e39 0002 0cd4            move.w     _lineno,d7
@@ -2061,12 +2061,12 @@ _dbfunc_1:
 [000018ca] 2d47 fff6                 move.l     d7,-10(a6)
 _dbfunc_2:
 [000018ce] 4297                      clr.l      (a7)
-[000018d0] 2f3c 0002 0dd4            move.l     #$0002BEE2,-(a7)
+[000018d0] 2f3c 0002 0dd4            move.l     #_atunsign,-(a7)
 [000018d6] 4eb9 0000 78b4            jsr        _bound
 [000018dc] 588f                      addq.l     #4,a7
 [000018de] 2f07                      move.l     d7,-(a7)
-[000018e0] 2f39 0002 04fe            move.l     $0002B60C,-(a7)
-[000018e6] 3e39 0002 04aa            move.w     $0002B5B8,d7
+[000018e0] 2f39 0002 04fe            move.l     $000204FE,-(a7)
+[000018e6] 3e39 0002 04aa            move.w     _dbfulab,d7
 [000018ec] 48c7                      ext.l      d7
 [000018ee] 2f07                      move.l     d7,-(a7)
 [000018f0] 4eb9 0000 5a30            jsr        _pdata
@@ -2080,15 +2080,15 @@ _dbfunc_2:
 _dbfunc_3:
 [0000190e] 4287                      clr.l      d7
 _dbfunc_4:
-[00001910] 33c7 0002 04aa            move.w     d7,$0002B5B8
+[00001910] 33c7 0002 04aa            move.w     d7,_dbfulab
 [00001916] 4297                      clr.l      (a7)
-[00001918] 3e39 0002 04aa            move.w     $0002B5B8,d7
+[00001918] 3e39 0002 04aa            move.w     _dbfulab,d7
 [0000191e] 48c7                      ext.l      d7
 [00001920] 2f07                      move.l     d7,-(a7)
 [00001922] 4eb9 0000 58e0            jsr        _pad
 [00001928] 588f                      addq.l     #4,a7
 [0000192a] 4297                      clr.l      (a7)
-[0000192c] 3e39 0002 04a8            move.w     $0002B5B6,d7
+[0000192c] 3e39 0002 04a8            move.w     _dbfilab,d7
 [00001932] 48c7                      ext.l      d7
 [00001934] 2f07                      move.l     d7,-(a7)
 [00001936] 4eb9 0000 58e0            jsr        _pad
@@ -2112,12 +2112,12 @@ _dbfunc_4:
 [00001970] 4eb9 0000 58e0            jsr        _pad
 [00001976] 588f                      addq.l     #4,a7
 [00001978] 4297                      clr.l      (a7)
-[0000197a] 3e39 0002 04ac            move.w     $0002B5BA,d7
+[0000197a] 3e39 0002 04ac            move.w     _dbfvlab,d7
 [00001980] 48c7                      ext.l      d7
 [00001982] 2f07                      move.l     d7,-(a7)
 [00001984] 4eb9 0000 58e0            jsr        _pad
 [0000198a] 588f                      addq.l     #4,a7
-[0000198c] 4a79 0002 04ac            tst.w      $0002B5BA
+[0000198c] 4a79 0002 04ac            tst.w      _dbfvlab
 [00001992] 670c                      beq.s      _dbfunc_5
 [00001994] 4297                      clr.l      (a7)
 [00001996] 42a7                      clr.l      -(a7)
@@ -2145,7 +2145,7 @@ _dbvar:
 [000019d2] 4e56 fff4                 link       a6,#-12
 [000019d6] 4aae 0008                 tst.l      8(a6)
 [000019da] 6764                      beq.s      _dbvar_1
-[000019dc] 4a79 0002 04a8            tst.w      $0002B5B6
+[000019dc] 4a79 0002 04a8            tst.w      _dbfilab
 [000019e2] 6700 014e                 beq        _dbvar_2
 [000019e6] 246e 0008                 movea.l    8(a6),a2
 [000019ea] 588a                      addq.l     #4,a2
@@ -2160,34 +2160,34 @@ _dbvar:
 [00001a04] 4287                      clr.l      d7
 [00001a06] 1e12                      move.b     (a2),d7
 [00001a08] 2e87                      move.l     d7,(a7)
-[00001a0a] 2f3c 0002 0504            move.l     #$0002B612,-(a7)
+[00001a0a] 2f3c 0002 0504            move.l     #$00020504,-(a7)
 [00001a10] 4eb9 0000 a7a6            jsr        _scnstr
 [00001a16] 588f                      addq.l     #4,a7
 [00001a18] 2447                      movea.l    d7,a2
-[00001a1a] d5fc 0002 0515            adda.l     #$0002B623,a2
+[00001a1a] d5fc 0002 0515            adda.l     #$00020515,a2
 [00001a20] 4a12                      tst.b      (a2)
 [00001a22] 6700 010e                 beq        _dbvar_2
-[00001a26] 4a79 0002 04ac            tst.w      $0002B5BA
+[00001a26] 4a79 0002 04ac            tst.w      _dbfvlab
 [00001a2c] 6600 0114                 bne        _dbvar_3
 [00001a30] 4eb9 0000 5704            jsr        _crs
-[00001a36] 33c7 0002 04ac            move.w     d7,$0002B5BA
+[00001a36] 33c7 0002 04ac            move.w     d7,_dbfvlab
 [00001a3c] 6000 0104                 bra        _dbvar_3
 _dbvar_1:
-[00001a40] 4ab9 0002 050c            tst.l      $0002B61A
+[00001a40] 4ab9 0002 050c            tst.l      $0002050C
 [00001a46] 6700 010c                 beq        _dbvar_4
 [00001a4a] 4297                      clr.l      (a7)
-[00001a4c] 2f3c 0002 0dd4            move.l     #$0002BEE2,-(a7)
+[00001a4c] 2f3c 0002 0dd4            move.l     #_atunsign,-(a7)
 [00001a52] 4eb9 0000 78b4            jsr        _bound
 [00001a58] 588f                      addq.l     #4,a7
 [00001a5a] 2f07                      move.l     d7,-(a7)
-[00001a5c] 2f39 0002 0510            move.l     $0002B61E,-(a7)
-[00001a62] 3e39 0002 04ac            move.w     $0002B5BA,d7
+[00001a5c] 2f39 0002 0510            move.l     $00020510,-(a7)
+[00001a62] 3e39 0002 04ac            move.w     _dbfvlab,d7
 [00001a68] 48c7                      ext.l      d7
 [00001a6a] 2f07                      move.l     d7,-(a7)
 [00001a6c] 4eb9 0000 5a30            jsr        _pdata
 [00001a72] 4fef 000c                 lea.l      12(a7),a7
-[00001a76] 4279 0002 04ac            clr.w      $0002B5BA
-[00001a7c] 2d79 0002 050c 0008       move.l     $0002B61A,8(a6)
+[00001a76] 4279 0002 04ac            clr.w      _dbfvlab
+[00001a7c] 2d79 0002 050c 0008       move.l     $0002050C,8(a6)
 _dbvar_15:
 [00001a84] 4aae 0008                 tst.l      8(a6)
 [00001a88] 6700 00d2                 beq        _dbvar_5
@@ -2197,7 +2197,7 @@ _dbvar_15:
 [00001a9a] 42a7                      clr.l      -(a7)
 [00001a9c] 42a7                      clr.l      -(a7)
 [00001a9e] 42a7                      clr.l      -(a7)
-[00001aa0] 2f39 0002 0510            move.l     $0002B61E,-(a7)
+[00001aa0] 2f39 0002 0510            move.l     $00020510,-(a7)
 [00001aa6] 3e2e fffa                 move.w     -6(a6),d7
 [00001aaa] 48c7                      ext.l      d7
 [00001aac] 2f07                      move.l     d7,-(a7)
@@ -2207,7 +2207,7 @@ _dbvar_15:
 [00001abc] 42a7                      clr.l      -(a7)
 [00001abe] 42a7                      clr.l      -(a7)
 [00001ac0] 42a7                      clr.l      -(a7)
-[00001ac2] 2f39 0002 0510            move.l     $0002B61E,-(a7)
+[00001ac2] 2f39 0002 0510            move.l     $00020510,-(a7)
 [00001ac8] 42a7                      clr.l      -(a7)
 [00001aca] 4eb9 0000 5908            jsr        _paddr
 [00001ad0] 4fef 0018                 lea.l      24(a7),a7
@@ -2216,11 +2216,11 @@ _dbvar_15:
 [00001adc] 4287                      clr.l      d7
 [00001ade] 1e12                      move.b     (a2),d7
 [00001ae0] 2e87                      move.l     d7,(a7)
-[00001ae2] 2f3c 0002 0504            move.l     #$0002B612,-(a7)
+[00001ae2] 2f3c 0002 0504            move.l     #$00020504,-(a7)
 [00001ae8] 4eb9 0000 a7a6            jsr        _scnstr
 [00001aee] 588f                      addq.l     #4,a7
 [00001af0] 2447                      movea.l    d7,a2
-[00001af2] d5fc 0002 0515            adda.l     #$0002B623,a2
+[00001af2] d5fc 0002 0515            adda.l     #$00020515,a2
 [00001af8] 1d52 fff8                 move.b     (a2),-8(a6)
 [00001afc] 0c2e 0004 fff8            cmpi.b     #$04,-8(a6)
 [00001b02] 6600 0110                 bne        _dbvar_6
@@ -2233,7 +2233,7 @@ _dbvar_15:
 [00001b16] 4887                      ext.w      d7
 [00001b18] 48c7                      ext.l      d7
 [00001b1a] 2f07                      move.l     d7,-(a7)
-[00001b1c] 2f39 0002 0510            move.l     $0002B61E,-(a7)
+[00001b1c] 2f39 0002 0510            move.l     $00020510,-(a7)
 [00001b22] 42a7                      clr.l      -(a7)
 [00001b24] 4eb9 0000 5908            jsr        _paddr
 [00001b2a] 4fef 0018                 lea.l      24(a7),a7
@@ -2246,8 +2246,8 @@ _dbvar_2:
 [00001b40] 6012                      bra.s      _dbvar_4
 _dbvar_3:
 [00001b42] 246e 0008                 movea.l    8(a6),a2
-[00001b46] 24b9 0002 050c            move.l     $0002B61A,(a2)
-[00001b4c] 23ee 0008 0002 050c       move.l     8(a6),$0002B61A
+[00001b46] 24b9 0002 050c            move.l     $0002050C,(a2)
+[00001b4c] 23ee 0008 0002 050c       move.l     8(a6),$0002050C
 _dbvar_4:
 [00001b54] 2e2e 000c                 move.l     12(a6),d7
 [00001b58] 4e5e                      unlk       a6
@@ -2257,17 +2257,17 @@ _dbvar_5:
 [00001b60] 42a7                      clr.l      -(a7)
 [00001b62] 42a7                      clr.l      -(a7)
 [00001b64] 42a7                      clr.l      -(a7)
-[00001b66] 2f39 0002 0510            move.l     $0002B61E,-(a7)
+[00001b66] 2f39 0002 0510            move.l     $00020510,-(a7)
 [00001b6c] 42a7                      clr.l      -(a7)
 [00001b6e] 4eb9 0000 5908            jsr        _paddr
 [00001b74] 4fef 0018                 lea.l      24(a7),a7
-[00001b78] 2d79 0002 050c 0008       move.l     $0002B61A,8(a6)
+[00001b78] 2d79 0002 050c 0008       move.l     $0002050C,8(a6)
 _dbvar_9:
 [00001b80] 4aae 0008                 tst.l      8(a6)
 [00001b84] 6700 0170                 beq        _dbvar_8
 [00001b88] 4297                      clr.l      (a7)
 [00001b8a] 42a7                      clr.l      -(a7)
-[00001b8c] 2f39 0002 0510            move.l     $0002B61E,-(a7)
+[00001b8c] 2f39 0002 0510            move.l     $00020510,-(a7)
 [00001b92] 246e 0008                 movea.l    8(a6),a2
 [00001b96] 508a                      addq.l     #8,a2
 [00001b98] 3e12                      move.w     (a2),d7
@@ -2286,7 +2286,7 @@ _dbvar_9:
 [00001bbe] 4eb9 0000 61ca            jsr        _pstr
 [00001bc4] 588f                      addq.l     #4,a7
 [00001bc6] 4878 0001                 pea.l      ($00000001).w
-[00001bca] 2f39 0002 0510            move.l     $0002B61E,-(a7)
+[00001bca] 2f39 0002 0510            move.l     $00020510,-(a7)
 [00001bd0] 4eb9 0000 61ca            jsr        _pstr
 [00001bd6] 508f                      addq.l     #8,a7
 [00001bd8] 4878 0001                 pea.l      ($00000001).w
@@ -2295,11 +2295,11 @@ _dbvar_9:
 [00001be4] 4287                      clr.l      d7
 [00001be6] 1e12                      move.b     (a2),d7
 [00001be8] 2f07                      move.l     d7,-(a7)
-[00001bea] 2f3c 0002 0504            move.l     #$0002B612,-(a7)
+[00001bea] 2f3c 0002 0504            move.l     #$00020504,-(a7)
 [00001bf0] 4eb9 0000 a7a6            jsr        _scnstr
 [00001bf6] 508f                      addq.l     #8,a7
 [00001bf8] 2f07                      move.l     d7,-(a7)
-[00001bfa] 0697 0002 0515            addi.l     #$0002B623,(a7)
+[00001bfa] 0697 0002 0515            addi.l     #$00020515,(a7)
 [00001c00] 4eb9 0000 61ca            jsr        _pstr
 [00001c06] 508f                      addq.l     #8,a7
 [00001c08] 246e 0008                 movea.l    8(a6),a2
@@ -2342,7 +2342,7 @@ _dbvar_11:
 [00001c6a] 2e12                      move.l     (a2),d7
 _dbvar_12:
 [00001c6c] 2f07                      move.l     d7,-(a7)
-[00001c6e] 2f39 0002 0510            move.l     $0002B61E,-(a7)
+[00001c6e] 2f39 0002 0510            move.l     $00020510,-(a7)
 [00001c74] 42a7                      clr.l      -(a7)
 [00001c76] 4eb9 0000 5908            jsr        _paddr
 [00001c7c] 4fef 0018                 lea.l      24(a7),a7
@@ -2377,7 +2377,7 @@ _dbvar_13:
 [00001cc8] 48c6                      ext.l      d6
 [00001cca] 8e86                      or.l       d6,d7
 [00001ccc] 2f07                      move.l     d7,-(a7)
-[00001cce] 2f39 0002 0510            move.l     $0002B61E,-(a7)
+[00001cce] 2f39 0002 0510            move.l     $00020510,-(a7)
 [00001cd4] 42a7                      clr.l      -(a7)
 [00001cd6] 4eb9 0000 5908            jsr        _paddr
 [00001cdc] 4fef 0018                 lea.l      24(a7),a7
@@ -2389,29 +2389,29 @@ _dbvar_13:
 [00001cf2] 6000 fd90                 bra        _dbvar_15
 _dbvar_8:
 [00001cf6] 4297                      clr.l      (a7)
-[00001cf8] 2f39 0002 050c            move.l     $0002B61A,-(a7)
+[00001cf8] 2f39 0002 050c            move.l     $0002050C,-(a7)
 [00001cfe] 4eb9 0000 9da6            jsr        _frelst
 [00001d04] 588f                      addq.l     #4,a7
-[00001d06] 23c7 0002 050c            move.l     d7,$0002B61A
+[00001d06] 23c7 0002 050c            move.l     d7,$0002050C
 [00001d0c] 6000 fe46                 bra        _dbvar_4
 
 _doblock:
 [00001d10] 4e56 ffd6                 link       a6,#-42
 [00001d14] 48e7 841c                 movem.l    d0/d5/a3-a5,-(a7)
-[00001d18] 3d79 0002 04a0 fffa       move.w     $0002B5AE,-6(a6)
-[00001d20] 2d79 0002 04a2 fff6       move.l     $0002B5B0,-10(a6)
+[00001d18] 3d79 0002 04a0 fffa       move.w     _regset,-6(a6)
+[00001d20] 2d79 0002 04a2 fff6       move.l     _autoff,-10(a6)
 [00001d28] 0cae ffff ffff 0008       cmpi.l     #$FFFFFFFF,8(a6)
 [00001d30] 6616                      bne.s      _doblock_1
-[00001d32] 2d79 0002 0cee fffc       move.l     $0002BDFC,-4(a6)
-[00001d3a] 2d79 0002 0d16 ffdc       move.l     $0002BE24,-36(a6)
+[00001d32] 2d79 0002 0cee fffc       move.l     _gblat,-4(a6)
+[00001d3a] 2d79 0002 0d16 ffdc       move.l     _gblsym,-36(a6)
 [00001d42] 42ae 0008                 clr.l      8(a6)
 [00001d46] 6010                      bra.s      _doblock_2
 _doblock_1:
-[00001d48] 2d79 0002 0cea fffc       move.l     $0002BDF8,-4(a6)
-[00001d50] 2d79 0002 0d2e ffdc       move.l     $0002BE3C,-36(a6)
+[00001d48] 2d79 0002 0cea fffc       move.l     _attlist,-4(a6)
+[00001d50] 2d79 0002 0d2e ffdc       move.l     _symtab,-36(a6)
 _doblock_2:
-[00001d58] 2d79 0002 0d2a fff2       move.l     $0002BE38,-14(a6)
-[00001d60] 23ee ffdc 0002 0d2a       move.l     -36(a6),$0002BE38
+[00001d58] 2d79 0002 0d2a fff2       move.l     _symend,-14(a6)
+[00001d60] 23ee ffdc 0002 0d2a       move.l     -36(a6),_symend
 _doblock_7:
 [00001d68] 4297                      clr.l      (a7)
 [00001d6a] 4878 0037                 pea.l      ($00000037).w
@@ -2450,13 +2450,13 @@ _doblock_20:
 [00001dd2] 6038                      bra.s      _doblock_5
 _doblock_3:
 [00001dd4] 4287                      clr.l      d7
-[00001dd6] 3e39 0002 04a0            move.w     $0002B5AE,d7
+[00001dd6] 3e39 0002 04a0            move.w     _regset,d7
 [00001ddc] 4286                      clr.l      d6
 [00001dde] 3c2e fffa                 move.w     -6(a6),d6
 [00001de2] be86                      cmp.l      d6,d7
 [00001de4] 6700 037a                 beq        _doblock_6
 [00001de8] 4287                      clr.l      d7
-[00001dea] 3e39 0002 04a0            move.w     $0002B5AE,d7
+[00001dea] 3e39 0002 04a0            move.w     _regset,d7
 [00001df0] 2e87                      move.l     d7,(a7)
 [00001df2] 4eb9 0000 60fe            jsr        _pregs
 [00001df8] 6000 0366                 bra        _doblock_6
@@ -2467,18 +2467,18 @@ _doblock_4:
 [00001e08] 6000 ff5e                 bra        _doblock_7
 _doblock_5:
 [00001e0c] 2eae ffdc                 move.l     -36(a6),(a7)
-[00001e10] 2f39 0002 0d2e            move.l     $0002BE3C,-(a7)
+[00001e10] 2f39 0002 0d2e            move.l     _symtab,-(a7)
 [00001e16] 486d 0010                 pea.l      16(a5)
 [00001e1a] 4eb9 0000 847e            jsr        _lookup
 [00001e20] 508f                      addq.l     #8,a7
 [00001e22] 4a87                      tst.l      d7
 [00001e24] 6712                      beq.s      _doblock_8
 [00001e26] 486d 0010                 pea.l      16(a5)
-[00001e2a] 2f3c 0002 0545            move.l     #$0002B653,-(a7) "redeclared local"
+[00001e2a] 2f3c 0002 0545            move.l     #$00020545,-(a7) "redeclared local"
 [00001e30] 4eb9 0000 3c8a            jsr        _nmerr
 [00001e36] 508f                      addq.l     #8,a7
 _doblock_8:
-[00001e38] 2ebc 0002 0d2e            move.l     #$0002BE3C,(a7)
+[00001e38] 2ebc 0002 0d2e            move.l     #_symtab,(a7)
 [00001e3e] 2f0d                      move.l     a5,-(a7)
 [00001e40] 4eb9 0000 774e            jsr        _addsym
 [00001e46] 588f                      addq.l     #4,a7
@@ -2527,7 +2527,7 @@ _doblock_11:
 [00001ec6] 6660                      bne.s      _doblock_13
 _doblock_12:
 [00001ec8] 4297                      clr.l      (a7)
-[00001eca] 2f39 0002 0d16            move.l     $0002BE24,-(a7)
+[00001eca] 2f39 0002 0d16            move.l     _gblsym,-(a7)
 [00001ed0] 486d 0010                 pea.l      16(a5)
 [00001ed4] 4eb9 0000 847e            jsr        _lookup
 [00001eda] 508f                      addq.l     #8,a7
@@ -2583,7 +2583,7 @@ _doblock_14:
 [00001f76] 45f8 000a                 lea.l      ($0000000A).w,a2
 [00001f7a] d5ec 0004                 adda.l     4(a4),a2
 [00001f7e] 2e12                      move.l     (a2),d7
-[00001f80] 0c87 0002 0d04            cmpi.l     #$0002BE12,d7
+[00001f80] 0c87 0002 0d04            cmpi.l     #_tentsym,d7
 [00001f86] 666c                      bne.s      _doblock_17
 [00001f88] 4287                      clr.l      d7
 [00001f8a] 1e2d 000e                 move.b     14(a5),d7
@@ -2608,7 +2608,7 @@ _doblock_15:
 [00001fd6] 486c 0004                 pea.l      4(a4)
 [00001fda] 4eb9 0000 7e8c            jsr        _cpyats
 [00001fe0] 588f                      addq.l     #4,a7
-[00001fe2] 2eb9 0002 0d16            move.l     $0002BE24,(a7)
+[00001fe2] 2eb9 0002 0d16            move.l     _gblsym,(a7)
 [00001fe8] 2f0c                      move.l     a4,-(a7)
 [00001fea] 4eb9 0000 774e            jsr        _addsym
 [00001ff0] 588f                      addq.l     #4,a7
@@ -2617,11 +2617,11 @@ _doblock_17:
 [00001ff4] 4287                      clr.l      d7
 [00001ff6] 1e2c 000e                 move.b     14(a4),d7
 [00001ffa] 2e87                      move.l     d7,(a7)
-[00001ffc] 2f3c 0002 051c            move.l     #$0002B62A,-(a7)
+[00001ffc] 2f3c 0002 051c            move.l     #$0002051C,-(a7)
 [00002002] 4eb9 0000 a7a6            jsr        _scnstr
 [00002008] 588f                      addq.l     #4,a7
 [0000200a] 2447                      movea.l    d7,a2
-[0000200c] d5fc 0002 051c            adda.l     #$0002B62A,a2
+[0000200c] d5fc 0002 051c            adda.l     #$0002051C,a2
 [00002012] 4a12                      tst.b      (a2)
 [00002014] 671a                      beq.s      _doblock_18
 [00002016] 4878 0001                 pea.l      ($00000001).w
@@ -2633,7 +2633,7 @@ _doblock_17:
 [0000202e] 6628                      bne.s      _doblock_19
 _doblock_18:
 [00002030] 486d 0010                 pea.l      16(a5)
-[00002034] 2f3c 0002 0532            move.l     #$0002B640,-(a7) "redefined external"
+[00002034] 2f3c 0002 0532            move.l     #$00020532,-(a7) "redefined external"
 [0000203a] 4eb9 0000 3c8a            jsr        _nmerr
 [00002040] 508f                      addq.l     #8,a7
 _doblock_10:
@@ -2689,7 +2689,7 @@ _doblock_16:
 [000020e4] 1e2d 000e                 move.b     14(a5),d7
 [000020e8] 0c47 0031                 cmpi.w     #$0031,d7
 [000020ec] 662a                      bne.s      _doblock_23
-[000020ee] 2ebc 0002 04a0            move.l     #$0002B5AE,(a7)
+[000020ee] 2ebc 0002 04a0            move.l     #_regset,(a7)
 [000020f4] 2f2d 0004                 move.l     4(a5),-(a7)
 [000020f8] 4eb9 0000 69ae            jsr        _rbuy
 [000020fe] 588f                      addq.l     #4,a7
@@ -2706,7 +2706,7 @@ _doblock_23:
 [00002122] 2f2d 0004                 move.l     4(a5),-(a7)
 [00002126] 4eb9 0000 7b74            jsr        _bytes
 [0000212c] 508f                      addq.l     #8,a7
-[0000212e] 9fb9 0002 04a2            sub.l      d7,$0002B5B0
+[0000212e] 9fb9 0002 04a2            sub.l      d7,_autoff
 [00002134] 2ead 0004                 move.l     4(a5),(a7)
 [00002138] 4eb9 0000 78b4            jsr        _bound
 [0000213e] 7c01                      moveq.l    #1,d6
@@ -2714,17 +2714,17 @@ _doblock_23:
 [00002142] 2e06                      move.l     d6,d7
 [00002144] 5387                      subq.l     #1,d7
 [00002146] 4687                      not.l      d7
-[00002148] cfb9 0002 04a2            and.l      d7,$0002B5B0
-[0000214e] 2b79 0002 04a2 0008       move.l     $0002B5B0,8(a5)
+[00002148] cfb9 0002 04a2            and.l      d7,_autoff
+[0000214e] 2b79 0002 04a2 0008       move.l     _autoff,8(a5)
 _doblock_24:
 [00002156] 2e8d                      move.l     a5,(a7)
 [00002158] 4eba f524                 jsr        _autinit(pc)
 [0000215c] 6000 fee4                 bra        _doblock_10
 _doblock_6:
-[00002160] 2e39 0002 04a2            move.l     $0002B5B0,d7
+[00002160] 2e39 0002 04a2            move.l     _autoff,d7
 [00002166] beae fff6                 cmp.l      -10(a6),d7
 [0000216a] 670c                      beq.s      _doblock_25
-[0000216c] 2eb9 0002 04a2            move.l     $0002B5B0,(a7)
+[0000216c] 2eb9 0002 04a2            move.l     _autoff,(a7)
 [00002172] 4eb9 0000 59b0            jsr        _pauto
 _doblock_25:
 [00002178] 486e ffd6                 pea.l      -42(a6)
@@ -2742,18 +2742,18 @@ _doblock_25:
 [0000219e] 1e2e ffd6                 move.b     -42(a6),d7
 [000021a2] 0c47 00ff                 cmpi.w     #$00FF,d7
 [000021a6] 6638                      bne.s      _doblock_27
-[000021a8] 2ebc 0002 0523            move.l     #$0002B631,(a7) "unexpected EOF"
+[000021a8] 2ebc 0002 0523            move.l     #$00020523,(a7) "unexpected EOF"
 [000021ae] 4eb9 0000 3e84            jsr        _p1error
 _doblock_26:
 [000021b4] 4287                      clr.l      d7
-[000021b6] 3e39 0002 04a0            move.w     $0002B5AE,d7
+[000021b6] 3e39 0002 04a0            move.w     _regset,d7
 [000021bc] 4286                      clr.l      d6
 [000021be] 3c2e fffa                 move.w     -6(a6),d6
 [000021c2] be86                      cmp.l      d6,d7
 [000021c4] 672c                      beq.s      _doblock_28
-[000021c6] 33ee fffa 0002 04a0       move.w     -6(a6),$0002B5AE
+[000021c6] 33ee fffa 0002 04a0       move.w     -6(a6),_regset
 [000021ce] 4287                      clr.l      d7
-[000021d0] 3e39 0002 04a0            move.w     $0002B5AE,d7
+[000021d0] 3e39 0002 04a0            move.w     _regset,d7
 [000021d6] 2e87                      move.l     d7,(a7)
 [000021d8] 4eb9 0000 60fe            jsr        _pregs
 [000021de] 6012                      bra.s      _doblock_28
@@ -2764,22 +2764,22 @@ _doblock_27:
 [000021ee] 588f                      addq.l     #4,a7
 [000021f0] 6086                      bra.s      _doblock_25
 _doblock_28:
-[000021f2] 2e39 0002 04a2            move.l     $0002B5B0,d7
+[000021f2] 2e39 0002 04a2            move.l     _autoff,d7
 [000021f8] beae fff6                 cmp.l      -10(a6),d7
 [000021fc] 6714                      beq.s      _doblock_29
-[000021fe] 23ee fff6 0002 04a2       move.l     -10(a6),$0002B5B0
-[00002206] 2eb9 0002 04a2            move.l     $0002B5B0,(a7)
+[000021fe] 23ee fff6 0002 04a2       move.l     -10(a6),_autoff
+[00002206] 2eb9 0002 04a2            move.l     _autoff,(a7)
 [0000220c] 4eb9 0000 59b0            jsr        _pauto
 _doblock_29:
-[00002212] 23ee fff2 0002 0d2a       move.l     -14(a6),$0002BE38
+[00002212] 23ee fff2 0002 0d2a       move.l     -14(a6),_symend
 [0000221a] 2eae ffdc                 move.l     -36(a6),(a7)
 [0000221e] 4eb9 0000 30de            jsr        _perc
-[00002224] 23f9 0002 0d2e 0002 0d2a  move.l     $0002BE3C,$0002BE38
+[00002224] 23f9 0002 0d2e 0002 0d2a  move.l     _symtab,_symend
 [0000222e] 2eae fffc                 move.l     -4(a6),(a7)
-[00002232] 2f39 0002 0cea            move.l     $0002BDF8,-(a7)
+[00002232] 2f39 0002 0cea            move.l     _attlist,-(a7)
 [00002238] 4eb9 0000 8332            jsr        _frealst
 [0000223e] 588f                      addq.l     #4,a7
-[00002240] 23c7 0002 0cea            move.l     d7,$0002BDF8
+[00002240] 23c7 0002 0cea            move.l     d7,_attlist
 [00002246] 4cdf 3821                 movem.l    (a7)+,d0/d5/a3-a5
 [0000224a] 4e5e                      unlk       a6
 [0000224c] 4e75                      rts
@@ -2787,30 +2787,30 @@ _doblock_29:
 _dostat:
 [0000224e] 4e56 fff6                 link       a6,#-10
 [00002252] 48e7 801c                 movem.l    d0/a3-a5,-(a7)
-[00002256] 2d79 0002 0cea fff6       move.l     $0002BDF8,-10(a6)
-[0000225e] 42b9 0002 055a            clr.l      $0002B668
+[00002256] 2d79 0002 0cea fff6       move.l     _attlist,-10(a6)
+[0000225e] 42b9 0002 055a            clr.l      $0002055A
 _dostat_5:
-[00002264] 4ab9 0002 055a            tst.l      $0002B668
+[00002264] 4ab9 0002 055a            tst.l      $0002055A
 [0000226a] 661e                      bne.s      _dostat_1
-[0000226c] 2ebc 0002 0566            move.l     #$0002B674,(a7)
+[0000226c] 2ebc 0002 0566            move.l     #$00020566,(a7)
 [00002272] 4eb9 0000 34e6            jsr        _gettok1
 [00002278] 2447                      movea.l    d7,a2
 [0000227a] 4287                      clr.l      d7
 [0000227c] 1e12                      move.b     (a2),d7
-[0000227e] 41f9 0002 0574            lea.l      $0002B682,a0
+[0000227e] 41f9 0002 0574            lea.l      $00020574,a0
 [00002284] 4ef9 0000 a7dc            jmp        a.switch
 _dostat_1:
 [0000228a] 4287                      clr.l      d7
-[0000228c] 1e39 0002 0566            move.b     $0002B674,d7
-[00002292] 41f9 0002 058c            lea.l      $0002B69A,a0
+[0000228c] 1e39 0002 0566            move.b     $00020566,d7
+[00002292] 41f9 0002 058c            lea.l      $0002058C,a0
 [00002298] 4ef9 0000 a7dc            jmp        a.switch
 [0000229e] 4eba f704                 jsr        _dbstat(pc)
 [000022a2] 4878 0001                 pea.l      ($00000001).w
 [000022a6] 4eb9 0000 0b62            jsr        _cons
 [000022ac] 588f                      addq.l     #4,a7
-[000022ae] 23c7 0002 056c            move.l     d7,$0002B67A
-[000022b4] 2eb9 0002 0556            move.l     $0002B664,(a7)
-[000022ba] 2f3c 0002 056c            move.l     #$0002B67A,-(a7)
+[000022ae] 23c7 0002 056c            move.l     d7,$0002056C
+[000022b4] 2eb9 0002 0556            move.l     $00020556,(a7)
+[000022ba] 2f3c 0002 056c            move.l     #$0002056C,-(a7)
 [000022c0] 4eb9 0000 6dd2            jsr        _docast
 [000022c6] 588f                      addq.l     #4,a7
 [000022c8] 4878 000e                 pea.l      ($0000000E).w
@@ -2818,15 +2818,15 @@ _dostat_1:
 [000022d2] 588f                      addq.l     #4,a7
 [000022d4] 4a87                      tst.l      d7
 [000022d6] 660c                      bne.s      _dostat_2
-[000022d8] 23f9 0002 056c 0002 0570  move.l     $0002B67A,$0002B67E
+[000022d8] 23f9 0002 056c 0002 0570  move.l     $0002056C,$00020570
 [000022e2] 6026                      bra.s      _dostat_3
 _dostat_2:
 [000022e4] 4878 0001                 pea.l      ($00000001).w
 [000022e8] 4eb9 0000 0b62            jsr        _cons
 [000022ee] 588f                      addq.l     #4,a7
-[000022f0] 23c7 0002 0570            move.l     d7,$0002B67E
-[000022f6] 2eb9 0002 0556            move.l     $0002B664,(a7)
-[000022fc] 2f3c 0002 0570            move.l     #$0002B67E,-(a7)
+[000022f0] 23c7 0002 0570            move.l     d7,$00020570
+[000022f6] 2eb9 0002 0556            move.l     $00020556,(a7)
+[000022fc] 2f3c 0002 0570            move.l     #$00020570,-(a7)
 [00002302] 4eb9 0000 6dd2            jsr        _docast
 [00002308] 588f                      addq.l     #4,a7
 _dostat_3:
@@ -2835,62 +2835,62 @@ _dostat_3:
 [00002314] 4878 0001                 pea.l      ($00000001).w
 [00002318] 4eb9 0000 3c08            jsr        _need
 [0000231e] 588f                      addq.l     #4,a7
-[00002320] 4ab9 0002 0556            tst.l      $0002B664
+[00002320] 4ab9 0002 0556            tst.l      $00020556
 [00002326] 6610                      bne.s      _dostat_4
-[00002328] 2ebc 0002 068d            move.l     #$0002B79B,(a7) "illegal case"
+[00002328] 2ebc 0002 068d            move.l     #$0002068D,(a7) "illegal case"
 [0000232e] 4eb9 0000 3e84            jsr        _p1error
 [00002334] 6000 ff2e                 bra        _dostat_5
 _dostat_4:
-[00002338] 2e39 0002 056c            move.l     $0002B67A,d7
-[0000233e] 9fb9 0002 0570            sub.l      d7,$0002B67E
-[00002344] 0cb9 0000 0200 0002 0570  cmpi.l     #$00000200,$0002B67E
+[00002338] 2e39 0002 056c            move.l     $0002056C,d7
+[0000233e] 9fb9 0002 0570            sub.l      d7,$00020570
+[00002344] 0cb9 0000 0200 0002 0570  cmpi.l     #$00000200,$00020570
 [0000234e] 6522                      bcs.s      _dostat_6
-[00002350] 2ebc 0002 067e            move.l     #$0002B78C,(a7) "bad case range"
+[00002350] 2ebc 0002 067e            move.l     #$0002067E,(a7) "bad case range"
 [00002356] 4eb9 0000 3e84            jsr        _p1error
-[0000235c] 42b9 0002 0570            clr.l      $0002B67E
-[00002362] 23f9 0002 0570 0002 056c  move.l     $0002B67E,$0002B67A
+[0000235c] 42b9 0002 0570            clr.l      $00020570
+[00002362] 23f9 0002 0570 0002 056c  move.l     $00020570,$0002056C
 [0000236c] 6004                      bra.s      _dostat_6
 [0000236e] 6000 fef4                 bra        _dostat_5
 _dostat_6:
-[00002372] 52b9 0002 0570            addq.l     #1,$0002B67E
+[00002372] 52b9 0002 0570            addq.l     #1,$00020570
 _dostat_7:
-[00002378] 4ab9 0002 0570            tst.l      $0002B67E
+[00002378] 4ab9 0002 0570            tst.l      $00020570
 [0000237e] 6700 fee4                 beq        _dostat_5
 [00002382] 3e2e fffc                 move.w     -4(a6),d7
 [00002386] 48c7                      ext.l      d7
 [00002388] 2e87                      move.l     d7,(a7)
-[0000238a] 2f39 0002 056c            move.l     $0002B67A,-(a7)
-[00002390] 2f3c 0002 055e            move.l     #$0002B66C,-(a7)
+[0000238a] 2f39 0002 056c            move.l     $0002056C,-(a7)
+[00002390] 2f3c 0002 055e            move.l     #$0002055E,-(a7)
 [00002396] 4eba f26c                 jsr        _addcase(pc)
 [0000239a] 508f                      addq.l     #8,a7
 [0000239c] 2e87                      move.l     d7,(a7)
 [0000239e] 4eb9 0000 59d4            jsr        _pcase
-[000023a4] 52b9 0002 056c            addq.l     #1,$0002B67A
-[000023aa] 2eb9 0002 0556            move.l     $0002B664,(a7)
-[000023b0] 2f3c 0002 056c            move.l     #$0002B67A,-(a7)
+[000023a4] 52b9 0002 056c            addq.l     #1,$0002056C
+[000023aa] 2eb9 0002 0556            move.l     $00020556,(a7)
+[000023b0] 2f3c 0002 056c            move.l     #$0002056C,-(a7)
 [000023b6] 4eb9 0000 6dd2            jsr        _docast
 [000023bc] 588f                      addq.l     #4,a7
-[000023be] 53b9 0002 0570            subq.l     #1,$0002B67E
+[000023be] 53b9 0002 0570            subq.l     #1,$00020570
 [000023c4] 60b2                      bra.s      _dostat_7
 [000023c6] 4eba f5dc                 jsr        _dbstat(pc)
 [000023ca] 4878 0001                 pea.l      ($00000001).w
 [000023ce] 4eb9 0000 3c08            jsr        _need
 [000023d4] 588f                      addq.l     #4,a7
-[000023d6] 4ab9 0002 0556            tst.l      $0002B664
+[000023d6] 4ab9 0002 0556            tst.l      $00020556
 [000023dc] 6708                      beq.s      _dostat_8
-[000023de] 4a79 0002 0562            tst.w      $0002B670
+[000023de] 4a79 0002 0562            tst.w      $00020562
 [000023e4] 670c                      beq.s      _dostat_9
 _dostat_8:
-[000023e6] 2ebc 0002 066e            move.l     #$0002B77C,(a7) "illegal default"
+[000023e6] 2ebc 0002 066e            move.l     #$0002066E,(a7) "illegal default"
 [000023ec] 4eb9 0000 3e84            jsr        _p1error
 _dostat_9:
 [000023f2] 4eb9 0000 5704            jsr        _crs
 [000023f8] 2e87                      move.l     d7,(a7)
 [000023fa] 4eb9 0000 59d4            jsr        _pcase
-[00002400] 33c7 0002 0562            move.w     d7,$0002B670
+[00002400] 33c7 0002 0562            move.w     d7,$00020562
 [00002406] 6000 fe5c                 bra        _dostat_5
 [0000240a] 4287                      clr.l      d7
-[0000240c] 1e39 0002 0566            move.b     $0002B674,d7
+[0000240c] 1e39 0002 0566            move.b     $00020566,d7
 [00002412] 0c47 0012                 cmpi.w     #$0012,d7
 [00002416] 6610                      bne.s      _dostat_10
 [00002418] 4878 0001                 pea.l      ($00000001).w
@@ -2900,25 +2900,25 @@ _dostat_9:
 [00002426] 660c                      bne.s      _dostat_11
 _dostat_10:
 [00002428] 7001                      moveq.l    #1,d0
-[0000242a] 23c0 0002 055a            move.l     d0,$0002B668
+[0000242a] 23c0 0002 055a            move.l     d0,$0002055A
 [00002430] 6000 fe32                 bra        _dostat_5
 _dostat_11:
 [00002434] 4eba f56e                 jsr        _dbstat(pc)
 [00002438] 4297                      clr.l      (a7)
-[0000243a] 2f39 0002 0d1a            move.l     $0002BE28,-(a7)
-[00002440] 2f39 0002 0568            move.l     $0002B676,-(a7)
+[0000243a] 2f39 0002 0d1a            move.l     _lbltab,-(a7)
+[00002440] 2f39 0002 0568            move.l     $00020568,-(a7)
 [00002446] 4eb9 0000 847e            jsr        _lookup
 [0000244c] 508f                      addq.l     #8,a7
 [0000244e] 2847                      movea.l    d7,a4
 [00002450] 2e0c                      move.l     a4,d7
 [00002452] 6624                      bne.s      _dostat_12
 [00002454] 4297                      clr.l      (a7)
-[00002456] 2f39 0002 0568            move.l     $0002B676,-(a7)
+[00002456] 2f39 0002 0568            move.l     $00020568,-(a7)
 [0000245c] 42a7                      clr.l      -(a7)
 [0000245e] 4eb9 0000 7a78            jsr        _buysym
 [00002464] 508f                      addq.l     #8,a7
 [00002466] 2847                      movea.l    d7,a4
-[00002468] 2ebc 0002 0d1a            move.l     #$0002BE28,(a7)
+[00002468] 2ebc 0002 0d1a            move.l     #_lbltab,(a7)
 [0000246e] 2f0c                      move.l     a4,-(a7)
 [00002470] 4eb9 0000 774e            jsr        _addsym
 [00002476] 588f                      addq.l     #4,a7
@@ -2926,7 +2926,7 @@ _dostat_12:
 [00002478] 4a2c 000e                 tst.b      14(a4)
 [0000247c] 6712                      beq.s      _dostat_13
 [0000247e] 486c 0010                 pea.l      16(a4)
-[00002482] 2f3c 0002 065e            move.l     #$0002B76C,-(a7) "redefined label"
+[00002482] 2f3c 0002 065e            move.l     #$0002065E,-(a7) "redefined label"
 [00002488] 4eb9 0000 3c8a            jsr        _nmerr
 [0000248e] 508f                      addq.l     #8,a7
 _dostat_13:
@@ -2946,10 +2946,10 @@ _dostat_14:
 [000024c0] 4eba f84e                 jsr        _doblock(pc)
 [000024c4] 588f                      addq.l     #4,a7
 [000024c6] 2eae fff6                 move.l     -10(a6),(a7)
-[000024ca] 2f39 0002 0cea            move.l     $0002BDF8,-(a7)
+[000024ca] 2f39 0002 0cea            move.l     _attlist,-(a7)
 [000024d0] 4eb9 0000 8332            jsr        _frealst
 [000024d6] 588f                      addq.l     #4,a7
-[000024d8] 23c7 0002 0cea            move.l     d7,$0002BDF8
+[000024d8] 23c7 0002 0cea            move.l     d7,_attlist
 [000024de] 4cdf 3801                 movem.l    (a7)+,d0/a3-a5
 [000024e2] 4e5e                      unlk       a6
 [000024e4] 4e75                      rts
@@ -3108,8 +3108,8 @@ x24e6_3:
 [000026f0] 2e0b                      move.l     a3,d7
 [000026f2] 674c                      beq.s      x24e6_4
 [000026f4] 4eb9 0000 5704            jsr        _crs
-[000026fa] 33c7 0002 0564            move.w     d7,$0002B672
-[00002700] 3e39 0002 0564            move.w     $0002B672,d7
+[000026fa] 33c7 0002 0564            move.w     d7,$00020564
+[00002700] 3e39 0002 0564            move.w     $00020564,d7
 [00002706] 48c7                      ext.l      d7
 [00002708] 2e87                      move.l     d7,(a7)
 [0000270a] 42a7                      clr.l      -(a7)
@@ -3126,7 +3126,7 @@ x24e6_3:
 [0000272e] 2f07                      move.l     d7,-(a7)
 [00002730] 4eb9 0000 5ede            jsr        _pjump
 [00002736] 588f                      addq.l     #4,a7
-[00002738] 3d79 0002 0564 fffe       move.w     $0002B672,-2(a6)
+[00002738] 3d79 0002 0564 fffe       move.w     $00020564,-2(a6)
 x24e6_4:
 [00002740] 4878 000a                 pea.l      ($0000000A).w
 [00002744] 4eb9 0000 3c08            jsr        _need
@@ -3157,7 +3157,7 @@ x24e6_4:
 [00002794] 588f                      addq.l     #4,a7
 [00002796] 600c                      bra.s      x24e6_6
 x24e6_5:
-[00002798] 2ebc 0002 0650            move.l     #$0002B75E,(a7) "illegal break"
+[00002798] 2ebc 0002 0650            move.l     #$00020650,(a7) "illegal break"
 [0000279e] 4eb9 0000 3e84            jsr        _p1error
 x24e6_6:
 [000027a4] 4878 000b                 pea.l      ($0000000B).w
@@ -3173,7 +3173,7 @@ x24e6_6:
 [000027ca] 588f                      addq.l     #4,a7
 [000027cc] 600c                      bra.s      x24e6_8
 x24e6_7:
-[000027ce] 2ebc 0002 063f            move.l     #$0002B74D,(a7) "illegal continue"
+[000027ce] 2ebc 0002 063f            move.l     #$0002063F,(a7) "illegal continue"
 [000027d4] 4eb9 0000 3e84            jsr        _p1error
 x24e6_8:
 [000027da] 4878 000b                 pea.l      ($0000000B).w
@@ -3187,12 +3187,12 @@ x24e6_8:
 [000027f8] 2e0b                      move.l     a3,d7
 [000027fa] 6722                      beq.s      x24e6_9
 [000027fc] 2e8b                      move.l     a3,(a7)
-[000027fe] 2f39 0002 04ce            move.l     $0002B5DC,-(a7)
+[000027fe] 2f39 0002 04ce            move.l     $000204CE,-(a7)
 [00002804] 4eb9 0000 86a8            jsr        _canass
 [0000280a] 588f                      addq.l     #4,a7
 [0000280c] 4a87                      tst.l      d7
 [0000280e] 6624                      bne.s      x24e6_10
-[00002810] 2ebc 0002 062b            move.l     #$0002B739,(a7) "illegal return type"
+[00002810] 2ebc 0002 062b            move.l     #$0002062B,(a7) "illegal return type"
 [00002816] 4eb9 0000 3e84            jsr        _p1error
 [0000281c] 603e                      bra.s      x24e6_11
 x24e6_9:
@@ -3202,10 +3202,10 @@ x24e6_9:
 [0000282e] 588f                      addq.l     #4,a7
 [00002830] 6000 fc94                 bra        x24e6_1
 x24e6_10:
-[00002834] 2e39 0002 04ae            move.l     $0002B5BC,d7
-[0000283a] beb9 0002 04ce            cmp.l      $0002B5DC,d7
+[00002834] 2e39 0002 04ae            move.l     _rat,d7
+[0000283a] beb9 0002 04ce            cmp.l      $000204CE,d7
 [00002840] 671a                      beq.s      x24e6_11
-[00002842] 2eb9 0002 04ce            move.l     $0002B5DC,(a7)
+[00002842] 2eb9 0002 04ce            move.l     $000204CE,(a7)
 [00002848] 42a7                      clr.l      -(a7)
 [0000284a] 2f0b                      move.l     a3,-(a7)
 [0000284c] 4878 0066                 pea.l      ($00000066).w
@@ -3214,22 +3214,22 @@ x24e6_10:
 [0000285a] 2647                      movea.l    d7,a3
 x24e6_11:
 [0000285c] 2e8b                      move.l     a3,(a7)
-[0000285e] 2f3c 0002 04ca            move.l     #$0002B5D8,-(a7)
+[0000285e] 2f3c 0002 04ca            move.l     #_rterm,-(a7)
 [00002864] 4eb9 0000 607c            jsr        _pmove
 [0000286a] 588f                      addq.l     #4,a7
 [0000286c] 60b0                      bra.s      x24e6_9
 [0000286e] 4eba f134                 jsr        _dbstat(pc)
-[00002872] 2ebc 0002 0566            move.l     #$0002B674,(a7)
+[00002872] 2ebc 0002 0566            move.l     #$00020566,(a7)
 [00002878] 4eb9 0000 3bae            jsr        _ident
 [0000287e] 4a87                      tst.l      d7
 [00002880] 660e                      bne.s      x24e6_12
-[00002882] 2ebc 0002 0618            move.l     #$0002B726,(a7) "missing goto label"
+[00002882] 2ebc 0002 0618            move.l     #$00020618,(a7) "missing goto label"
 [00002888] 4eb9 0000 3e84            jsr        _p1error
 [0000288e] 6064                      bra.s      x24e6_13
 x24e6_12:
 [00002890] 4297                      clr.l      (a7)
-[00002892] 2f39 0002 0d1a            move.l     $0002BE28,-(a7)
-[00002898] 2f39 0002 0568            move.l     $0002B676,-(a7)
+[00002892] 2f39 0002 0d1a            move.l     _lbltab,-(a7)
+[00002898] 2f39 0002 0568            move.l     $00020568,-(a7)
 [0000289e] 4eb9 0000 847e            jsr        _lookup
 [000028a4] 508f                      addq.l     #8,a7
 [000028a6] 2847                      movea.l    d7,a4
@@ -3244,12 +3244,12 @@ x24e6_12:
 [000028be] 6034                      bra.s      x24e6_13
 x24e6_14:
 [000028c0] 4297                      clr.l      (a7)
-[000028c2] 2f39 0002 0568            move.l     $0002B676,-(a7)
+[000028c2] 2f39 0002 0568            move.l     $00020568,-(a7)
 [000028c8] 42a7                      clr.l      -(a7)
 [000028ca] 4eb9 0000 7a78            jsr        _buysym
 [000028d0] 508f                      addq.l     #8,a7
 [000028d2] 2847                      movea.l    d7,a4
-[000028d4] 2ebc 0002 0d1a            move.l     #$0002BE28,(a7)
+[000028d4] 2ebc 0002 0d1a            move.l     #_lbltab,(a7)
 [000028da] 2f0c                      move.l     a4,-(a7)
 [000028dc] 4eb9 0000 774e            jsr        _addsym
 [000028e2] 588f                      addq.l     #4,a7
@@ -3264,56 +3264,56 @@ x24e6_13:
 [000028fe] 588f                      addq.l     #4,a7
 [00002900] 6000 fbc4                 bra        x24e6_1
 [00002904] 4eba f09e                 jsr        _dbstat(pc)
-[00002908] 2a79 0002 055e            movea.l    $0002B66C,a5
-[0000290e] 42b9 0002 055e            clr.l      $0002B66C
-[00002914] 3d79 0002 0562 fffe       move.w     $0002B670,-2(a6)
-[0000291c] 4279 0002 0562            clr.w      $0002B670
-[00002922] 2879 0002 0556            movea.l    $0002B664,a4
+[00002908] 2a79 0002 055e            movea.l    $0002055E,a5
+[0000290e] 42b9 0002 055e            clr.l      $0002055E
+[00002914] 3d79 0002 0562 fffe       move.w     $00020562,-2(a6)
+[0000291c] 4279 0002 0562            clr.w      $00020562
+[00002922] 2879 0002 0556            movea.l    $00020556,a4
 [00002928] 4878 0001                 pea.l      ($00000001).w
 [0000292c] 4eb9 0000 0c26            jsr        _gtest
 [00002932] 588f                      addq.l     #4,a7
 [00002934] 2647                      movea.l    d7,a3
 [00002936] 2eab 0004                 move.l     4(a3),(a7)
 [0000293a] 4eb9 0000 84da            jsr        _maxify
-[00002940] 23c7 0002 04b6            move.l     d7,$0002B5C4
+[00002940] 23c7 0002 04b6            move.l     d7,$000204B6
 [00002946] 4878 0001                 pea.l      ($00000001).w
 [0000294a] 42a7                      clr.l      -(a7)
 [0000294c] 42a7                      clr.l      -(a7)
 [0000294e] 42a7                      clr.l      -(a7)
-[00002950] 2f3c 0002 04b2            move.l     #$0002B5C0,-(a7)
+[00002950] 2f3c 0002 04b2            move.l     #_caseterm,-(a7)
 [00002956] 4eb9 0000 85aa            jsr        _setad
 [0000295c] 4fef 0014                 lea.l      20(a7),a7
 [00002960] 2eab 0004                 move.l     4(a3),(a7)
 [00002964] 4eb9 0000 844a            jsr        _itype
 [0000296a] 4a87                      tst.l      d7
 [0000296c] 6618                      bne.s      x24e6_15
-[0000296e] 23fc 0002 0dc2 0002 04b6  move.l     #$0002BED0,$0002B5C4
-[00002978] 2ebc 0002 05fe            move.l     #$0002B70C,(a7) "illegal switch expression"
+[0000296e] 23fc 0002 0dc2 0002 04b6  move.l     #_atint,$000204B6
+[00002978] 2ebc 0002 05fe            move.l     #$000205FE,(a7) "illegal switch expression"
 [0000297e] 4eb9 0000 3e84            jsr        _p1error
 [00002984] 6030                      bra.s      x24e6_16
 x24e6_15:
 [00002986] 4ab9 0002 0b7e            tst.l      _lflag
 [0000298c] 6628                      bne.s      x24e6_16
-[0000298e] 2479 0002 04b6            movea.l    $0002B5C4,a2
+[0000298e] 2479 0002 04b6            movea.l    $000204B6,a2
 [00002994] 508a                      addq.l     #8,a2
 [00002996] 4287                      clr.l      d7
 [00002998] 1e12                      move.b     (a2),d7
 [0000299a] 0c47 0020                 cmpi.w     #$0020,d7
 [0000299e] 6700 00e6                 beq        x24e6_17
-[000029a2] 2479 0002 04b6            movea.l    $0002B5C4,a2
+[000029a2] 2479 0002 04b6            movea.l    $000204B6,a2
 [000029a8] 508a                      addq.l     #8,a2
 [000029aa] 4287                      clr.l      d7
 [000029ac] 1e12                      move.b     (a2),d7
 [000029ae] 0c47 0021                 cmpi.w     #$0021,d7
 [000029b2] 6700 00d2                 beq        x24e6_17
 x24e6_16:
-[000029b6] 23f9 0002 04b6 0002 0556  move.l     $0002B5C4,$0002B664
+[000029b6] 23f9 0002 04b6 0002 0556  move.l     $000204B6,$00020556
 [000029c0] 2e8b                      move.l     a3,(a7)
-[000029c2] 2f3c 0002 04b2            move.l     #$0002B5C0,-(a7)
+[000029c2] 2f3c 0002 04b2            move.l     #_caseterm,-(a7)
 [000029c8] 4eb9 0000 607c            jsr        _pmove
 [000029ce] 588f                      addq.l     #4,a7
 [000029d0] 4878 0001                 pea.l      ($00000001).w
-[000029d4] 2f39 0002 0556            move.l     $0002B664,-(a7)
+[000029d4] 2f39 0002 0556            move.l     $00020556,-(a7)
 [000029da] 4eb9 0000 7b74            jsr        _bytes
 [000029e0] 508f                      addq.l     #8,a7
 [000029e2] 2e87                      move.l     d7,(a7)
@@ -3335,9 +3335,9 @@ x24e6_16:
 [00002a1a] 3e2e fffa                 move.w     -6(a6),d7
 [00002a1e] 48c7                      ext.l      d7
 [00002a20] 2e87                      move.l     d7,(a7)
-[00002a22] 4a79 0002 0562            tst.w      $0002B670
+[00002a22] 4a79 0002 0562            tst.w      $00020562
 [00002a28] 670a                      beq.s      x24e6_18
-[00002a2a] 3e39 0002 0562            move.w     $0002B670,d7
+[00002a2a] 3e39 0002 0562            move.w     $00020562,d7
 [00002a30] 48c7                      ext.l      d7
 [00002a32] 6006                      bra.s      x24e6_19
 x24e6_18:
@@ -3346,25 +3346,25 @@ x24e6_18:
 x24e6_19:
 [00002a3a] 2f07                      move.l     d7,-(a7)
 [00002a3c] 4878 0001                 pea.l      ($00000001).w
-[00002a40] 2f39 0002 0556            move.l     $0002B664,-(a7)
+[00002a40] 2f39 0002 0556            move.l     $00020556,-(a7)
 [00002a46] 4eb9 0000 7b74            jsr        _bytes
 [00002a4c] 508f                      addq.l     #8,a7
 [00002a4e] 2f07                      move.l     d7,-(a7)
-[00002a50] 2f39 0002 055e            move.l     $0002B66C,-(a7)
+[00002a50] 2f39 0002 055e            move.l     $0002055E,-(a7)
 [00002a56] 4eb9 0000 6294            jsr        _pswtab
 [00002a5c] 4fef 000c                 lea.l      12(a7),a7
 [00002a60] 3e2e fffc                 move.w     -4(a6),d7
 [00002a64] 48c7                      ext.l      d7
 [00002a66] 2e87                      move.l     d7,(a7)
 [00002a68] 4eb9 0000 59d4            jsr        _pcase
-[00002a6e] 23cc 0002 0556            move.l     a4,$0002B664
-[00002a74] 33ee fffe 0002 0562       move.w     -2(a6),$0002B670
-[00002a7c] 23cd 0002 055e            move.l     a5,$0002B66C
+[00002a6e] 23cc 0002 0556            move.l     a4,$00020556
+[00002a74] 33ee fffe 0002 0562       move.w     -2(a6),$00020562
+[00002a7c] 23cd 0002 055e            move.l     a5,$0002055E
 [00002a82] 6000 fa42                 bra        x24e6_1
 x24e6_17:
-[00002a86] 13fc 0003 0002 04c6       move.b     #$03,$0002B5D4
+[00002a86] 13fc 0003 0002 04c6       move.b     #$03,$000204C6
 [00002a8e] 6000 ff26                 bra        x24e6_16
-[00002a92] 2ebc 0002 0566            move.l     #$0002B674,(a7)
+[00002a92] 2ebc 0002 0566            move.l     #$00020566,(a7)
 [00002a98] 4eb9 0000 31e4            jsr        _baktok1
 [00002a9e] 4eba ef04                 jsr        _dbstat(pc)
 [00002aa2] 4297                      clr.l      (a7)
@@ -3380,7 +3380,7 @@ x24e6_17:
 [00002ac4] 6000 fa00                 bra        x24e6_1
 x24e6_20:
 [00002ac8] 4878 0009                 pea.l      ($00000009).w
-[00002acc] 2f3c 0002 05ec            move.l     #$0002B6FA,-(a7)
+[00002acc] 2f3c 0002 05ec            move.l     #$000205EC,-(a7)
 [00002ad2] 4eb9 0000 3f28            jsr        _recover
 [00002ad8] 508f                      addq.l     #8,a7
 [00002ada] 6000 f9ea                 bra        x24e6_1
@@ -3402,9 +3402,9 @@ _fninit_1:
 [00002b0a] 45f8 000a                 lea.l      ($0000000A).w,a2
 [00002b0e] d5ed 0004                 adda.l     4(a5),a2
 [00002b12] 2d52 fff0                 move.l     (a2),-16(a6)
-[00002b16] 23f9 0002 0d2e 0002 0d16  move.l     $0002BE3C,$0002BE24
-[00002b20] 23f9 0002 0d2e 0002 0d2a  move.l     $0002BE3C,$0002BE38
-[00002b2a] 23f9 0002 0cea 0002 0cee  move.l     $0002BDF8,$0002BDFC
+[00002b16] 23f9 0002 0d2e 0002 0d16  move.l     _symtab,_gblsym
+[00002b20] 23f9 0002 0d2e 0002 0d2a  move.l     _symtab,_symend
+[00002b2a] 23f9 0002 0cea 0002 0cee  move.l     _attlist,_gblat
 [00002b34] 4aae fff0                 tst.l      -16(a6)
 [00002b38] 6762                      beq.s      _fninit_2
 [00002b3a] 7001                      moveq.l    #1,d0
@@ -3435,7 +3435,7 @@ _fninit_9:
 [00002b84] 2e0b                      move.l     a3,d7
 [00002b86] 6644                      bne.s      _fninit_4
 [00002b88] 486c 0010                 pea.l      16(a4)
-[00002b8c] 2f3c 0002 0757            move.l     #$0002B865,-(a7) "not an argument"
+[00002b8c] 2f3c 0002 0757            move.l     #$00020757,-(a7) "not an argument"
 [00002b92] 4eb9 0000 3c8a            jsr        _nmerr
 [00002b98] 508f                      addq.l     #8,a7
 [00002b9a] 605c                      bra.s      _fninit_5
@@ -3461,7 +3461,7 @@ _fninit_4:
 [00002bcc] 4a2b 000e                 tst.b      14(a3)
 [00002bd0] 6714                      beq.s      _fninit_10
 [00002bd2] 486c 0010                 pea.l      16(a4)
-[00002bd6] 2f3c 0002 0743            move.l     #$0002B851,-(a7) "redeclared argument"
+[00002bd6] 2f3c 0002 0743            move.l     #$00020743,-(a7) "redeclared argument"
 [00002bdc] 4eb9 0000 3c8a            jsr        _nmerr
 [00002be2] 508f                      addq.l     #8,a7
 [00002be4] 6012                      bra.s      _fninit_5
@@ -3507,13 +3507,13 @@ _fninit_16:
 [00002c56] 4aae ffec                 tst.l      -20(a6)
 [00002c5a] 6726                      beq.s      _fninit_12
 [00002c5c] 2e2e ffec                 move.l     -20(a6),d7
-[00002c60] 0c87 0002 0cf2            cmpi.l     #$0002BE00,d7
+[00002c60] 0c87 0002 0cf2            cmpi.l     #_badsym,d7
 [00002c66] 671a                      beq.s      _fninit_12
 [00002c68] 45f8 0010                 lea.l      ($00000010).w,a2
 [00002c6c] d5ee ffec                 adda.l     -20(a6),a2
 [00002c70] 4a12                      tst.b      (a2)
 [00002c72] 6628                      bne.s      _fninit_13
-[00002c74] 2ebc 0002 0721            move.l     #$0002B82F,(a7) "bad function argument declaration"
+[00002c74] 2ebc 0002 0721            move.l     #$00020721,(a7) "bad function argument declaration"
 [00002c7a] 4eb9 0000 3e84            jsr        _p1error
 [00002c80] 601a                      bra.s      _fninit_13
 _fninit_12:
@@ -3559,33 +3559,33 @@ _fninit_14:
 [00002cf8] 6600 00f4                 bne        _fninit_18
 _fninit_17:
 [00002cfc] 486d 0010                 pea.l      16(a5)
-[00002d00] 2f3c 0002 070e            move.l     #$0002B81C,-(a7) "function redefined"
+[00002d00] 2f3c 0002 070e            move.l     #$0002070E,-(a7) "function redefined"
 [00002d06] 4eb9 0000 3c8a            jsr        _nmerr
 [00002d0c] 508f                      addq.l     #8,a7
 _fninit_15:
 [00002d0e] 246d 0004                 movea.l    4(a5),a2
 [00002d12] 588a                      addq.l     #4,a2
-[00002d14] 23d2 0002 04ae            move.l     (a2),$0002B5BC
-[00002d1a] 2eb9 0002 04ae            move.l     $0002B5BC,(a7)
+[00002d14] 23d2 0002 04ae            move.l     (a2),_rat
+[00002d1a] 2eb9 0002 04ae            move.l     _rat,(a7)
 [00002d20] 4eb9 0000 84da            jsr        _maxify
-[00002d26] 23c7 0002 04ce            move.l     d7,$0002B5DC
-[00002d2c] 2ebc 0002 04ca            move.l     #$0002B5D8,(a7)
+[00002d26] 23c7 0002 04ce            move.l     d7,$000204CE
+[00002d2c] 2ebc 0002 04ca            move.l     #_rterm,(a7)
 [00002d32] 4eb9 0000 8cb6            jsr        _scalify
 [00002d38] 4ab9 0002 0b8a            tst.l      _oldflag
 [00002d3e] 6604                      bne.s      _fninit_19
 [00002d40] 7e01                      moveq.l    #1,d7
 [00002d42] 602a                      bra.s      _fninit_20
 _fninit_19:
-[00002d44] 2479 0002 04ce            movea.l    $0002B5DC,a2
+[00002d44] 2479 0002 04ce            movea.l    $000204CE,a2
 [00002d4a] 508a                      addq.l     #8,a2
 [00002d4c] 4287                      clr.l      d7
 [00002d4e] 1e12                      move.b     (a2),d7
 [00002d50] 2e87                      move.l     d7,(a7)
-[00002d52] 2f3c 0002 14e6            move.l     #$0002C5F4,-(a7)
+[00002d52] 2f3c 0002 14e6            move.l     #_typtab,-(a7)
 [00002d58] 4eb9 0000 a7a6            jsr        _scnstr
 [00002d5e] 588f                      addq.l     #4,a7
 [00002d60] 2447                      movea.l    d7,a2
-[00002d62] d5fc 0002 155f            adda.l     #$0002C66D,a2
+[00002d62] d5fc 0002 155f            adda.l     #_rettab,a2
 [00002d68] 1e12                      move.b     (a2),d7
 [00002d6a] 4887                      ext.w      d7
 [00002d6c] 48c7                      ext.l      d7
@@ -3594,16 +3594,16 @@ _fninit_20:
 [00002d70] 42a7                      clr.l      -(a7)
 [00002d72] 42a7                      clr.l      -(a7)
 [00002d74] 42a7                      clr.l      -(a7)
-[00002d76] 2f3c 0002 04ca            move.l     #$0002B5D8,-(a7)
+[00002d76] 2f3c 0002 04ca            move.l     #_rterm,-(a7)
 [00002d7c] 4eb9 0000 85aa            jsr        _setad
 [00002d82] 4fef 0010                 lea.l      16(a7),a7
 [00002d86] 4aae fffc                 tst.l      -4(a6)
 [00002d8a] 6700 0092                 beq        _fninit_21
-[00002d8e] 33f9 0002 0b64 0002 04a0  move.w     _iregs,$0002B5AE
-[00002d98] 42b9 0002 04a2            clr.l      $0002B5B0
+[00002d8e] 33f9 0002 0b64 0002 04a0  move.w     _iregs,_regset
+[00002d98] 42b9 0002 04a2            clr.l      _autoff
 [00002d9e] 42ae fff4                 clr.l      -12(a6)
 [00002da2] 2d79 0002 0b9e fff8       move.l     _bndef,-8(a6)
-[00002daa] 2ebc 0002 0dc2            move.l     #$0002BED0,(a7)
+[00002daa] 2ebc 0002 0dc2            move.l     #_atint,(a7)
 [00002db0] 4eb9 0000 78b4            jsr        _bound
 [00002db6] 23c7 0002 0b9e            move.l     d7,_bndef
 [00002dbc] 45f8 000e                 lea.l      ($0000000E).w,a2
@@ -3655,14 +3655,14 @@ _fninit_38:
 [00002e42] 4ab9 0002 0b92            tst.l      _strictfl
 [00002e48] 6770                      beq.s      _fninit_26
 [00002e4a] 486b 0010                 pea.l      16(a3)
-[00002e4e] 2f3c 0002 06fa            move.l     #$0002B808,-(a7) "undeclared argument"
+[00002e4e] 2f3c 0002 06fa            move.l     #$000206FA,-(a7) "undeclared argument"
 [00002e54] 4eb9 0000 3c8a            jsr        _nmerr
 [00002e5a] 508f                      addq.l     #8,a7
 [00002e5c] 605c                      bra.s      _fninit_26
 _fninit_24:
 [00002e5e] 4aae ffec                 tst.l      -20(a6)
 [00002e62] 6700 01c4                 beq        _fninit_27
-[00002e66] 2ebc 0002 06a8            move.l     #$0002B7B6,(a7) "proto and arguments don',$27,'t match"
+[00002e66] 2ebc 0002 06a8            move.l     #$000206A8,(a7) "proto and arguments don',$27,'t match"
 [00002e6c] 4eb9 0000 3e84            jsr        _p1error
 [00002e72] 6000 01b4                 bra        _fninit_27
 _fninit_25:
@@ -3683,13 +3683,13 @@ _fninit_31:
 [00002e9e] 4a87                      tst.l      d7
 [00002ea0] 6600 0108                 bne        _fninit_29
 [00002ea4] 486b 0010                 pea.l      16(a3)
-[00002ea8] 2f3c 0002 06e4            move.l     #$0002B7F2,-(a7) "illegal argument type"
+[00002ea8] 2f3c 0002 06e4            move.l     #$000206E4,-(a7) "illegal argument type"
 [00002eae] 4eb9 0000 3c8a            jsr        _nmerr
 [00002eb4] 508f                      addq.l     #8,a7
 [00002eb6] 6000 011e                 bra        _fninit_30
 _fninit_26:
 [00002eba] 177c 003b 000e            move.b     #$3B,14(a3)
-[00002ec0] 277c 0002 0dc2 0004       move.l     #$0002BED0,4(a3)
+[00002ec0] 277c 0002 0dc2 0004       move.l     #_atint,4(a3)
 [00002ec8] 4878 0018                 pea.l      ($00000018).w
 [00002ecc] 4878 003b                 pea.l      ($0000003B).w
 [00002ed0] 4eb9 0000 3252            jsr        _defspace
@@ -3712,7 +3712,7 @@ _fninit_28:
 [00002f0c] 1e2b 000e                 move.b     14(a3),d7
 [00002f10] 0c47 0031                 cmpi.w     #$0031,d7
 [00002f14] 6600 0104                 bne        _fninit_32
-[00002f18] 2ebc 0002 04a0            move.l     #$0002B5AE,(a7)
+[00002f18] 2ebc 0002 04a0            move.l     #_regset,(a7)
 [00002f1e] 2f2b 0004                 move.l     4(a3),-(a7)
 [00002f22] 4eb9 0000 69ae            jsr        _rbuy
 [00002f28] 588f                      addq.l     #4,a7
@@ -3738,10 +3738,10 @@ _fninit_28:
 [00002f6c] 4eb9 0000 85aa            jsr        _setad
 [00002f72] 4fef 0010                 lea.l      16(a7),a7
 [00002f76] 4287                      clr.l      d7
-[00002f78] 3e39 0002 04a0            move.w     $0002B5AE,d7
+[00002f78] 3e39 0002 04a0            move.w     _regset,d7
 [00002f7e] 2e87                      move.l     d7,(a7)
 [00002f80] 4eb9 0000 60fe            jsr        _pregs
-[00002f86] 2eb9 0002 04a2            move.l     $0002B5B0,(a7)
+[00002f86] 2eb9 0002 04a2            move.l     _autoff,(a7)
 [00002f8c] 4eb9 0000 59b0            jsr        _pauto
 [00002f92] 2eae ffd2                 move.l     -46(a6),(a7)
 [00002f96] 486e ffba                 pea.l      -70(a6)
@@ -3764,7 +3764,7 @@ _fninit_29:
 [00002fc6] 4a92                      tst.l      (a2)
 [00002fc8] 6622                      bne.s      _fninit_35
 _fninit_34:
-[00002fca] 2ebc 0002 06c8            move.l     #$0002B7D6,(a7) "illegal number of arguments"
+[00002fca] 2ebc 0002 06c8            move.l     #$000206C8,(a7) "illegal number of arguments"
 [00002fd0] 4eb9 0000 3e84            jsr        _p1error
 _fninit_30:
 [00002fd6] 246e ffec                 movea.l    -20(a6),a2
@@ -3803,18 +3803,18 @@ _fninit_33:
 _fninit_27:
 [00003028] 23ee fff8 0002 0b9e       move.l     -8(a6),_bndef
 [00003030] 246e ffd6                 movea.l    -42(a6),a2
-[00003034] 24b9 0002 0d2e            move.l     $0002BE3C,(a2)
-[0000303a] 23ee fff0 0002 0d2e       move.l     -16(a6),$0002BE3C
+[00003034] 24b9 0002 0d2e            move.l     _symtab,(a2)
+[0000303a] 23ee fff0 0002 0d2e       move.l     -16(a6),_symtab
 [00003042] 45f8 000a                 lea.l      ($0000000A).w,a2
 [00003046] d5ed 0004                 adda.l     4(a5),a2
 [0000304a] 4292                      clr.l      (a2)
-[0000304c] 42b9 0002 0d1a            clr.l      $0002BE28
-[00003052] 4a79 0002 04aa            tst.w      $0002B5B8
+[0000304c] 42b9 0002 0d1a            clr.l      _lbltab
+[00003052] 4a79 0002 04aa            tst.w      _dbfulab
 [00003058] 671e                      beq.s      _fninit_39
 [0000305a] 2ebc 0000 00bb            move.l     #$000000BB,(a7)
 [00003060] 4eb9 0000 5a16            jsr        _pcode
 [00003066] 4878 0002                 pea.l      ($00000002).w
-[0000306a] 2f3c 0002 04aa            move.l     #$0002B5B8,-(a7)
+[0000306a] 2f3c 0002 04aa            move.l     #_dbfulab,-(a7)
 [00003070] 4eb9 0000 695c            jsr        _putbytes
 [00003076] 508f                      addq.l     #8,a7
 _fninit_39:
@@ -3824,20 +3824,20 @@ _fninit_39:
 [00003082] 588f                      addq.l     #4,a7
 [00003084] 4eba e91e                 jsr        _dbstat(pc)
 [00003088] 4eb9 0000 612e            jsr        _pret
-[0000308e] 4a79 0002 04aa            tst.w      $0002B5B8
+[0000308e] 4a79 0002 04aa            tst.w      _dbfulab
 [00003094] 670a                      beq.s      _fninit_40
 [00003096] 486d 0010                 pea.l      16(a5)
 [0000309a] 4eba e7aa                 jsr        _dbfunc(pc)
 [0000309e] 588f                      addq.l     #4,a7
 _fninit_40:
-[000030a0] 2679 0002 0d1a            movea.l    $0002BE28,a3
+[000030a0] 2679 0002 0d1a            movea.l    _lbltab,a3
 _fninit_43:
 [000030a6] 2e0b                      move.l     a3,d7
 [000030a8] 671a                      beq.s      _fninit_41
 [000030aa] 4a2b 000e                 tst.b      14(a3)
 [000030ae] 661e                      bne.s      _fninit_42
 [000030b0] 486b 0010                 pea.l      16(a3)
-[000030b4] 2f3c 0002 069a            move.l     #$0002B7A8,-(a7) "missing label"
+[000030b4] 2f3c 0002 069a            move.l     #$0002069A,-(a7) "missing label"
 [000030ba] 4eb9 0000 3c8a            jsr        _nmerr
 [000030c0] 508f                      addq.l     #8,a7
 [000030c2] 600a                      bra.s      _fninit_42
@@ -3856,8 +3856,8 @@ _perc:
 [000030de] 4e56 0000                 link       a6,#0
 [000030e2] 48e7 801c                 movem.l    d0/a3-a5,-(a7)
 [000030e6] 2a6e 0008                 movea.l    8(a6),a5
-[000030ea] 2679 0002 0d2e            movea.l    $0002BE3C,a3
-[000030f0] 23cd 0002 0d2e            move.l     a5,$0002BE3C
+[000030ea] 2679 0002 0d2e            movea.l    _symtab,a3
+[000030f0] 23cd 0002 0d2e            move.l     a5,_symtab
 _perc_5:
 [000030f6] b7cd                      cmpa.l     a5,a3
 [000030f8] 6744                      beq.s      _perc_1
@@ -3877,7 +3877,7 @@ _perc_5:
 [00003124] 0c47 0037                 cmpi.w     #$0037,d7
 [00003128] 671c                      beq.s      _perc_2
 [0000312a] 486b 0010                 pea.l      16(a3)
-[0000312e] 2f3c 0002 0768            move.l     #$0002B876,-(a7) "unused local symbol"
+[0000312e] 2f3c 0002 0768            move.l     #$00020768,-(a7) "unused local symbol"
 [00003134] 4eb9 0000 3c8a            jsr        _nmerr
 [0000313a] 508f                      addq.l     #8,a7
 [0000313c] 6008                      bra.s      _perc_2
@@ -3896,7 +3896,7 @@ _perc_2:
 [0000315c] 6624                      bne.s      _perc_4
 _perc_3:
 [0000315e] 4297                      clr.l      (a7)
-[00003160] 2f39 0002 0d16            move.l     $0002BE24,-(a7)
+[00003160] 2f39 0002 0d16            move.l     _gblsym,-(a7)
 [00003166] 486b 0010                 pea.l      16(a3)
 [0000316a] 4eb9 0000 847e            jsr        _lookup
 [00003170] 508f                      addq.l     #8,a7
@@ -3948,27 +3948,27 @@ _baktok1:
 [000031e4] 4e56 0000                 link       a6,#0
 [000031e8] 48e7 8004                 movem.l    d0/a5,-(a7)
 [000031ec] 2a6e 0008                 movea.l    8(a6),a5
-[000031f0] 3e39 0002 077e            move.w     $0002B88C,d7
+[000031f0] 3e39 0002 077e            move.w     _ntoks,d7
 [000031f6] 48c7                      ext.l      d7
 [000031f8] 0c47 0003                 cmpi.w     #$0003,d7
 [000031fc] 6c38                      bge.s      _baktok1_1
 [000031fe] 4878 0006                 pea.l      ($00000006).w
 [00003202] 2f0d                      move.l     a5,-(a7)
-[00003204] 3e39 0002 077e            move.w     $0002B88C,d7
+[00003204] 3e39 0002 077e            move.w     _ntoks,d7
 [0000320a] 48c7                      ext.l      d7
 [0000320c] 2447                      movea.l    d7,a2
-[0000320e] 5279 0002 077e            addq.w     #1,$0002B88C
+[0000320e] 5279 0002 077e            addq.w     #1,_ntoks
 [00003214] 2f0a                      move.l     a2,-(a7)
 [00003216] 4878 0006                 pea.l      ($00000006).w
 [0000321a] 4eb9 0000 ade4            jsr        a.lmul
 [00003220] 2e1f                      move.l     (a7)+,d7
 [00003222] 2f07                      move.l     d7,-(a7)
-[00003224] 0697 0002 0780            addi.l     #$0002B88E,(a7)
+[00003224] 0697 0002 0780            addi.l     #_tokstk,(a7)
 [0000322a] 4eb9 0000 adac            jsr        _cpybuf
 [00003230] 4fef 000c                 lea.l      12(a7),a7
 [00003234] 6014                      bra.s      _baktok1_2
 _baktok1_1:
-[00003236] 2ebc 0002 07a2            move.l     #$0002B8B0,(a7) "!TOKEN OVERFLOW"
+[00003236] 2ebc 0002 07a2            move.l     #$000207A2,(a7) "!TOKEN OVERFLOW"
 [0000323c] 4eb9 0000 3e84            jsr        _p1error
 [00003242] 4297                      clr.l      (a7)
 [00003244] 4eb9 0000 0080            jsr        _exit
@@ -4017,7 +4017,7 @@ _defspace_3:
 [000032ae] 2e04                      move.l     d4,d7
 [000032b0] e387                      asl.l      #1,d7
 [000032b2] 2447                      movea.l    d7,a2
-[000032b4] d5fc 0002 0792            adda.l     #$0002B8A0,a2
+[000032b4] d5fc 0002 0792            adda.l     #_spaces,a2
 [000032ba] 4287                      clr.l      d7
 [000032bc] 3e12                      move.w     (a2),d7
 _defspace_9:
@@ -4035,7 +4035,7 @@ _domodel_2:
 [000032d8] 2e04                      move.l     d4,d7
 [000032da] e387                      asl.l      #1,d7
 [000032dc] 2447                      movea.l    d7,a2
-[000032de] d5fc 0002 0792            adda.l     #$0002B8A0,a2
+[000032de] d5fc 0002 0792            adda.l     #_spaces,a2
 [000032e4] 4252                      clr.w      (a2)
 [000032e6] 5284                      addq.l     #1,d4
 [000032e8] 60e6                      bra.s      _domodel_2
@@ -4043,7 +4043,7 @@ _domodel_1:
 [000032ea] 4283                      clr.l      d3
 [000032ec] 7a08                      moveq.l    #8,d5
 [000032ee] 2e39 0002 0ba2            move.l     _model,d7
-[000032f4] 41f9 0002 07b2            lea.l      $0002B8C0,a0
+[000032f4] 41f9 0002 07b2            lea.l      $000207B2,a0
 [000032fa] 4ef9 0000 a7dc            jmp        a.switch
 [00003300] 4285                      clr.l      d5
 _domodel_5:
@@ -4054,7 +4054,7 @@ _domodel_4:
 [00003308] 2e04                      move.l     d4,d7
 [0000330a] e387                      asl.l      #1,d7
 [0000330c] 2447                      movea.l    d7,a2
-[0000330e] d5fc 0002 0792            adda.l     #$0002B8A0,a2
+[0000330e] d5fc 0002 0792            adda.l     #_spaces,a2
 [00003314] 34bc 0800                 move.w     #$0800,(a2)
 [00003318] 5284                      addq.l     #1,d4
 [0000331a] 60e8                      bra.s      _domodel_4
@@ -4094,27 +4094,27 @@ _eat_2:
 
 _getch:
 [00003368] 4e56 fffc                 link       a6,#-4
-[0000336c] 4a79 0002 07da            tst.w      $0002B8E8
+[0000336c] 4a79 0002 07da            tst.w      $000207DA
 [00003372] 6626                      bne.s      _getch_1
 [00003374] 2ebc 0000 0100            move.l     #$00000100,(a7)
-[0000337a] 23fc 0002 07dc 0002 08dc  move.l     #$0002B8EA,$0002B9EA
-[00003384] 2f39 0002 08dc            move.l     $0002B9EA,-(a7)
+[0000337a] 23fc 0002 07dc 0002 08dc  move.l     #$000207DC,$000208DC
+[00003384] 2f39 0002 08dc            move.l     $000208DC,-(a7)
 [0000338a] 42a7                      clr.l      -(a7)
 [0000338c] 4eb9 0000 a79e            jsr        _read
 [00003392] 508f                      addq.l     #8,a7
-[00003394] 33c7 0002 07da            move.w     d7,$0002B8E8
+[00003394] 33c7 0002 07da            move.w     d7,$000207DA
 _getch_1:
-[0000339a] 4a79 0002 07da            tst.w      $0002B8E8
+[0000339a] 4a79 0002 07da            tst.w      $000207DA
 [000033a0] 6e14                      bgt.s      _getch_2
-[000033a2] 33fc ffff 0002 07da       move.w     #$FFFF,$0002B8E8
-[000033aa] 3e39 0002 07da            move.w     $0002B8E8,d7
+[000033a2] 33fc ffff 0002 07da       move.w     #$FFFF,$000207DA
+[000033aa] 3e39 0002 07da            move.w     $000207DA,d7
 [000033b0] 48c7                      ext.l      d7
 [000033b2] 4e5e                      unlk       a6
 [000033b4] 4e75                      rts
 _getch_2:
-[000033b6] 5379 0002 07da            subq.w     #1,$0002B8E8
-[000033bc] 2479 0002 08dc            movea.l    $0002B9EA,a2
-[000033c2] 52b9 0002 08dc            addq.l     #1,$0002B9EA
+[000033b6] 5379 0002 07da            subq.w     #1,$000207DA
+[000033bc] 2479 0002 08dc            movea.l    $000208DC,a2
+[000033c2] 52b9 0002 08dc            addq.l     #1,$000208DC
 [000033c8] 4287                      clr.l      d7
 [000033ca] 1e12                      move.b     (a2),d7
 [000033cc] 0287 0000 00ff            andi.l     #$000000FF,d7
@@ -4125,16 +4125,16 @@ _getspace:
 [000033d6] 4e56 fffa                 link       a6,#-6
 [000033da] 48e7 8404                 movem.l    d0/d5/a5,-(a7)
 [000033de] 2a2e 0008                 move.l     8(a6),d5
-[000033e2] 4ab9 0002 0d26            tst.l      $0002BE34
+[000033e2] 4ab9 0002 0d26            tst.l      _spacetab
 [000033e8] 6626                      bne.s      _getspace_1
 [000033ea] 4297                      clr.l      (a7)
-[000033ec] 2f3c 0002 08f0            move.l     #$0002B9FE,-(a7)
+[000033ec] 2f3c 0002 08f0            move.l     #$000208F0,-(a7)
 [000033f2] 42a7                      clr.l      -(a7)
 [000033f4] 4eb9 0000 7a78            jsr        _buysym
 [000033fa] 508f                      addq.l     #8,a7
-[000033fc] 23c7 0002 0d26            move.l     d7,$0002BE34
+[000033fc] 23c7 0002 0d26            move.l     d7,_spacetab
 [00003402] 45f8 000c                 lea.l      ($0000000C).w,a2
-[00003406] d5f9 0002 0d26            adda.l     $0002BE34,a2
+[00003406] d5f9 0002 0d26            adda.l     _spacetab,a2
 [0000340c] 34bc 0800                 move.w     #$0800,(a2)
 _getspace_1:
 [00003410] 486e fffa                 pea.l      -6(a6)
@@ -4143,7 +4143,7 @@ _getspace_1:
 [0000341c] 4a87                      tst.l      d7
 [0000341e] 6700 0094                 beq        _getspace_2
 [00003422] 4297                      clr.l      (a7)
-[00003424] 2f39 0002 0d26            move.l     $0002BE34,-(a7)
+[00003424] 2f39 0002 0d26            move.l     _spacetab,-(a7)
 [0000342a] 2f2e fffc                 move.l     -4(a6),-(a7)
 [0000342e] 4eb9 0000 847e            jsr        _lookup
 [00003434] 508f                      addq.l     #8,a7
@@ -4161,7 +4161,7 @@ _getspace_3:
 [0000344e] 4eb9 0000 7a78            jsr        _buysym
 [00003454] 508f                      addq.l     #8,a7
 [00003456] 2a47                      movea.l    d7,a5
-[00003458] 2ebc 0002 0d26            move.l     #$0002BE34,(a7)
+[00003458] 2ebc 0002 0d26            move.l     #_spacetab,(a7)
 [0000345e] 2f0d                      move.l     a5,-(a7)
 [00003460] 4eb9 0000 774e            jsr        _addsym
 [00003466] 588f                      addq.l     #4,a7
@@ -4173,7 +4173,7 @@ _getspace_3:
 [00003474] 3b47 000c                 move.w     d7,12(a5)
 [00003478] 4a6d 000c                 tst.w      12(a5)
 [0000347c] 660e                      bne.s      _getspace_4
-[0000347e] 2ebc 0002 08e0            move.l     #$0002B9EE,(a7) "too many spaces"
+[0000347e] 2ebc 0002 08e0            move.l     #$000208E0,(a7) "too many spaces"
 [00003484] 4eb9 0000 3e84            jsr        _p1error
 [0000348a] 6020                      bra.s      _getspace_5
 _getspace_4:
@@ -4215,18 +4215,18 @@ _gettok1:
 [000034e6] 4e56 fffa                 link       a6,#-6
 [000034ea] 48e7 840c                 movem.l    d0/d5/a4-a5,-(a7)
 [000034ee] 2a6e 0008                 movea.l    8(a6),a5
-[000034f2] 4a79 0002 077e            tst.w      $0002B88C
+[000034f2] 4a79 0002 077e            tst.w      _ntoks
 [000034f8] 6f3e                      ble.s      _gettok1_1
 [000034fa] 4878 0006                 pea.l      ($00000006).w
-[000034fe] 5379 0002 077e            subq.w     #1,$0002B88C
-[00003504] 3e39 0002 077e            move.w     $0002B88C,d7
+[000034fe] 5379 0002 077e            subq.w     #1,_ntoks
+[00003504] 3e39 0002 077e            move.w     _ntoks,d7
 [0000350a] 48c7                      ext.l      d7
 [0000350c] 2f07                      move.l     d7,-(a7)
 [0000350e] 4878 0006                 pea.l      ($00000006).w
 [00003512] 4eb9 0000 ade4            jsr        a.lmul
 [00003518] 2e1f                      move.l     (a7)+,d7
 [0000351a] 2f07                      move.l     d7,-(a7)
-[0000351c] 0697 0002 0780            addi.l     #$0002B88E,(a7)
+[0000351c] 0697 0002 0780            addi.l     #_tokstk,(a7)
 [00003522] 2f0d                      move.l     a5,-(a7)
 [00003524] 4eb9 0000 adac            jsr        _cpybuf
 [0000352a] 4fef 000c                 lea.l      12(a7),a7
@@ -4347,7 +4347,7 @@ _gpragma_8:
 [0000366c] 4a87                      tst.l      d7
 [0000366e] 6700 01ec                 beq        _gpragma_1
 [00003672] 4878 0006                 pea.l      ($00000006).w
-[00003676] 2f3c 0002 093f            move.l     #$0002BA4D,-(a7)
+[00003676] 2f3c 0002 093f            move.l     #$0002093F,-(a7)
 [0000367c] 2f2e fff6                 move.l     -10(a6),-(a7)
 [00003680] 4eb9 0000 ad76            jsr        _cmpbuf
 [00003686] 4fef 000c                 lea.l      12(a7),a7
@@ -4359,7 +4359,7 @@ _gpragma_8:
 [0000369a] 4a87                      tst.l      d7
 [0000369c] 6700 007e                 beq.w      _gpragma_3
 [000036a0] 4878 0004                 pea.l      ($00000004).w
-[000036a4] 2f3c 0002 093a            move.l     #$0002BA48,-(a7)
+[000036a4] 2f3c 0002 093a            move.l     #$0002093A,-(a7)
 [000036aa] 2f2e fff6                 move.l     -10(a6),-(a7)
 [000036ae] 4eb9 0000 ad76            jsr        _cmpbuf
 [000036b4] 4fef 000c                 lea.l      12(a7),a7
@@ -4368,16 +4368,16 @@ _gpragma_8:
 [000036bc] 605e                      bra.s      _gpragma_3
 _gpragma_2:
 [000036be] 4878 0006                 pea.l      ($00000006).w
-[000036c2] 2f3c 0002 091d            move.l     #$0002BA2B,-(a7)
+[000036c2] 2f3c 0002 091d            move.l     #$0002091D,-(a7)
 [000036c8] 2f2e fff6                 move.l     -10(a6),-(a7)
 [000036cc] 4eb9 0000 ad76            jsr        _cmpbuf
 [000036d2] 4fef 000c                 lea.l      12(a7),a7
 [000036d6] 4a87                      tst.l      d7
 [000036d8] 6700 0088                 beq        _gpragma_5
-[000036dc] 2ebc 0002 08f6            move.l     #$0002BA04,(a7)
+[000036dc] 2ebc 0002 08f6            move.l     #$000208F6,(a7)
 [000036e2] 4eba faae                 jsr        _alt(pc)
 [000036e6] 2e87                      move.l     d7,(a7)
-[000036e8] 2f3c 0002 08f6            move.l     #$0002BA04,-(a7)
+[000036e8] 2f3c 0002 08f6            move.l     #$000208F6,-(a7)
 [000036ee] 4eb9 0000 a7a6            jsr        _scnstr
 [000036f4] 588f                      addq.l     #4,a7
 [000036f6] 1d47 fff3                 move.b     d7,-13(a6)
@@ -4396,13 +4396,13 @@ _gpragma_2:
 _gpragma_3:
 [0000371c] 4284                      clr.l      d4
 _gpragma_10:
-[0000371e] 4a79 0002 04a8            tst.w      $0002B5B6
+[0000371e] 4a79 0002 04a8            tst.w      _dbfilab
 [00003724] 6700 ff3a                 beq        _gpragma_8
 [00003728] 23c4 0002 0b6e            move.l     d4,_dbflag
 [0000372e] 6000 ff30                 bra        _gpragma_8
 _gpragma_4:
 [00003732] 4878 0003                 pea.l      ($00000003).w
-[00003736] 2f3c 0002 0936            move.l     #$0002BA44,-(a7)
+[00003736] 2f3c 0002 0936            move.l     #$00020936,-(a7)
 [0000373c] 2f2e fff6                 move.l     -10(a6),-(a7)
 [00003740] 4eb9 0000 ad76            jsr        _cmpbuf
 [00003746] 4fef 000c                 lea.l      12(a7),a7
@@ -4411,7 +4411,7 @@ _gpragma_4:
 [0000374e] 7801                      moveq.l    #1,d4
 [00003750] 60cc                      bra.s      _gpragma_10
 _gpragma_9:
-[00003752] 2ebc 0002 0924            move.l     #$0002BA32,(a7) "bad #pragma debug"
+[00003752] 2ebc 0002 0924            move.l     #$00020924,(a7) "bad #pragma debug"
 [00003758] 4eb9 0000 3e84            jsr        _p1error
 [0000375e] 6000 00fc                 bra        _gpragma_1
 _gpragma_5:
@@ -4437,7 +4437,7 @@ _gpragma_11:
 _gpragma_7:
 [00003792] 4a84                      tst.l      d4
 [00003794] 6610                      bne.s      _gpragma_12
-[00003796] 2ebc 0002 090b            move.l     #$0002BA19,(a7) "bad #pragma space"
+[00003796] 2ebc 0002 090b            move.l     #$0002090B,(a7) "bad #pragma space"
 [0000379c] 4eb9 0000 3e84            jsr        _p1error
 [000037a2] 6000 00b8                 bra        _gpragma_1
 _gpragma_12:
@@ -4488,7 +4488,7 @@ _gpragma_18:
 [00003824] 2e05                      move.l     d5,d7
 [00003826] e387                      asl.l      #1,d7
 [00003828] 2447                      movea.l    d7,a2
-[0000382a] d5fc 0002 0792            adda.l     #$0002B8A0,a2
+[0000382a] d5fc 0002 0792            adda.l     #_spaces,a2
 [00003830] 34ae fffe                 move.w     -2(a6),(a2)
 _gpragma_19:
 [00003834] 0c84 0000 0006            cmpi.l     #$00000006,d4
@@ -4500,7 +4500,7 @@ _gpragma_20:
 [00003846] 5887                      addq.l     #4,d7
 [00003848] e387                      asl.l      #1,d7
 [0000384a] 2447                      movea.l    d7,a2
-[0000384c] d5fc 0002 0792            adda.l     #$0002B8A0,a2
+[0000384c] d5fc 0002 0792            adda.l     #_spaces,a2
 [00003852] 34ae fffe                 move.w     -2(a6),(a2)
 _gpragma_17:
 [00003856] 5285                      addq.l     #1,d5
@@ -4520,7 +4520,7 @@ _gpragma_1:
 _gpragma_22:
 [0000387a] 4aae fffa                 tst.l      -6(a6)
 [0000387e] 670c                      beq.s      _gpragma_23
-[00003880] 2ebc 0002 08fb            move.l     #$0002BA09,(a7) "unknown #pragma"
+[00003880] 2ebc 0002 08fb            move.l     #$000208FB,(a7) "unknown #pragma"
 [00003886] 4eb9 0000 3e84            jsr        _p1error
 _gpragma_23:
 [0000388c] 4cdf 0031                 movem.l    (a7)+,d0/d4-d5
@@ -4539,7 +4539,7 @@ _gtok_5:
 [000038ae] 1a87                      move.b     d7,(a5)
 [000038b0] 4287                      clr.l      d7
 [000038b2] 1e15                      move.b     (a5),d7
-[000038b4] 41f9 0002 094a            lea.l      $0002BA58,a0
+[000038b4] 41f9 0002 094a            lea.l      $0002094A,a0
 [000038ba] 4ef9 0000 a7dc            jmp        a.switch
 _gtok_1:
 [000038c0] 2b7c 0002 0bb4 0002       move.l     #_mainbuff,2(a5)
@@ -4631,7 +4631,7 @@ _gtok_6:
 [00003a02] 4212                      clr.b      (a2)
 [00003a04] 4ab9 0002 0b6e            tst.l      _dbflag
 [00003a0a] 671c                      beq.s      _gtok_7
-[00003a0c] 4a79 0002 04a8            tst.w      $0002B5B6
+[00003a0c] 4a79 0002 04a8            tst.w      _dbfilab
 [00003a12] 6614                      bne.s      _gtok_7
 [00003a14] 2479 0002 0cd0            movea.l    _infile,a2
 [00003a1a] 4a12                      tst.b      (a2)
@@ -4657,13 +4657,13 @@ _gtok_7:
 _gtok_8:
 [00003a64] 23ee fff8 0002 0cb4       move.l     -8(a6),_p1p2ioct
 [00003a6c] 6000 fe36                 bra        _gtok_5
-[00003a70] 4ab9 0002 0946            tst.l      $0002BA54
+[00003a70] 4ab9 0002 0946            tst.l      $00020946
 [00003a76] 6708                      beq.s      _gtok_9
-[00003a78] 42b9 0002 0946            clr.l      $0002BA54
+[00003a78] 42b9 0002 0946            clr.l      $00020946
 [00003a7e] 601e                      bra.s      _gtok_10
 _gtok_9:
 [00003a80] 7001                      moveq.l    #1,d0
-[00003a82] 23c0 0002 0946            move.l     d0,$0002BA54
+[00003a82] 23c0 0002 0946            move.l     d0,$00020946
 [00003a88] 4eba fbca                 jsr        _gpragma(pc)
 [00003a8c] 6000 fe16                 bra        _gtok_5
 [00003a90] 7001                      moveq.l    #1,d0
@@ -4683,11 +4683,11 @@ _gtok_3:
 [00003ab6] 66e6                      bne.s      _gtok_10
 [00003ab8] 4287                      clr.l      d7
 [00003aba] 1e15                      move.b     (a5),d7
-[00003abc] 41f9 0002 0972            lea.l      $0002BA80,a0
+[00003abc] 41f9 0002 0972            lea.l      $00020972,a0
 [00003ac2] 4ef9 0000 a7dc            jmp        a.switch
 [00003ac8] 13fc 0008 0002 0bb4       move.b     #$08,_mainbuff
 [00003ad0] 4878 0008                 pea.l      ($00000008).w
-[00003ad4] 2f3c 0002 0bb5            move.l     #$0002BCC3,-(a7)
+[00003ad4] 2f3c 0002 0bb5            move.l     #$00020BB5,-(a7)
 [00003ada] 4eba f9e2                 jsr        _getstr(pc)
 [00003ade] 508f                      addq.l     #8,a7
 [00003ae0] 60bc                      bra.s      _gtok_10
@@ -4704,7 +4704,7 @@ _gtok_12:
 [00003afa] 2a07                      move.l     d7,d5
 [00003afc] 13c5 0002 0bb4            move.b     d5,_mainbuff
 [00003b02] 2e85                      move.l     d5,(a7)
-[00003b04] 2f3c 0002 0bb5            move.l     #$0002BCC3,-(a7)
+[00003b04] 2f3c 0002 0bb5            move.l     #$00020BB5,-(a7)
 [00003b0a] 4eba f9b2                 jsr        _getstr(pc)
 [00003b0e] 588f                      addq.l     #4,a7
 _gtok_13:
@@ -4751,7 +4751,7 @@ _gtok_13:
 [00003b8c] 246d 0002                 movea.l    2(a5),a2
 [00003b90] 5252                      addq.w     #1,(a2)
 [00003b92] 6000 ff0a                 bra        _gtok_10
-[00003b96] 2ebc 0002 09d2            move.l     #$0002BAE0,(a7) "!BAD CHAR"
+[00003b96] 2ebc 0002 09d2            move.l     #$000209D2,(a7) "!BAD CHAR"
 [00003b9c] 4eb9 0000 3e84            jsr        _p1error
 [00003ba2] 4297                      clr.l      (a7)
 [00003ba4] 4eb9 0000 0080            jsr        _exit
@@ -4807,14 +4807,14 @@ _need:
 [00003c1a] 4a87                      tst.l      d7
 [00003c1c] 662e                      bne.s      _need_1
 [00003c1e] 2e85                      move.l     d5,(a7)
-[00003c20] 2f3c 0002 09dc            move.l     #$0002BAEA,-(a7)
+[00003c20] 2f3c 0002 09dc            move.l     #$000209DC,-(a7)
 [00003c26] 4eb9 0000 a7a6            jsr        _scnstr
 [00003c2c] 588f                      addq.l     #4,a7
 [00003c2e] e587                      asl.l      #2,d7
 [00003c30] 2447                      movea.l    d7,a2
-[00003c32] d5fc 0002 09e6            adda.l     #$0002BAF4,a2
+[00003c32] d5fc 0002 09e6            adda.l     #$000209E6,a2
 [00003c38] 2e92                      move.l     (a2),(a7)
-[00003c3a] 2f3c 0002 0a34            move.l     #$0002BB42,-(a7) "missing"
+[00003c3a] 2f3c 0002 0a34            move.l     #$00020A34,-(a7) "missing"
 [00003c40] 4eb9 0000 3c8a            jsr        _nmerr
 [00003c46] 588f                      addq.l     #4,a7
 [00003c48] 4287                      clr.l      d7
@@ -4833,7 +4833,7 @@ _needc:
 [00003c62] 2a07                      move.l     d7,d5
 [00003c64] 0c85 ffff ffff            cmpi.l     #$FFFFFFFF,d5
 [00003c6a] 6614                      bne.s      _needc_1
-[00003c6c] 2ebc 0002 0a3c            move.l     #$0002BB4A,(a7) "!EOF"
+[00003c6c] 2ebc 0002 0a3c            move.l     #$00020A3C,(a7) "!EOF"
 [00003c72] 4eb9 0000 3e84            jsr        _p1error
 [00003c78] 4297                      clr.l      (a7)
 [00003c7a] 4eb9 0000 0080            jsr        _exit
@@ -4862,16 +4862,16 @@ _nmerr:
 [00003cc4] d5cc                      adda.l     a4,a2
 [00003cc6] 4212                      clr.b      (a2)
 [00003cc8] 4297                      clr.l      (a7)
-[00003cca] 2f3c 0002 0a44            move.l     #$0002BB52,-(a7)
+[00003cca] 2f3c 0002 0a44            move.l     #$00020A44,-(a7)
 [00003cd0] 2f2e 0008                 move.l     8(a6),-(a7)
-[00003cd4] 2f3c 0002 0a46            move.l     #$0002BB54,-(a7)
+[00003cd4] 2f3c 0002 0a46            move.l     #$00020A46,-(a7)
 [00003cda] 486e fff8                 pea.l      -8(a6)
-[00003cde] 2f3c 0002 0a48            move.l     #$0002BB56,-(a7)
+[00003cde] 2f3c 0002 0a48            move.l     #$00020A48,-(a7)
 [00003ce4] 2f39 0002 0cd0            move.l     _infile,-(a7)
 [00003cea] 5297                      addq.l     #1,(a7)
-[00003cec] 2f3c 0002 0a4a            move.l     #$0002BB58,-(a7)
-[00003cf2] 2f39 0002 0cc0            move.l     $0002BDCE,-(a7)
-[00003cf8] 2f3c 0002 0a4c            move.l     #$0002BB5A,-(a7)
+[00003cec] 2f3c 0002 0a4a            move.l     #$00020A4A,-(a7)
+[00003cf2] 2f39 0002 0cc0            move.l     __pname,-(a7)
+[00003cf8] 2f3c 0002 0a4c            move.l     #$00020A4C,-(a7)
 [00003cfe] 2f3c 0002 0c34            move.l     #_errbuf,-(a7)
 [00003d04] 4eb9 0000 a51e            jsr        _cpystr
 [00003d0a] 4fef 0028                 lea.l      40(a7),a7
@@ -4917,7 +4917,7 @@ _nmerr_1:
 [00003d80] 2d4d fff4                 move.l     a5,-12(a6)
 _nmerr_6:
 [00003d84] 4878 0001                 pea.l      ($00000001).w
-[00003d88] 2f3c 0002 0a42            move.l     #$0002BB50,-(a7)
+[00003d88] 2f3c 0002 0a42            move.l     #$00020A42,-(a7)
 [00003d8e] 3e39 0002 0cc8            move.w     _errfd,d7
 [00003d94] 48c7                      ext.l      d7
 [00003d96] 2f07                      move.l     d7,-(a7)
@@ -5012,40 +5012,40 @@ _putchr:
 [00003ea4] 4e5e                      unlk       a6
 [00003ea6] 4e75                      rts
 _putchr_1:
-[00003ea8] 3e39 0002 0a54            move.w     $0002BB62,d7
+[00003ea8] 3e39 0002 0a54            move.w     $00020A54,d7
 [00003eae] 48c7                      ext.l      d7
 [00003eb0] 0c47 0100                 cmpi.w     #$0100,d7
 [00003eb4] 670e                      beq.s      _putchr_2
 [00003eb6] 4aae 0008                 tst.l      8(a6)
 [00003eba] 6c4e                      bge.s      _putchr_3
-[00003ebc] 4a79 0002 0a54            tst.w      $0002BB62
+[00003ebc] 4a79 0002 0a54            tst.w      $00020A54
 [00003ec2] 6746                      beq.s      _putchr_3
 _putchr_2:
-[00003ec4] 3e39 0002 0a54            move.w     $0002BB62,d7
+[00003ec4] 3e39 0002 0a54            move.w     $00020A54,d7
 [00003eca] 48c7                      ext.l      d7
 [00003ecc] 2e87                      move.l     d7,(a7)
-[00003ece] 2f3c 0002 0a56            move.l     #$0002BB64,-(a7)
+[00003ece] 2f3c 0002 0a56            move.l     #$00020A56,-(a7)
 [00003ed4] 3e39 0002 0cd6            move.w     _outfd,d7
 [00003eda] 48c7                      ext.l      d7
 [00003edc] 2f07                      move.l     d7,-(a7)
 [00003ede] 4eb9 0000 b106            jsr        _write
 [00003ee4] 508f                      addq.l     #8,a7
-[00003ee6] 3c39 0002 0a54            move.w     $0002BB62,d6
+[00003ee6] 3c39 0002 0a54            move.w     $00020A54,d6
 [00003eec] 48c6                      ext.l      d6
 [00003eee] be86                      cmp.l      d6,d7
 [00003ef0] 6712                      beq.s      _putchr_4
-[00003ef2] 2ebc 0002 0b56            move.l     #$0002BC64,(a7) ":"
+[00003ef2] 2ebc 0002 0b56            move.l     #$00020B56,(a7) ":"
 [00003ef8] 4eba ff8a                 jsr        _p1error(pc)
 [00003efc] 4297                      clr.l      (a7)
 [00003efe] 4eb9 0000 0080            jsr        _exit
 _putchr_4:
-[00003f04] 4279 0002 0a54            clr.w      $0002BB62
+[00003f04] 4279 0002 0a54            clr.w      $00020A54
 _putchr_3:
-[00003f0a] 3e39 0002 0a54            move.w     $0002BB62,d7
+[00003f0a] 3e39 0002 0a54            move.w     $00020A54,d7
 [00003f10] 48c7                      ext.l      d7
 [00003f12] 2447                      movea.l    d7,a2
-[00003f14] 5279 0002 0a54            addq.w     #1,$0002BB62
-[00003f1a] d5fc 0002 0a56            adda.l     #$0002BB64,a2
+[00003f14] 5279 0002 0a54            addq.w     #1,$00020A54
+[00003f1a] d5fc 0002 0a56            adda.l     #$00020A56,a2
 [00003f20] 14ae 000b                 move.b     11(a6),(a2)
 [00003f24] 4e5e                      unlk       a6
 [00003f26] 4e75                      rts
@@ -5091,7 +5091,7 @@ _chktyp_5:
 [00003f8c] 2e04                      move.l     d4,d7
 [00003f8e] e387                      asl.l      #1,d7
 [00003f90] 2447                      movea.l    d7,a2
-[00003f92] d5fc 0002 0e5a            adda.l     #$0002BF68,a2
+[00003f92] d5fc 0002 0e5a            adda.l     #_legals,a2
 [00003f98] 4287                      clr.l      d7
 [00003f9a] 3e12                      move.w     (a2),d7
 [00003f9c] 0c87 0000 8000            cmpi.l     #$00008000,d7
@@ -5099,7 +5099,7 @@ _chktyp_5:
 [00003fa4] 2e04                      move.l     d4,d7
 [00003fa6] e387                      asl.l      #1,d7
 [00003fa8] 2447                      movea.l    d7,a2
-[00003faa] d5fc 0002 0e5a            adda.l     #$0002BF68,a2
+[00003faa] d5fc 0002 0e5a            adda.l     #_legals,a2
 [00003fb0] 4287                      clr.l      d7
 [00003fb2] 3e12                      move.w     (a2),d7
 [00003fb4] be85                      cmp.l      d5,d7
@@ -5108,14 +5108,14 @@ _chktyp_1:
 [00003fb8] 2e04                      move.l     d4,d7
 [00003fba] e387                      asl.l      #1,d7
 [00003fbc] 2447                      movea.l    d7,a2
-[00003fbe] d5fc 0002 0e5a            adda.l     #$0002BF68,a2
+[00003fbe] d5fc 0002 0e5a            adda.l     #_legals,a2
 [00003fc4] 4287                      clr.l      d7
 [00003fc6] 3e12                      move.w     (a2),d7
 [00003fc8] 0c87 0000 8000            cmpi.l     #$00008000,d7
 [00003fce] 6618                      bne.s      _chktyp_3
-[00003fd0] 2ebc 0002 0ef8            move.l     #$0002C006,(a7) "illegal type specification"
+[00003fd0] 2ebc 0002 0ef8            move.l     #$00020EF8,(a7) "illegal type specification"
 [00003fd6] 4eb9 0000 3e84            jsr        _p1error
-[00003fdc] 2a7c 0002 0dc2            movea.l    #$0002BED0,a5
+[00003fdc] 2a7c 0002 0dc2            movea.l    #_atint,a5
 [00003fe2] 601a                      bra.s      _chktyp_4
 _chktyp_2:
 [00003fe4] 5284                      addq.l     #1,d4
@@ -5126,7 +5126,7 @@ _chktyp_3:
 [00003ff0] 2e04                      move.l     d4,d7
 [00003ff2] e587                      asl.l      #2,d7
 [00003ff4] 2447                      movea.l    d7,a2
-[00003ff6] d5fc 0002 0e90            adda.l     #$0002BF9E,a2
+[00003ff6] d5fc 0002 0e90            adda.l     #_legalatt,a2
 [00003ffc] 2a52                      movea.l    (a2),a5
 _chktyp_4:
 [00003ffe] 4287                      clr.l      d7
@@ -5181,9 +5181,9 @@ _decsu_4:
 [00004088] 588f                      addq.l     #4,a7
 [0000408a] 4a87                      tst.l      d7
 [0000408c] 667a                      bne.s      _decsu_7
-[0000408e] 2ebc 0002 0faf            move.l     #$0002C0BD,(a7) "incomplete type"
+[0000408e] 2ebc 0002 0faf            move.l     #$00020FAF,(a7) "incomplete type"
 [00004094] 4eb9 0000 3e84            jsr        _p1error
-[0000409a] 2e3c 0002 0dc2            move.l     #$0002BED0,d7
+[0000409a] 2e3c 0002 0dc2            move.l     #_atint,d7
 [000040a0] 4cdf 3031                 movem.l    (a7)+,d0/d4-d5/a4-a5
 [000040a4] 4e5e                      unlk       a6
 [000040a6] 4e75                      rts
@@ -5206,8 +5206,8 @@ _decsu_6:
 [000040d6] 14bc 007c                 move.b     #$7C,(a2)
 [000040da] 45ee ff4d                 lea.l      -179(a6),a2
 [000040de] 2d4a ff48                 move.l     a2,-184(a6)
-[000040e2] 2eb9 0002 0d2a            move.l     $0002BE38,(a7)
-[000040e8] 2f39 0002 0d2e            move.l     $0002BE3C,-(a7)
+[000040e2] 2eb9 0002 0d2a            move.l     _symend,(a7)
+[000040e8] 2f39 0002 0d2e            move.l     _symtab,-(a7)
 [000040ee] 486e ff4d                 pea.l      -179(a6)
 [000040f2] 4eb9 0000 847e            jsr        _lookup
 [000040f8] 508f                      addq.l     #8,a7
@@ -5216,7 +5216,7 @@ _decsu_6:
 [00004100] 42ae ff48                 clr.l      -184(a6)
 [00004104] 6000 0092                 bra        _decsu_9
 _decsu_7:
-[00004108] 2d7c 0002 077c ff48       move.l     #$0002B88A,-184(a6)
+[00004108] 2d7c 0002 077c ff48       move.l     #_noname,-184(a6)
 _decsu_11:
 [00004110] 4aae ff48                 tst.l      -184(a6)
 [00004114] 6700 00ee                 beq        _decsu_10
@@ -5232,7 +5232,7 @@ _decsu_11:
 [00004132] 4eb9 0000 7a78            jsr        _buysym
 [00004138] 508f                      addq.l     #8,a7
 [0000413a] 2d47 ffce                 move.l     d7,-50(a6)
-[0000413e] 2ebc 0002 0d2e            move.l     #$0002BE3C,(a7)
+[0000413e] 2ebc 0002 0d2e            move.l     #_symtab,(a7)
 [00004144] 2f2e ffce                 move.l     -50(a6),-(a7)
 [00004148] 4eb9 0000 774e            jsr        _addsym
 [0000414e] 588f                      addq.l     #4,a7
@@ -5252,7 +5252,7 @@ _decsu_8:
 [0000417c] 4a87                      tst.l      d7
 [0000417e] 6618                      bne.s      _decsu_9
 [00004180] 4297                      clr.l      (a7)
-[00004182] 2f39 0002 0d2a            move.l     $0002BE38,-(a7)
+[00004182] 2f39 0002 0d2a            move.l     _symend,-(a7)
 [00004188] 486e ff4d                 pea.l      -179(a6)
 [0000418c] 4eb9 0000 847e            jsr        _lookup
 [00004192] 508f                      addq.l     #8,a7
@@ -5285,7 +5285,7 @@ _decsu_12:
 [000041da] 7e10                      moveq.l    #16,d7
 [000041dc] deae ffce                 add.l      -50(a6),d7
 [000041e0] 2e87                      move.l     d7,(a7)
-[000041e2] 2f3c 0002 0fa1            move.l     #$0002C0AF,-(a7) "redefined tag"
+[000041e2] 2f3c 0002 0fa1            move.l     #$00020FA1,-(a7) "redefined tag"
 [000041e8] 4eb9 0000 3c8a            jsr        _nmerr
 [000041ee] 588f                      addq.l     #4,a7
 [000041f0] 45ee ff4d                 lea.l      -179(a6),a2
@@ -5332,8 +5332,8 @@ _decsu_15:
 [00004268] 6600 0108                 bne        _decsu_18
 [0000426c] 60d2                      bra.s      _decsu_14
 _decsu_16:
-[0000426e] 2eb9 0002 0d2a            move.l     $0002BE38,(a7)
-[00004274] 2f39 0002 0d2e            move.l     $0002BE3C,-(a7)
+[0000426e] 2eb9 0002 0d2a            move.l     _symend,(a7)
+[00004274] 2f39 0002 0d2e            move.l     _symtab,-(a7)
 [0000427a] 2f2e ff44                 move.l     -188(a6),-(a7)
 [0000427e] 4eb9 0000 847e            jsr        _lookup
 [00004284] 508f                      addq.l     #8,a7
@@ -5341,7 +5341,7 @@ _decsu_16:
 [00004288] 2e0d                      move.l     a5,d7
 [0000428a] 6716                      beq.s      _decsu_19
 [0000428c] 2eae ff44                 move.l     -188(a6),(a7)
-[00004290] 2f3c 0002 0f89            move.l     #$0002C097,-(a7) "redeclared enum element"
+[00004290] 2f3c 0002 0f89            move.l     #$00020F89,-(a7) "redeclared enum element"
 [00004296] 4eb9 0000 3c8a            jsr        _nmerr
 [0000429c] 588f                      addq.l     #4,a7
 [0000429e] 6000 ff74                 bra        _decsu_20
@@ -5369,7 +5369,7 @@ _decsu_21:
 [000042ee] 6c12                      bge.s      _decsu_23
 _decsu_22:
 [000042f0] 486d 0010                 pea.l      16(a5)
-[000042f4] 2f3c 0002 0f64            move.l     #$0002C072,-(a7) "enumeration constant larger than int"
+[000042f4] 2f3c 0002 0f64            move.l     #$00020F64,-(a7) "enumeration constant larger than int"
 [000042fa] 4eb9 0000 3c8a            jsr        _nmerr
 [00004300] 508f                      addq.l     #8,a7
 _decsu_23:
@@ -5396,7 +5396,7 @@ _decsu_24:
 _decsu_25:
 [0000433c] 1b7c 0001 000f            move.b     #$01,15(a5)
 [00004342] 2b6e fff4 0008            move.l     -12(a6),8(a5)
-[00004348] 2ebc 0002 0d2e            move.l     #$0002BE3C,(a7)
+[00004348] 2ebc 0002 0d2e            move.l     #_symtab,(a7)
 [0000434e] 2f0d                      move.l     a5,-(a7)
 [00004350] 4eb9 0000 774e            jsr        _addsym
 [00004356] 588f                      addq.l     #4,a7
@@ -5424,8 +5424,8 @@ _decsu_26:
 [00004398] 2e0d                      move.l     a5,d7
 [0000439a] 661a                      bne.s      _decsu_28
 [0000439c] 4297                      clr.l      (a7)
-[0000439e] 2f3c 0002 077c            move.l     #$0002B88A,-(a7)
-[000043a4] 2f3c 0002 0dc2            move.l     #$0002BED0,-(a7)
+[0000439e] 2f3c 0002 077c            move.l     #_noname,-(a7)
+[000043a4] 2f3c 0002 0dc2            move.l     #_atint,-(a7)
 [000043aa] 4eb9 0000 7a78            jsr        _buysym
 [000043b0] 508f                      addq.l     #8,a7
 [000043b2] 2a47                      movea.l    d7,a5
@@ -5439,7 +5439,7 @@ _decsu_28:
 [000043c8] 4a87                      tst.l      d7
 [000043ca] 6712                      beq.s      _decsu_29
 [000043cc] 486d 0010                 pea.l      16(a5)
-[000043d0] 2f3c 0002 0f53            move.l     #$0002C061,-(a7) "member redefined"
+[000043d0] 2f3c 0002 0f53            move.l     #$00020F53,-(a7) "member redefined"
 [000043d6] 4eb9 0000 3c8a            jsr        _nmerr
 [000043dc] 508f                      addq.l     #8,a7
 _decsu_29:
@@ -5461,7 +5461,7 @@ _decsu_30:
 [0000440c] 1e2e ff41                 move.b     -191(a6),d7
 [00004410] 0c47 0048                 cmpi.w     #$0048,d7
 [00004414] 670c                      beq.s      _decsu_32
-[00004416] 2ebc 0002 0f45            move.l     #$0002C053,(a7) "illegal field"
+[00004416] 2ebc 0002 0f45            move.l     #$00020F45,(a7) "illegal field"
 [0000441c] 4eb9 0000 3e84            jsr        _p1error
 _decsu_32:
 [00004422] 4878 0001                 pea.l      ($00000001).w
@@ -5480,7 +5480,7 @@ _decsu_32:
 [00004448] 1e12                      move.b     (a2),d7
 [0000444a] 0c47 001a                 cmpi.w     #$001A,d7
 [0000444e] 670c                      beq.s      _decsu_33
-[00004450] 2ebc 0002 0f34            move.l     #$0002C042,(a7) "illegal bitfield"
+[00004450] 2ebc 0002 0f34            move.l     #$00020F34,(a7) "illegal bitfield"
 [00004456] 4eb9 0000 3e84            jsr        _p1error
 _decsu_33:
 [0000445c] 4297                      clr.l      (a7)
@@ -5498,7 +5498,7 @@ _decsu_33:
 [0000447e] 4a2d 0010                 tst.b      16(a5)
 [00004482] 6710                      beq.s      _decsu_35
 _decsu_34:
-[00004484] 2ebc 0002 0f24            move.l     #$0002C032,(a7) "bad field width"
+[00004484] 2ebc 0002 0f24            move.l     #$00020F24,(a7) "bad field width"
 [0000448a] 4eb9 0000 3e84            jsr        _p1error
 [00004490] 282e fff8                 move.l     -8(a6),d4
 _decsu_35:
@@ -5591,7 +5591,7 @@ _decsu_42:
 [0000458a] 6000 0090                 bra        _decsu_45
 _decsu_43:
 [0000458e] 4297                      clr.l      (a7)
-[00004590] 2f39 0002 0d22            move.l     $0002BE30,-(a7)
+[00004590] 2f39 0002 0d22            move.l     _mostab,-(a7)
 [00004596] 486d 0010                 pea.l      16(a5)
 [0000459a] 4eb9 0000 847e            jsr        _lookup
 [000045a0] 508f                      addq.l     #8,a7
@@ -5606,7 +5606,7 @@ _decsu_43:
 [000045be] 246e ffda                 movea.l    -38(a6),a2
 [000045c2] 508a                      addq.l     #8,a2
 [000045c4] 24ad 0008                 move.l     8(a5),(a2)
-[000045c8] 2ebc 0002 0d22            move.l     #$0002BE30,(a7)
+[000045c8] 2ebc 0002 0d22            move.l     #_mostab,(a7)
 [000045ce] 2f2e ffda                 move.l     -38(a6),-(a7)
 [000045d2] 4eb9 0000 774e            jsr        _addsym
 [000045d8] 588f                      addq.l     #4,a7
@@ -5628,7 +5628,7 @@ _decsu_46:
 [00004602] 6712                      beq.s      _decsu_44
 _decsu_47:
 [00004604] 486d 0010                 pea.l      16(a5)
-[00004608] 2f3c 0002 0f14            move.l     #$0002C022,-(a7) "member conflict"
+[00004608] 2f3c 0002 0f14            move.l     #$00020F14,-(a7) "member conflict"
 [0000460e] 4eb9 0000 3c8a            jsr        _nmerr
 [00004614] 508f                      addq.l     #8,a7
 _decsu_44:
@@ -5648,10 +5648,10 @@ _decsu_45:
 [00004638] 2e8a                      move.l     a2,(a7)
 [0000463a] 0cae 0000 0080 fff0       cmpi.l     #$00000080,-16(a6)
 [00004642] 6c08                      bge.s      _decsu_50
-[00004644] 2e3c 0002 0d68            move.l     #$0002BE76,d7
+[00004644] 2e3c 0002 0d68            move.l     #_atchar,d7
 [0000464a] 6006                      bra.s      _decsu_51
 _decsu_50:
-[0000464c] 2e3c 0002 0d9e            move.l     #$0002BEAC,d7
+[0000464c] 2e3c 0002 0d9e            move.l     #_atshort,d7
 _decsu_51:
 [00004652] 2257                      movea.l    (a7),a1
 [00004654] 2287                      move.l     d7,(a1)
@@ -5685,7 +5685,7 @@ _dterm:
 [0000469a] 426e fffe                 clr.w      -2(a6)
 [0000469e] 426e fffc                 clr.w      -4(a6)
 _dterm_3:
-[000046a2] 2ebc 0002 0fc3            move.l     #$0002C0D1,(a7)
+[000046a2] 2ebc 0002 0fc3            move.l     #$00020FC3,(a7)
 [000046a8] 4eb9 0000 3192            jsr        _alt
 [000046ae] 2a07                      move.l     d7,d5
 [000046b0] 6762                      beq.s      _dterm_2
@@ -5724,10 +5724,10 @@ _dterm_2:
 [0000471c] 2847                      movea.l    d7,a4
 [0000471e] 2e0c                      move.l     a4,d7
 [00004720] 6620                      bne.s      _dterm_6
-[00004722] 2ebc 0002 102d            move.l     #$0002C13B,(a7) "bad *declaration"
+[00004722] 2ebc 0002 102d            move.l     #$0002102D,(a7) "bad *declaration"
 [00004728] 4eb9 0000 3e84            jsr        _p1error
 [0000472e] 4297                      clr.l      (a7)
-[00004730] 2f3c 0002 077c            move.l     #$0002B88A,-(a7)
+[00004730] 2f3c 0002 077c            move.l     #_noname,-(a7)
 [00004736] 42a7                      clr.l      -(a7)
 [00004738] 4eb9 0000 7a78            jsr        _buysym
 [0000473e] 508f                      addq.l     #8,a7
@@ -5771,7 +5771,7 @@ _dterm_4:
 [000047b6] 4eb9 0000 31e4            jsr        _baktok1
 [000047bc] 588f                      addq.l     #4,a7
 [000047be] 4297                      clr.l      (a7)
-[000047c0] 2f3c 0002 077c            move.l     #$0002B88A,-(a7)
+[000047c0] 2f3c 0002 077c            move.l     #_noname,-(a7)
 [000047c6] 42a7                      clr.l      -(a7)
 [000047c8] 4eb9 0000 7a78            jsr        _buysym
 [000047ce] 508f                      addq.l     #8,a7
@@ -5783,10 +5783,10 @@ _dterm_5:
 [000047de] 2847                      movea.l    d7,a4
 [000047e0] 2e0c                      move.l     a4,d7
 [000047e2] 6620                      bne.s      _dterm_11
-[000047e4] 2ebc 0002 101b            move.l     #$0002C129,(a7) "bad (declaration)"
+[000047e4] 2ebc 0002 101b            move.l     #$0002101B,(a7) "bad (declaration)"
 [000047ea] 4eb9 0000 3e84            jsr        _p1error
 [000047f0] 4297                      clr.l      (a7)
-[000047f2] 2f3c 0002 077c            move.l     #$0002B88A,-(a7)
+[000047f2] 2f3c 0002 077c            move.l     #_noname,-(a7)
 [000047f8] 42a7                      clr.l      -(a7)
 [000047fa] 4eb9 0000 7a78            jsr        _buysym
 [00004800] 508f                      addq.l     #8,a7
@@ -5815,7 +5815,7 @@ _dterm_12:
 [0000483c] 2e2e ffda                 move.l     -38(a6),d7
 [00004840] 6006                      bra.s      _dterm_14
 _dterm_13:
-[00004842] 2e3c 0002 077c            move.l     #$0002B88A,d7
+[00004842] 2e3c 0002 077c            move.l     #_noname,d7
 _dterm_14:
 [00004848] 2f07                      move.l     d7,-(a7)
 [0000484a] 42a7                      clr.l      -(a7)
@@ -5823,7 +5823,7 @@ _dterm_14:
 [00004852] 508f                      addq.l     #8,a7
 [00004854] 2847                      movea.l    d7,a4
 _dterm_10:
-[00004856] 2ebc 0002 0fc0            move.l     #$0002C0CE,(a7)
+[00004856] 2ebc 0002 0fc0            move.l     #$00020FC0,(a7)
 [0000485c] 4eb9 0000 3192            jsr        _alt
 [00004862] 2a07                      move.l     d7,d5
 [00004864] 6700 008c                 beq        _dterm_15
@@ -5910,7 +5910,7 @@ _dterm_19:
 [0000497a] 588f                      addq.l     #4,a7
 [0000497c] 4a87                      tst.l      d7
 [0000497e] 660c                      bne.s      _dterm_22
-[00004980] 2ebc 0002 0ff9            move.l     #$0002C107,(a7) "bad function argument declaration"
+[00004980] 2ebc 0002 0ff9            move.l     #$00020FF9,(a7) "bad function argument declaration"
 [00004986] 4eb9 0000 3e84            jsr        _p1error
 _dterm_22:
 [0000498c] 246e ffe2                 movea.l    -30(a6),a2
@@ -5921,7 +5921,7 @@ _dterm_22:
 [0000499a] 2e2e ffda                 move.l     -38(a6),d7
 [0000499e] 6006                      bra.s      _dterm_24
 _dterm_23:
-[000049a0] 2e3c 0002 077c            move.l     #$0002B88A,d7
+[000049a0] 2e3c 0002 077c            move.l     #_noname,d7
 _dterm_24:
 [000049a6] 2f07                      move.l     d7,-(a7)
 [000049a8] 42a7                      clr.l      -(a7)
@@ -5968,7 +5968,7 @@ _dterm_32:
 [00004a2a] 4a87                      tst.l      d7
 [00004a2c] 670c                      beq.s      _dterm_29
 [00004a2e] 246e ffe2                 movea.l    -30(a6),a2
-[00004a32] 24bc 0002 0cf2            move.l     #$0002BE00,(a2)
+[00004a32] 24bc 0002 0cf2            move.l     #_badsym,(a2)
 [00004a38] 6088                      bra.s      _dterm_18
 _dterm_29:
 [00004a3a] 4297                      clr.l      (a7)
@@ -5992,7 +5992,7 @@ _dterm_29:
 [00004a78] 2287                      move.l     d7,(a1)
 [00004a7a] 660e                      bne.s      _dterm_31
 _dterm_30:
-[00004a7c] 2ebc 0002 0fe1            move.l     #$0002C0EF,(a7) "bad proto argument type"
+[00004a7c] 2ebc 0002 0fe1            move.l     #$00020FE1,(a7) "bad proto argument type"
 [00004a82] 4eb9 0000 3e84            jsr        _p1error
 [00004a88] 6084                      bra.s      _dterm_32
 _dterm_31:
@@ -6014,7 +6014,7 @@ _dterm_31:
 [00004abe] 7e10                      moveq.l    #16,d7
 [00004ac0] deae ffe2                 add.l      -30(a6),d7
 [00004ac4] 2e87                      move.l     d7,(a7)
-[00004ac6] 2f3c 0002 0fc7            move.l     #$0002C0D5,-(a7) "redeclared proto argument"
+[00004ac6] 2f3c 0002 0fc7            move.l     #$00020FC7,-(a7) "redeclared proto argument"
 [00004acc] 4eb9 0000 3c8a            jsr        _nmerr
 [00004ad2] 588f                      addq.l     #4,a7
 [00004ad4] 6000 ff38                 bra        _dterm_32
@@ -6069,7 +6069,7 @@ _gdecl_5:
 [00004b60] 6712                      beq.s      _gdecl_2
 [00004b62] 4287                      clr.l      d7
 [00004b64] 1e2c 0008                 move.b     8(a4),d7
-[00004b68] 41f9 0002 103e            lea.l      $0002C14C,a0
+[00004b68] 41f9 0002 103e            lea.l      $0002103E,a0
 [00004b6e] 4ef9 0000 a7dc            jmp        a.switch
 _gdecl_2:
 [00004b74] 4a85                      tst.l      d5
@@ -6254,7 +6254,7 @@ _gscty:
 [00004d54] 2a6e 0008                 movea.l    8(a6),a5
 [00004d58] 2e8d                      move.l     a5,(a7)
 [00004d5a] 4eb9 0000 7e5e            jsr        _clrsym
-[00004d60] 2ebc 0002 105e            move.l     #$0002C16C,(a7)
+[00004d60] 2ebc 0002 105e            move.l     #$0002105E,(a7)
 [00004d66] 4eb9 0000 3192            jsr        _alt
 [00004d6c] 2807                      move.l     d7,d4
 [00004d6e] 45ee 000c                 lea.l      12(a6),a2
@@ -6274,7 +6274,7 @@ _gscty_1:
 [00004d92] 2e12                      move.l     (a2),d7
 [00004d94] be84                      cmp.l      d4,d7
 [00004d96] 670c                      beq.s      _gscty_3
-[00004d98] 2ebc 0002 1064            move.l     #$0002C172,(a7) "illegal storage class"
+[00004d98] 2ebc 0002 1064            move.l     #$00021064,(a7) "illegal storage class"
 [00004d9e] 4eb9 0000 3e84            jsr        _p1error
 _gscty_3:
 [00004da4] 246e fffc                 movea.l    -4(a6),a2
@@ -6289,7 +6289,7 @@ _gscty_5:
 [00004db8] 426e fffa                 clr.w      -6(a6)
 [00004dbc] 4285                      clr.l      d5
 _gscty_11:
-[00004dbe] 2ebc 0002 0d36            move.l     #$0002BE44,(a7)
+[00004dbe] 2ebc 0002 0d36            move.l     #$00020D36,(a7)
 [00004dc4] 4eb9 0000 3192            jsr        _alt
 [00004dca] 1d47 ffef                 move.b     d7,-17(a6)
 [00004dce] 673a                      beq.s      _gscty_6
@@ -6340,7 +6340,7 @@ _gscty_8:
 [00004e4e] 6000 ff6e                 bra        _gscty_11
 _gscty_9:
 [00004e52] 4297                      clr.l      (a7)
-[00004e54] 2f39 0002 0d2e            move.l     $0002BE3C,-(a7)
+[00004e54] 2f39 0002 0d2e            move.l     _symtab,-(a7)
 [00004e5a] 2f2e fff2                 move.l     -14(a6),-(a7)
 [00004e5e] 4eb9 0000 847e            jsr        _lookup
 [00004e64] 508f                      addq.l     #8,a7
@@ -6403,18 +6403,18 @@ _gtypspec:
 [00004efc] 4e56 0000                 link       a6,#0
 [00004f00] 48e7 8400                 movem.l    d0/d5,-(a7)
 [00004f04] 2eae 0008                 move.l     8(a6),(a7)
-[00004f08] 2f3c 0002 0d36            move.l     #$0002BE44,-(a7)
+[00004f08] 2f3c 0002 0d36            move.l     #$00020D36,-(a7)
 [00004f0e] 4eb9 0000 a7a6            jsr        _scnstr
 [00004f14] 588f                      addq.l     #4,a7
 [00004f16] e387                      asl.l      #1,d7
 [00004f18] 2447                      movea.l    d7,a2
-[00004f1a] d5fc 0002 0d48            adda.l     #$0002BE56,a2
+[00004f1a] d5fc 0002 0d48            adda.l     #$00020D48,a2
 [00004f20] 4285                      clr.l      d5
 [00004f22] 3a12                      move.w     (a2),d5
 [00004f24] 2e2e 000c                 move.l     12(a6),d7
 [00004f28] ce85                      and.l      d5,d7
 [00004f2a] 670c                      beq.s      _gtypspec_1
-[00004f2c] 2ebc 0002 107a            move.l     #$0002C188,(a7) "repeated type specification"
+[00004f2c] 2ebc 0002 107a            move.l     #$0002107A,(a7) "repeated type specification"
 [00004f32] 4eb9 0000 3e84            jsr        _p1error
 _gtypspec_1:
 [00004f38] 2e2e 000c                 move.l     12(a6),d7
@@ -6430,12 +6430,12 @@ _main:
 [00004f50] 42a7                      clr.l      -(a7)
 [00004f52] 42a7                      clr.l      -(a7)
 [00004f54] 42a7                      clr.l      -(a7)
-[00004f56] 2f3c 0002 11cc            move.l     #$0002C2DA,-(a7)
+[00004f56] 2f3c 0002 11cc            move.l     #_zeterm,-(a7)
 [00004f5c] 4eb9 0000 85aa            jsr        _setad
 [00004f62] 4fef 0010                 lea.l      16(a7),a7
-[00004f66] 23fc 0002 0d68 0002 11d0  move.l     #$0002BE76,$0002C2DE
+[00004f66] 23fc 0002 0d68 0002 11d0  move.l     #_atchar,$000211D0
 [00004f70] 4878 0001                 pea.l      ($00000001).w
-[00004f74] 2f3c 0002 11cb            move.l     #$0002C2D9,-(a7)
+[00004f74] 2f3c 0002 11cb            move.l     #$000211CB,-(a7)
 [00004f7a] 4eb9 0000 a4b4            jsr        _buybuf
 [00004f80] 508f                      addq.l     #8,a7
 [00004f82] 23c7 0002 0cd0            move.l     d7,_infile
@@ -6458,21 +6458,21 @@ _main:
 [00004fe8] 2f3c 0002 0b6a            move.l     #_cflag,-(a7)
 [00004fee] 2f3c 0002 0b9e            move.l     #_bndef,-(a7)
 [00004ff4] 2f3c 0002 0b66            move.l     #_aflag,-(a7)
-[00004ffa] 2f3c 0002 1173            move.l     #$0002C281,-(a7) "a,b#,c,+dead,+debug,err,lreg,l,model?,m,n#,+old,o*,r#,+std,+strict,sr,strict,u:F <file>"
+[00004ffa] 2f3c 0002 1173            move.l     #$00021173,-(a7) "a,b#,c,+dead,+debug,err,lreg,l,model?,m,n#,+old,o*,r#,+std,+strict,sr,strict,u:F <file>"
 [00005000] 486e 000c                 pea.l      12(a6)
 [00005004] 486e 0008                 pea.l      8(a6)
 [00005008] 4eb9 0000 9f16            jsr        _getflags
 [0000500e] 4fef 0054                 lea.l      84(a7),a7
 [00005012] 4878 0001                 pea.l      ($00000001).w
-[00005016] 2f3c 0002 0df8            move.l     #$0002BF06,-(a7)
+[00005016] 2f3c 0002 0df8            move.l     #_atulong,-(a7)
 [0000501c] 4eb9 0000 7b74            jsr        _bytes
 [00005022] 508f                      addq.l     #8,a7
-[00005024] 23c7 0002 0e52            move.l     d7,$0002BF60
+[00005024] 23c7 0002 0e52            move.l     d7,_byulong
 [0000502a] 4878 0001                 pea.l      ($00000001).w
-[0000502e] 2f3c 0002 0dd4            move.l     #$0002BEE2,-(a7)
+[0000502e] 2f3c 0002 0dd4            move.l     #_atunsign,-(a7)
 [00005034] 4eb9 0000 7b74            jsr        _bytes
 [0000503a] 508f                      addq.l     #8,a7
-[0000503c] 23c7 0002 0e56            move.l     d7,$0002BF64
+[0000503c] 23c7 0002 0e56            move.l     d7,_byunsign
 [00005042] 4ab9 0002 0b7e            tst.l      _lflag
 [00005048] 6708                      beq.s      _main_1
 [0000504a] 2e3c 7fff ffff            move.l     #$7FFFFFFF,d7
@@ -6504,7 +6504,7 @@ _main_6:
 [000050aa] ceb9 0002 10a6            and.l      _rbytes,d7
 [000050b0] e387                      asl.l      #1,d7
 [000050b2] 2447                      movea.l    d7,a2
-[000050b4] d5fc 0002 1096            adda.l     #$0002C1A4,a2
+[000050b4] d5fc 0002 1096            adda.l     #$00021096,a2
 [000050ba] 33d2 0002 0b64            move.w     (a2),_iregs
 [000050c0] 4ab9 0002 0cca            tst.l      _ofile
 [000050c6] 6734                      beq.s      _main_7
@@ -6515,7 +6515,7 @@ _main_6:
 [000050dc] 4fef 000c                 lea.l      12(a7),a7
 [000050e0] 33c7 0002 0cd6            move.w     d7,_outfd
 [000050e6] 6c52                      bge.s      _main_8
-[000050e8] 2ebc 0002 1163            move.l     #$0002C271,(a7) "bad output file"
+[000050e8] 2ebc 0002 1163            move.l     #$00021163,(a7) "bad output file"
 [000050ee] 4eb9 0000 3e84            jsr        _p1error
 [000050f4] 4297                      clr.l      (a7)
 [000050f6] 4eb9 0000 0080            jsr        _exit
@@ -6532,7 +6532,7 @@ _main_7:
 [0000511c] 4fef 000c                 lea.l      12(a7),a7
 [00005120] 4a87                      tst.l      d7
 [00005122] 6720                      beq.s      _main_9
-[00005124] 2ebc 0002 1154            move.l     #$0002C262,(a7) "bad input file"
+[00005124] 2ebc 0002 1154            move.l     #$00021154,(a7) "bad input file"
 [0000512a] 4eb9 0000 3e84            jsr        _p1error
 [00005130] 4297                      clr.l      (a7)
 [00005132] 4eb9 0000 0080            jsr        _exit
@@ -6552,7 +6552,7 @@ _main_9:
 _main_11:
 [0000516a] 4287                      clr.l      d7
 _main_12:
-[0000516c] 8f39 0002 0bb2            or.b       d7,$0002BCC0
+[0000516c] 8f39 0002 0bb2            or.b       d7,_dcbyte
 [00005172] 0cb9 0000 0041 0002 0ba2  cmpi.l     #$00000041,_model
 [0000517c] 6516                      bcs.s      _main_13
 [0000517e] 0cb9 0000 005a 0002 0ba2  cmpi.l     #$0000005A,_model
@@ -6565,12 +6565,12 @@ _main_13:
 _main_14:
 [0000519a] 23c7 0002 0ba2            move.l     d7,_model
 [000051a0] 2eb9 0002 0ba2            move.l     _model,(a7)
-[000051a6] 2f3c 0002 114f            move.l     #$0002C25D,-(a7)
+[000051a6] 2f3c 0002 114f            move.l     #$0002114F,-(a7)
 [000051ac] 4eb9 0000 a7a6            jsr        _scnstr
 [000051b2] 588f                      addq.l     #4,a7
 [000051b4] 0c87 0000 0003            cmpi.l     #$00000003,d7
 [000051ba] 6f00 0092                 ble        _main_15
-[000051be] 2ebc 0002 1141            move.l     #$0002C24F,(a7) "unknown model"
+[000051be] 2ebc 0002 1141            move.l     #$00021141,(a7) "unknown model"
 [000051c4] 4eb9 0000 3e84            jsr        _p1error
 [000051ca] 6000 0082                 bra        _main_15
 _main_10:
@@ -6579,45 +6579,45 @@ _main_10:
 [000051da] 4ab9 0002 0b8a            tst.l      _oldflag
 [000051e0] 6700 00e4                 beq        _main_16
 [000051e4] 2ebc 0000 0088            move.l     #$00000088,(a7)
-[000051ea] 2f3c 0002 1762            move.l     #$0002C870,-(a7)
+[000051ea] 2f3c 0002 1762            move.l     #_tyops,-(a7)
 [000051f0] 4eb9 0000 a7a6            jsr        _scnstr
 [000051f6] 588f                      addq.l     #4,a7
 [000051f8] e387                      asl.l      #1,d7
 [000051fa] 2447                      movea.l    d7,a2
-[000051fc] d5fc 0002 1704            adda.l     #$0002C812,a2
+[000051fc] d5fc 0002 1704            adda.l     #_tycodes,a2
 [00005202] 08ea 0003 0001            bset       #3,1(a2)
 [00005208] 2ebc 0000 00af            move.l     #$000000AF,(a7)
-[0000520e] 2f3c 0002 1762            move.l     #$0002C870,-(a7)
+[0000520e] 2f3c 0002 1762            move.l     #_tyops,-(a7)
 [00005214] 4eb9 0000 a7a6            jsr        _scnstr
 [0000521a] 588f                      addq.l     #4,a7
 [0000521c] e387                      asl.l      #1,d7
 [0000521e] 2447                      movea.l    d7,a2
-[00005220] d5fc 0002 1704            adda.l     #$0002C812,a2
+[00005220] d5fc 0002 1704            adda.l     #_tycodes,a2
 [00005226] 08ea 0006 0001            bset       #6,1(a2)
 [0000522c] 4878 0066                 pea.l      ($00000066).w
-[00005230] 2f3c 0002 1762            move.l     #$0002C870,-(a7)
+[00005230] 2f3c 0002 1762            move.l     #_tyops,-(a7)
 [00005236] 4eb9 0000 a7a6            jsr        _scnstr
 [0000523c] 508f                      addq.l     #8,a7
 [0000523e] e387                      asl.l      #1,d7
 [00005240] 2447                      movea.l    d7,a2
-[00005242] d5fc 0002 1704            adda.l     #$0002C812,a2
+[00005242] d5fc 0002 1704            adda.l     #_tycodes,a2
 [00005248] 08d2 0000                 bset       #0,(a2)
 [0000524c] 6078                      bra.s      _main_16
 _main_15:
 [0000524e] 2eb9 0002 0ba2            move.l     _model,(a7)
-[00005254] 2f3c 0002 113c            move.l     #$0002C24A,-(a7) "spdf"
+[00005254] 2f3c 0002 113c            move.l     #$0002113C,-(a7) "spdf"
 [0000525a] 4eb9 0000 a7a6            jsr        _scnstr
 [00005260] 588f                      addq.l     #4,a7
 [00005262] e587                      asl.l      #2,d7
 [00005264] 7c0c                      moveq.l    #12,d6
 [00005266] cc87                      and.l      d7,d6
-[00005268] 8d39 0002 0bb2            or.b       d6,$0002BCC0
+[00005268] 8d39 0002 0bb2            or.b       d6,_dcbyte
 [0000526e] 4eb9 0000 32c6            jsr        _domodel
 [00005274] 2e39 0002 0b9e            move.l     _bndef,d7
 [0000527a] e987                      asl.l      #4,d7
-[0000527c] 8f39 0002 0bb2            or.b       d7,$0002BCC0
+[0000527c] 8f39 0002 0bb2            or.b       d7,_dcbyte
 [00005282] 4287                      clr.l      d7
-[00005284] 1e39 0002 0bb2            move.b     $0002BCC0,d7
+[00005284] 1e39 0002 0bb2            move.b     _dcbyte,d7
 [0000528a] 2e87                      move.l     d7,(a7)
 [0000528c] 4eb9 0000 5a16            jsr        _pcode
 [00005292] 4ab9 0002 0b66            tst.l      _aflag
@@ -6628,9 +6628,9 @@ _main_15:
 _main_17:
 [000052a6] 2e39 0002 10a6            move.l     _rbytes,d7
 _main_18:
-[000052ac] 8f39 0002 0bb3            or.b       d7,$0002BCC1
+[000052ac] 8f39 0002 0bb3            or.b       d7,_regbyte
 [000052b2] 4287                      clr.l      d7
-[000052b4] 1e39 0002 0bb3            move.b     $0002BCC1,d7
+[000052b4] 1e39 0002 0bb3            move.b     _regbyte,d7
 [000052ba] 2e87                      move.l     d7,(a7)
 [000052bc] 4eb9 0000 5a16            jsr        _pcode
 [000052c2] 6000 ff0a                 bra        _main_10
@@ -6641,7 +6641,7 @@ _main_39:
 [000052d2] 4eb9 0000 332e            jsr        _eat
 [000052d8] 4a87                      tst.l      d7
 [000052da] 6600 0080                 bne        _main_19 ; possibly optimized to short
-[000052de] 33f9 0002 0cd4 0002 04a6  move.w     _lineno,$0002B5B4
+[000052de] 33f9 0002 0cd4 0002 04a6  move.w     _lineno,_dbline
 [000052e8] 4297                      clr.l      (a7)
 [000052ea] 4878 0037                 pea.l      ($00000037).w
 [000052ee] 4878 0034                 pea.l      ($00000034).w
@@ -6651,7 +6651,7 @@ _main_39:
 [000052fe] 4eba fa4c                 jsr        _gscty(pc)
 [00005302] 4fef 0014                 lea.l      20(a7),a7
 [00005306] 2d47 fff8                 move.l     d7,-8(a6)
-[0000530a] 2d79 0002 0cea fffc       move.l     $0002BDF8,-4(a6)
+[0000530a] 2d79 0002 0cea fffc       move.l     _attlist,-4(a6)
 _main_25:
 [00005312] 4297                      clr.l      (a7)
 [00005314] 486e ffe2                 pea.l      -30(a6)
@@ -6663,27 +6663,27 @@ _main_25:
 [00005324] 7001                      moveq.l    #1,d0
 [00005326] 2d40 fff8                 move.l     d0,-8(a6)
 [0000532a] 4297                      clr.l      (a7)
-[0000532c] 2f39 0002 0d2e            move.l     $0002BE3C,-(a7)
+[0000532c] 2f39 0002 0d2e            move.l     _symtab,-(a7)
 [00005332] 486d 0010                 pea.l      16(a5)
 [00005336] 4eb9 0000 847e            jsr        _lookup
 [0000533c] 508f                      addq.l     #8,a7
 [0000533e] 2847                      movea.l    d7,a4
 [00005340] 2e0c                      move.l     a4,d7
 [00005342] 665a                      bne.s      _main_21
-[00005344] 2ebc 0002 0d2e            move.l     #$0002BE3C,(a7)
+[00005344] 2ebc 0002 0d2e            move.l     #_symtab,(a7)
 [0000534a] 2f0d                      move.l     a5,-(a7)
 [0000534c] 4eb9 0000 774e            jsr        _addsym
 [00005352] 588f                      addq.l     #4,a7
-[00005354] 23c7 0002 0d16            move.l     d7,$0002BE24
+[00005354] 23c7 0002 0d16            move.l     d7,_gblsym
 [0000535a] 606e                      bra.s      _main_22
 _main_19:
-[0000535c] 2879 0002 0d2e            movea.l    $0002BE3C,a4
+[0000535c] 2879 0002 0d2e            movea.l    _symtab,a4
 _main_43:
 [00005362] 2e0c                      move.l     a4,d7
 [00005364] 6700 0284                 beq        _main_23
 [00005368] 4287                      clr.l      d7
 [0000536a] 1e2c 000e                 move.b     14(a4),d7
-[0000536e] 41f9 0002 10aa            lea.l      $0002C1B8,a0
+[0000536e] 41f9 0002 10aa            lea.l      $000210AA,a0
 [00005374] 4ef9 0000 a7dc            jmp        a.switch
 _main_20:
 [0000537a] 4aae fff8                 tst.l      -8(a6)
@@ -6694,7 +6694,7 @@ _main_20:
 [0000538a] 2d40 fff4                 move.l     d0,-12(a6)
 [0000538e] 6000 01f0                 bra        _main_24
 _main_34:
-[00005392] 2d79 0002 0cea fffc       move.l     $0002BDF8,-4(a6)
+[00005392] 2d79 0002 0cea fffc       move.l     _attlist,-4(a6)
 [0000539a] 6000 ff76                 bra        _main_25
 _main_21:
 [0000539e] 4287                      clr.l      d7
@@ -6707,7 +6707,7 @@ _main_21:
 [000053b4] 6662                      bne.s      _main_27
 _main_26:
 [000053b6] 486d 0010                 pea.l      16(a5)
-[000053ba] 2f3c 0002 1129            move.l     #$0002C237,-(a7) "redeclared typedef"
+[000053ba] 2f3c 0002 1129            move.l     #$00021129,-(a7) "redeclared typedef"
 [000053c0] 4eb9 0000 3c8a            jsr        _nmerr
 [000053c6] 508f                      addq.l     #8,a7
 [000053c8] 99cc                      suba.l     a4,a4
@@ -6728,10 +6728,10 @@ _main_22:
 [000053f8] 588f                      addq.l     #4,a7
 [000053fa] 2a47                      movea.l    d7,a5
 [000053fc] 2eae fffc                 move.l     -4(a6),(a7)
-[00005400] 2f39 0002 0cea            move.l     $0002BDF8,-(a7)
+[00005400] 2f39 0002 0cea            move.l     _attlist,-(a7)
 [00005406] 4eb9 0000 8332            jsr        _frealst
 [0000540c] 588f                      addq.l     #4,a7
-[0000540e] 23c7 0002 0cea            move.l     d7,$0002BDF8
+[0000540e] 23c7 0002 0cea            move.l     d7,_attlist
 [00005414] 6000 00f8                 bra        _main_28
 _main_27:
 [00005418] 4ab9 0002 0b8e            tst.l      _stdflag
@@ -6751,7 +6751,7 @@ _main_27:
 [00005440] 45f8 000a                 lea.l      ($0000000A).w,a2
 [00005444] d5ec 0004                 adda.l     4(a4),a2
 [00005448] 2e12                      move.l     (a2),d7
-[0000544a] 0c87 0002 0d04            cmpi.l     #$0002BE12,d7
+[0000544a] 0c87 0002 0d04            cmpi.l     #_tentsym,d7
 [00005450] 6618                      bne.s      _main_29
 [00005452] 4287                      clr.l      d7
 [00005454] 1e2d 000e                 move.b     14(a5),d7
@@ -6790,10 +6790,10 @@ _main_30:
 [000054c2] 588f                      addq.l     #4,a7
 [000054c4] 396d 000c 000c            move.w     12(a5),12(a4)
 [000054ca] 2eae fffc                 move.l     -4(a6),(a7)
-[000054ce] 2f39 0002 0cea            move.l     $0002BDF8,-(a7)
+[000054ce] 2f39 0002 0cea            move.l     _attlist,-(a7)
 [000054d4] 4eb9 0000 8332            jsr        _frealst
 [000054da] 588f                      addq.l     #4,a7
-[000054dc] 23c7 0002 0cea            move.l     d7,$0002BDF8
+[000054dc] 23c7 0002 0cea            move.l     d7,_attlist
 [000054e2] 2e8c                      move.l     a4,(a7)
 [000054e4] 2f0d                      move.l     a5,-(a7)
 [000054e6] 4eb9 0000 aa76            jsr        _free
@@ -6803,7 +6803,7 @@ _main_30:
 [000054f2] 6000 fed6                 bra        _main_22
 _main_31:
 [000054f6] 486d 0010                 pea.l      16(a5)
-[000054fa] 2f3c 0002 1115            move.l     #$0002C223,-(a7) "redeclared external"
+[000054fa] 2f3c 0002 1115            move.l     #$00021115,-(a7) "redeclared external"
 [00005500] 4eb9 0000 3c8a            jsr        _nmerr
 [00005506] 508f                      addq.l     #8,a7
 [00005508] 99cc                      suba.l     a4,a4
@@ -6868,7 +6868,7 @@ _main_36:
 [000055b6] 4a87                      tst.l      d7
 [000055b8] 661a                      bne.s      _main_38
 [000055ba] 2ebc 0000 00ff            move.l     #$000000FF,(a7)
-[000055c0] 2f3c 0002 1101            move.l     #$0002C20F,-(a7)
+[000055c0] 2f3c 0002 1101            move.l     #$00021101,-(a7)
 [000055c6] 4eb9 0000 3f28            jsr        _recover
 [000055cc] 588f                      addq.l     #4,a7
 [000055ce] 6004                      bra.s      _main_38
@@ -6881,7 +6881,7 @@ _main_38:
 [000055e2] 6700 fce8                 beq        _main_39
 [000055e6] 6000 fd74                 bra        _main_19
 _main_23:
-[000055ea] 2879 0002 0d2e            movea.l    $0002BE3C,a4
+[000055ea] 2879 0002 0d2e            movea.l    _symtab,a4
 _main_41:
 [000055f0] 2e0c                      move.l     a4,d7
 [000055f2] 6700 00ce                 beq        _main_40
@@ -6924,7 +6924,7 @@ _main_44:
 [00005664] 0c47 0042                 cmpi.w     #$0042,d7
 [00005668] 6614                      bne.s      _main_46
 [0000566a] 486c 0010                 pea.l      16(a4)
-[0000566e] 2f3c 0002 10e8            move.l     #$0002C1F6,-(a7) "undefined local function"
+[0000566e] 2f3c 0002 10e8            move.l     #$000210E8,-(a7) "undefined local function"
 [00005674] 4eb9 0000 3c8a            jsr        _nmerr
 [0000567a] 508f                      addq.l     #8,a7
 [0000567c] 600e                      bra.s      _main_45
@@ -6944,12 +6944,12 @@ _main_45:
 [000056a6] 4a87                      tst.l      d7
 [000056a8] 6600 ff7a                 bne        _main_44
 [000056ac] 486c 0010                 pea.l      16(a4)
-[000056b0] 2f3c 0002 10da            move.l     #$0002C1E8,-(a7) "unused static"
+[000056b0] 2f3c 0002 10da            move.l     #$000210DA,-(a7) "unused static"
 [000056b6] 4eb9 0000 3c8a            jsr        _nmerr
 [000056bc] 508f                      addq.l     #8,a7
 [000056be] 6000 ff64                 bra        _main_44
 _main_40:
-[000056c2] 4a79 0002 04a8            tst.w      $0002B5B6
+[000056c2] 4a79 0002 04a8            tst.w      _dbfilab
 [000056c8] 6708                      beq.s      _main_47
 [000056ca] 4297                      clr.l      (a7)
 [000056cc] 4eb9 0000 1846            jsr        _dbfunc
@@ -6975,16 +6975,16 @@ _main_50:
 
 _crs:
 [00005704] 4e56 0000                 link       a6,#0
-[00005708] 5079 0002 11fa            addq.w     #8,$0002C308
-[0000570e] 3e39 0002 11fa            move.w     $0002C308,d7
+[00005708] 5079 0002 11fa            addq.w     #8,$000211FA
+[0000570e] 3e39 0002 11fa            move.w     $000211FA,d7
 [00005714] 48c7                      ext.l      d7
 [00005716] 4e5e                      unlk       a6
 [00005718] 4e75                      rts
 
 _crx:
 [0000571a] 4e56 0000                 link       a6,#0
-[0000571e] 5079 0002 11fc            addq.w     #8,$0002C30A
-[00005724] 3e39 0002 11fc            move.w     $0002C30A,d7
+[0000571e] 5079 0002 11fc            addq.w     #8,$000211FC
+[00005724] 3e39 0002 11fc            move.w     $000211FC,d7
 [0000572a] 48c7                      ext.l      d7
 [0000572c] deae 0008                 add.l      8(a6),d7
 [00005730] 5287                      addq.l     #1,d7
@@ -7119,13 +7119,13 @@ _lblname:
 [00005868] 4e56 0000                 link       a6,#0
 [0000586c] 48e7 8c00                 movem.l    d0/d4-d5,-(a7)
 [00005870] 2a2e 0008                 move.l     8(a6),d5
-[00005874] 4239 0002 11fe            clr.b      $0002C30C
+[00005874] 4239 0002 11fe            clr.b      $000211FE
 [0000587a] 4a85                      tst.l      d5
 [0000587c] 6608                      bne.s      _lblname_1
-[0000587e] 2e3c 0002 11fe            move.l     #$0002C30C,d7
+[0000587e] 2e3c 0002 11fe            move.l     #$000211FE,d7
 [00005884] 6052                      bra.s      _lblname_2
 _lblname_1:
-[00005886] 13fc 003e 0002 11ff       move.b     #$3E,$0002C30D
+[00005886] 13fc 003e 0002 11ff       move.b     #$3E,$000211FF
 [0000588e] 7802                      moveq.l    #2,d4
 _lblname_4:
 [00005890] 4a85                      tst.l      d5
@@ -7133,7 +7133,7 @@ _lblname_4:
 [00005894] 0c84 0000 0009            cmpi.l     #$00000009,d4
 [0000589a] 6c22                      bge.s      _lblname_3
 [0000589c] 2444                      movea.l    d4,a2
-[0000589e] d5fc 0002 11fe            adda.l     #$0002C30C,a2
+[0000589e] d5fc 0002 11fe            adda.l     #$000211FE,a2
 [000058a4] 7e30                      moveq.l    #48,d7
 [000058a6] 7c07                      moveq.l    #7,d6
 [000058a8] cc85                      and.l      d5,d6
@@ -7148,11 +7148,11 @@ _lblname_4:
 _lblname_3:
 [000058be] 2e04                      move.l     d4,d7
 [000058c0] 5387                      subq.l     #1,d7
-[000058c2] 13c7 0002 11fe            move.b     d7,$0002C30C
+[000058c2] 13c7 0002 11fe            move.b     d7,$000211FE
 [000058c8] 2444                      movea.l    d4,a2
-[000058ca] d5fc 0002 11fe            adda.l     #$0002C30C,a2
+[000058ca] d5fc 0002 11fe            adda.l     #$000211FE,a2
 [000058d0] 4212                      clr.b      (a2)
-[000058d2] 2e3c 0002 11fe            move.l     #$0002C30C,d7
+[000058d2] 2e3c 0002 11fe            move.l     #$000211FE,d7
 _lblname_2:
 [000058d8] 4cdf 0031                 movem.l    (a7)+,d0/d4-d5
 [000058dc] 4e5e                      unlk       a6
@@ -7164,7 +7164,7 @@ _pad:
 [000058e8] 42a7                      clr.l      -(a7)
 [000058ea] 42a7                      clr.l      -(a7)
 [000058ec] 2f2e 000c                 move.l     12(a6),-(a7)
-[000058f0] 2f3c 0002 1208            move.l     #$0002C316,-(a7)
+[000058f0] 2f3c 0002 1208            move.l     #$00021208,-(a7)
 [000058f6] 2f2e 0008                 move.l     8(a6),-(a7)
 [000058fa] 4eb9 0000 5908            jsr        _paddr
 [00005900] 4fef 0018                 lea.l      24(a7),a7
@@ -7177,10 +7177,10 @@ _paddr:
 [00005910] 2a6e 000c                 movea.l    12(a6),a5
 [00005914] 4aae 0018                 tst.l      24(a6)
 [00005918] 6708                      beq.s      _paddr_1
-[0000591a] 2e39 0002 0e52            move.l     $0002BF60,d7
+[0000591a] 2e39 0002 0e52            move.l     _byulong,d7
 [00005920] 6006                      bra.s      _paddr_2
 _paddr_1:
-[00005922] 2e39 0002 0e56            move.l     $0002BF64,d7
+[00005922] 2e39 0002 0e56            move.l     _byunsign,d7
 _paddr_2:
 [00005928] 2a07                      move.l     d7,d5
 [0000592a] 4a15                      tst.b      (a5)
@@ -7310,7 +7310,7 @@ _pdend_1:
 _pend:
 [00005aa6] 4e56 fffc                 link       a6,#-4
 [00005aaa] 48e7 8004                 movem.l    d0/a5,-(a7)
-[00005aae] 2a79 0002 0d1e            movea.l    $0002BE2C,a5
+[00005aae] 2a79 0002 0d1e            movea.l    _littab,a5
 _pend_6:
 [00005ab4] 2e0d                      move.l     a5,d7
 [00005ab6] 6746                      beq.s      _pend_1
@@ -7336,7 +7336,7 @@ _pend_5:
 [00005afa] 508f                      addq.l     #8,a7
 [00005afc] 602c                      bra.s      _pend_3
 _pend_1:
-[00005afe] 42b9 0002 0d1e            clr.l      $0002BE2C
+[00005afe] 42b9 0002 0d1e            clr.l      _littab
 [00005b04] 4cdf 2001                 movem.l    (a7)+,d0/a5
 [00005b08] 4e5e                      unlk       a6
 [00005b0a] 4e75                      rts
@@ -7358,7 +7358,7 @@ _pend_3:
 [00005b36] 4eb9 0000 adac            jsr        _cpybuf
 [00005b3c] 4fef 000c                 lea.l      12(a7),a7
 [00005b40] 4878 0001                 pea.l      ($00000001).w
-[00005b44] 2f3c 0002 120a            move.l     #$0002C318,-(a7)
+[00005b44] 2f3c 0002 120a            move.l     #$0002120A,-(a7)
 [00005b4a] 3e2e fffe                 move.w     -2(a6),d7
 [00005b4e] 48c7                      ext.l      d7
 [00005b50] 2f07                      move.l     d7,-(a7)
@@ -7387,7 +7387,7 @@ _pfend_1:
 
 _pfloat:
 [00005b94] 4e56 fffc                 link       a6,#-4
-[00005b98] 2ebc 0002 120c            move.l     #$0002C31A,(a7)
+[00005b98] 2ebc 0002 120c            move.l     #$0002120C,(a7)
 [00005b9e] 4878 0008                 pea.l      ($00000008).w
 [00005ba2] 2f2e 0008                 move.l     8(a6),-(a7)
 [00005ba6] 4eb9 0000 a3ec            jsr        _notbuf
@@ -7466,11 +7466,11 @@ _pjc:
 [00005c8e] 3d47 fffe                 move.w     d7,-2(a6)
 _pjc_1:
 [00005c92] 2eae 0008                 move.l     8(a6),(a7)
-[00005c96] 2f3c 0002 11e4            move.l     #$0002C2F2,-(a7)
+[00005c96] 2f3c 0002 11e4            move.l     #$000211E4,-(a7)
 [00005c9c] 4eb9 0000 a7a6            jsr        _scnstr
 [00005ca2] 588f                      addq.l     #4,a7
 [00005ca4] 2447                      movea.l    d7,a2
-[00005ca6] d5fc 0002 11f2            adda.l     #$0002C300,a2
+[00005ca6] d5fc 0002 11f2            adda.l     #$000211F2,a2
 [00005cac] 1e12                      move.b     (a2),d7
 [00005cae] 4887                      ext.w      d7
 [00005cb0] 48c7                      ext.l      d7
@@ -7558,7 +7558,7 @@ _pjf_7:
 [00005d8e] 4287                      clr.l      d7
 [00005d90] 1e2d 0016                 move.b     22(a5),d7
 [00005d94] 2e87                      move.l     d7,(a7)
-[00005d96] 2f3c 0002 11e4            move.l     #$0002C2F2,-(a7)
+[00005d96] 2f3c 0002 11e4            move.l     #$000211E4,-(a7)
 [00005d9c] 4eb9 0000 a7a6            jsr        _scnstr
 [00005da2] 588f                      addq.l     #4,a7
 [00005da4] 1d47 ffff                 move.b     d7,-1(a6)
@@ -7566,13 +7566,13 @@ _pjf_7:
 [00005dac] 4887                      ext.w      d7
 [00005dae] 48c7                      ext.l      d7
 [00005db0] 2447                      movea.l    d7,a2
-[00005db2] d5fc 0002 11e4            adda.l     #$0002C2F2,a2
+[00005db2] d5fc 0002 11e4            adda.l     #$000211E4,a2
 [00005db8] 4a12                      tst.b      (a2)
 [00005dba] 6734                      beq.s      _pjf_8
 [00005dbc] 2e85                      move.l     d5,(a7)
 [00005dbe] 2f2d 000c                 move.l     12(a5),-(a7)
 [00005dc2] 2f2d 0008                 move.l     8(a5),-(a7)
-[00005dc6] 247c 0002 11eb            movea.l    #$0002C2F9,a2
+[00005dc6] 247c 0002 11eb            movea.l    #$000211EB,a2
 [00005dcc] 1e2e ffff                 move.b     -1(a6),d7
 [00005dd0] 4887                      ext.w      d7
 [00005dd2] 48c7                      ext.l      d7
@@ -7588,7 +7588,7 @@ _pjf_7:
 [00005dee] 6018                      bra.s      _pjf_9
 _pjf_8:
 [00005df0] 2e85                      move.l     d5,(a7)
-[00005df2] 2f3c 0002 11cc            move.l     #$0002C2DA,-(a7)
+[00005df2] 2f3c 0002 11cc            move.l     #_zeterm,-(a7)
 [00005df8] 2f0d                      move.l     a5,-(a7)
 [00005dfa] 4878 0094                 pea.l      ($00000094).w
 [00005dfe] 4eba fe7a                 jsr        _pjc(pc)
@@ -7758,11 +7758,11 @@ _pjt_5:
 [00005fcc] 4287                      clr.l      d7
 [00005fce] 1e2d 0016                 move.b     22(a5),d7
 [00005fd2] 2e87                      move.l     d7,(a7)
-[00005fd4] 2f3c 0002 11e4            move.l     #$0002C2F2,-(a7)
+[00005fd4] 2f3c 0002 11e4            move.l     #$000211E4,-(a7)
 [00005fda] 4eb9 0000 a7a6            jsr        _scnstr
 [00005fe0] 588f                      addq.l     #4,a7
 [00005fe2] 2447                      movea.l    d7,a2
-[00005fe4] d5fc 0002 11e4            adda.l     #$0002C2F2,a2
+[00005fe4] d5fc 0002 11e4            adda.l     #$000211E4,a2
 [00005fea] 4a12                      tst.b      (a2)
 [00005fec] 671e                      beq.s      _pjt_6
 [00005fee] 2e84                      move.l     d4,(a7)
@@ -7777,7 +7777,7 @@ _pjt_5:
 [0000600a] 6018                      bra.s      _pjt_7
 _pjt_6:
 [0000600c] 2e84                      move.l     d4,(a7)
-[0000600e] 2f3c 0002 11cc            move.l     #$0002C2DA,-(a7)
+[0000600e] 2f3c 0002 11cc            move.l     #_zeterm,-(a7)
 [00006014] 2f0d                      move.l     a5,-(a7)
 [00006016] 4878 009b                 pea.l      ($0000009B).w
 [0000601a] 4eba fc5e                 jsr        _pjc(pc)
@@ -7816,13 +7816,13 @@ _pmove:
 [0000607c] 4e56 fffc                 link       a6,#-4
 [00006080] 4297                      clr.l      (a7)
 [00006082] 4878 0018                 pea.l      ($00000018).w
-[00006086] 2f3c 0002 120e            move.l     #$0002C31C,-(a7)
+[00006086] 2f3c 0002 120e            move.l     #$0002120E,-(a7)
 [0000608c] 4eb9 0000 9d7e            jsr        _fill
 [00006092] 508f                      addq.l     #8,a7
-[00006094] 13fc 00af 0002 1224       move.b     #$AF,$0002C332
-[0000609c] 23ee 0008 0002 1216       move.l     8(a6),$0002C324
-[000060a4] 23ee 000c 0002 121a       move.l     12(a6),$0002C328
-[000060ac] 2ebc 0002 120e            move.l     #$0002C31C,(a7)
+[00006094] 13fc 00af 0002 1224       move.b     #$AF,$00021224
+[0000609c] 23ee 0008 0002 1216       move.l     8(a6),$00021216
+[000060a4] 23ee 000c 0002 121a       move.l     12(a6),$0002121A
+[000060ac] 2ebc 0002 120e            move.l     #$0002120E,(a7)
 [000060b2] 4eb9 0000 94c6            jsr        _typify
 [000060b8] 2e87                      move.l     d7,(a7)
 [000060ba] 4eb9 0000 6988            jsr        _pvoid
@@ -7924,7 +7924,7 @@ _pstr:
 [000061ce] 48e7 8404                 movem.l    d0/d5/a5,-(a7)
 [000061d2] 2a6e 0008                 movea.l    8(a6),a5
 [000061d6] 2a2e 000c                 move.l     12(a6),d5
-[000061da] 2ebc 0002 1226            move.l     #$0002C334,(a7)
+[000061da] 2ebc 0002 1226            move.l     #$00021226,(a7)
 [000061e0] 2f05                      move.l     d5,-(a7)
 [000061e2] 2f0d                      move.l     a5,-(a7)
 [000061e4] 4eb9 0000 a3ec            jsr        _notbuf
@@ -7972,7 +7972,7 @@ _pswitch:
 [0000624a] 4e56 fffa                 link       a6,#-6
 [0000624e] 3d6e 000a fffe            move.w     10(a6),-2(a6)
 [00006254] 4878 0001                 pea.l      ($00000001).w
-[00006258] 2f3c 0002 0dc2            move.l     #$0002BED0,-(a7)
+[00006258] 2f3c 0002 0dc2            move.l     #_atint,-(a7)
 [0000625e] 4eb9 0000 7b74            jsr        _bytes
 [00006264] 508f                      addq.l     #8,a7
 [00006266] beae 000c                 cmp.l      12(a6),d7
@@ -8000,12 +8000,12 @@ _pswtab:
 [000062aa] 6700 0078                 beq.w      _pswtab_1
 [000062ae] 2ebc 0000 00b9            move.l     #$000000B9,(a7)
 [000062b4] 4eba f760                 jsr        _pcode(pc)
-[000062b8] 2ebc 0002 0dd4            move.l     #$0002BEE2,(a7)
+[000062b8] 2ebc 0002 0dd4            move.l     #_atunsign,(a7)
 [000062be] 4eb9 0000 78b4            jsr        _bound
 [000062c4] 2e87                      move.l     d7,(a7)
 [000062c6] 4eba f74e                 jsr        _pcode(pc)
 [000062ca] 4878 0001                 pea.l      ($00000001).w
-[000062ce] 2f3c 0002 077c            move.l     #$0002B88A,-(a7)
+[000062ce] 2f3c 0002 077c            move.l     #_noname,-(a7)
 [000062d4] 2f2e 0014                 move.l     20(a6),-(a7)
 [000062d8] 4eb9 0000 661a            jsr        _ptname
 [000062de] 4fef 000c                 lea.l      12(a7),a7
@@ -8017,7 +8017,7 @@ _pswtab_3:
 [000062ea] 42a7                      clr.l      -(a7)
 [000062ec] 4878 0004                 pea.l      ($00000004).w
 [000062f0] 42a7                      clr.l      -(a7)
-[000062f2] 2f3c 0002 077c            move.l     #$0002B88A,-(a7)
+[000062f2] 2f3c 0002 077c            move.l     #_noname,-(a7)
 [000062f8] 3e2c 0004                 move.w     4(a4),d7
 [000062fc] 48c7                      ext.l      d7
 [000062fe] 2f07                      move.l     d7,-(a7)
@@ -8053,7 +8053,7 @@ _pswtab_2:
 [0000634e] 42a7                      clr.l      -(a7)
 [00006350] 4878 0004                 pea.l      ($00000004).w
 [00006354] 42a7                      clr.l      -(a7)
-[00006356] 2f3c 0002 077c            move.l     #$0002B88A,-(a7)
+[00006356] 2f3c 0002 077c            move.l     #_noname,-(a7)
 [0000635c] 2f2e 0010                 move.l     16(a6),-(a7)
 [00006360] 4eba f5a6                 jsr        _paddr(pc)
 [00006364] 4fef 0014                 lea.l      20(a7),a7
@@ -8066,7 +8066,7 @@ _pswntab:
 [00006378] 48e7 800c                 movem.l    d0/a4-a5,-(a7)
 [0000637c] 2ebc 0000 00b9            move.l     #$000000B9,(a7)
 [00006382] 4eba f692                 jsr        _pcode(pc)
-[00006386] 2ebc 0002 0dd4            move.l     #$0002BEE2,(a7)
+[00006386] 2ebc 0002 0dd4            move.l     #_atunsign,(a7)
 [0000638c] 4eb9 0000 78b4            jsr        _bound
 [00006392] 2e87                      move.l     d7,(a7)
 [00006394] 4eba f680                 jsr        _pcode(pc)
@@ -8426,11 +8426,11 @@ _pttype:
 [0000676e] 4287                      clr.l      d7
 [00006770] 1e2d 0008                 move.b     8(a5),d7
 [00006774] 2e87                      move.l     d7,(a7)
-[00006776] 2f3c 0002 14e6            move.l     #$0002C5F4,-(a7)
+[00006776] 2f3c 0002 14e6            move.l     #_typtab,-(a7)
 [0000677c] 4eb9 0000 a7a6            jsr        _scnstr
 [00006782] 588f                      addq.l     #4,a7
 [00006784] 2447                      movea.l    d7,a2
-[00006786] d5fc 0002 1550            adda.l     #$0002C65E,a2
+[00006786] d5fc 0002 1550            adda.l     #_xtab,a2
 [0000678c] 1a12                      move.b     (a2),d5
 [0000678e] 4885                      ext.w      d5
 [00006790] 48c5                      ext.l      d5
@@ -8450,7 +8450,7 @@ _pttype_6:
 _pttype_1:
 [000067bc] 4287                      clr.l      d7
 [000067be] 1e2d 0008                 move.b     8(a5),d7
-[000067c2] 41f9 0002 1228            lea.l      $0002C336,a0
+[000067c2] 41f9 0002 1228            lea.l      $00021228,a0
 [000067c8] 4ef9 0000 a7dc            jmp        a.switch
 [000067ce] 4ab9 0002 0b9a            tst.l      _uflag
 [000067d4] 6704                      beq.s      _pttype_4
@@ -8651,7 +8651,7 @@ _rbuy:
 [000069d0] 4e75                      rts
 _rbuy_1:
 [000069d2] 2e04                      move.l     d4,d7
-[000069d4] 41f9 0002 1268            lea.l      $0002C376,a0
+[000069d4] 41f9 0002 1268            lea.l      $00021268,a0
 [000069da] 4ef9 0000 a7dc            jmp        a.switch
 _rbuy_7:
 [000069e0] 4ab9 0002 0b66            tst.l      _aflag
@@ -8713,7 +8713,7 @@ _rbuy_6:
 x6a6a_1:
 x6a6a_2:
 [00006a6a] 4287                      clr.l      d7
-[00006a6c] 1e39 0002 0ddc            move.b     $0002BEEA,d7
+[00006a6c] 1e39 0002 0ddc            move.b     $00020DDC,d7
 [00006a72] b887                      cmp.l      d7,d4
 [00006a74] 6f00 ff6a                 ble        x6a6a_1
 [00006a78] 4ab9 0002 0b7e            tst.l      _lflag
@@ -8810,7 +8810,7 @@ _cachk:
 [00006b7c] 0c47 0040                 cmpi.w     #$0040,d7
 [00006b80] 662c                      bne.s      _cachk_1
 [00006b82] 4878 0001                 pea.l      ($00000001).w
-[00006b86] 2f3c 0002 0dd4            move.l     #$0002BEE2,-(a7)
+[00006b86] 2f3c 0002 0dd4            move.l     #_atunsign,-(a7)
 [00006b8c] 4eb9 0000 7b74            jsr        _bytes
 [00006b92] 508f                      addq.l     #8,a7
 [00006b94] 2e87                      move.l     d7,(a7)
@@ -8988,7 +8988,7 @@ _cansub_4:
 [00006d6a] 4a87                      tst.l      d7
 [00006d6c] 670c                      beq.s      _cansub_5
 [00006d6e] 426d 0010                 clr.w      16(a5)
-[00006d72] 2b7c 0002 077c 000c       move.l     #$0002B88A,12(a5)
+[00006d72] 2b7c 0002 077c 000c       move.l     #_noname,12(a5)
 _cansub_5:
 [00006d7a] 4a2c 0014                 tst.b      20(a4)
 [00006d7e] 6704                      beq.s      _cansub_6
@@ -9044,7 +9044,7 @@ _docast_3:
 _docast_5:
 [00006e0a] 7e08                      moveq.l    #8,d7
 _docast_4:
-[00006e0c] 41f9 0002 131e            lea.l      $0002C42C,a0
+[00006e0c] 41f9 0002 131e            lea.l      $0002131E,a0
 [00006e12] 4ef9 0000 a7dc            jmp        a.switch
 [00006e18] 1d6d 0003 fffd            move.b     3(a5),-3(a6)
 [00006e1e] 1e2e fffd                 move.b     -3(a6),d7
@@ -9117,7 +9117,7 @@ _hasside:
 _hasside_1:
 [00006ec4] 4287                      clr.l      d7
 [00006ec6] 1e2d 0016                 move.b     22(a5),d7
-[00006eca] 41f9 0002 1366            lea.l      $0002C474,a0
+[00006eca] 41f9 0002 1366            lea.l      $00021366,a0
 [00006ed0] 4ef9 0000 a7dc            jmp        a.switch
 [00006ed6] 2e8d                      move.l     a5,(a7)
 [00006ed8] 4eb9 0000 81ce            jsr        _exspace
@@ -9223,12 +9223,12 @@ _reduce_2:
 [00006fbe] 4287                      clr.l      d7
 [00006fc0] 1e2d 0016                 move.b     22(a5),d7
 [00006fc4] 2e87                      move.l     d7,(a7)
-[00006fc6] 2f3c 0002 1762            move.l     #$0002C870,-(a7)
+[00006fc6] 2f3c 0002 1762            move.l     #_tyops,-(a7)
 [00006fcc] 4eb9 0000 a7a6            jsr        _scnstr
 [00006fd2] 588f                      addq.l     #4,a7
 [00006fd4] e387                      asl.l      #1,d7
 [00006fd6] 2447                      movea.l    d7,a2
-[00006fd8] d5fc 0002 12c0            adda.l     #$0002C3CE,a2
+[00006fd8] d5fc 0002 12c0            adda.l     #$000212C0,a2
 [00006fde] 4287                      clr.l      d7
 [00006fe0] 3e12                      move.w     (a2),d7
 _reduce_3:
@@ -9345,7 +9345,7 @@ _reduce_12:
 _reduce_13:
 [0000710a] 4287                      clr.l      d7
 [0000710c] 1e2d 0016                 move.b     22(a5),d7
-[00007110] 41f9 0002 13d6            lea.l      $0002C4E4,a0
+[00007110] 41f9 0002 13d6            lea.l      $000213D6,a0
 [00007116] 4ef9 0000 a7dc            jmp        a.switch
 [0000711c] 4a2c 0016                 tst.b      22(a4)
 [00007120] 660a                      bne.s      _reduce_15
@@ -9594,7 +9594,7 @@ x72be_6:
 [000073b2] 609c                      bra.s      x72be_4
 [000073b4] 4aab 0008                 tst.l      8(a3)
 [000073b8] 6610                      bne.s      x72be_7
-[000073ba] 2ebc 0002 14d4            move.l     #$0002C5E2,(a7) "illegal /"
+[000073ba] 2ebc 0002 14d4            move.l     #$000214D4,(a7) "illegal /"
 [000073c0] 4eb9 0000 3e84            jsr        _p1error
 [000073c6] 6000 fdb4                 bra        x72be_1
 x72be_7:
@@ -9619,7 +9619,7 @@ x72be_9:
 [00007400] 6000 fd7a                 bra        x72be_1
 [00007404] 4aab 0008                 tst.l      8(a3)
 [00007408] 6610                      bne.s      x72be_10
-[0000740a] 2ebc 0002 14ca            move.l     #$0002C5D8,(a7) "illegal %"
+[0000740a] 2ebc 0002 14ca            move.l     #$000214CA,(a7) "illegal %"
 [00007410] 4eb9 0000 3e84            jsr        _p1error
 [00007416] 6000 fd64                 bra        x72be_1
 x72be_10:
@@ -9840,14 +9840,14 @@ x72be_43:
 [00007632] 673c                      beq.s      x72be_46
 [00007634] 4aab 0008                 tst.l      8(a3)
 [00007638] 673a                      beq.s      x72be_47
-[0000763a] 2b7c 0002 11cc 000c       move.l     #$0002C2DA,12(a5)
+[0000763a] 2b7c 0002 11cc 000c       move.l     #_zeterm,12(a5)
 [00007642] 1b7c 009b 0016            move.b     #$9B,22(a5)
 [00007648] 2e8d                      move.l     a5,(a7)
 [0000764a] 4eba f946                 jsr        _reduce(pc)
 [0000764e] 6018                      bra.s      x72be_48
 x72be_44:
 [00007650] 2b4b 0008                 move.l     a3,8(a5)
-[00007654] 2b7c 0002 11cc 000c       move.l     #$0002C2DA,12(a5)
+[00007654] 2b7c 0002 11cc 000c       move.l     #_zeterm,12(a5)
 [0000765c] 1b7c 009b 0016            move.b     #$9B,22(a5)
 [00007662] 2e8d                      move.l     a5,(a7)
 [00007664] 4eba f92c                 jsr        _reduce(pc)
@@ -9899,7 +9899,7 @@ x72be_50:
 x72be_51:
 [000076d8] 2b4b 0008                 move.l     a3,8(a5)
 [000076dc] 1b7c 009b 0016            move.b     #$9B,22(a5)
-[000076e2] 2b7c 0002 11cc 000c       move.l     #$0002C2DA,12(a5)
+[000076e2] 2b7c 0002 11cc 000c       move.l     #_zeterm,12(a5)
 [000076ea] 2e8d                      move.l     a5,(a7)
 [000076ec] 4eba f8a4                 jsr        _reduce(pc)
 x72be_55:
@@ -9932,7 +9932,7 @@ x72be_56:
 [0000772a] 4eba f776                 jsr        _hasside(pc)
 [0000772e] 4a87                      tst.l      d7
 [00007730] 670c                      beq.s      x72be_57
-[00007732] 2ebc 0002 14b6            move.l     #$0002C5C4,(a7) "illegal side effect"
+[00007732] 2ebc 0002 14b6            move.l     #$000214B6,(a7) "illegal side effect"
 [00007738] 4eb9 0000 3e84            jsr        _p1error
 x72be_57:
 [0000773e] 2e8c                      move.l     a4,(a7)
@@ -10004,7 +10004,7 @@ _addsym_4:
 [000077ea] 508a                      addq.l     #8,a2
 [000077ec] 4287                      clr.l      d7
 [000077ee] 1e12                      move.b     (a2),d7
-[000077f0] 41f9 0002 156e            lea.l      $0002C67C,a0
+[000077f0] 41f9 0002 156e            lea.l      $0002156E,a0
 [000077f6] 4ef9 0000 a7dc            jmp        a.switch
 _addsym_5:
 [000077fc] 4287                      clr.l      d7
@@ -10086,11 +10086,11 @@ _bound:
 [000078c6] 4287                      clr.l      d7
 [000078c8] 1e2e ffff                 move.b     -1(a6),d7
 [000078cc] 2e87                      move.l     d7,(a7)
-[000078ce] 2f3c 0002 14e6            move.l     #$0002C5F4,-(a7)
+[000078ce] 2f3c 0002 14e6            move.l     #_typtab,-(a7)
 [000078d4] 4eb9 0000 a7a6            jsr        _scnstr
 [000078da] 588f                      addq.l     #4,a7
 [000078dc] 2447                      movea.l    d7,a2
-[000078de] d5fc 0002 14f6            adda.l     #$0002C604,a2
+[000078de] d5fc 0002 14f6            adda.l     #_bndtab,a2
 [000078e4] 1a12                      move.b     (a2),d5
 [000078e6] 4885                      ext.w      d5
 [000078e8] 48c5                      ext.l      d5
@@ -10184,20 +10184,20 @@ _bound_15:
 _buyattr:
 [000079aa] 4e56 0000                 link       a6,#0
 [000079ae] 48e7 8004                 movem.l    d0/a5,-(a7)
-[000079b2] 4ab9 0002 14de            tst.l      $0002C5EC
+[000079b2] 4ab9 0002 14de            tst.l      $000214DE
 [000079b8] 671a                      beq.s      _buyattr_1
-[000079ba] 2a79 0002 14de            movea.l    $0002C5EC,a5
-[000079c0] 23d5 0002 14de            move.l     (a5),$0002C5EC
-[000079c6] 2ab9 0002 0cea            move.l     $0002BDF8,(a5)
-[000079cc] 23cd 0002 0cea            move.l     a5,$0002BDF8
+[000079ba] 2a79 0002 14de            movea.l    $000214DE,a5
+[000079c0] 23d5 0002 14de            move.l     (a5),$000214DE
+[000079c6] 2ab9 0002 0cea            move.l     _attlist,(a5)
+[000079cc] 23cd 0002 0cea            move.l     a5,_attlist
 [000079d2] 601a                      bra.s      _buyattr_2
 _buyattr_1:
-[000079d4] 2eb9 0002 0cea            move.l     $0002BDF8,(a7)
+[000079d4] 2eb9 0002 0cea            move.l     _attlist,(a7)
 [000079da] 4878 0012                 pea.l      ($00000012).w
 [000079de] 4eb9 0000 a906            jsr        _alloc
 [000079e4] 588f                      addq.l     #4,a7
 [000079e6] 2a47                      movea.l    d7,a5
-[000079e8] 23cd 0002 0cea            move.l     a5,$0002BDF8
+[000079e8] 23cd 0002 0cea            move.l     a5,_attlist
 _buyattr_2:
 [000079ee] 1b6e 000b 0008            move.b     11(a6),8(a5)
 [000079f4] 2b6e 000c 0004            move.l     12(a6),4(a5)
@@ -10211,20 +10211,20 @@ _buyattr_2:
 _buyop:
 [00007a0e] 4e56 0000                 link       a6,#0
 [00007a12] 48e7 8004                 movem.l    d0/a5,-(a7)
-[00007a16] 4ab9 0002 14e2            tst.l      $0002C5F0
+[00007a16] 4ab9 0002 14e2            tst.l      $000214E2
 [00007a1c] 671a                      beq.s      _buyop_1
-[00007a1e] 2a79 0002 14e2            movea.l    $0002C5F0,a5
-[00007a24] 23d5 0002 14e2            move.l     (a5),$0002C5F0
-[00007a2a] 2ab9 0002 0d32            move.l     $0002BE40,(a5)
-[00007a30] 23cd 0002 0d32            move.l     a5,$0002BE40
+[00007a1e] 2a79 0002 14e2            movea.l    $000214E2,a5
+[00007a24] 23d5 0002 14e2            move.l     (a5),$000214E2
+[00007a2a] 2ab9 0002 0d32            move.l     _exlist,(a5)
+[00007a30] 23cd 0002 0d32            move.l     a5,_exlist
 [00007a36] 601a                      bra.s      _buyop_2
 _buyop_1:
-[00007a38] 2eb9 0002 0d32            move.l     $0002BE40,(a7)
+[00007a38] 2eb9 0002 0d32            move.l     _exlist,(a7)
 [00007a3e] 4878 0018                 pea.l      ($00000018).w
 [00007a42] 4eb9 0000 a906            jsr        _alloc
 [00007a48] 588f                      addq.l     #4,a7
 [00007a4a] 2a47                      movea.l    d7,a5
-[00007a4c] 23cd 0002 0d32            move.l     a5,$0002BE40
+[00007a4c] 23cd 0002 0d32            move.l     a5,_exlist
 _buyop_2:
 [00007a52] 2b6e 0014 0004            move.l     20(a6),4(a5)
 [00007a58] 1b6e 000b 0016            move.b     11(a6),22(a5)
@@ -10283,20 +10283,20 @@ _buysym_2:
 _buyterm:
 [00007aec] 4e56 0000                 link       a6,#0
 [00007af0] 48e7 8004                 movem.l    d0/a5,-(a7)
-[00007af4] 4ab9 0002 14e2            tst.l      $0002C5F0
+[00007af4] 4ab9 0002 14e2            tst.l      $000214E2
 [00007afa] 671a                      beq.s      _buyterm_1
-[00007afc] 2a79 0002 14e2            movea.l    $0002C5F0,a5
-[00007b02] 23d5 0002 14e2            move.l     (a5),$0002C5F0
-[00007b08] 2ab9 0002 0d32            move.l     $0002BE40,(a5)
-[00007b0e] 23cd 0002 0d32            move.l     a5,$0002BE40
+[00007afc] 2a79 0002 14e2            movea.l    $000214E2,a5
+[00007b02] 23d5 0002 14e2            move.l     (a5),$000214E2
+[00007b08] 2ab9 0002 0d32            move.l     _exlist,(a5)
+[00007b0e] 23cd 0002 0d32            move.l     a5,_exlist
 [00007b14] 601a                      bra.s      _buyterm_2
 _buyterm_1:
-[00007b16] 2eb9 0002 0d32            move.l     $0002BE40,(a7)
+[00007b16] 2eb9 0002 0d32            move.l     _exlist,(a7)
 [00007b1c] 4878 0018                 pea.l      ($00000018).w
 [00007b20] 4eb9 0000 a906            jsr        _alloc
 [00007b26] 588f                      addq.l     #4,a7
 [00007b28] 2a47                      movea.l    d7,a5
-[00007b2a] 23cd 0002 0d32            move.l     a5,$0002BE40
+[00007b2a] 23cd 0002 0d32            move.l     a5,_exlist
 _buyterm_2:
 [00007b30] 2b6e 0008 0004            move.l     8(a6),4(a5)
 [00007b36] 422d 0016                 clr.b      22(a5)
@@ -10306,7 +10306,7 @@ _buyterm_2:
 [00007b44] 2e2e 000c                 move.l     12(a6),d7
 [00007b48] 6006                      bra.s      _buyterm_4
 _buyterm_3:
-[00007b4a] 2e3c 0002 077c            move.l     #$0002B88A,d7
+[00007b4a] 2e3c 0002 077c            move.l     #_noname,d7
 _buyterm_4:
 [00007b50] 2b47 000c                 move.l     d7,12(a5)
 [00007b54] 2b6e 0010 0008            move.l     16(a6),8(a5)
@@ -10329,17 +10329,17 @@ _bytes:
 [00007b90] 1e2e fff3                 move.b     -13(a6),d7
 [00007b94] 0c47 0050                 cmpi.w     #$0050,d7
 [00007b98] 660a                      bne.s      _bytes_1
-[00007b9a] 2d7c 0002 1621 fff4       move.l     #$0002C72F,-12(a6)
+[00007b9a] 2d7c 0002 1621 fff4       move.l     #$00021621,-12(a6)
 [00007ba2] 6042                      bra.s      _bytes_2
 _bytes_1:
 [00007ba4] 4287                      clr.l      d7
 [00007ba6] 1e2e fff3                 move.b     -13(a6),d7
 [00007baa] 2e87                      move.l     d7,(a7)
-[00007bac] 2f3c 0002 14e6            move.l     #$0002C5F4,-(a7)
+[00007bac] 2f3c 0002 14e6            move.l     #_typtab,-(a7)
 [00007bb2] 4eb9 0000 a7a6            jsr        _scnstr
 [00007bb8] 588f                      addq.l     #4,a7
 [00007bba] 2447                      movea.l    d7,a2
-[00007bbc] d5fc 0002 1505            adda.l     #$0002C613,a2
+[00007bbc] d5fc 0002 1505            adda.l     #_bytab,a2
 [00007bc2] 1a12                      move.b     (a2),d5
 [00007bc4] 4885                      ext.w      d5
 [00007bc6] 48c5                      ext.l      d5
@@ -10362,12 +10362,12 @@ _bytes_2:
 [00007bec] 6600 0130                 bne        _bytes_7
 [00007bf0] 0cae 0000 ffff fffc       cmpi.l     #$0000FFFF,-4(a6)
 [00007bf8] 6f00 0124                 ble        _bytes_7
-[00007bfc] 2d7c 0002 15c6 fff4       move.l     #$0002C6D4,-12(a6)
+[00007bfc] 2d7c 0002 15c6 fff4       move.l     #$000215C6,-12(a6)
 [00007c04] 6000 0118                 bra        _bytes_7
 _bytes_4:
 [00007c08] 4287                      clr.l      d7
 [00007c0a] 1e2e fff3                 move.b     -13(a6),d7
-[00007c0e] 41f9 0002 159e            lea.l      $0002C6AC,a0
+[00007c0e] 41f9 0002 159e            lea.l      $0002159E,a0
 [00007c14] 4ef9 0000 a7dc            jmp        a.switch
 [00007c1a] 4ab9 0002 0b7e            tst.l      _lflag
 [00007c20] 660c                      bne.s      _bytes_8
@@ -10386,7 +10386,7 @@ _bytes_10:
 [00007c3a] 60aa                      bra.s      _bytes_2
 [00007c3c] 4aad 000a                 tst.l      10(a5)
 [00007c40] 6608                      bne.s      _bytes_11
-[00007c42] 2d7c 0002 160e fff4       move.l     #$0002C71C,-12(a6)
+[00007c42] 2d7c 0002 160e fff4       move.l     #$0002160E,-12(a6)
 _bytes_11:
 [00007c4a] 2eae 000c                 move.l     12(a6),(a7)
 [00007c4e] 2f2d 0004                 move.l     4(a5),-(a7)
@@ -10402,7 +10402,7 @@ _bytes_11:
 [00007c72] 2852                      movea.l    (a2),a4
 [00007c74] 2e0c                      move.l     a4,d7
 [00007c76] 660c                      bne.s      _bytes_12
-[00007c78] 2d7c 0002 15f7 fff4       move.l     #$0002C705,-12(a6)
+[00007c78] 2d7c 0002 15f7 fff4       move.l     #$000215F7,-12(a6)
 [00007c80] 6000 ff64                 bra        _bytes_2
 _bytes_12:
 [00007c84] 4a94                      tst.l      (a4)
@@ -10426,7 +10426,7 @@ _bytes_13:
 [00007cb6] 2852                      movea.l    (a2),a4
 [00007cb8] 2e0c                      move.l     a4,d7
 [00007cba] 660c                      bne.s      _bytes_14
-[00007cbc] 2d7c 0002 15e4 fff4       move.l     #$0002C6F2,-12(a6)
+[00007cbc] 2d7c 0002 15e4 fff4       move.l     #$000215E4,-12(a6)
 [00007cc4] 6000 ff20                 bra        _bytes_2
 _bytes_14:
 [00007cc8] 42ae fffc                 clr.l      -4(a6)
@@ -10456,7 +10456,7 @@ _bytes_15:
 [00007d08] 588f                      addq.l     #4,a7
 [00007d0a] 2d47 fffc                 move.l     d7,-4(a6)
 [00007d0e] 6000 fed6                 bra        _bytes_2
-[00007d12] 2d7c 0002 15d5 fff4       move.l     #$0002C6E3,-12(a6)
+[00007d12] 2d7c 0002 15d5 fff4       move.l     #$000215D5,-12(a6)
 [00007d1a] 6000 feca                 bra        _bytes_2
 _bytes_7:
 [00007d1e] 4aae 000c                 tst.l      12(a6)
@@ -10510,7 +10510,7 @@ _cmptype_6:
 _cmptype_3:
 [00007d8a] 4287                      clr.l      d7
 [00007d8c] 1e2d 0008                 move.b     8(a5),d7
-[00007d90] 41f9 0002 162e            lea.l      $0002C73C,a0
+[00007d90] 41f9 0002 162e            lea.l      $0002162E,a0
 [00007d96] 4ef9 0000 a7dc            jmp        a.switch
 [00007d9c] 4287                      clr.l      d7
 [00007d9e] 3e2d 000a                 move.w     10(a5),d7
@@ -10538,7 +10538,7 @@ _cmptype_3:
 [00007de2] beac 000a                 cmp.l      10(a4),d7
 [00007de6] 660c                      bne.s      _cmptype_9
 [00007de8] 2e2d 000a                 move.l     10(a5),d7
-[00007dec] 0c87 0002 0cf2            cmpi.l     #$0002BE00,d7
+[00007dec] 0c87 0002 0cf2            cmpi.l     #_badsym,d7
 [00007df2] 6682                      bne.s      _cmptype_8
 _cmptype_9:
 [00007df4] 4287                      clr.l      d7
@@ -10610,7 +10610,7 @@ _cpyats_6:
 [00007ea2] 6718                      beq.s      _cpyats_1
 [00007ea4] 4aac 0004                 tst.l      4(a4)
 [00007ea8] 6712                      beq.s      _cpyats_1
-[00007eaa] 2679 0002 0cee            movea.l    $0002BDFC,a3
+[00007eaa] 2679 0002 0cee            movea.l    _gblat,a3
 _cpyats_3:
 [00007eb0] 2e0b                      move.l     a3,d7
 [00007eb2] 6710                      beq.s      _cpyats_2
@@ -10625,15 +10625,15 @@ _cpyats_1:
 _cpyats_2:
 [00007ec4] 2e0b                      move.l     a3,d7
 [00007ec6] 66f4                      bne.s      _cpyats_1
-[00007ec8] 2d79 0002 0cea fffc       move.l     $0002BDF8,-4(a6)
-[00007ed0] 2479 0002 0cee            movea.l    $0002BDFC,a2
-[00007ed6] 23d2 0002 0cea            move.l     (a2),$0002BDF8
+[00007ec8] 2d79 0002 0cea fffc       move.l     _attlist,-4(a6)
+[00007ed0] 2479 0002 0cee            movea.l    _gblat,a2
+[00007ed6] 23d2 0002 0cea            move.l     (a2),_attlist
 [00007edc] 2e8c                      move.l     a4,(a7)
 [00007ede] 4eb9 0000 7f58            jsr        _cpyattr
 [00007ee4] 2a87                      move.l     d7,(a5)
-[00007ee6] 2479 0002 0cee            movea.l    $0002BDFC,a2
-[00007eec] 24b9 0002 0cea            move.l     $0002BDF8,(a2)
-[00007ef2] 23ee fffc 0002 0cea       move.l     -4(a6),$0002BDF8
+[00007ee6] 2479 0002 0cee            movea.l    _gblat,a2
+[00007eec] 24b9 0002 0cea            move.l     _attlist,(a2)
+[00007ef2] 23ee fffc 0002 0cea       move.l     -4(a6),_attlist
 [00007efa] 4287                      clr.l      d7
 [00007efc] 1e2c 0008                 move.b     8(a4),d7
 [00007f00] 0c47 0048                 cmpi.w     #$0048,d7
@@ -10645,7 +10645,7 @@ _cpyats_2:
 _cpyats_4:
 [00007f12] 45f8 000a                 lea.l      ($0000000A).w,a2
 [00007f16] d5d5                      adda.l     (a5),a2
-[00007f18] 24bc 0002 0cf2            move.l     #$0002BE00,(a2)
+[00007f18] 24bc 0002 0cf2            move.l     #_badsym,(a2)
 _cpyats_7:
 [00007f1e] 2e15                      move.l     (a5),d7
 [00007f20] 5887                      addq.l     #4,d7
@@ -10701,7 +10701,7 @@ _deadname:
 [00007fac] 0c47 0005                 cmpi.w     #$0005,d7
 [00007fb0] 6522                      bcs.s      _deadname_2
 [00007fb2] 4878 0005                 pea.l      ($00000005).w
-[00007fb6] 2f3c 0002 165e            move.l     #$0002C76C,-(a7)
+[00007fb6] 2f3c 0002 165e            move.l     #$0002165E,-(a7)
 [00007fbc] 2f2e 0008                 move.l     8(a6),-(a7)
 [00007fc0] 5297                      addq.l     #1,(a7)
 [00007fc2] 4eb9 0000 ad76            jsr        _cmpbuf
@@ -10830,7 +10830,7 @@ _exchk_3:
 [00008102] 4a87                      tst.l      d7
 [00008104] 67bc                      beq.s      _exchk_4
 [00008106] 486d 0010                 pea.l      16(a5)
-[0000810a] 2f3c 0002 1664            move.l     #$0002C772,-(a7) "external name conflict"
+[0000810a] 2f3c 0002 1664            move.l     #$00021664,-(a7) "external name conflict"
 [00008110] 4eb9 0000 3c8a            jsr        _nmerr
 [00008116] 508f                      addq.l     #8,a7
 [00008118] 60d4                      bra.s      _exchk_2
@@ -11033,7 +11033,7 @@ _fixargs_5:
 [00008300] 0c47 0050                 cmpi.w     #$0050,d7
 [00008304] 6614                      bne.s      _fixargs_8
 [00008306] 486d 0010                 pea.l      16(a5)
-[0000830a] 2f3c 0002 167c            move.l     #$0002C78A,-(a7) "illegal argument type"
+[0000830a] 2f3c 0002 167c            move.l     #$0002167C,-(a7) "illegal argument type"
 [00008310] 4eb9 0000 3c8a            jsr        _nmerr
 [00008316] 508f                      addq.l     #8,a7
 [00008318] 600e                      bra.s      _fixargs_1
@@ -11071,8 +11071,8 @@ _frealst_1:
 [00008360] 4e5e                      unlk       a6
 [00008362] 4e75                      rts
 _frealst_2:
-[00008364] 26b9 0002 14de            move.l     $0002C5EC,(a3)
-[0000836a] 23cd 0002 14de            move.l     a5,$0002C5EC
+[00008364] 26b9 0002 14de            move.l     $000214DE,(a3)
+[0000836a] 23cd 0002 14de            move.l     a5,$000214DE
 [00008370] 60e8                      bra.s      _frealst_1
 
 _fretlst:
@@ -11080,7 +11080,7 @@ _fretlst:
 [00008376] 48e7 801c                 movem.l    d0/a3-a5,-(a7)
 [0000837a] 2a6e 0008                 movea.l    8(a6),a5
 [0000837e] 286e 000c                 movea.l    12(a6),a4
-[00008382] 4ab9 0002 02be            tst.l      $0002B3CC
+[00008382] 4ab9 0002 02be            tst.l      _freeexpr
 [00008388] 6604                      bne.s      _fretlst_1
 [0000838a] 2e0d                      move.l     a5,d7
 [0000838c] 6010                      bra.s      _fretlst_2
@@ -11100,8 +11100,8 @@ _fretlst_2:
 [000083a2] 4e5e                      unlk       a6
 [000083a4] 4e75                      rts
 _fretlst_4:
-[000083a6] 26b9 0002 14e2            move.l     $0002C5F0,(a3)
-[000083ac] 23cd 0002 14e2            move.l     a5,$0002C5F0
+[000083a6] 26b9 0002 14e2            move.l     $000214E2,(a3)
+[000083ac] 23cd 0002 14e2            move.l     a5,$000214E2
 [000083b2] 2e0c                      move.l     a4,d7
 [000083b4] 60e8                      bra.s      _fretlst_2
 
@@ -11167,11 +11167,11 @@ _itype:
 [00008454] 4287                      clr.l      d7
 [00008456] 1e12                      move.b     (a2),d7
 [00008458] 2e87                      move.l     d7,(a7)
-[0000845a] 2f3c 0002 14e6            move.l     #$0002C5F4,-(a7)
+[0000845a] 2f3c 0002 14e6            move.l     #_typtab,-(a7)
 [00008460] 4eb9 0000 a7a6            jsr        _scnstr
 [00008466] 588f                      addq.l     #4,a7
 [00008468] 4286                      clr.l      d6
-[0000846a] 1c39 0002 14f5            move.b     $0002C603,d6
+[0000846a] 1c39 0002 14f5            move.b     $000214F5,d6
 [00008470] be86                      cmp.l      d6,d7
 [00008472] 6e04                      bgt.s      _itype_1
 [00008474] 7e01                      moveq.l    #1,d7
@@ -11232,25 +11232,25 @@ _maxify:
 [000084e6] 4285                      clr.l      d5
 [000084e8] 1a2d 0008                 move.b     8(a5),d5
 [000084ec] 2e05                      move.l     d5,d7
-[000084ee] 41f9 0002 1692            lea.l      $0002C7A0,a0
+[000084ee] 41f9 0002 1692            lea.l      $00021692,a0
 [000084f4] 4ef9 0000 a7dc            jmp        a.switch
-[000084fa] 2e3c 0002 0dc2            move.l     #$0002BED0,d7
+[000084fa] 2e3c 0002 0dc2            move.l     #_atint,d7
 [00008500] 6016                      bra.s      _maxify_1
 [00008502] 4ab9 0002 0b7e            tst.l      _lflag
 [00008508] 6708                      beq.s      _maxify_2
-[0000850a] 2e3c 0002 0dc2            move.l     #$0002BED0,d7
+[0000850a] 2e3c 0002 0dc2            move.l     #_atint,d7
 [00008510] 6006                      bra.s      _maxify_1
 _maxify_2:
-[00008512] 2e3c 0002 0dd4            move.l     #$0002BEE2,d7
+[00008512] 2e3c 0002 0dd4            move.l     #_atunsign,d7
 _maxify_1:
 [00008518] 4cdf 2021                 movem.l    (a7)+,d0/d5/a5
 [0000851c] 4e5e                      unlk       a6
 [0000851e] 4e75                      rts
 
 x8520_1:
-[00008520] 2e3c 0002 0dd4            move.l     #$0002BEE2,d7
+[00008520] 2e3c 0002 0dd4            move.l     #_atunsign,d7
 [00008526] 60f0                      bra.s      x8520_1
-[00008528] 2e3c 0002 0e1c            move.l     #$0002BF2A,d7
+[00008528] 2e3c 0002 0e1c            move.l     #_atdouble,d7
 [0000852e] 60e8                      bra.s      x8520_1
 [00008530] 2e0d                      move.l     a5,d7
 [00008532] 60e4                      bra.s      x8520_1
@@ -11264,7 +11264,7 @@ _mergatt:
 [00008546] 6712                      beq.s      _mergatt_1
 [00008548] 4287                      clr.l      d7
 [0000854a] 1e2d 0008                 move.b     8(a5),d7
-[0000854e] 41f9 0002 16d2            lea.l      $0002C7E0,a0
+[0000854e] 41f9 0002 16d2            lea.l      $000216D2,a0
 [00008554] 4ef9 0000 a7dc            jmp        a.switch
 _mergatt_1:
 [0000855a] 2e2e 0008                 move.l     8(a6),d7
@@ -11307,7 +11307,7 @@ _setad:
 [000085c2] 2e0c                      move.l     a4,d7
 [000085c4] 6006                      bra.s      _setad_2
 _setad_1:
-[000085c6] 2e3c 0002 077c            move.l     #$0002B88A,d7
+[000085c6] 2e3c 0002 077c            move.l     #_noname,d7
 _setad_2:
 [000085cc] 2b47 000c                 move.l     d7,12(a5)
 [000085d0] 3b6e 000e 0010            move.w     14(a6),16(a5)
@@ -11329,11 +11329,11 @@ _stype:
 [00008604] 4287                      clr.l      d7
 [00008606] 1e2d 0008                 move.b     8(a5),d7
 [0000860a] 2e87                      move.l     d7,(a7)
-[0000860c] 2f3c 0002 14e6            move.l     #$0002C5F4,-(a7)
+[0000860c] 2f3c 0002 14e6            move.l     #_typtab,-(a7)
 [00008612] 4eb9 0000 a7a6            jsr        _scnstr
 [00008618] 588f                      addq.l     #4,a7
 [0000861a] 2447                      movea.l    d7,a2
-[0000861c] d5fc 0002 14e6            adda.l     #$0002C5F4,a2
+[0000861c] d5fc 0002 14e6            adda.l     #_typtab,a2
 [00008622] 4a12                      tst.b      (a2)
 [00008624] 6704                      beq.s      _stype_1
 [00008626] 7e01                      moveq.l    #1,d7
@@ -11364,7 +11364,7 @@ _argchk_2:
 [0000865e] 588f                      addq.l     #4,a7
 [00008660] 4a87                      tst.l      d7
 [00008662] 660c                      bne.s      _argchk_4
-[00008664] 2ebc 0002 1791            move.l     #$0002C89F,(a7) "illegal actual argument"
+[00008664] 2ebc 0002 1791            move.l     #$00021791,(a7) "illegal actual argument"
 [0000866a] 4eb9 0000 3e84            jsr        _p1error
 _argchk_4:
 [00008670] 4297                      clr.l      (a7)
@@ -11627,9 +11627,9 @@ _defat_1:
 [000088fa] 4e5e                      unlk       a6
 [000088fc] 4e75                      rts
 _defat_2:
-[000088fe] 2ebc 0002 17aa            move.l     #$0002C8B8,(a7) "scalar type required"
+[000088fe] 2ebc 0002 17aa            move.l     #$000217AA,(a7) "scalar type required"
 [00008904] 4eb9 0000 3e84            jsr        _p1error
-[0000890a] 2b7c 0002 0dc2 0004       move.l     #$0002BED0,4(a5)
+[0000890a] 2b7c 0002 0dc2 0004       move.l     #_atint,4(a5)
 [00008912] 60e0                      bra.s      _defat_1
 
 _docheck:
@@ -11667,7 +11667,7 @@ _docheck_3:
 _docheck_5:
 [00008966] 4287                      clr.l      d7
 [00008968] 1e2c 0016                 move.b     22(a4),d7
-[0000896c] 41f9 0002 17c0            lea.l      $0002C8CE,a0
+[0000896c] 41f9 0002 17c0            lea.l      $000217C0,a0
 [00008972] 4ef9 0000 a7dc            jmp        a.switch
 [00008978] 197c 008e 0016            move.b     #$8E,22(a4)
 [0000897e] 246c 0008                 movea.l    8(a4),a2
@@ -11730,7 +11730,7 @@ x8992_4:
 [00008a18] 6614                      bne.s      x8992_6
 [00008a1a] 4ab9 0002 0b8e            tst.l      _stdflag
 [00008a20] 660c                      bne.s      x8992_6
-[00008a22] 2ebc 0002 1848            move.l     #$0002C956,(a7) "useless expression"
+[00008a22] 2ebc 0002 1848            move.l     #$00021848,(a7) "useless expression"
 [00008a28] 4eb9 0000 3e84            jsr        _p1error
 x8992_6:
 [00008a2e] 4287                      clr.l      d7
@@ -11768,14 +11768,14 @@ _fixsym:
 [00008a94] 4e56 0000                 link       a6,#0
 [00008a98] 48e7 801c                 movem.l    d0/a3-a5,-(a7)
 [00008a9c] 4297                      clr.l      (a7)
-[00008a9e] 2f39 0002 0d2e            move.l     $0002BE3C,-(a7)
+[00008a9e] 2f39 0002 0d2e            move.l     _symtab,-(a7)
 [00008aa4] 2f2e 0008                 move.l     8(a6),-(a7)
 [00008aa8] 4eb9 0000 847e            jsr        _lookup
 [00008aae] 508f                      addq.l     #8,a7
 [00008ab0] 2a47                      movea.l    d7,a5
 [00008ab2] 2e0d                      move.l     a5,d7
 [00008ab4] 660c                      bne.s      _fixsym_1
-[00008ab6] 2ebc 0002 185c            move.l     #$0002C96A,(a7) "not in table!"
+[00008ab6] 2ebc 0002 185c            move.l     #$0002185C,(a7) "not in table!"
 [00008abc] 4eb9 0000 3e84            jsr        _p1error
 _fixsym_1:
 [00008ac2] 2b6e 000c 0004            move.l     12(a6),4(a5)
@@ -11791,7 +11791,7 @@ _fixsym_1:
 [00008ae2] 588f                      addq.l     #4,a7
 [00008ae4] 3b47 000c                 move.w     d7,12(a5)
 [00008ae8] 4297                      clr.l      (a7)
-[00008aea] 2f39 0002 0d16            move.l     $0002BE24,-(a7)
+[00008aea] 2f39 0002 0d16            move.l     _gblsym,-(a7)
 [00008af0] 2f2e 0008                 move.l     8(a6),-(a7)
 [00008af4] 4eb9 0000 847e            jsr        _lookup
 [00008afa] 508f                      addq.l     #8,a7
@@ -11808,12 +11808,12 @@ _fixsym_1:
 [00008b1a] 2847                      movea.l    d7,a4
 [00008b1c] 396d 000c 000c            move.w     12(a5),12(a4)
 [00008b22] 196d 000f 000f            move.b     15(a5),15(a4)
-[00008b28] 4ab9 0002 0d16            tst.l      $0002BE24
+[00008b28] 4ab9 0002 0d16            tst.l      _gblsym
 [00008b2e] 6708                      beq.s      _fixsym_3
-[00008b30] 2e39 0002 0d16            move.l     $0002BE24,d7
+[00008b30] 2e39 0002 0d16            move.l     _gblsym,d7
 [00008b36] 6006                      bra.s      _fixsym_4
 _fixsym_3:
-[00008b38] 2e3c 0002 0d16            move.l     #$0002BE24,d7
+[00008b38] 2e3c 0002 0d16            move.l     #_gblsym,d7
 _fixsym_4:
 [00008b3e] 2e87                      move.l     d7,(a7)
 [00008b40] 2f0c                      move.l     a4,-(a7)
@@ -11850,7 +11850,7 @@ _maxty:
 [00008b9e] 4287                      clr.l      d7
 [00008ba0] 1e12                      move.b     (a2),d7
 [00008ba2] 2e87                      move.l     d7,(a7)
-[00008ba4] 2f3c 0002 14e6            move.l     #$0002C5F4,-(a7)
+[00008ba4] 2f3c 0002 14e6            move.l     #_typtab,-(a7)
 [00008baa] 4eb9 0000 a7a6            jsr        _scnstr
 [00008bb0] 588f                      addq.l     #4,a7
 [00008bb2] 2a07                      move.l     d7,d5
@@ -11859,12 +11859,12 @@ _maxty:
 [00008bba] 4287                      clr.l      d7
 [00008bbc] 1e12                      move.b     (a2),d7
 [00008bbe] 2e87                      move.l     d7,(a7)
-[00008bc0] 2f3c 0002 14e6            move.l     #$0002C5F4,-(a7)
+[00008bc0] 2f3c 0002 14e6            move.l     #_typtab,-(a7)
 [00008bc6] 4eb9 0000 a7a6            jsr        _scnstr
 [00008bcc] 588f                      addq.l     #4,a7
 [00008bce] 2807                      move.l     d7,d4
 [00008bd0] 2eae 0010                 move.l     16(a6),(a7)
-[00008bd4] 2f3c 0002 14e6            move.l     #$0002C5F4,-(a7)
+[00008bd4] 2f3c 0002 14e6            move.l     #_typtab,-(a7)
 [00008bda] 4eb9 0000 a7a6            jsr        _scnstr
 [00008be0] 588f                      addq.l     #4,a7
 [00008be2] 2607                      move.l     d7,d3
@@ -11873,13 +11873,13 @@ _maxty:
 [00008be8] b684                      cmp.l      d4,d3
 [00008bea] 6c22                      bge.s      _maxty_2
 _maxty_1:
-[00008bec] 2ebc 0002 186a            move.l     #$0002C978,(a7) "illegal operand type"
+[00008bec] 2ebc 0002 186a            move.l     #$0002186A,(a7) "illegal operand type"
 [00008bf2] 4eb9 0000 3e84            jsr        _p1error
 _maxty_4:
 [00008bf8] 2e03                      move.l     d3,d7
 [00008bfa] e587                      asl.l      #2,d7
 [00008bfc] 2447                      movea.l    d7,a2
-[00008bfe] d5fc 0002 1514            adda.l     #$0002C622,a2
+[00008bfe] d5fc 0002 1514            adda.l     #_ttyptab,a2
 [00008c04] 2e12                      move.l     (a2),d7
 [00008c06] 4cdf 0039                 movem.l    (a7)+,d0/d3-d5
 [00008c0a] 4e5e                      unlk       a6
@@ -11902,10 +11902,10 @@ _ptify:
 [00008c2c] 3e2c 000a                 move.w     10(a4),d7
 [00008c30] 0807 000b                 btst       #11,d7
 [00008c34] 6708                      beq.s      _ptify_1
-[00008c36] 2e3c 0002 0df8            move.l     #$0002BF06,d7
+[00008c36] 2e3c 0002 0df8            move.l     #_atulong,d7
 [00008c3c] 6006                      bra.s      _ptify_2
 _ptify_1:
-[00008c3e] 2e3c 0002 0dd4            move.l     #$0002BEE2,d7
+[00008c3e] 2e3c 0002 0dd4            move.l     #_atunsign,d7
 _ptify_2:
 [00008c44] 2647                      movea.l    d7,a3
 [00008c46] 4287                      clr.l      d7
@@ -11933,7 +11933,7 @@ _ptify_3:
 [00008c86] 508f                      addq.l     #8,a7
 [00008c88] 2f07                      move.l     d7,-(a7)
 [00008c8a] 42a7                      clr.l      -(a7)
-[00008c8c] 2f3c 0002 0dc2            move.l     #$0002BED0,-(a7)
+[00008c8c] 2f3c 0002 0dc2            move.l     #_atint,-(a7)
 [00008c92] 4eb9 0000 7aec            jsr        _buyterm
 [00008c98] 4fef 0014                 lea.l      20(a7),a7
 [00008c9c] 2f07                      move.l     d7,-(a7)
@@ -12089,14 +12089,14 @@ _tfn_2:
 [00008e6e] 6600 008c                 bne        _tfn_3
 [00008e72] 4aac 0004                 tst.l      4(a4)
 [00008e76] 6600 0084                 bne        _tfn_3
-[00008e7a] 2d79 0002 0cea fffc       move.l     $0002BDF8,-4(a6)
-[00008e82] 23f9 0002 0cee 0002 0cea  move.l     $0002BDFC,$0002BDF8
+[00008e7a] 2d79 0002 0cea fffc       move.l     _attlist,-4(a6)
+[00008e82] 23f9 0002 0cee 0002 0cea  move.l     _gblat,_attlist
 [00008e8c] 4ab9 0002 0b92            tst.l      _strictfl
 [00008e92] 6708                      beq.s      _tfn_4
-[00008e94] 2e3c 0002 0e40            move.l     #$0002BF4E,d7
+[00008e94] 2e3c 0002 0e40            move.l     #_atvoid,d7
 [00008e9a] 6006                      bra.s      _tfn_5
 _tfn_4:
-[00008e9c] 2e3c 0002 0dc2            move.l     #$0002BED0,d7
+[00008e9c] 2e3c 0002 0dc2            move.l     #_atint,d7
 _tfn_5:
 [00008ea2] 2e87                      move.l     d7,(a7)
 [00008ea4] 4878 0042                 pea.l      ($00000042).w
@@ -12115,7 +12115,7 @@ _tfn_5:
 [00008ed2] 4287                      clr.l      d7
 [00008ed4] 6006                      bra.s      _tfn_7
 _tfn_6:
-[00008ed6] 2e3c 0002 0d04            move.l     #$0002BE12,d7
+[00008ed6] 2e3c 0002 0d04            move.l     #_tentsym,d7
 _tfn_7:
 [00008edc] 2257                      movea.l    (a7),a1
 [00008ede] 2287                      move.l     d7,(a1)
@@ -12124,7 +12124,7 @@ _tfn_7:
 [00008ee8] 4eb9 0000 3252            jsr        _defspace
 [00008eee] 508f                      addq.l     #8,a7
 [00008ef0] 3947 0012                 move.w     d7,18(a4)
-[00008ef4] 23ee fffc 0002 0cea       move.l     -4(a6),$0002BDF8
+[00008ef4] 23ee fffc 0002 0cea       move.l     -4(a6),_attlist
 _tfn_3:
 [00008efc] 2e8c                      move.l     a4,(a7)
 [00008efe] 4eb9 0000 94c6            jsr        _typify
@@ -12161,7 +12161,7 @@ _tfn_3:
 [00008f58] 6010                      bra.s      _tfn_8
 _tfn_9:
 [00008f5a] 42ae fff0                 clr.l      -16(a6)
-[00008f5e] 2ebc 0002 18b4            move.l     #$0002C9C2,(a7) "function required"
+[00008f5e] 2ebc 0002 18b4            move.l     #$000218B4,(a7) "function required"
 [00008f64] 4eb9 0000 3e84            jsr        _p1error
 _tfn_8:
 [00008f6a] 246c 0004                 movea.l    4(a4),a2
@@ -12180,9 +12180,9 @@ _tfn_8:
 [00008f8e] 0c47 0042                 cmpi.w     #$0042,d7
 [00008f92] 6618                      bne.s      _tfn_11
 _tfn_10:
-[00008f94] 2ebc 0002 18a0            move.l     #$0002C9AE,(a7) "illegal return type"
+[00008f94] 2ebc 0002 18a0            move.l     #$000218A0,(a7) "illegal return type"
 [00008f9a] 4eb9 0000 3e84            jsr        _p1error
-[00008fa0] 2b7c 0002 0dc2 0004       move.l     #$0002BED0,4(a5)
+[00008fa0] 2b7c 0002 0dc2 0004       move.l     #_atint,4(a5)
 [00008fa8] 42ae fff0                 clr.l      -16(a6)
 _tfn_11:
 [00008fac] 2e8d                      move.l     a5,(a7)
@@ -12252,7 +12252,7 @@ _tfn_17:
 [00009046] 588a                      addq.l     #4,a2
 [00009048] 4a92                      tst.l      (a2)
 [0000904a] 6700 00a6                 beq        _tfn_20
-[0000904e] 2ebc 0002 1880            move.l     #$0002C98E,(a7) "missing argument"
+[0000904e] 2ebc 0002 1880            move.l     #$00021880,(a7) "missing argument"
 [00009054] 4eb9 0000 3e84            jsr        _p1error
 [0000905a] 6000 0096                 bra        _tfn_20
 _tfn_24:
@@ -12288,7 +12288,7 @@ _tfn_19:
 [000090b2] 6710                      beq.s      _tfn_22
 [000090b4] 4a85                      tst.l      d5
 [000090b6] 661c                      bne.s      _tfn_23
-[000090b8] 2ebc 0002 1891            move.l     #$0002C99F,(a7) "extra argument"
+[000090b8] 2ebc 0002 1891            move.l     #$00021891,(a7) "extra argument"
 [000090be] 4eb9 0000 3e84            jsr        _p1error
 _tfn_22:
 [000090c4] 4287                      clr.l      d7
@@ -12322,7 +12322,7 @@ _tpoints:
 [000090fe] 48e7 801c                 movem.l    d0/a3-a5,-(a7)
 [00009102] 2a6e 0008                 movea.l    8(a6),a5
 [00009106] 286e 000c                 movea.l    12(a6),a4
-[0000910a] 2d79 0002 0d22 fffc       move.l     $0002BE30,-4(a6)
+[0000910a] 2d79 0002 0d22 fffc       move.l     _mostab,-4(a6)
 [00009112] 4ab9 0002 0b86            tst.l      _mflag
 [00009118] 6738                      beq.s      _tpoints_1
 [0000911a] 246d 0004                 movea.l    4(a5),a2
@@ -12366,7 +12366,7 @@ _tpoints_4:
 [00009178] 4eb9 0000 6e7a            jsr        _hasname
 [0000917e] 4a87                      tst.l      d7
 [00009180] 6634                      bne.s      _tpoints_5
-[00009182] 267c 0002 16f2            movea.l    #$0002C800,a3
+[00009182] 267c 0002 16f2            movea.l    #$000216F2,a3
 [00009188] 605c                      bra.s      _tpoints_6
 _tpoints_3:
 [0000918a] 246d 0004                 movea.l    4(a5),a2
@@ -12379,7 +12379,7 @@ _tpoints_3:
 [0000919e] 4eb9 0000 844a            jsr        _itype
 [000091a4] 4a87                      tst.l      d7
 [000091a6] 66ce                      bne.s      _tpoints_4
-[000091a8] 2ebc 0002 18d5            move.l     #$0002C9E3,(a7) "illegal selection"
+[000091a8] 2ebc 0002 18d5            move.l     #$000218D5,(a7) "illegal selection"
 [000091ae] 4eb9 0000 3e84            jsr        _p1error
 [000091b4] 60c0                      bra.s      _tpoints_4
 _tpoints_5:
@@ -12392,10 +12392,10 @@ _tpoints_5:
 [000091ca] 2e0b                      move.l     a3,d7
 [000091cc] 6618                      bne.s      _tpoints_6
 [000091ce] 2eac 000c                 move.l     12(a4),(a7)
-[000091d2] 2f3c 0002 18c6            move.l     #$0002C9D4,-(a7) "unknown member"
+[000091d2] 2f3c 0002 18c6            move.l     #$000218C6,-(a7) "unknown member"
 [000091d8] 4eb9 0000 3c8a            jsr        _nmerr
 [000091de] 588f                      addq.l     #4,a7
-[000091e0] 267c 0002 16f2            movea.l    #$0002C800,a3
+[000091e0] 267c 0002 16f2            movea.l    #$000216F2,a3
 _tpoints_6:
 [000091e6] 246d 0004                 movea.l    4(a5),a2
 [000091ea] 508a                      addq.l     #8,a2
@@ -12403,7 +12403,7 @@ _tpoints_6:
 [000091ee] 1e12                      move.b     (a2),d7
 [000091f0] 0c47 0040                 cmpi.w     #$0040,d7
 [000091f4] 6750                      beq.s      _tpoints_7
-[000091f6] 2ebc 0002 0d68            move.l     #$0002BE76,(a7)
+[000091f6] 2ebc 0002 0d68            move.l     #_atchar,(a7)
 [000091fc] 4878 0040                 pea.l      ($00000040).w
 [00009200] 4eb9 0000 79aa            jsr        _buyattr
 [00009206] 588f                      addq.l     #4,a7
@@ -12595,7 +12595,7 @@ _tquery_7:
 [00009420] 662e                      bne.s      _tquery_2
 [00009422] 4ab9 0002 0b7a            tst.l      _laxflag
 [00009428] 6626                      bne.s      _tquery_2
-[0000942a] 2ebc 0002 18e8            move.l     #$0002C9F6,(a7) "type conflict in conditional"
+[0000942a] 2ebc 0002 18e8            move.l     #$000218E8,(a7) "type conflict in conditional"
 [00009430] 4eb9 0000 3e84            jsr        _p1error
 [00009436] 6018                      bra.s      _tquery_2
 _tquery_8:
@@ -12664,12 +12664,12 @@ _typify_2:
 [000094f2] 4287                      clr.l      d7
 [000094f4] 1e2d 0016                 move.b     22(a5),d7
 [000094f8] 2e87                      move.l     d7,(a7)
-[000094fa] 2f3c 0002 1762            move.l     #$0002C870,-(a7)
+[000094fa] 2f3c 0002 1762            move.l     #_tyops,-(a7)
 [00009500] 4eb9 0000 a7a6            jsr        _scnstr
 [00009506] 588f                      addq.l     #4,a7
 [00009508] e387                      asl.l      #1,d7
 [0000950a] 2447                      movea.l    d7,a2
-[0000950c] d5fc 0002 1704            adda.l     #$0002C812,a2
+[0000950c] d5fc 0002 1704            adda.l     #_tycodes,a2
 [00009512] 4287                      clr.l      d7
 [00009514] 3e12                      move.w     (a2),d7
 _typify_3:
@@ -12765,7 +12765,7 @@ _typify_11:
 [0000960c] 6636                      bne.s      _typify_15
 [0000960e] 600e                      bra.s      _typify_14
 _typify_12:
-[00009610] 2ebc 0002 1a8b            move.l     #$0002CB99,(a7) "lvalue required"
+[00009610] 2ebc 0002 1a8b            move.l     #$00021A8B,(a7) "lvalue required"
 [00009616] 4eb9 0000 3e84            jsr        _p1error
 [0000961c] 60b8                      bra.s      _typify_10
 _typify_14:
@@ -12783,7 +12783,7 @@ _typify_14:
 [0000963c] 0287 0000 3000            andi.l     #$00003000,d7
 [00009642] 6792                      beq.s      _typify_10
 _typify_15:
-[00009644] 2ebc 0002 1a7c            move.l     #$0002CB8A,(a7) "const modified"
+[00009644] 2ebc 0002 1a7c            move.l     #$00021A7C,(a7) "const modified"
 [0000964a] 4eb9 0000 3e84            jsr        _p1error
 [00009650] 6084                      bra.s      _typify_10
 _typify_13:
@@ -12806,15 +12806,15 @@ _typify_16:
 _typify_17:
 [00009688] 4287                      clr.l      d7
 [0000968a] 1e2d 0016                 move.b     22(a5),d7
-[0000968e] 41f9 0002 1906            lea.l      $0002CA14,a0
+[0000968e] 41f9 0002 1906            lea.l      $00021906,a0
 [00009694] 4ef9 0000 a7dc            jmp        a.switch
 [0000969a] 4aad 0004                 tst.l      4(a5)
 [0000969e] 6626                      bne.s      _typify_18
 [000096a0] 2ead 000c                 move.l     12(a5),(a7)
-[000096a4] 2f3c 0002 1a71            move.l     #$0002CB7F,-(a7) "undeclared"
+[000096a4] 2f3c 0002 1a71            move.l     #$00021A71,-(a7) "undeclared"
 [000096aa] 4eb9 0000 3c8a            jsr        _nmerr
 [000096b0] 588f                      addq.l     #4,a7
-[000096b2] 2ebc 0002 0dc2            move.l     #$0002BED0,(a7)
+[000096b2] 2ebc 0002 0dc2            move.l     #_atint,(a7)
 [000096b8] 2f2d 000c                 move.l     12(a5),-(a7)
 [000096bc] 4eba f3d6                 jsr        _fixsym(pc)
 [000096c0] 588f                      addq.l     #4,a7
@@ -12822,7 +12822,7 @@ _typify_17:
 _typify_18:
 [000096c6] 4aad 0004                 tst.l      4(a5)
 [000096ca] 6600 062e                 bne        _typify_19
-[000096ce] 2b7c 0002 0dc2 0004       move.l     #$0002BED0,4(a5)
+[000096ce] 2b7c 0002 0dc2 0004       move.l     #_atint,4(a5)
 [000096d6] 6000 063c                 bra        _typify_20
 [000096da] 4287                      clr.l      d7
 [000096dc] 1e2c 0016                 move.b     22(a4),d7
@@ -12951,7 +12951,7 @@ _typify_27:
 [00009852] 34bc 0800                 move.w     #$0800,(a2)
 [00009856] 6000 fe6e                 bra        _typify_18
 _typify_25:
-[0000985a] 2ebc 0002 1a67            move.l     #$0002CB75,(a7) "illegal &"
+[0000985a] 2ebc 0002 1a67            move.l     #$00021A67,(a7) "illegal &"
 [00009860] 4eb9 0000 3e84            jsr        _p1error
 [00009866] 6000 ff42                 bra        _typify_27
 _typify_26:
@@ -13017,9 +13017,9 @@ _typify_28:
 [0000991e] be86                      cmp.l      d6,d7
 [00009920] 6700 fda4                 beq        _typify_18
 _typify_29:
-[00009924] 2ebc 0002 1a5a            move.l     #$0002CB68,(a7) "illegal cast"
+[00009924] 2ebc 0002 1a5a            move.l     #$00021A5A,(a7) "illegal cast"
 [0000992a] 4eb9 0000 3e84            jsr        _p1error
-[00009930] 2b7c 0002 0dc2 0004       move.l     #$0002BED0,4(a5)
+[00009930] 2b7c 0002 0dc2 0004       move.l     #_atint,4(a5)
 [00009938] 6000 fd8c                 bra        _typify_18
 [0000993c] 246c 0004                 movea.l    4(a4),a2
 [00009940] 508a                      addq.l     #8,a2
@@ -13027,7 +13027,7 @@ _typify_29:
 [00009944] 1e12                      move.b     (a2),d7
 [00009946] 0c47 0040                 cmpi.w     #$0040,d7
 [0000994a] 6724                      beq.s      _typify_30
-[0000994c] 2ebc 0002 1a46            move.l     #$0002CB54,(a7) "illegal indirection"
+[0000994c] 2ebc 0002 1a46            move.l     #$00021A46,(a7) "illegal indirection"
 [00009952] 4eb9 0000 3e84            jsr        _p1error
 [00009958] 2eac 0004                 move.l     4(a4),(a7)
 [0000995c] 4878 0040                 pea.l      ($00000040).w
@@ -13044,7 +13044,7 @@ _typify_30:
 [00009982] 4eb9 0000 844a            jsr        _itype
 [00009988] 4a87                      tst.l      d7
 [0000998a] 6600 fd3a                 bne        _typify_18
-[0000998e] 2ebc 0002 1a30            move.l     #$0002CB3E,(a7) "integer type required"
+[0000998e] 2ebc 0002 1a30            move.l     #$00021A30,(a7) "integer type required"
 [00009994] 4eb9 0000 3e84            jsr        _p1error
 [0000999a] 6000 fd2a                 bra        _typify_18
 [0000999e] 2ead 0004                 move.l     4(a5),(a7)
@@ -13055,7 +13055,7 @@ _typify_30:
 [000099b2] 4eb9 0000 8062            jsr        _dtype
 [000099b8] 4a87                      tst.l      d7
 [000099ba] 6600 fd0a                 bne        _typify_18
-[000099be] 2ebc 0002 1a17            move.l     #$0002CB25,(a7) "arithmetic type required"
+[000099be] 2ebc 0002 1a17            move.l     #$00021A17,(a7) "arithmetic type required"
 [000099c4] 4eb9 0000 3e84            jsr        _p1error
 [000099ca] 6000 fcfa                 bra        _typify_18
 [000099ce] 2e8c                      move.l     a4,(a7)
@@ -13073,7 +13073,7 @@ _typify_30:
 [000099fc] 588f                      addq.l     #4,a7
 [000099fe] 4a87                      tst.l      d7
 [00009a00] 6600 fcc4                 bne        _typify_18
-[00009a04] 2ebc 0002 1a04            move.l     #$0002CB12,(a7) "illegal assignment"
+[00009a04] 2ebc 0002 1a04            move.l     #$00021A04,(a7) "illegal assignment"
 [00009a0a] 4eb9 0000 3e84            jsr        _p1error
 [00009a10] 6000 fcb4                 bra        _typify_18
 [00009a14] 246c 0004                 movea.l    4(a4),a2
@@ -13106,7 +13106,7 @@ _typify_31:
 [00009a60] 0c47 0040                 cmpi.w     #$0040,d7
 [00009a64] 6600 fc60                 bne        _typify_18
 _typify_32:
-[00009a68] 2ebc 0002 19f9            move.l     #$0002CB07,(a7) "illegal +="
+[00009a68] 2ebc 0002 19f9            move.l     #$000219F9,(a7) "illegal +="
 [00009a6e] 4eb9 0000 3e84            jsr        _p1error
 [00009a74] 6000 fc50                 bra        _typify_18
 [00009a78] 246c 0004                 movea.l    4(a4),a2
@@ -13189,7 +13189,7 @@ _typify_35:
 [00009b70] 508f                      addq.l     #8,a7
 [00009b72] 4a87                      tst.l      d7
 [00009b74] 677a                      beq.s      _typify_36
-[00009b76] 2ebc 0002 0dc2            move.l     #$0002BED0,(a7)
+[00009b76] 2ebc 0002 0dc2            move.l     #_atint,(a7)
 [00009b7c] 2f0b                      move.l     a3,-(a7)
 [00009b7e] 2f0c                      move.l     a4,-(a7)
 [00009b80] 4878 00d8                 pea.l      ($000000D8).w
@@ -13206,7 +13206,7 @@ _typify_35:
 [00009ba8] 508f                      addq.l     #8,a7
 [00009baa] 2f07                      move.l     d7,-(a7)
 [00009bac] 42a7                      clr.l      -(a7)
-[00009bae] 2f3c 0002 0dc2            move.l     #$0002BED0,-(a7)
+[00009bae] 2f3c 0002 0dc2            move.l     #_atint,-(a7)
 [00009bb4] 4eb9 0000 7aec            jsr        _buyterm
 [00009bba] 4fef 0010                 lea.l      16(a7),a7
 [00009bbe] 2b47 000c                 move.l     d7,12(a5)
@@ -13217,10 +13217,10 @@ _typify_35:
 [00009bd2] 3e12                      move.w     (a2),d7
 [00009bd4] 0807 000b                 btst       #11,d7
 [00009bd8] 6708                      beq.s      _typify_37
-[00009bda] 2e3c 0002 0de6            move.l     #$0002BEF4,d7
+[00009bda] 2e3c 0002 0de6            move.l     #_atlong,d7
 [00009be0] 6006                      bra.s      _typify_38
 _typify_37:
-[00009be2] 2e3c 0002 0dc2            move.l     #$0002BED0,d7
+[00009be2] 2e3c 0002 0dc2            move.l     #_atint,d7
 _typify_38:
 [00009be8] 2b47 0004                 move.l     d7,4(a5)
 [00009bec] 6000 fad8                 bra        _typify_18
@@ -13313,7 +13313,7 @@ _typify_45:
 [00009ce2] 588f                      addq.l     #4,a7
 [00009ce4] 4a87                      tst.l      d7
 [00009ce6] 6600 f9de                 bne        _typify_18
-[00009cea] 2ebc 0002 19e6            move.l     #$0002CAF4,(a7) "illegal comparison"
+[00009cea] 2ebc 0002 19e6            move.l     #$000219E6,(a7) "illegal comparison"
 [00009cf0] 4eb9 0000 3e84            jsr        _p1error
 [00009cf6] 6000 f9ce                 bra        _typify_18
 _typify_19:
@@ -13358,7 +13358,7 @@ _untest_1:
 [00009d6c] 4e5e                      unlk       a6
 [00009d6e] 4e75                      rts
 _untest_2:
-[00009d70] 2ebc 0002 1a9c            move.l     #$0002CBAA,(a7) "illegal unsigned compare"
+[00009d70] 2ebc 0002 1a9c            move.l     #$00021A9C,(a7) "illegal unsigned compare"
 [00009d76] 4eb9 0000 3e84            jsr        _p1error
 [00009d7c] 60ea                      bra.s      _untest_1
 
@@ -13425,7 +13425,7 @@ x9dd8_7:
 [00009e12] 6000 0098                 bra        x9dd8_3
 x9dd8_1:
 [00009e16] 4878 0001                 pea.l      ($00000001).w
-[00009e1a] 2f3c 0002 1ab6            move.l     #$0002CBC4,-(a7)
+[00009e1a] 2f3c 0002 1ab6            move.l     #$00021AB6,-(a7)
 [00009e20] 4878 0002                 pea.l      ($00000002).w
 [00009e24] 4eb9 0000 b106            jsr        _write
 [00009e2a] 4fef 000c                 lea.l      12(a7),a7
@@ -13436,7 +13436,7 @@ x9dd8_1:
 [00009e3c] 4e75                      rts
 x9dd8_2:
 [00009e3e] 4878 0002                 pea.l      ($00000002).w
-[00009e42] 2f3c 0002 1ac0            move.l     #$0002CBCE,-(a7)
+[00009e42] 2f3c 0002 1ac0            move.l     #$00021AC0,-(a7)
 [00009e48] 4878 0002                 pea.l      ($00000002).w
 [00009e4c] 4eb9 0000 b106            jsr        _write
 [00009e52] 4fef 000c                 lea.l      12(a7),a7
@@ -13455,7 +13455,7 @@ x9dd8_9:
 [00009e72] 0c47 003a                 cmpi.w     #$003A,d7
 [00009e76] 673a                      beq.s      x9dd8_5
 [00009e78] 2e85                      move.l     d5,(a7)
-[00009e7a] 2f3c 0002 1abe            move.l     #$0002CBCC,-(a7)
+[00009e7a] 2f3c 0002 1abe            move.l     #$00021ABE,-(a7)
 [00009e80] 4878 0002                 pea.l      ($00000002).w
 [00009e84] 4eb9 0000 a2e8            jsr        $0000A2E8
 [00009e8a] 508f                      addq.l     #8,a7
@@ -13463,7 +13463,7 @@ x9dd8_9:
 [00009e8e] 6000 0080                 bra        x9dd8_6 ; possibly optimized to short
 x9dd8_4:
 [00009e92] 4878 0001                 pea.l      ($00000001).w
-[00009e96] 2f3c 0002 1ab8            move.l     #$0002CBC6,-(a7)
+[00009e96] 2f3c 0002 1ab8            move.l     #$00021AB8,-(a7)
 [00009e9c] 4878 0002                 pea.l      ($00000002).w
 [00009ea0] 4eb9 0000 b106            jsr        _write
 [00009ea6] 4fef 000c                 lea.l      12(a7),a7
@@ -13477,7 +13477,7 @@ x9dd8_5:
 [00009eb6] 0c47 003e                 cmpi.w     #$003E,d7
 [00009eba] 663e                      bne.s      x9dd8_8
 [00009ebc] 4878 0001                 pea.l      ($00000001).w
-[00009ec0] 2f3c 0002 1abc            move.l     #$0002CBCA,-(a7)
+[00009ec0] 2f3c 0002 1abc            move.l     #$00021ABC,-(a7)
 [00009ec6] 4878 0002                 pea.l      ($00000002).w
 [00009eca] 4eb9 0000 b106            jsr        _write
 [00009ed0] 4fef 000c                 lea.l      12(a7),a7
@@ -13487,7 +13487,7 @@ x9dd8_5:
 [00009edc] 0c47 003a                 cmpi.w     #$003A,d7
 [00009ee0] 672e                      beq.s      x9dd8_6
 [00009ee2] 2e85                      move.l     d5,(a7)
-[00009ee4] 2f3c 0002 1aba            move.l     #$0002CBC8,-(a7)
+[00009ee4] 2f3c 0002 1aba            move.l     #$00021ABA,-(a7)
 [00009eea] 4878 0002                 pea.l      ($00000002).w
 [00009eee] 4eb9 0000 a2e8            jsr        $0000A2E8
 [00009ef4] 508f                      addq.l     #8,a7
@@ -13519,7 +13519,7 @@ _getflags_3:
 [00009f34] 246e 000c                 movea.l    12(a6),a2
 [00009f38] 2452                      movea.l    (a2),a2
 [00009f3a] 2852                      movea.l    (a2),a4
-[00009f3c] 2ebc 0002 1b0b            move.l     #$0002CC19,(a7)
+[00009f3c] 2ebc 0002 1b0b            move.l     #$00021B0B,(a7)
 [00009f42] 2f0c                      move.l     a4,-(a7)
 [00009f44] 4eb9 0000 a4e8            jsr        _cmpstr
 [00009f4a] 588f                      addq.l     #4,a7
@@ -13539,7 +13539,7 @@ _getflags_10:
 [00009f6a] 5892                      addq.l     #4,(a2)
 [00009f6c] 60b6                      bra.s      _getflags_3
 _getflags_2:
-[00009f6e] 2ebc 0002 1b09            move.l     #$0002CC17,(a7)
+[00009f6e] 2ebc 0002 1b09            move.l     #$00021B09,(a7)
 [00009f74] 2f0c                      move.l     a4,-(a7)
 [00009f76] 4eb9 0000 a4e8            jsr        _cmpstr
 [00009f7c] 588f                      addq.l     #4,a7
@@ -13562,7 +13562,7 @@ _getflags_4:
 _getflags_5:
 [00009fa2] 4878 0004                 pea.l      ($00000004).w
 [00009fa6] 2f0c                      move.l     a4,-(a7)
-[00009fa8] 2f3c 0002 1b04            move.l     #$0002CC12,-(a7)
+[00009fa8] 2f3c 0002 1b04            move.l     #$00021B04,-(a7)
 [00009fae] 4eb9 0000 ad76            jsr        _cmpbuf
 [00009fb4] 4fef 000c                 lea.l      12(a7),a7
 [00009fb8] 4a87                      tst.l      d7
@@ -13598,7 +13598,7 @@ _getflags_7:
 [0000a010] de86                      add.l      d6,d7
 [0000a012] 6006                      bra.s      _getflags_9
 _getflags_8:
-[0000a014] 2e3c 0002 0000            move.l     #$0002B10E,d7
+[0000a014] 2e3c 0002 0000            move.l     #__data,d7
 _getflags_9:
 [0000a01a] 2f07                      move.l     d7,-(a7)
 [0000a01c] 5297                      addq.l     #1,(a7)
@@ -13619,7 +13619,7 @@ _getflags_18:
 [0000a048] 66da                      bne.s      _getflags_6
 [0000a04a] 4287                      clr.l      d7
 [0000a04c] 1e15                      move.b     (a5),d7
-[0000a04e] 41f9 0002 1ac4            lea.l      $0002CBD2,a0
+[0000a04e] 41f9 0002 1ac4            lea.l      $00021AC4,a0
 [0000a054] 4ef9 0000 a7dc            jmp        a.switch
 [0000a05a] 7001                      moveq.l    #1,d0
 [0000a05c] 2d40 fff4                 move.l     d0,-12(a6)
@@ -13912,7 +13912,7 @@ _getflags_42:
 [0000a330] 6018                      bra.s      _getflags_44
 _getflags_43:
 [0000a332] 4878 0002                 pea.l      ($00000002).w
-[0000a336] 2f3c 0002 1b0e            move.l     #$0002CC1C,-(a7)
+[0000a336] 2f3c 0002 1b0e            move.l     #$00021B0E,-(a7)
 [0000a33c] 2f05                      move.l     d5,-(a7)
 [0000a33e] 4eb9 0000 b106            jsr        _write
 [0000a344] 4fef 000c                 lea.l      12(a7),a7
@@ -14027,9 +14027,9 @@ _usage:
 [0000a446] 4285                      clr.l      d5
 [0000a448] 4297                      clr.l      (a7)
 [0000a44a] 2f2e 0008                 move.l     8(a6),-(a7)
-[0000a44e] 2f3c 0002 1b12            move.l     #$0002CC20,-(a7)
-[0000a454] 2f39 0002 0cc0            move.l     $0002BDCE,-(a7)
-[0000a45a] 2f3c 0002 1b14            move.l     #$0002CC22,-(a7)
+[0000a44e] 2f3c 0002 1b12            move.l     #$00021B12,-(a7)
+[0000a454] 2f39 0002 0cc0            move.l     __pname,-(a7)
+[0000a45a] 2f3c 0002 1b14            move.l     #$00021B14,-(a7)
 [0000a460] 4878 0002                 pea.l      ($00000002).w
 [0000a464] 4eb9 0000 ae40            jsr        _putstr
 [0000a46a] 4fef 0014                 lea.l      20(a7),a7
@@ -14048,7 +14048,7 @@ _usage:
 [0000a492] 4297                      clr.l      (a7)
 [0000a494] 4eb9 0000 0080            jsr        _exit
 _usage_1:
-[0000a49a] 2eb9 0002 0cc0            move.l     $0002BDCE,(a7)
+[0000a49a] 2eb9 0002 0cc0            move.l     __pname,(a7)
 [0000a4a0] 4eb9 0000 aef4            jsr        _lenstr
 [0000a4a6] 2445                      movea.l    d5,a2
 [0000a4a8] 508a                      addq.l     #8,a2
@@ -14249,7 +14249,7 @@ _doesc_5:
 [0000a65a] 1e15                      move.b     (a5),d7
 _doesc_6:
 [0000a65c] 2e87                      move.l     d7,(a7)
-[0000a65e] 2f3c 0002 1b23            move.l     #$0002CC31,-(a7)
+[0000a65e] 2f3c 0002 1b23            move.l     #$00021B23,-(a7)
 [0000a664] 4eb9 0000 a7a6            jsr        _scnstr
 [0000a66a] 588f                      addq.l     #4,a7
 [0000a66c] 2a07                      move.l     d7,d5
@@ -14258,7 +14258,7 @@ _doesc_6:
 [0000a676] 246e 0008                 movea.l    8(a6),a2
 [0000a67a] 248d                      move.l     a5,(a2)
 [0000a67c] 2445                      movea.l    d5,a2
-[0000a67e] d5fc 0002 1b1c            adda.l     #$0002CC2A,a2
+[0000a67e] d5fc 0002 1b1c            adda.l     #$00021B1C,a2
 [0000a684] 4287                      clr.l      d7
 [0000a686] 1e12                      move.b     (a2),d7
 [0000a688] 600c                      bra.s      _doesc_8
@@ -14304,7 +14304,7 @@ _getenv:
 [0000a6e6] 2e8d                      move.l     a5,(a7)
 [0000a6e8] 4eb9 0000 aef4            jsr        _lenstr
 [0000a6ee] 2a07                      move.l     d7,d5
-[0000a6f0] 2879 0002 0072            movea.l    $0002B180,a4
+[0000a6f0] 2879 0002 0072            movea.l    _environ,a4
 _getenv_4:
 [0000a6f6] 2e0c                      move.l     a4,d7
 [0000a6f8] 672e                      beq.s      _getenv_1
@@ -14494,7 +14494,7 @@ a.6ultd:
 _uname:
 [0000a85e] 4e56 0000                 link       a6,#0
 [0000a862] 48e7 8c00                 movem.l    d0/d4-d5,-(a7)
-[0000a866] 4a39 0002 1b30            tst.b      $0002CC3E
+[0000a866] 4a39 0002 1b30            tst.b      $00021B30
 [0000a86c] 662a                      bne.s      _uname_1
 [0000a86e] 4eb9 0000 adde            jsr        _getpid
 [0000a874] 2807                      move.l     d7,d4
@@ -14504,7 +14504,7 @@ _uname_2:
 [0000a87a] 0c85 0000 0006            cmpi.l     #$00000006,d5
 [0000a880] 6d16                      blt.s      _uname_1
 [0000a882] 2445                      movea.l    d5,a2
-[0000a884] d5fc 0002 1b2a            adda.l     #$0002CC38,a2
+[0000a884] d5fc 0002 1b2a            adda.l     #$00021B2A,a2
 [0000a88a] 7e30                      moveq.l    #48,d7
 [0000a88c] 7c07                      moveq.l    #7,d6
 [0000a88e] cc84                      and.l      d4,d6
@@ -14513,7 +14513,7 @@ _uname_2:
 [0000a894] e684                      asr.l      #3,d4
 [0000a896] 60e0                      bra.s      _uname_2
 _uname_1:
-[0000a898] 2e3c 0002 1b2a            move.l     #$0002CC38,d7
+[0000a898] 2e3c 0002 1b2a            move.l     #$00021B2A,d7
 [0000a89e] 4cdf 0031                 movem.l    (a7)+,d0/d4-d5
 [0000a8a2] 4e5e                      unlk       a6
 [0000a8a4] 4e75                      rts
@@ -14570,7 +14570,7 @@ _alloc:
 [0000a924] 2e0d                      move.l     a5,d7
 [0000a926] 6010                      bra.s      _alloc_2
 _alloc_1:
-[0000a928] 2ebc 0002 1b54            move.l     #$0002CC62,(a7)
+[0000a928] 2ebc 0002 1b54            move.l     #__memerr,(a7)
 [0000a92e] 42a7                      clr.l      -(a7)
 [0000a930] 4eb9 0000 af16            jsr        __raise
 [0000a936] 588f                      addq.l     #4,a7
@@ -14597,7 +14597,7 @@ _nalloc_2:
 [0000a962] 5887                      addq.l     #4,d7
 [0000a964] 2a07                      move.l     d7,d5
 _nalloc_18:
-[0000a966] 2a7c 0002 1b3a            movea.l    #$0002CC48,a5
+[0000a966] 2a7c 0002 1b3a            movea.l    #$00021B3A,a5
 _nalloc_9:
 [0000a96c] 2855                      movea.l    (a5),a4
 [0000a96e] 2e0c                      move.l     a4,d7
@@ -14612,9 +14612,9 @@ _nalloc_9:
 [0000a980] 2aac 0004                 move.l     4(a4),(a5)
 [0000a984] 6028                      bra.s      _nalloc_6
 _nalloc_3:
-[0000a986] 4ab9 0002 1b36            tst.l      $0002CC44
+[0000a986] 4ab9 0002 1b36            tst.l      $00021B36
 [0000a98c] 662e                      bne.s      _nalloc_7
-[0000a98e] 23fc 0000 0200 0002 1b36  move.l     #$00000200,$0002CC44
+[0000a98e] 23fc 0000 0200 0002 1b36  move.l     #$00000200,$00021B36
 [0000a998] 603c                      bra.s      _nalloc_8
 _nalloc_4:
 [0000a99a] 45ec 0004                 lea.l      4(a4),a2
@@ -14632,25 +14632,25 @@ _nalloc_6:
 [0000a9b8] 2e0a                      move.l     a2,d7
 [0000a9ba] 6066                      bra.s      _nalloc_10
 _nalloc_7:
-[0000a9bc] 0cb9 0000 0200 0002 1b36  cmpi.l     #$00000200,$0002CC44
+[0000a9bc] 0cb9 0000 0200 0002 1b36  cmpi.l     #$00000200,$00021B36
 [0000a9c6] 670e                      beq.s      _nalloc_8
-[0000a9c8] 2e39 0002 1b36            move.l     $0002CC44,d7
+[0000a9c8] 2e39 0002 1b36            move.l     $00021B36,d7
 [0000a9ce] e28f                      lsr.l      #1,d7
-[0000a9d0] 23c7 0002 1b36            move.l     d7,$0002CC44
+[0000a9d0] 23c7 0002 1b36            move.l     d7,$00021B36
 _nalloc_8:
 [0000a9d6] 97cb                      suba.l     a3,a3
 _nalloc_12:
-[0000a9d8] bab9 0002 1b36            cmp.l      $0002CC44,d5
+[0000a9d8] bab9 0002 1b36            cmp.l      $00021B36,d5
 [0000a9de] 6228                      bhi.s      _nalloc_11
-[0000a9e0] 2d79 0002 1b36 fffc       move.l     $0002CC44,-4(a6)
+[0000a9e0] 2d79 0002 1b36 fffc       move.l     $00021B36,-4(a6)
 [0000a9e8] 2eae fffc                 move.l     -4(a6),(a7)
 [0000a9ec] 4eb9 0000 ae76            jsr        _sbreak
 [0000a9f2] 2647                      movea.l    d7,a3
 [0000a9f4] 2e0b                      move.l     a3,d7
 [0000a9f6] 6610                      bne.s      _nalloc_11
-[0000a9f8] 2e39 0002 1b36            move.l     $0002CC44,d7
+[0000a9f8] 2e39 0002 1b36            move.l     $00021B36,d7
 [0000a9fe] e28f                      lsr.l      #1,d7
-[0000aa00] 23c7 0002 1b36            move.l     d7,$0002CC44
+[0000aa00] 23c7 0002 1b36            move.l     d7,$00021B36
 [0000aa06] 60d0                      bra.s      _nalloc_12
 _nalloc_11:
 [0000aa08] 2e0b                      move.l     a3,d7
@@ -14671,21 +14671,21 @@ _nalloc_14:
 [0000aa2a] 2e2e fffc                 move.l     -4(a6),d7
 [0000aa2e] 5187                      subq.l     #8,d7
 [0000aa30] 2687                      move.l     d7,(a3)
-[0000aa32] 4ab9 0002 1b3e            tst.l      $0002CC4C
+[0000aa32] 4ab9 0002 1b3e            tst.l      $00021B3E
 [0000aa38] 6708                      beq.s      _nalloc_15
-[0000aa3a] b7f9 0002 1b3e            cmpa.l     $0002CC4C,a3
+[0000aa3a] b7f9 0002 1b3e            cmpa.l     $00021B3E,a3
 [0000aa40] 6406                      bcc.s      _nalloc_16
 _nalloc_15:
-[0000aa42] 23cb 0002 1b3e            move.l     a3,$0002CC4C
+[0000aa42] 23cb 0002 1b3e            move.l     a3,$00021B3E
 _nalloc_16:
-[0000aa48] 2e39 0002 1b42            move.l     $0002CC50,d7
+[0000aa48] 2e39 0002 1b42            move.l     $00021B42,d7
 [0000aa4e] 2c0b                      move.l     a3,d6
 [0000aa50] dcae fffc                 add.l      -4(a6),d6
 [0000aa54] be86                      cmp.l      d6,d7
 [0000aa56] 640c                      bcc.s      _nalloc_17
 [0000aa58] 2e0b                      move.l     a3,d7
 [0000aa5a] deae fffc                 add.l      -4(a6),d7
-[0000aa5e] 23c7 0002 1b42            move.l     d7,$0002CC50
+[0000aa5e] 23c7 0002 1b42            move.l     d7,$00021B42
 _nalloc_17:
 [0000aa64] 4297                      clr.l      (a7)
 [0000aa66] 486b 0004                 pea.l      4(a3)
@@ -14701,14 +14701,14 @@ _free:
 [0000aa84] 2a47                      movea.l    d7,a5
 [0000aa86] 4aae 0008                 tst.l      8(a6)
 [0000aa8a] 672c                      beq.s      _free_1
-[0000aa8c] bbf9 0002 1b3e            cmpa.l     $0002CC4C,a5
+[0000aa8c] bbf9 0002 1b3e            cmpa.l     $00021B3E,a5
 [0000aa92] 650a                      bcs.s      _free_2
-[0000aa94] 2e39 0002 1b42            move.l     $0002CC50,d7
+[0000aa94] 2e39 0002 1b42            move.l     $00021B42,d7
 [0000aa9a] be8d                      cmp.l      a5,d7
 [0000aa9c] 6226                      bhi.s      _free_3
 _free_2:
-[0000aa9e] 23fc 0002 1b46 0002 1b54  move.l     #$0002CC54,$0002CC62
-[0000aaa8] 2ebc 0002 1b54            move.l     #$0002CC62,(a7)
+[0000aa9e] 23fc 0002 1b46 0002 1b54  move.l     #$00021B46,__memerr
+[0000aaa8] 2ebc 0002 1b54            move.l     #__memerr,(a7)
 [0000aaae] 42a7                      clr.l      -(a7)
 [0000aab0] 4eb9 0000 af16            jsr        __raise
 [0000aab6] 588f                      addq.l     #4,a7
@@ -14718,21 +14718,21 @@ _free_1:
 [0000aac0] 4e5e                      unlk       a6
 [0000aac2] 4e75                      rts
 _free_3:
-[0000aac4] 4ab9 0002 1b3a            tst.l      $0002CC48
+[0000aac4] 4ab9 0002 1b3a            tst.l      $00021B3A
 [0000aaca] 660c                      bne.s      _free_4
 [0000aacc] 42ad 0004                 clr.l      4(a5)
-[0000aad0] 23cd 0002 1b3a            move.l     a5,$0002CC48
+[0000aad0] 23cd 0002 1b3a            move.l     a5,$00021B3A
 [0000aad6] 60e0                      bra.s      _free_1
 _free_4:
-[0000aad8] bbf9 0002 1b3a            cmpa.l     $0002CC48,a5
+[0000aad8] bbf9 0002 1b3a            cmpa.l     $00021B3A,a5
 [0000aade] 6416                      bcc.s      _free_5
-[0000aae0] 2b79 0002 1b3a 0004       move.l     $0002CC48,4(a5)
-[0000aae8] 23cd 0002 1b3a            move.l     a5,$0002CC48
+[0000aae0] 2b79 0002 1b3a 0004       move.l     $00021B3A,4(a5)
+[0000aae8] 23cd 0002 1b3a            move.l     a5,$00021B3A
 [0000aaee] 2e8d                      move.l     a5,(a7)
 [0000aaf0] 4eba fde6                 jsr        $0000A8D8(pc)
 [0000aaf4] 60c2                      bra.s      _free_1
 _free_5:
-[0000aaf6] 2879 0002 1b3a            movea.l    $0002CC48,a4
+[0000aaf6] 2879 0002 1b3a            movea.l    $00021B3A,a4
 _free_7:
 [0000aafc] 266c 0004                 movea.l    4(a4),a3
 [0000ab00] 2e0b                      move.l     a3,d7
@@ -15114,7 +15114,7 @@ _sbreak:
 [0000ae78] 2e17                      move.l     (a7),d7
 [0000ae7a] 5287                      addq.l     #1,d7
 [0000ae7c] 0887 0000                 bclr       #0,d7
-[0000ae80] deb9 0002 1b62            add.l      $0002CC70,d7
+[0000ae80] deb9 0002 1b62            add.l      $00021B62,d7
 [0000ae86] 2f07                      move.l     d7,-(a7)
 [0000ae88] 7e11                      moveq.l    #17,d7
 [0000ae8a] 4e41                      trap       #1
@@ -15124,11 +15124,11 @@ _sbreak:
 [0000ae96] 4287                      clr.l      d7
 [0000ae98] 4ed0                      jmp        (a0)
 _sbreak_1:
-[0000ae9a] 2e39 0002 1b62            move.l     $0002CC70,d7
-[0000aea0] 23df 0002 1b62            move.l     (a7)+,$0002CC70
-[0000aea6] 4ab9 0002 1b66            tst.l      $0002CC74
+[0000ae9a] 2e39 0002 1b62            move.l     $00021B62,d7
+[0000aea0] 23df 0002 1b62            move.l     (a7)+,$00021B62
+[0000aea6] 4ab9 0002 1b66            tst.l      __stop
 [0000aeac] 670a                      beq.s      _sbreak_2
-[0000aeae] 23f9 0002 1b62 0002 1b66  move.l     $0002CC70,$0002CC74
+[0000aeae] 23f9 0002 1b62 0002 1b66  move.l     $00021B62,__stop
 _sbreak_2:
 [0000aeb8] 4ed0                      jmp        (a0)
 
@@ -15142,7 +15142,7 @@ _fwrite:
 [0000aed4] 508f                      addq.l     #8,a7
 [0000aed6] beae 0010                 cmp.l      16(a6),d7
 [0000aeda] 6710                      beq.s      _fwrite_1
-[0000aedc] 2ebc 0002 1b86            move.l     #$0002CC94,(a7)
+[0000aedc] 2ebc 0002 1b86            move.l     #_writerr,(a7)
 [0000aee2] 42a7                      clr.l      -(a7)
 [0000aee4] 4eb9 0000 af16            jsr        __raise
 [0000aeea] 588f                      addq.l     #4,a7
@@ -15183,7 +15183,7 @@ __raise_1:
 [0000af32] b5fc ffff ffff            cmpa.l     #$FFFFFFFF,a2
 [0000af38] 660a                      bne.s      __raise_3
 __raise_2:
-[0000af3a] 2479 0002 1b6a            movea.l    $0002CC78,a2
+[0000af3a] 2479 0002 1b6a            movea.l    $00021B6A,a2
 [0000af40] 200a                      move.l     a2,d0
 [0000af42] 674e                      beq.s      __raise_4
 __raise_3:
@@ -15199,7 +15199,7 @@ __raise_12:
 [0000af58] 2040                      movea.l    d0,a0
 [0000af5a] 2083                      move.l     d3,(a0)
 __raise_7:
-[0000af5c] 23df 0002 1b6a            move.l     (a7)+,$0002CC78
+[0000af5c] 23df 0002 1b6a            move.l     (a7)+,$00021B6A
 [0000af62] 4cdf 783a                 movem.l    (a7)+,d1/d3-d5/a3-a6
 [0000af66] 4e75                      rts
 __raise_8:
@@ -15231,7 +15231,7 @@ __raise_4:
 [0000af98] 0803 0000                 btst       #0,d3
 [0000af9c] 6706                      beq.s      __raise_14
 __raise_13:
-[0000af9e] 263c 0002 1b6e            move.l     #$0002CC7C,d3
+[0000af9e] 263c 0002 1b6e            move.l     #$00021B6E,d3
 __raise_14:
 [0000afa4] 2043                      movea.l    d3,a0
 [0000afa6] 2f10                      move.l     (a0),-(a7)
@@ -15242,7 +15242,7 @@ __raise_15:
 __raise_6: ; not found: 0000afe6
 
 __when:
-[0000afb2] 2039 0002 1b6a            move.l     $0002CC78,d0
+[0000afb2] 2039 0002 1b6a            move.l     $00021B6A,d0
 [0000afb8] 720c                      moveq.l    #12,d1
 [0000afba] 48e7 dc1e                 movem.l    d0-d1/d3-d5/a3-a6,-(a7)
 [0000afbe] 244f                      movea.l    a7,a2
@@ -15261,7 +15261,7 @@ __when_3:
 [0000afe2] 60ea                      bra.s      __when_3
 __when_2:
 [0000afe4] 7eff                      moveq.l    #-1,d7
-[0000afe6] 23ca 0002 1b6a            move.l     a2,$0002CC78
+[0000afe6] 23ca 0002 1b6a            move.l     a2,$00021B6A
 [0000afec] 206a 0024                 movea.l    36(a2),a0
 [0000aff0] 4cd2 783b                 movem.l    (a2),d0-d1/d3-d5/a3-a6
 [0000aff4] 9fc1                      suba.l     d1,a7
@@ -15366,15 +15366,15 @@ xb08c_2:
 
 _error:
 [0000b0c8] 4e56 fffc                 link       a6,#-4
-[0000b0cc] 2eb9 0002 0cc0            move.l     $0002BDCE,(a7)
+[0000b0cc] 2eb9 0002 0cc0            move.l     __pname,(a7)
 [0000b0d2] 4eba ffb8                 jsr        $0000B08C(pc)
-[0000b0d6] 2ebc 0002 1b98            move.l     #$0002CCA6,(a7)
+[0000b0d6] 2ebc 0002 1b98            move.l     #$00021B98,(a7)
 [0000b0dc] 4eba ffae                 jsr        $0000B08C(pc)
 [0000b0e0] 2eae 0008                 move.l     8(a6),(a7)
 [0000b0e4] 4eba ffa6                 jsr        $0000B08C(pc)
 [0000b0e8] 2eae 000c                 move.l     12(a6),(a7)
 [0000b0ec] 4eba ff9e                 jsr        $0000B08C(pc)
-[0000b0f0] 2ebc 0002 1b96            move.l     #$0002CCA4,(a7)
+[0000b0f0] 2ebc 0002 1b96            move.l     #$00021B96,(a7)
 [0000b0f6] 4eba ff94                 jsr        $0000B08C(pc)
 [0000b0fa] 4297                      clr.l      (a7)
 [0000b0fc] 4eb9 0000 0080            jsr        _exit
@@ -15389,3292 +15389,3283 @@ _write:
 
 	.data
 __data:
-[0000b10e] 00020000                           dc.b $00
-[0000b10f] 00020001                           dc.b 'idr68k Edition 3.0: Copyright (c) 1981,1983,1985 by Whitesmiths, Ltd. all rights reserved',0
-[0000b169] 0002005b                           dc.b '|/bin/|/usr/bin/',0
-[0000b17a] 0002006c                           dc.b 'PATH',0
-[0000b17f] 00020071                           dc.b $00
+[00020000]                           dc.b $00
+[00020001]                           dc.b 'idr68k Edition 3.0: Copyright (c) 1981,1983,1985 by Whitesmiths, Ltd. all rights reserved',0
+[0002005b]                           dc.b '|/bin/|/usr/bin/',0
+[0002006c]                           dc.b 'PATH',0
+[00020071]                           dc.b $00
 _environ:
-[0000b180] 00020072                           dc.b $00
-[0000b181] 00020073                           dc.b $00
-[0000b182] 00020074                           dc.b $00
-[0000b183] 00020075                           dc.b $00
+[00020072]                           dc.b $00
+[00020073]                           dc.b $00
+[00020074]                           dc.b $00
+[00020075]                           dc.b $00
 _errno:
-[0000b184] 00020076                           dc.b $00
-[0000b185] 00020077                           dc.b $00
-[0000b186] 00020078                           dc.b $00
-[0000b187] 00020079                           dc.b $00
+[00020076]                           dc.b $00
+[00020077]                           dc.b $00
+[00020078]                           dc.b $00
+[00020079]                           dc.b $00
 __paths:
-[0000b188] 0002007a 0002005b                  dc.l $0002005b ; no symbol found
-[0000b18c] 0002007e 000000aa                  dc.l _onexit
-[0000b190] 00020082                           dc.b $00
-[0000b191] 00020083                           dc.b $00
-[0000b192] 00020084                           dc.b $00
-[0000b193] 00020085                           dc.b $00
-[0000b194] 00020086                           dc.b $00
-[0000b195] 00020087                           dc.b $00
-[0000b196] 00020088                           dc.b $00
-[0000b197] 00020089                           dc.b $00
-[0000b198] 0002008a                           dc.b $00
-[0000b199] 0002008b                           dc.b $00
-[0000b19a] 0002008c                           dc.b $00
-[0000b19b] 0002008d                           dc.b $00
-[0000b19c] 0002008e                           dc.b $00
-[0000b19d] 0002008f                           dc.b $00
-[0000b19e] 00020090                           dc.b $00
-[0000b19f] 00020091                           dc.b $00
-[0000b1a0] 00020092                           dc.b $00
-[0000b1a1] 00020093                           dc.b $00
-[0000b1a2] 00020094                           dc.b $00
-[0000b1a3] 00020095                           dc.b $00
-[0000b1a4] 00020096                           dc.b $00
-[0000b1a5] 00020097                           dc.b $00
-[0000b1a6] 00020098                           dc.b $00
-[0000b1a7] 00020099                           dc.b $00
-[0000b1a8] 0002009a                           dc.b $00
-[0000b1a9] 0002009b                           dc.b $00
-[0000b1aa] 0002009c                           dc.b $00
-[0000b1ab] 0002009d                           dc.b $00
-[0000b1ac] 0002009e                           dc.b 'bad alias',0
-[0000b1b6] 000200a8                           dc.b 'alias defined',0
-[0000b1c4] 000200b6                           dc.w $0300
-[0000b1c6] 000200b8                           dc.b $00
-[0000b1c7] 000200b9                           dc.b $00
-[0000b1c8] 000200ba                           dc.b 'string initializer too long',0
-[0000b1e4] 000200d6                           dc.b 'too many initializers',0
-[0000b1fa] 000200ec                           dc.b 'redefined',0
-[0000b204] 000200f6 00000788                  dc.l $00000788 ; no symbol found
-[0000b208] 000200fa                           dc.b $00
-[0000b209] 000200fb                           dc.b $00
-[0000b20a] 000200fc                           dc.b $00
-[0000b20b] 000200fd                           dc.b $2a
-[0000b20c] 000200fe 00000788                  dc.l $00000788 ; no symbol found
-[0000b210] 00020102                           dc.b $00
-[0000b211] 00020103                           dc.b $00
-[0000b212] 00020104                           dc.b $00
-[0000b213] 00020105                           dc.b $29
-[0000b214] 00020106 00000788                  dc.l $00000788 ; no symbol found
-[0000b218] 0002010a                           dc.b $00
-[0000b219] 0002010b                           dc.b $00
-[0000b21a] 0002010c                           dc.b $00
-[0000b21b] 0002010d                           dc.b $28
-[0000b21c] 0002010e 000006de                  dc.l $000006de ; no symbol found
-[0000b220] 00020112                           dc.b $00
-[0000b221] 00020113                           dc.b $00
-[0000b222] 00020114                           dc.b $00
-[0000b223] 00020115                           dc.b $40
-[0000b224] 00020116 00000678                  dc.l $00000678 ; no symbol found
-[0000b228] 0002011a                           dc.b $00
-[0000b229] 0002011b                           dc.b $00
-[0000b22a] 0002011c                           dc.b $00
-[0000b22b] 0002011d                           dc.b $21
-[0000b22c] 0002011e 00000678                  dc.l $00000678 ; no symbol found
-[0000b230] 00020122                           dc.b $00
-[0000b231] 00020123                           dc.b $00
-[0000b232] 00020124                           dc.b $00
-[0000b233] 00020125                           dc.b $20
-[0000b234] 00020126 00000678                  dc.l $00000678 ; no symbol found
-[0000b238] 0002012a                           dc.b $00
-[0000b239] 0002012b                           dc.b $00
-[0000b23a] 0002012c                           dc.b $00
-[0000b23b] 0002012d                           dc.b $1a
-[0000b23c] 0002012e 00000678                  dc.l $00000678 ; no symbol found
-[0000b240] 00020132                           dc.b $00
-[0000b241] 00020133                           dc.b $00
-[0000b242] 00020134                           dc.b $00
-[0000b243] 00020135                           dc.b $18
-[0000b244] 00020136 00000678                  dc.l $00000678 ; no symbol found
-[0000b248] 0002013a                           dc.b $00
-[0000b249] 0002013b                           dc.b $00
-[0000b24a] 0002013c                           dc.b $00
-[0000b24b] 0002013d                           dc.b $11
-[0000b24c] 0002013e 00000678                  dc.l $00000678 ; no symbol found
-[0000b250] 00020142                           dc.b $00
-[0000b251] 00020143                           dc.b $00
-[0000b252] 00020144                           dc.b $00
-[0000b253] 00020145                           dc.b $10
-[0000b254] 00020146 00000678                  dc.l $00000678 ; no symbol found
-[0000b258] 0002014a                           dc.b $00
-[0000b259] 0002014b                           dc.b $00
-[0000b25a] 0002014c                           dc.b $00
-[0000b25b] 0002014d                           dc.b $0a
-[0000b25c] 0002014e 00000678                  dc.l $00000678 ; no symbol found
-[0000b260] 00020152                           dc.b $00
-[0000b261] 00020153                           dc.b $00
-[0000b262] 00020154                           dc.b $00
-[0000b263] 00020155                           dc.b $09
-[0000b264] 00020156 00000678                  dc.l $00000678 ; no symbol found
-[0000b268] 0002015a                           dc.b $00
-[0000b269] 0002015b                           dc.b $00
-[0000b26a] 0002015c                           dc.b $00
-[0000b26b] 0002015d                           dc.b $08
-[0000b26c] 0002015e 00000636                  dc.l $00000636 ; no symbol found
-[0000b270] 00020162                           dc.b $00
-[0000b271] 00020163                           dc.b $00
-[0000b272] 00020164                           dc.b $00
-[0000b273] 00020165                           dc.b $49
-[0000b274] 00020166                           dc.b $00
-[0000b275] 00020167                           dc.b $00
-[0000b276] 00020168                           dc.b $00
-[0000b277] 00020169                           dc.b $00
-[0000b278] 0002016a 00000826                  dc.l $00000826 ; no symbol found
-[0000b27c] 0002016e                           dc.b 'cannot initialize',0
-[0000b28e] 00020180                           dc.b 'illegal double initializer',0
-[0000b2a9] 0002019b                           dc.b 'illegal pointer initializer',0
-[0000b2c5] 000201b7                           dc.b 'illegal pointer initializer type',0
-[0000b2e6] 000201d8                           dc.b 'illegal integer initializer',0
-[0000b302] 000201f4                           dc.b $00
-[0000b303] 000201f5                           dc.b $00
-[0000b304] 000201f6                           dc.b $00
-[0000b305] 000201f7                           dc.b $00
-[0000b306] 000201f8                           dc.b 'illegal repeat count',0
-[0000b31b] 0002020d                           dc.b 'excess repeated initializers',0
-[0000b338] 0002022a                           dc.b 'illegal field initializer',0
-[0000b352] 00020244                           dc.w $e285
-[0000b354] 00020246                           dc.w $99de
-[0000b356] 00020248                           dc.w $d897
-[0000b358] 0002024a                           dc.w $a095
-[0000b35a] 0002024c                           dc.w $968f
-[0000b35c] 0002024e                           dc.w $9094
-[0000b35e] 00020250                           dc.w $9bc1
-[0000b360] 00020252                           dc.w $a39c
-[0000b362] 00020254                           dc.w $829d
-[0000b364] 00020256                           dc.w $9f88
-[0000b366] 00020258                           dc.w $9187
-[0000b368] 0002025a                           dc.w $8c8e
-[0000b36a] 0002025c                           dc.w $8b89
-[0000b36c] 0002025e                           dc.w $8a86
-[0000b36e] 00020260                           dc.w $928d
-[0000b370] 00020262                           dc.b $00
-[0000b371] 00020263                           dc.b $91
-[0000b372] 00020264                           dc.w $878c
-[0000b374] 00020266                           dc.w $8e8b
-[0000b376] 00020268                           dc.w $898a
-[0000b378] 0002026a                           dc.b $00
-[0000b379] 0002026b                           dc.b $00
-[0000b37a] 0002026c                           dc.b $00
-[0000b37b] 0002026d                           dc.b $00
-[0000b37c] 0002026e                           dc.b $00
-[0000b37d] 0002026f                           dc.b $00
-[0000b37e] 00020270                           dc.w $8692
-[0000b380] 00020272                           dc.w $8d00
-[0000b382] 00020274                           dc.b $00
-[0000b383] 00020275                           dc.b $00
-[0000b384] 00020276                           dc.b $00
-[0000b385] 00020277                           dc.b $00
-[0000b386] 00020278                           dc.b $00
-[0000b387] 00020279                           dc.b $00
-[0000b388] 0002027a                           dc.b $00
-[0000b389] 0002027b                           dc.b $00
-[0000b38a] 0002027c                           dc.b $00
-[0000b38b] 0002027d                           dc.b $00
-[0000b38c] 0002027e                           dc.b $00
-[0000b38d] 0002027f                           dc.b $00
-[0000b38e] 00020280                           dc.b $00
-[0000b38f] 00020281                           dc.b $0e
-[0000b390] 00020282                           dc.w $0e0e
-[0000b392] 00020284                           dc.w $0d0d
-[0000b394] 00020286                           dc.w $0c0c
-[0000b396] 00020288                           dc.w $0b0b
-[0000b398] 0002028a                           dc.w $0b0b
-[0000b39a] 0002028c                           dc.w $0a0a
-[0000b39c] 0002028e                           dc.w $0908
-[0000b39e] 00020290                           dc.w $0706
-[0000b3a0] 00020292                           dc.w $0503
-[0000b3a2] 00020294                           dc.w $0101
-[0000b3a4] 00020296                           dc.w $0101
-[0000b3a6] 00020298                           dc.w $0101
-[0000b3a8] 0002029a                           dc.w $0101
-[0000b3aa] 0002029c                           dc.w $0101
-[0000b3ac] 0002029e                           dc.w $010e
-[0000b3ae] 000202a0                           dc.w $0e0e
-[0000b3b0] 000202a2                           dc.w $0d0d
-[0000b3b2] 000202a4                           dc.w $0c0c
-[0000b3b4] 000202a6                           dc.w $0b0b
-[0000b3b6] 000202a8                           dc.w $0b0b
-[0000b3b8] 000202aa                           dc.w $0a0a
-[0000b3ba] 000202ac                           dc.w $0908
-[0000b3bc] 000202ae                           dc.w $0706
-[0000b3be] 000202b0                           dc.w $0504
-[0000b3c0] 000202b2                           dc.w $0202
-[0000b3c2] 000202b4                           dc.w $0202
-[0000b3c4] 000202b6                           dc.w $0202
-[0000b3c6] 000202b8                           dc.w $0202
-[0000b3c8] 000202ba                           dc.w $0202
-[0000b3ca] 000202bc                           dc.w $0200
+[0002007a] 0002005b                  dc.l $0002005b ; no symbol found
+[0002007e] 000000aa                  dc.l _onexit
+[00020082]                           dc.b $00
+[00020083]                           dc.b $00
+[00020084]                           dc.b $00
+[00020085]                           dc.b $00
+[00020086]                           dc.b $00
+[00020087]                           dc.b $00
+[00020088]                           dc.b $00
+[00020089]                           dc.b $00
+[0002008a]                           dc.b $00
+[0002008b]                           dc.b $00
+[0002008c]                           dc.b $00
+[0002008d]                           dc.b $00
+[0002008e]                           dc.b $00
+[0002008f]                           dc.b $00
+[00020090]                           dc.b $00
+[00020091]                           dc.b $00
+[00020092]                           dc.b $00
+[00020093]                           dc.b $00
+[00020094]                           dc.b $00
+[00020095]                           dc.b $00
+[00020096]                           dc.b $00
+[00020097]                           dc.b $00
+[00020098]                           dc.b $00
+[00020099]                           dc.b $00
+[0002009a]                           dc.b $00
+[0002009b]                           dc.b $00
+[0002009c]                           dc.b $00
+[0002009d]                           dc.b $00
+[0002009e]                           dc.b 'bad alias',0
+[000200a8]                           dc.b 'alias defined',0
+[000200b6]                           dc.w $0300
+[000200b8]                           dc.b $00
+[000200b9]                           dc.b $00
+[000200ba]                           dc.b 'string initializer too long',0
+[000200d6]                           dc.b 'too many initializers',0
+[000200ec]                           dc.b 'redefined',0
+[000200f6] 00000788                  dc.l $00000788 ; no symbol found
+[000200fa]                           dc.b $00
+[000200fb]                           dc.b $00
+[000200fc]                           dc.b $00
+[000200fd]                           dc.b $2a
+[000200fe] 00000788                  dc.l $00000788 ; no symbol found
+[00020102]                           dc.b $00
+[00020103]                           dc.b $00
+[00020104]                           dc.b $00
+[00020105]                           dc.b $29
+[00020106] 00000788                  dc.l $00000788 ; no symbol found
+[0002010a]                           dc.b $00
+[0002010b]                           dc.b $00
+[0002010c]                           dc.b $00
+[0002010d]                           dc.b $28
+[0002010e] 000006de                  dc.l $000006de ; no symbol found
+[00020112]                           dc.b $00
+[00020113]                           dc.b $00
+[00020114]                           dc.b $00
+[00020115]                           dc.b $40
+[00020116] 00000678                  dc.l $00000678 ; no symbol found
+[0002011a]                           dc.b $00
+[0002011b]                           dc.b $00
+[0002011c]                           dc.b $00
+[0002011d]                           dc.b $21
+[0002011e] 00000678                  dc.l $00000678 ; no symbol found
+[00020122]                           dc.b $00
+[00020123]                           dc.b $00
+[00020124]                           dc.b $00
+[00020125]                           dc.b $20
+[00020126] 00000678                  dc.l $00000678 ; no symbol found
+[0002012a]                           dc.b $00
+[0002012b]                           dc.b $00
+[0002012c]                           dc.b $00
+[0002012d]                           dc.b $1a
+[0002012e] 00000678                  dc.l $00000678 ; no symbol found
+[00020132]                           dc.b $00
+[00020133]                           dc.b $00
+[00020134]                           dc.b $00
+[00020135]                           dc.b $18
+[00020136] 00000678                  dc.l $00000678 ; no symbol found
+[0002013a]                           dc.b $00
+[0002013b]                           dc.b $00
+[0002013c]                           dc.b $00
+[0002013d]                           dc.b $11
+[0002013e] 00000678                  dc.l $00000678 ; no symbol found
+[00020142]                           dc.b $00
+[00020143]                           dc.b $00
+[00020144]                           dc.b $00
+[00020145]                           dc.b $10
+[00020146] 00000678                  dc.l $00000678 ; no symbol found
+[0002014a]                           dc.b $00
+[0002014b]                           dc.b $00
+[0002014c]                           dc.b $00
+[0002014d]                           dc.b $0a
+[0002014e] 00000678                  dc.l $00000678 ; no symbol found
+[00020152]                           dc.b $00
+[00020153]                           dc.b $00
+[00020154]                           dc.b $00
+[00020155]                           dc.b $09
+[00020156] 00000678                  dc.l $00000678 ; no symbol found
+[0002015a]                           dc.b $00
+[0002015b]                           dc.b $00
+[0002015c]                           dc.b $00
+[0002015d]                           dc.b $08
+[0002015e] 00000636                  dc.l $00000636 ; no symbol found
+[00020162]                           dc.b $00
+[00020163]                           dc.b $00
+[00020164]                           dc.b $00
+[00020165]                           dc.b $49
+[00020166]                           dc.b $00
+[00020167]                           dc.b $00
+[00020168]                           dc.b $00
+[00020169]                           dc.b $00
+[0002016a] 00000826                  dc.l $00000826 ; no symbol found
+[0002016e]                           dc.b 'cannot initialize',0
+[00020180]                           dc.b 'illegal double initializer',0
+[0002019b]                           dc.b 'illegal pointer initializer',0
+[000201b7]                           dc.b 'illegal pointer initializer type',0
+[000201d8]                           dc.b 'illegal integer initializer',0
+[000201f4]                           dc.b $00
+[000201f5]                           dc.b $00
+[000201f6]                           dc.b $00
+[000201f7]                           dc.b $00
+[000201f8]                           dc.b 'illegal repeat count',0
+[0002020d]                           dc.b 'excess repeated initializers',0
+[0002022a]                           dc.b 'illegal field initializer',0
+[00020244]                           dc.w $e285
+[00020246]                           dc.w $99de
+[00020248]                           dc.w $d897
+[0002024a]                           dc.w $a095
+[0002024c]                           dc.w $968f
+[0002024e]                           dc.w $9094
+[00020250]                           dc.w $9bc1
+[00020252]                           dc.w $a39c
+[00020254]                           dc.w $829d
+[00020256]                           dc.w $9f88
+[00020258]                           dc.w $9187
+[0002025a]                           dc.w $8c8e
+[0002025c]                           dc.w $8b89
+[0002025e]                           dc.w $8a86
+[00020260]                           dc.w $928d
+[00020262]                           dc.b $00
+[00020263]                           dc.b $91
+[00020264]                           dc.w $878c
+[00020266]                           dc.w $8e8b
+[00020268]                           dc.w $898a
+[0002026a]                           dc.b $00
+[0002026b]                           dc.b $00
+[0002026c]                           dc.b $00
+[0002026d]                           dc.b $00
+[0002026e]                           dc.b $00
+[0002026f]                           dc.b $00
+[00020270]                           dc.w $8692
+[00020272]                           dc.w $8d00
+[00020274]                           dc.b $00
+[00020275]                           dc.b $00
+[00020276]                           dc.b $00
+[00020277]                           dc.b $00
+[00020278]                           dc.b $00
+[00020279]                           dc.b $00
+[0002027a]                           dc.b $00
+[0002027b]                           dc.b $00
+[0002027c]                           dc.b $00
+[0002027d]                           dc.b $00
+[0002027e]                           dc.b $00
+[0002027f]                           dc.b $00
+[00020280]                           dc.b $00
+[00020281]                           dc.b $0e
+[00020282]                           dc.w $0e0e
+[00020284]                           dc.w $0d0d
+[00020286]                           dc.w $0c0c
+[00020288]                           dc.w $0b0b
+[0002028a]                           dc.w $0b0b
+[0002028c]                           dc.w $0a0a
+[0002028e]                           dc.w $0908
+[00020290]                           dc.w $0706
+[00020292]                           dc.w $0503
+[00020294]                           dc.w $0101
+[00020296]                           dc.w $0101
+[00020298]                           dc.w $0101
+[0002029a]                           dc.w $0101
+[0002029c]                           dc.w $0101
+[0002029e]                           dc.w $010e
+[000202a0]                           dc.w $0e0e
+[000202a2]                           dc.w $0d0d
+[000202a4]                           dc.w $0c0c
+[000202a6]                           dc.w $0b0b
+[000202a8]                           dc.w $0b0b
+[000202aa]                           dc.w $0a0a
+[000202ac]                           dc.w $0908
+[000202ae]                           dc.w $0706
+[000202b0]                           dc.w $0504
+[000202b2]                           dc.w $0202
+[000202b4]                           dc.w $0202
+[000202b6]                           dc.w $0202
+[000202b8]                           dc.w $0202
+[000202ba]                           dc.w $0202
+[000202bc]                           dc.w $0200
 _freeexpr:
-[0000b3cc] 000202be                           dc.b $00
-[0000b3cd] 000202bf                           dc.b $00
-[0000b3ce] 000202c0                           dc.b $00
-[0000b3cf] 000202c1                           dc.b $01
-[0000b3d0] 000202c2                           dc.b 'constant required',0
-[0000b3e2] 000202d4 00000f20                  dc.l $00000f20 ; no symbol found
-[0000b3e6] 000202d8                           dc.b $00
-[0000b3e7] 000202d9                           dc.b $00
-[0000b3e8] 000202da                           dc.b $00
-[0000b3e9] 000202db                           dc.b $3a
-[0000b3ea] 000202dc 00000f14                  dc.l $00000f14 ; no symbol found
-[0000b3ee] 000202e0                           dc.b $00
-[0000b3ef] 000202e1                           dc.b $00
-[0000b3f0] 000202e2                           dc.b $00
-[0000b3f1] 000202e3                           dc.b $3f
-[0000b3f2] 000202e4 00000f08                  dc.l $00000f08 ; no symbol found
-[0000b3f6] 000202e8                           dc.b $00
-[0000b3f7] 000202e9                           dc.b $00
-[0000b3f8] 000202ea                           dc.b $00
-[0000b3f9] 000202eb                           dc.b $31
-[0000b3fa] 000202ec 00000efa                  dc.l $00000efa ; no symbol found
-[0000b3fe] 000202f0                           dc.b $00
-[0000b3ff] 000202f1                           dc.b $00
-[0000b400] 000202f2                           dc.b $00
-[0000b401] 000202f3                           dc.b $21
-[0000b402] 000202f4 00000eec                  dc.l $00000eec ; no symbol found
-[0000b406] 000202f8                           dc.b $00
-[0000b407] 000202f9                           dc.b $00
-[0000b408] 000202fa                           dc.b $00
-[0000b409] 000202fb                           dc.b $3b
-[0000b40a] 000202fc 00000edc                  dc.l $00000edc ; no symbol found
-[0000b40e] 00020300                           dc.b $00
-[0000b40f] 00020301                           dc.b $00
-[0000b410] 00020302                           dc.b $00
-[0000b411] 00020303                           dc.b $3d
-[0000b412] 00020304 00000edc                  dc.l $00000edc ; no symbol found
-[0000b416] 00020308                           dc.b $00
-[0000b417] 00020309                           dc.b $00
-[0000b418] 0002030a                           dc.b $00
-[0000b419] 0002030b                           dc.b $34
-[0000b41a] 0002030c 00000ec6                  dc.l $00000ec6 ; no symbol found
-[0000b41e] 00020310                           dc.b $00
-[0000b41f] 00020311                           dc.b $00
-[0000b420] 00020312                           dc.b $00
-[0000b421] 00020313                           dc.b $3c
-[0000b422] 00020314 00000ec6                  dc.l $00000ec6 ; no symbol found
-[0000b426] 00020318                           dc.b $00
-[0000b427] 00020319                           dc.b $00
-[0000b428] 0002031a                           dc.b $00
-[0000b429] 0002031b                           dc.b $2a
-[0000b42a] 0002031c 00000ec6                  dc.l $00000ec6 ; no symbol found
-[0000b42e] 00020320                           dc.b $00
-[0000b42f] 00020321                           dc.b $00
-[0000b430] 00020322                           dc.b $00
-[0000b431] 00020323                           dc.b $3e
-[0000b432] 00020324                           dc.b $00
-[0000b433] 00020325                           dc.b $00
-[0000b434] 00020326                           dc.b $00
-[0000b435] 00020327                           dc.b $00
-[0000b436] 00020328 00000f28                  dc.l $00000f28 ; no symbol found
-[0000b43a] 0002032c                           dc.b 'illegal use of typedef',0
-[0000b451] 00020343                           dc.b $00
-[0000b452] 00020344                           dc.w $0300
-[0000b454] 00020346                           dc.b $00
-[0000b455] 00020347                           dc.b $00
-[0000b456] 00020348                           dc.w $e2c1
-[0000b458] 0002034a                           dc.w $ded8
-[0000b45a] 0002034c                           dc.b 'ZC`',0
-[0000b45e] 00020350                           dc.b 'kdmlZC`',0
-[0000b466] 00020358 000012b2                  dc.l $000012b2 ; no symbol found
-[0000b46a] 0002035c                           dc.b $00
-[0000b46b] 0002035d                           dc.b $00
-[0000b46c] 0002035e                           dc.b $00
-[0000b46d] 0002035f                           dc.b $61
-[0000b46e] 00020360 0000127a                  dc.l $0000127a ; no symbol found
-[0000b472] 00020364                           dc.b $00
-[0000b473] 00020365                           dc.b $00
-[0000b474] 00020366                           dc.b $00
-[0000b475] 00020367                           dc.b $06
-[0000b476] 00020368 00001222                  dc.l $00001222 ; no symbol found
-[0000b47a] 0002036c                           dc.b $00
-[0000b47b] 0002036d                           dc.b $00
-[0000b47c] 0002036e                           dc.b $00
-[0000b47d] 0002036f                           dc.b $44
-[0000b47e] 00020370 00001222                  dc.l $00001222 ; no symbol found
-[0000b482] 00020374                           dc.b $00
-[0000b483] 00020375                           dc.b $00
-[0000b484] 00020376                           dc.b $00
-[0000b485] 00020377                           dc.b $53
-[0000b486] 00020378 000011e2                  dc.l $000011e2 ; no symbol found
-[0000b48a] 0002037c                           dc.b $00
-[0000b48b] 0002037d                           dc.b $00
-[0000b48c] 0002037e                           dc.b $00
-[0000b48d] 0002037f                           dc.b $60
-[0000b48e] 00020380 000011e2                  dc.l $000011e2 ; no symbol found
-[0000b492] 00020384                           dc.b $00
-[0000b493] 00020385                           dc.b $00
-[0000b494] 00020386                           dc.b $00
-[0000b495] 00020387                           dc.b $43
-[0000b496] 00020388 000011e2                  dc.l $000011e2 ; no symbol found
-[0000b49a] 0002038c                           dc.b $00
-[0000b49b] 0002038d                           dc.b $00
-[0000b49c] 0002038e                           dc.b $00
-[0000b49d] 0002038f                           dc.b $5a
-[0000b49e] 00020390 000011e2                  dc.l $000011e2 ; no symbol found
-[0000b4a2] 00020394                           dc.b $00
-[0000b4a3] 00020395                           dc.b $00
-[0000b4a4] 00020396                           dc.b $00
-[0000b4a5] 00020397                           dc.b $d8
-[0000b4a6] 00020398 000011e2                  dc.l $000011e2 ; no symbol found
-[0000b4aa] 0002039c                           dc.b $00
-[0000b4ab] 0002039d                           dc.b $00
-[0000b4ac] 0002039e                           dc.b $00
-[0000b4ad] 0002039f                           dc.b $de
-[0000b4ae] 000203a0 000011e2                  dc.l $000011e2 ; no symbol found
-[0000b4b2] 000203a4                           dc.b $00
-[0000b4b3] 000203a5                           dc.b $00
-[0000b4b4] 000203a6                           dc.b $00
-[0000b4b5] 000203a7                           dc.b $c1
-[0000b4b6] 000203a8 000011e2                  dc.l $000011e2 ; no symbol found
-[0000b4ba] 000203ac                           dc.b $00
-[0000b4bb] 000203ad                           dc.b $00
-[0000b4bc] 000203ae                           dc.b $00
-[0000b4bd] 000203af                           dc.b $e2
-[0000b4be] 000203b0 00001182                  dc.l $00001182 ; no symbol found
-[0000b4c2] 000203b4                           dc.b $00
-[0000b4c3] 000203b5                           dc.b $00
-[0000b4c4] 000203b6                           dc.b $00
-[0000b4c5] 000203b7                           dc.b $11
-[0000b4c6] 000203b8 00001182                  dc.l $00001182 ; no symbol found
-[0000b4ca] 000203bc                           dc.b $00
-[0000b4cb] 000203bd                           dc.b $00
-[0000b4cc] 000203be                           dc.b $00
-[0000b4cd] 000203bf                           dc.b $10
-[0000b4ce] 000203c0 00001182                  dc.l $00001182 ; no symbol found
-[0000b4d2] 000203c4                           dc.b $00
-[0000b4d3] 000203c5                           dc.b $00
-[0000b4d4] 000203c6                           dc.b $00
-[0000b4d5] 000203c7                           dc.b $1e
-[0000b4d6] 000203c8 000010d8                  dc.l $000010d8 ; no symbol found
-[0000b4da] 000203cc                           dc.b $00
-[0000b4db] 000203cd                           dc.b $00
-[0000b4dc] 000203ce                           dc.b $00
-[0000b4dd] 000203cf                           dc.b $17
-[0000b4de] 000203d0 0000106e                  dc.l $0000106e ; no symbol found
-[0000b4e2] 000203d4                           dc.b $00
-[0000b4e3] 000203d5                           dc.b $00
-[0000b4e4] 000203d6                           dc.b $00
-[0000b4e5] 000203d7                           dc.b $19
-[0000b4e6] 000203d8 0000106e                  dc.l $0000106e ; no symbol found
-[0000b4ea] 000203dc                           dc.b $00
-[0000b4eb] 000203dd                           dc.b $00
-[0000b4ec] 000203de                           dc.b $00
-[0000b4ed] 000203df                           dc.b $15
-[0000b4ee] 000203e0 0000106e                  dc.l $0000106e ; no symbol found
-[0000b4f2] 000203e4                           dc.b $00
-[0000b4f3] 000203e5                           dc.b $00
-[0000b4f4] 000203e6                           dc.b $00
-[0000b4f5] 000203e7                           dc.b $1a
-[0000b4f6] 000203e8 0000106e                  dc.l $0000106e ; no symbol found
-[0000b4fa] 000203ec                           dc.b $00
-[0000b4fb] 000203ed                           dc.b $00
-[0000b4fc] 000203ee                           dc.b $00
-[0000b4fd] 000203ef                           dc.b $16
-[0000b4fe] 000203f0 0000106e                  dc.l $0000106e ; no symbol found
-[0000b502] 000203f4                           dc.b $00
-[0000b503] 000203f5                           dc.b $00
-[0000b504] 000203f6                           dc.b $00
-[0000b505] 000203f7                           dc.b $1b
-[0000b506] 000203f8 0000106e                  dc.l $0000106e ; no symbol found
-[0000b50a] 000203fc                           dc.b $00
-[0000b50b] 000203fd                           dc.b $00
-[0000b50c] 000203fe                           dc.b $00
-[0000b50d] 000203ff                           dc.b $18
-[0000b50e] 00020400 00001054                  dc.l $00001054 ; no symbol found
-[0000b512] 00020404                           dc.b $00
-[0000b513] 00020405                           dc.b $00
-[0000b514] 00020406                           dc.b $00
-[0000b515] 00020407                           dc.b $12
-[0000b516] 00020408                           dc.b $00
-[0000b517] 00020409                           dc.b $00
-[0000b518] 0002040a                           dc.b $00
-[0000b519] 0002040b                           dc.b $00
-[0000b51a] 0002040c 00001334                  dc.l $00001334 ; no symbol found
-[0000b51e] 00020410                           dc.b 'missing expression',0
-[0000b531] 00020423                           dc.b $00
-[0000b532] 00020424 00001504                  dc.l $00001504 ; no symbol found
-[0000b536] 00020428                           dc.b $00
-[0000b537] 00020429                           dc.b $00
-[0000b538] 0002042a                           dc.b $00
-[0000b539] 0002042b                           dc.b $53
-[0000b53a] 0002042c 00001504                  dc.l $00001504 ; no symbol found
-[0000b53e] 00020430                           dc.b $00
-[0000b53f] 00020431                           dc.b $00
-[0000b540] 00020432                           dc.b $00
-[0000b541] 00020433                           dc.b $44
-[0000b542] 00020434 00001466                  dc.l $00001466 ; no symbol found
-[0000b546] 00020438                           dc.b $00
-[0000b547] 00020439                           dc.b $00
-[0000b548] 0002043a                           dc.b $00
-[0000b549] 0002043b                           dc.b $03
-[0000b54a] 0002043c 00001466                  dc.l $00001466 ; no symbol found
-[0000b54e] 00020440                           dc.b $00
-[0000b54f] 00020441                           dc.b $00
-[0000b550] 00020442                           dc.b $00
-[0000b551] 00020443                           dc.b $07
-[0000b552] 00020444 00001422                  dc.l $00001422 ; no symbol found
-[0000b556] 00020448                           dc.b $00
-[0000b557] 00020449                           dc.b $00
-[0000b558] 0002044a                           dc.b $00
-[0000b559] 0002044b                           dc.b $04
-[0000b55a] 0002044c 000013a4                  dc.l $000013a4 ; no symbol found
-[0000b55e] 00020450                           dc.b $00
-[0000b55f] 00020451                           dc.b $00
-[0000b560] 00020452                           dc.b $00
-[0000b561] 00020453                           dc.b $06
-[0000b562] 00020454                           dc.b $00
-[0000b563] 00020455                           dc.b $00
-[0000b564] 00020456                           dc.b $00
-[0000b565] 00020457                           dc.b $00
-[0000b566] 00020458 00001550                  dc.l $00001550 ; no symbol found
-[0000b56a] 0002045c                           dc.b 'missing member name',0
-[0000b57e] 00020470 00020d68                  dc.l $00020d68 ; no symbol found
-[0000b582] 00020474 00020d8c                  dc.l $00020d8c ; no symbol found
-[0000b586] 00020478 00020d9e                  dc.l $00020d9e ; no symbol found
-[0000b58a] 0002047c 00020db0                  dc.l $00020db0 ; no symbol found
-[0000b58e] 00020480 00020dc2                  dc.l $00020dc2 ; no symbol found
-[0000b592] 00020484 00020dd4                  dc.l $00020dd4 ; no symbol found
-[0000b596] 00020488 00020d68                  dc.l $00020d68 ; no symbol found
-[0000b59a] 0002048c 00020d8c                  dc.l $00020d8c ; no symbol found
-[0000b59e] 00020490 00020dc2                  dc.l $00020dc2 ; no symbol found
-[0000b5a2] 00020494 00020dd4                  dc.l $00020dd4 ; no symbol found
-[0000b5a6] 00020498 00020de6                  dc.l $00020de6 ; no symbol found
-[0000b5aa] 0002049c 00020df8                  dc.l $00020df8 ; no symbol found
+[000202be]                           dc.b $00
+[000202bf]                           dc.b $00
+[000202c0]                           dc.b $00
+[000202c1]                           dc.b $01
+[000202c2]                           dc.b 'constant required',0
+[000202d4] 00000f20                  dc.l $00000f20 ; no symbol found
+[000202d8]                           dc.b $00
+[000202d9]                           dc.b $00
+[000202da]                           dc.b $00
+[000202db]                           dc.b $3a
+[000202dc] 00000f14                  dc.l $00000f14 ; no symbol found
+[000202e0]                           dc.b $00
+[000202e1]                           dc.b $00
+[000202e2]                           dc.b $00
+[000202e3]                           dc.b $3f
+[000202e4] 00000f08                  dc.l $00000f08 ; no symbol found
+[000202e8]                           dc.b $00
+[000202e9]                           dc.b $00
+[000202ea]                           dc.b $00
+[000202eb]                           dc.b $31
+[000202ec] 00000efa                  dc.l $00000efa ; no symbol found
+[000202f0]                           dc.b $00
+[000202f1]                           dc.b $00
+[000202f2]                           dc.b $00
+[000202f3]                           dc.b $21
+[000202f4] 00000eec                  dc.l $00000eec ; no symbol found
+[000202f8]                           dc.b $00
+[000202f9]                           dc.b $00
+[000202fa]                           dc.b $00
+[000202fb]                           dc.b $3b
+[000202fc] 00000edc                  dc.l $00000edc ; no symbol found
+[00020300]                           dc.b $00
+[00020301]                           dc.b $00
+[00020302]                           dc.b $00
+[00020303]                           dc.b $3d
+[00020304] 00000edc                  dc.l $00000edc ; no symbol found
+[00020308]                           dc.b $00
+[00020309]                           dc.b $00
+[0002030a]                           dc.b $00
+[0002030b]                           dc.b $34
+[0002030c] 00000ec6                  dc.l $00000ec6 ; no symbol found
+[00020310]                           dc.b $00
+[00020311]                           dc.b $00
+[00020312]                           dc.b $00
+[00020313]                           dc.b $3c
+[00020314] 00000ec6                  dc.l $00000ec6 ; no symbol found
+[00020318]                           dc.b $00
+[00020319]                           dc.b $00
+[0002031a]                           dc.b $00
+[0002031b]                           dc.b $2a
+[0002031c] 00000ec6                  dc.l $00000ec6 ; no symbol found
+[00020320]                           dc.b $00
+[00020321]                           dc.b $00
+[00020322]                           dc.b $00
+[00020323]                           dc.b $3e
+[00020324]                           dc.b $00
+[00020325]                           dc.b $00
+[00020326]                           dc.b $00
+[00020327]                           dc.b $00
+[00020328] 00000f28                  dc.l $00000f28 ; no symbol found
+[0002032c]                           dc.b 'illegal use of typedef',0
+[00020343]                           dc.b $00
+[00020344]                           dc.w $0300
+[00020346]                           dc.b $00
+[00020347]                           dc.b $00
+[00020348]                           dc.w $e2c1
+[0002034a]                           dc.w $ded8
+[0002034c]                           dc.b 'ZC`',0
+[00020350]                           dc.b 'kdmlZC`',0
+[00020358] 000012b2                  dc.l $000012b2 ; no symbol found
+[0002035c]                           dc.b $00
+[0002035d]                           dc.b $00
+[0002035e]                           dc.b $00
+[0002035f]                           dc.b $61
+[00020360] 0000127a                  dc.l $0000127a ; no symbol found
+[00020364]                           dc.b $00
+[00020365]                           dc.b $00
+[00020366]                           dc.b $00
+[00020367]                           dc.b $06
+[00020368] 00001222                  dc.l $00001222 ; no symbol found
+[0002036c]                           dc.b $00
+[0002036d]                           dc.b $00
+[0002036e]                           dc.b $00
+[0002036f]                           dc.b $44
+[00020370] 00001222                  dc.l $00001222 ; no symbol found
+[00020374]                           dc.b $00
+[00020375]                           dc.b $00
+[00020376]                           dc.b $00
+[00020377]                           dc.b $53
+[00020378] 000011e2                  dc.l $000011e2 ; no symbol found
+[0002037c]                           dc.b $00
+[0002037d]                           dc.b $00
+[0002037e]                           dc.b $00
+[0002037f]                           dc.b $60
+[00020380] 000011e2                  dc.l $000011e2 ; no symbol found
+[00020384]                           dc.b $00
+[00020385]                           dc.b $00
+[00020386]                           dc.b $00
+[00020387]                           dc.b $43
+[00020388] 000011e2                  dc.l $000011e2 ; no symbol found
+[0002038c]                           dc.b $00
+[0002038d]                           dc.b $00
+[0002038e]                           dc.b $00
+[0002038f]                           dc.b $5a
+[00020390] 000011e2                  dc.l $000011e2 ; no symbol found
+[00020394]                           dc.b $00
+[00020395]                           dc.b $00
+[00020396]                           dc.b $00
+[00020397]                           dc.b $d8
+[00020398] 000011e2                  dc.l $000011e2 ; no symbol found
+[0002039c]                           dc.b $00
+[0002039d]                           dc.b $00
+[0002039e]                           dc.b $00
+[0002039f]                           dc.b $de
+[000203a0] 000011e2                  dc.l $000011e2 ; no symbol found
+[000203a4]                           dc.b $00
+[000203a5]                           dc.b $00
+[000203a6]                           dc.b $00
+[000203a7]                           dc.b $c1
+[000203a8] 000011e2                  dc.l $000011e2 ; no symbol found
+[000203ac]                           dc.b $00
+[000203ad]                           dc.b $00
+[000203ae]                           dc.b $00
+[000203af]                           dc.b $e2
+[000203b0] 00001182                  dc.l $00001182 ; no symbol found
+[000203b4]                           dc.b $00
+[000203b5]                           dc.b $00
+[000203b6]                           dc.b $00
+[000203b7]                           dc.b $11
+[000203b8] 00001182                  dc.l $00001182 ; no symbol found
+[000203bc]                           dc.b $00
+[000203bd]                           dc.b $00
+[000203be]                           dc.b $00
+[000203bf]                           dc.b $10
+[000203c0] 00001182                  dc.l $00001182 ; no symbol found
+[000203c4]                           dc.b $00
+[000203c5]                           dc.b $00
+[000203c6]                           dc.b $00
+[000203c7]                           dc.b $1e
+[000203c8] 000010d8                  dc.l $000010d8 ; no symbol found
+[000203cc]                           dc.b $00
+[000203cd]                           dc.b $00
+[000203ce]                           dc.b $00
+[000203cf]                           dc.b $17
+[000203d0] 0000106e                  dc.l $0000106e ; no symbol found
+[000203d4]                           dc.b $00
+[000203d5]                           dc.b $00
+[000203d6]                           dc.b $00
+[000203d7]                           dc.b $19
+[000203d8] 0000106e                  dc.l $0000106e ; no symbol found
+[000203dc]                           dc.b $00
+[000203dd]                           dc.b $00
+[000203de]                           dc.b $00
+[000203df]                           dc.b $15
+[000203e0] 0000106e                  dc.l $0000106e ; no symbol found
+[000203e4]                           dc.b $00
+[000203e5]                           dc.b $00
+[000203e6]                           dc.b $00
+[000203e7]                           dc.b $1a
+[000203e8] 0000106e                  dc.l $0000106e ; no symbol found
+[000203ec]                           dc.b $00
+[000203ed]                           dc.b $00
+[000203ee]                           dc.b $00
+[000203ef]                           dc.b $16
+[000203f0] 0000106e                  dc.l $0000106e ; no symbol found
+[000203f4]                           dc.b $00
+[000203f5]                           dc.b $00
+[000203f6]                           dc.b $00
+[000203f7]                           dc.b $1b
+[000203f8] 0000106e                  dc.l $0000106e ; no symbol found
+[000203fc]                           dc.b $00
+[000203fd]                           dc.b $00
+[000203fe]                           dc.b $00
+[000203ff]                           dc.b $18
+[00020400] 00001054                  dc.l $00001054 ; no symbol found
+[00020404]                           dc.b $00
+[00020405]                           dc.b $00
+[00020406]                           dc.b $00
+[00020407]                           dc.b $12
+[00020408]                           dc.b $00
+[00020409]                           dc.b $00
+[0002040a]                           dc.b $00
+[0002040b]                           dc.b $00
+[0002040c] 00001334                  dc.l $00001334 ; no symbol found
+[00020410]                           dc.b 'missing expression',0
+[00020423]                           dc.b $00
+[00020424] 00001504                  dc.l $00001504 ; no symbol found
+[00020428]                           dc.b $00
+[00020429]                           dc.b $00
+[0002042a]                           dc.b $00
+[0002042b]                           dc.b $53
+[0002042c] 00001504                  dc.l $00001504 ; no symbol found
+[00020430]                           dc.b $00
+[00020431]                           dc.b $00
+[00020432]                           dc.b $00
+[00020433]                           dc.b $44
+[00020434] 00001466                  dc.l $00001466 ; no symbol found
+[00020438]                           dc.b $00
+[00020439]                           dc.b $00
+[0002043a]                           dc.b $00
+[0002043b]                           dc.b $03
+[0002043c] 00001466                  dc.l $00001466 ; no symbol found
+[00020440]                           dc.b $00
+[00020441]                           dc.b $00
+[00020442]                           dc.b $00
+[00020443]                           dc.b $07
+[00020444] 00001422                  dc.l $00001422 ; no symbol found
+[00020448]                           dc.b $00
+[00020449]                           dc.b $00
+[0002044a]                           dc.b $00
+[0002044b]                           dc.b $04
+[0002044c] 000013a4                  dc.l $000013a4 ; no symbol found
+[00020450]                           dc.b $00
+[00020451]                           dc.b $00
+[00020452]                           dc.b $00
+[00020453]                           dc.b $06
+[00020454]                           dc.b $00
+[00020455]                           dc.b $00
+[00020456]                           dc.b $00
+[00020457]                           dc.b $00
+[00020458] 00001550                  dc.l $00001550 ; no symbol found
+[0002045c]                           dc.b 'missing member name',0
+[00020470] 00020d68                  dc.l _atchar
+[00020474] 00020d8c                  dc.l _atuchar
+[00020478] 00020d9e                  dc.l _atshort
+[0002047c] 00020db0                  dc.l _atushort
+[00020480] 00020dc2                  dc.l _atint
+[00020484] 00020dd4                  dc.l _atunsign
+[00020488] 00020d68                  dc.l _atchar
+[0002048c] 00020d8c                  dc.l _atuchar
+[00020490] 00020dc2                  dc.l _atint
+[00020494] 00020dd4                  dc.l _atunsign
+[00020498] 00020de6                  dc.l _atlong
+[0002049c] 00020df8                  dc.l _atulong
 _regset:
-[0000b5ae] 000204a0                           dc.b $00
-[0000b5af] 000204a1                           dc.b $1c
+[000204a0]                           dc.b $00
+[000204a1]                           dc.b $1c
 _autoff:
-[0000b5b0] 000204a2                           dc.b $00
-[0000b5b1] 000204a3                           dc.b $00
-[0000b5b2] 000204a4                           dc.b $00
-[0000b5b3] 000204a5                           dc.b $00
+[000204a2]                           dc.b $00
+[000204a3]                           dc.b $00
+[000204a4]                           dc.b $00
+[000204a5]                           dc.b $00
 _dbline:
-[0000b5b4] 000204a6                           dc.b $00
-[0000b5b5] 000204a7                           dc.b $00
+[000204a6]                           dc.b $00
+[000204a7]                           dc.b $00
 _dbfilab:
-[0000b5b6] 000204a8                           dc.b $00
-[0000b5b7] 000204a9                           dc.b $00
+[000204a8]                           dc.b $00
+[000204a9]                           dc.b $00
 _dbfulab:
-[0000b5b8] 000204aa                           dc.b $00
-[0000b5b9] 000204ab                           dc.b $00
+[000204aa]                           dc.b $00
+[000204ab]                           dc.b $00
 _dbfvlab:
-[0000b5ba] 000204ac                           dc.b $00
-[0000b5bb] 000204ad                           dc.b $00
+[000204ac]                           dc.b $00
+[000204ad]                           dc.b $00
 _rat:
-[0000b5bc] 000204ae                           dc.b $00
-[0000b5bd] 000204af                           dc.b $00
-[0000b5be] 000204b0                           dc.b $00
-[0000b5bf] 000204b1                           dc.b $00
+[000204ae]                           dc.b $00
+[000204af]                           dc.b $00
+[000204b0]                           dc.b $00
+[000204b1]                           dc.b $00
 _caseterm:
-[0000b5c0] 000204b2                           dc.b $00
-[0000b5c1] 000204b3                           dc.b $00
-[0000b5c2] 000204b4                           dc.b $00
-[0000b5c3] 000204b5                           dc.b $00
-[0000b5c4] 000204b6                           dc.b $00
-[0000b5c5] 000204b7                           dc.b $00
-[0000b5c6] 000204b8                           dc.b $00
-[0000b5c7] 000204b9                           dc.b $00
-[0000b5c8] 000204ba                           dc.b $00
-[0000b5c9] 000204bb                           dc.b $00
-[0000b5ca] 000204bc                           dc.b $00
-[0000b5cb] 000204bd                           dc.b $00
-[0000b5cc] 000204be                           dc.b $00
-[0000b5cd] 000204bf                           dc.b $00
-[0000b5ce] 000204c0                           dc.b $00
-[0000b5cf] 000204c1                           dc.b $00
-[0000b5d0] 000204c2                           dc.b $00
-[0000b5d1] 000204c3                           dc.b $00
-[0000b5d2] 000204c4                           dc.b $00
-[0000b5d3] 000204c5                           dc.b $00
-[0000b5d4] 000204c6                           dc.b $00
-[0000b5d5] 000204c7                           dc.b $00
-[0000b5d6] 000204c8                           dc.b $00
-[0000b5d7] 000204c9                           dc.b $00
+[000204b2]                           dc.b $00
+[000204b3]                           dc.b $00
+[000204b4]                           dc.b $00
+[000204b5]                           dc.b $00
+[000204b6]                           dc.b $00
+[000204b7]                           dc.b $00
+[000204b8]                           dc.b $00
+[000204b9]                           dc.b $00
+[000204ba]                           dc.b $00
+[000204bb]                           dc.b $00
+[000204bc]                           dc.b $00
+[000204bd]                           dc.b $00
+[000204be]                           dc.b $00
+[000204bf]                           dc.b $00
+[000204c0]                           dc.b $00
+[000204c1]                           dc.b $00
+[000204c2]                           dc.b $00
+[000204c3]                           dc.b $00
+[000204c4]                           dc.b $00
+[000204c5]                           dc.b $00
+[000204c6]                           dc.b $00
+[000204c7]                           dc.b $00
+[000204c8]                           dc.b $00
+[000204c9]                           dc.b $00
 _rterm:
-[0000b5d8] 000204ca                           dc.b $00
-[0000b5d9] 000204cb                           dc.b $00
-[0000b5da] 000204cc                           dc.b $00
-[0000b5db] 000204cd                           dc.b $00
-[0000b5dc] 000204ce                           dc.b $00
-[0000b5dd] 000204cf                           dc.b $00
-[0000b5de] 000204d0                           dc.b $00
-[0000b5df] 000204d1                           dc.b $00
-[0000b5e0] 000204d2                           dc.b $00
-[0000b5e1] 000204d3                           dc.b $00
-[0000b5e2] 000204d4                           dc.b $00
-[0000b5e3] 000204d5                           dc.b $00
-[0000b5e4] 000204d6                           dc.b $00
-[0000b5e5] 000204d7                           dc.b $00
-[0000b5e6] 000204d8                           dc.b $00
-[0000b5e7] 000204d9                           dc.b $00
-[0000b5e8] 000204da                           dc.b $00
-[0000b5e9] 000204db                           dc.b $00
-[0000b5ea] 000204dc                           dc.b $00
-[0000b5eb] 000204dd                           dc.b $00
-[0000b5ec] 000204de                           dc.b $00
-[0000b5ed] 000204df                           dc.b $00
-[0000b5ee] 000204e0                           dc.b $00
-[0000b5ef] 000204e1                           dc.b $00
-[0000b5f0] 000204e2                           dc.b 'duplicate case value',0
-[0000b605] 000204f7                           dc.b $00
-[0000b606] 000204f8 000204fc                  dc.l $000204fc ; no symbol found
-[0000b60a] 000204fc                           dc.b $00
-[0000b60b] 000204fd                           dc.b $00
-[0000b60c] 000204fe 00020502                  dc.l $00020502 ; no symbol found
-[0000b610] 00020502                           dc.b $00
-[0000b611] 00020503                           dc.b $00
-[0000b612] 00020504                           dc.b '4=<;!1',0
-[0000b619] 0002050b                           dc.b $00
-[0000b61a] 0002050c                           dc.b $00
-[0000b61b] 0002050d                           dc.b $00
-[0000b61c] 0002050e                           dc.b $00
-[0000b61d] 0002050f                           dc.b $00
-[0000b61e] 00020510 00020514                  dc.l $00020514 ; no symbol found
-[0000b622] 00020514                           dc.b $00
-[0000b623] 00020515                           dc.b $01
-[0000b624] 00020516                           dc.w $0101
-[0000b626] 00020518                           dc.w $0203
-[0000b628] 0002051a                           dc.w $0400
-[0000b62a] 0002051c                           dc.b '*4><=:',0
-[0000b631] 00020523                           dc.b 'unexpected EOF',0
-[0000b640] 00020532                           dc.b 'redefined external',0
-[0000b653] 00020545                           dc.b 'redeclared local',0
-[0000b664] 00020556                           dc.b $00
-[0000b665] 00020557                           dc.b $00
-[0000b666] 00020558                           dc.b $00
-[0000b667] 00020559                           dc.b $00
-[0000b668] 0002055a                           dc.b $00
-[0000b669] 0002055b                           dc.b $00
-[0000b66a] 0002055c                           dc.b $00
-[0000b66b] 0002055d                           dc.b $00
-[0000b66c] 0002055e                           dc.b $00
-[0000b66d] 0002055f                           dc.b $00
-[0000b66e] 00020560                           dc.b $00
-[0000b66f] 00020561                           dc.b $00
-[0000b670] 00020562                           dc.b $00
-[0000b671] 00020563                           dc.b $00
-[0000b672] 00020564                           dc.b $00
-[0000b673] 00020565                           dc.b $00
-[0000b674] 00020566                           dc.b $00
-[0000b675] 00020567                           dc.b $00
-[0000b676] 00020568                           dc.b $00
-[0000b677] 00020569                           dc.b $00
-[0000b678] 0002056a                           dc.b $00
-[0000b679] 0002056b                           dc.b $00
-[0000b67a] 0002056c                           dc.b $00
-[0000b67b] 0002056d                           dc.b $00
-[0000b67c] 0002056e                           dc.b $00
-[0000b67d] 0002056f                           dc.b $00
-[0000b67e] 00020570                           dc.b $00
-[0000b67f] 00020571                           dc.b $00
-[0000b680] 00020572                           dc.b $00
-[0000b681] 00020573                           dc.b $00
-[0000b682] 00020574 000023c6                  dc.l $000023c6 ; no symbol found
-[0000b686] 00020578                           dc.b $00
-[0000b687] 00020579                           dc.b $00
-[0000b688] 0002057a                           dc.b $00
-[0000b689] 0002057b                           dc.b $26
-[0000b68a] 0002057c 0000229e                  dc.l $0000229e ; no symbol found
-[0000b68e] 00020580                           dc.b $00
-[0000b68f] 00020581                           dc.b $00
-[0000b690] 00020582                           dc.b $00
-[0000b691] 00020583                           dc.b $23
-[0000b692] 00020584                           dc.b $00
-[0000b693] 00020585                           dc.b $00
-[0000b694] 00020586                           dc.b $00
-[0000b695] 00020587                           dc.b $00
-[0000b696] 00020588 0000240a                  dc.l $0000240a ; no symbol found
-[0000b69a] 0002058c 00002904                  dc.l $00002904 ; no symbol found
-[0000b69e] 00020590                           dc.b $00
-[0000b69f] 00020591                           dc.b $00
-[0000b6a0] 00020592                           dc.b $00
-[0000b6a1] 00020593                           dc.b $36
-[0000b6a2] 00020594 0000286e                  dc.l $0000286e ; no symbol found
-[0000b6a6] 00020598                           dc.b $00
-[0000b6a7] 00020599                           dc.b $00
-[0000b6a8] 0002059a                           dc.b $00
-[0000b6a9] 0002059b                           dc.b $2d
-[0000b6aa] 0002059c 000027ea                  dc.l $000027ea ; no symbol found
-[0000b6ae] 000205a0                           dc.b $00
-[0000b6af] 000205a1                           dc.b $00
-[0000b6b0] 000205a2                           dc.b $00
-[0000b6b1] 000205a3                           dc.b $32
-[0000b6b2] 000205a4 000027b4                  dc.l $000027b4 ; no symbol found
-[0000b6b6] 000205a8                           dc.b $00
-[0000b6b7] 000205a9                           dc.b $00
-[0000b6b8] 000205aa                           dc.b $00
-[0000b6b9] 000205ab                           dc.b $25
-[0000b6ba] 000205ac 0000277e                  dc.l $0000277e ; no symbol found
-[0000b6be] 000205b0                           dc.b $00
-[0000b6bf] 000205b1                           dc.b $00
-[0000b6c0] 000205b2                           dc.b $00
-[0000b6c1] 000205b3                           dc.b $22
-[0000b6c2] 000205b4 0000266c                  dc.l $0000266c ; no symbol found
-[0000b6c6] 000205b8                           dc.b $00
-[0000b6c7] 000205b9                           dc.b $00
-[0000b6c8] 000205ba                           dc.b $00
-[0000b6c9] 000205bb                           dc.b $2c
-[0000b6ca] 000205bc 000025d8                  dc.l $000025d8 ; no symbol found
-[0000b6ce] 000205c0                           dc.b $00
-[0000b6cf] 000205c1                           dc.b $00
-[0000b6d0] 000205c2                           dc.b $00
-[0000b6d1] 000205c3                           dc.b $27
-[0000b6d2] 000205c4 0000256c                  dc.l $0000256c ; no symbol found
-[0000b6d6] 000205c8                           dc.b $00
-[0000b6d7] 000205c9                           dc.b $00
-[0000b6d8] 000205ca                           dc.b $00
-[0000b6d9] 000205cb                           dc.b $3a
-[0000b6da] 000205cc 000024ec                  dc.l $000024ec ; no symbol found
-[0000b6de] 000205d0                           dc.b $00
-[0000b6df] 000205d1                           dc.b $00
-[0000b6e0] 000205d2                           dc.b $00
-[0000b6e1] 000205d3                           dc.b $2e
-[0000b6e2] 000205d4 000024e6                  dc.l $000024e6 ; no symbol found
-[0000b6e6] 000205d8                           dc.b $00
-[0000b6e7] 000205d9                           dc.b $00
-[0000b6e8] 000205da                           dc.b $00
-[0000b6e9] 000205db                           dc.b $0b
-[0000b6ea] 000205dc 000024b8                  dc.l $000024b8 ; no symbol found
-[0000b6ee] 000205e0                           dc.b $00
-[0000b6ef] 000205e1                           dc.b $00
-[0000b6f0] 000205e2                           dc.b $00
-[0000b6f1] 000205e3                           dc.b $05
-[0000b6f2] 000205e4                           dc.b $00
-[0000b6f3] 000205e5                           dc.b $00
-[0000b6f4] 000205e6                           dc.b $00
-[0000b6f5] 000205e7                           dc.b $00
-[0000b6f6] 000205e8 00002a92                  dc.l $00002a92 ; no symbol found
-[0000b6fa] 000205ec                           dc.b 'illegal statement',0
-[0000b70c] 000205fe                           dc.b 'illegal switch expression',0
-[0000b726] 00020618                           dc.b 'missing goto label',0
-[0000b739] 0002062b                           dc.b 'illegal return type',0
-[0000b74d] 0002063f                           dc.b 'illegal continue',0
-[0000b75e] 00020650                           dc.b 'illegal break',0
-[0000b76c] 0002065e                           dc.b 'redefined label',0
-[0000b77c] 0002066e                           dc.b 'illegal default',0
-[0000b78c] 0002067e                           dc.b 'bad case range',0
-[0000b79b] 0002068d                           dc.b 'illegal case',0
-[0000b7a8] 0002069a                           dc.b 'missing label',0
-[0000b7b6] 000206a8                           dc.b 'proto and arguments don',$27,'t match',0
-[0000b7d6] 000206c8                           dc.b 'illegal number of arguments',0
-[0000b7f2] 000206e4                           dc.b 'illegal argument type',0
-[0000b808] 000206fa                           dc.b 'undeclared argument',0
-[0000b81c] 0002070e                           dc.b 'function redefined',0
-[0000b82f] 00020721                           dc.b 'bad function argument declaration',0
-[0000b851] 00020743                           dc.b 'redeclared argument',0
-[0000b865] 00020757                           dc.b 'not an argument',0
-[0000b875] 00020767                           dc.b $00
-[0000b876] 00020768                           dc.b 'unused local symbol',0
+[000204ca]                           dc.b $00
+[000204cb]                           dc.b $00
+[000204cc]                           dc.b $00
+[000204cd]                           dc.b $00
+[000204ce]                           dc.b $00
+[000204cf]                           dc.b $00
+[000204d0]                           dc.b $00
+[000204d1]                           dc.b $00
+[000204d2]                           dc.b $00
+[000204d3]                           dc.b $00
+[000204d4]                           dc.b $00
+[000204d5]                           dc.b $00
+[000204d6]                           dc.b $00
+[000204d7]                           dc.b $00
+[000204d8]                           dc.b $00
+[000204d9]                           dc.b $00
+[000204da]                           dc.b $00
+[000204db]                           dc.b $00
+[000204dc]                           dc.b $00
+[000204dd]                           dc.b $00
+[000204de]                           dc.b $00
+[000204df]                           dc.b $00
+[000204e0]                           dc.b $00
+[000204e1]                           dc.b $00
+[000204e2]                           dc.b 'duplicate case value',0
+[000204f7]                           dc.b $00
+[000204f8] 000204fc                  dc.l $000204fc ; no symbol found
+[000204fc]                           dc.b $00
+[000204fd]                           dc.b $00
+[000204fe] 00020502                  dc.l $00020502 ; no symbol found
+[00020502]                           dc.b $00
+[00020503]                           dc.b $00
+[00020504]                           dc.b '4=<;!1',0
+[0002050b]                           dc.b $00
+[0002050c]                           dc.b $00
+[0002050d]                           dc.b $00
+[0002050e]                           dc.b $00
+[0002050f]                           dc.b $00
+[00020510] 00020514                  dc.l $00020514 ; no symbol found
+[00020514]                           dc.b $00
+[00020515]                           dc.b $01
+[00020516]                           dc.w $0101
+[00020518]                           dc.w $0203
+[0002051a]                           dc.w $0400
+[0002051c]                           dc.b '*4><=:',0
+[00020523]                           dc.b 'unexpected EOF',0
+[00020532]                           dc.b 'redefined external',0
+[00020545]                           dc.b 'redeclared local',0
+[00020556]                           dc.b $00
+[00020557]                           dc.b $00
+[00020558]                           dc.b $00
+[00020559]                           dc.b $00
+[0002055a]                           dc.b $00
+[0002055b]                           dc.b $00
+[0002055c]                           dc.b $00
+[0002055d]                           dc.b $00
+[0002055e]                           dc.b $00
+[0002055f]                           dc.b $00
+[00020560]                           dc.b $00
+[00020561]                           dc.b $00
+[00020562]                           dc.b $00
+[00020563]                           dc.b $00
+[00020564]                           dc.b $00
+[00020565]                           dc.b $00
+[00020566]                           dc.b $00
+[00020567]                           dc.b $00
+[00020568]                           dc.b $00
+[00020569]                           dc.b $00
+[0002056a]                           dc.b $00
+[0002056b]                           dc.b $00
+[0002056c]                           dc.b $00
+[0002056d]                           dc.b $00
+[0002056e]                           dc.b $00
+[0002056f]                           dc.b $00
+[00020570]                           dc.b $00
+[00020571]                           dc.b $00
+[00020572]                           dc.b $00
+[00020573]                           dc.b $00
+[00020574] 000023c6                  dc.l $000023c6 ; no symbol found
+[00020578]                           dc.b $00
+[00020579]                           dc.b $00
+[0002057a]                           dc.b $00
+[0002057b]                           dc.b $26
+[0002057c] 0000229e                  dc.l $0000229e ; no symbol found
+[00020580]                           dc.b $00
+[00020581]                           dc.b $00
+[00020582]                           dc.b $00
+[00020583]                           dc.b $23
+[00020584]                           dc.b $00
+[00020585]                           dc.b $00
+[00020586]                           dc.b $00
+[00020587]                           dc.b $00
+[00020588] 0000240a                  dc.l $0000240a ; no symbol found
+[0002058c] 00002904                  dc.l $00002904 ; no symbol found
+[00020590]                           dc.b $00
+[00020591]                           dc.b $00
+[00020592]                           dc.b $00
+[00020593]                           dc.b $36
+[00020594] 0000286e                  dc.l $0000286e ; no symbol found
+[00020598]                           dc.b $00
+[00020599]                           dc.b $00
+[0002059a]                           dc.b $00
+[0002059b]                           dc.b $2d
+[0002059c] 000027ea                  dc.l $000027ea ; no symbol found
+[000205a0]                           dc.b $00
+[000205a1]                           dc.b $00
+[000205a2]                           dc.b $00
+[000205a3]                           dc.b $32
+[000205a4] 000027b4                  dc.l $000027b4 ; no symbol found
+[000205a8]                           dc.b $00
+[000205a9]                           dc.b $00
+[000205aa]                           dc.b $00
+[000205ab]                           dc.b $25
+[000205ac] 0000277e                  dc.l $0000277e ; no symbol found
+[000205b0]                           dc.b $00
+[000205b1]                           dc.b $00
+[000205b2]                           dc.b $00
+[000205b3]                           dc.b $22
+[000205b4] 0000266c                  dc.l $0000266c ; no symbol found
+[000205b8]                           dc.b $00
+[000205b9]                           dc.b $00
+[000205ba]                           dc.b $00
+[000205bb]                           dc.b $2c
+[000205bc] 000025d8                  dc.l $000025d8 ; no symbol found
+[000205c0]                           dc.b $00
+[000205c1]                           dc.b $00
+[000205c2]                           dc.b $00
+[000205c3]                           dc.b $27
+[000205c4] 0000256c                  dc.l $0000256c ; no symbol found
+[000205c8]                           dc.b $00
+[000205c9]                           dc.b $00
+[000205ca]                           dc.b $00
+[000205cb]                           dc.b $3a
+[000205cc] 000024ec                  dc.l $000024ec ; no symbol found
+[000205d0]                           dc.b $00
+[000205d1]                           dc.b $00
+[000205d2]                           dc.b $00
+[000205d3]                           dc.b $2e
+[000205d4] 000024e6                  dc.l $000024e6 ; no symbol found
+[000205d8]                           dc.b $00
+[000205d9]                           dc.b $00
+[000205da]                           dc.b $00
+[000205db]                           dc.b $0b
+[000205dc] 000024b8                  dc.l $000024b8 ; no symbol found
+[000205e0]                           dc.b $00
+[000205e1]                           dc.b $00
+[000205e2]                           dc.b $00
+[000205e3]                           dc.b $05
+[000205e4]                           dc.b $00
+[000205e5]                           dc.b $00
+[000205e6]                           dc.b $00
+[000205e7]                           dc.b $00
+[000205e8] 00002a92                  dc.l $00002a92 ; no symbol found
+[000205ec]                           dc.b 'illegal statement',0
+[000205fe]                           dc.b 'illegal switch expression',0
+[00020618]                           dc.b 'missing goto label',0
+[0002062b]                           dc.b 'illegal return type',0
+[0002063f]                           dc.b 'illegal continue',0
+[00020650]                           dc.b 'illegal break',0
+[0002065e]                           dc.b 'redefined label',0
+[0002066e]                           dc.b 'illegal default',0
+[0002067e]                           dc.b 'bad case range',0
+[0002068d]                           dc.b 'illegal case',0
+[0002069a]                           dc.b 'missing label',0
+[000206a8]                           dc.b 'proto and arguments don',$27,'t match',0
+[000206c8]                           dc.b 'illegal number of arguments',0
+[000206e4]                           dc.b 'illegal argument type',0
+[000206fa]                           dc.b 'undeclared argument',0
+[0002070e]                           dc.b 'function redefined',0
+[00020721]                           dc.b 'bad function argument declaration',0
+[00020743]                           dc.b 'redeclared argument',0
+[00020757]                           dc.b 'not an argument',0
+[00020767]                           dc.b $00
+[00020768]                           dc.b 'unused local symbol',0
 _noname:
-[0000b88a] 0002077c                           dc.b $00
-[0000b88b] 0002077d                           dc.b $00
+[0002077c]                           dc.b $00
+[0002077d]                           dc.b $00
 _ntoks:
-[0000b88c] 0002077e                           dc.b $00
-[0000b88d] 0002077f                           dc.b $00
+[0002077e]                           dc.b $00
+[0002077f]                           dc.b $00
 _tokstk:
-[0000b88e] 00020780                           dc.b $00
-[0000b88f] 00020781                           dc.b $00
-[0000b890] 00020782                           dc.b $00
-[0000b891] 00020783                           dc.b $00
-[0000b892] 00020784                           dc.b $00
-[0000b893] 00020785                           dc.b $00
-[0000b894] 00020786                           dc.b $00
-[0000b895] 00020787                           dc.b $00
-[0000b896] 00020788                           dc.b $00
-[0000b897] 00020789                           dc.b $00
-[0000b898] 0002078a                           dc.b $00
-[0000b899] 0002078b                           dc.b $00
-[0000b89a] 0002078c                           dc.b $00
-[0000b89b] 0002078d                           dc.b $00
-[0000b89c] 0002078e                           dc.b $00
-[0000b89d] 0002078f                           dc.b $00
-[0000b89e] 00020790                           dc.b $00
-[0000b89f] 00020791                           dc.b $00
+[00020780]                           dc.b $00
+[00020781]                           dc.b $00
+[00020782]                           dc.b $00
+[00020783]                           dc.b $00
+[00020784]                           dc.b $00
+[00020785]                           dc.b $00
+[00020786]                           dc.b $00
+[00020787]                           dc.b $00
+[00020788]                           dc.b $00
+[00020789]                           dc.b $00
+[0002078a]                           dc.b $00
+[0002078b]                           dc.b $00
+[0002078c]                           dc.b $00
+[0002078d]                           dc.b $00
+[0002078e]                           dc.b $00
+[0002078f]                           dc.b $00
+[00020790]                           dc.b $00
+[00020791]                           dc.b $00
 _spaces:
-[0000b8a0] 00020792                           dc.b $00
-[0000b8a1] 00020793                           dc.b $00
-[0000b8a2] 00020794                           dc.b $00
-[0000b8a3] 00020795                           dc.b $00
-[0000b8a4] 00020796                           dc.b $00
-[0000b8a5] 00020797                           dc.b $00
-[0000b8a6] 00020798                           dc.b $00
-[0000b8a7] 00020799                           dc.b $00
-[0000b8a8] 0002079a                           dc.b $00
-[0000b8a9] 0002079b                           dc.b $00
-[0000b8aa] 0002079c                           dc.b $00
-[0000b8ab] 0002079d                           dc.b $00
-[0000b8ac] 0002079e                           dc.b $00
-[0000b8ad] 0002079f                           dc.b $00
-[0000b8ae] 000207a0                           dc.b $00
-[0000b8af] 000207a1                           dc.b $00
-[0000b8b0] 000207a2                           dc.b '!TOKEN OVERFLOW',0
-[0000b8c0] 000207b2 00003324                  dc.l $00003324 ; no symbol found
-[0000b8c4] 000207b6                           dc.b $00
-[0000b8c5] 000207b7                           dc.b $00
-[0000b8c6] 000207b8                           dc.b $00
-[0000b8c7] 000207b9                           dc.b $66
-[0000b8c8] 000207ba 00003320                  dc.l $00003320 ; no symbol found
-[0000b8cc] 000207be                           dc.b $00
-[0000b8cd] 000207bf                           dc.b $00
-[0000b8ce] 000207c0                           dc.b $00
-[0000b8cf] 000207c1                           dc.b $64
-[0000b8d0] 000207c2 0000331c                  dc.l $0000331c ; no symbol found
-[0000b8d4] 000207c6                           dc.b $00
-[0000b8d5] 000207c7                           dc.b $00
-[0000b8d6] 000207c8                           dc.b $00
-[0000b8d7] 000207c9                           dc.b $70
-[0000b8d8] 000207ca 00003300                  dc.l $00003300 ; no symbol found
-[0000b8dc] 000207ce                           dc.b $00
-[0000b8dd] 000207cf                           dc.b $00
-[0000b8de] 000207d0                           dc.b $00
-[0000b8df] 000207d1                           dc.b $73
-[0000b8e0] 000207d2                           dc.b $00
-[0000b8e1] 000207d3                           dc.b $00
-[0000b8e2] 000207d4                           dc.b $00
-[0000b8e3] 000207d5                           dc.b $00
-[0000b8e4] 000207d6 00003302                  dc.l $00003302 ; no symbol found
-[0000b8e8] 000207da                           dc.b $00
-[0000b8e9] 000207db                           dc.b $00
-[0000b8ea] 000207dc                           dc.b $00
-[0000b8eb] 000207dd                           dc.b $00
-[0000b8ec] 000207de                           dc.b $00
-[0000b8ed] 000207df                           dc.b $00
-[0000b8ee] 000207e0                           dc.b $00
-[0000b8ef] 000207e1                           dc.b $00
-[0000b8f0] 000207e2                           dc.b $00
-[0000b8f1] 000207e3                           dc.b $00
-[0000b8f2] 000207e4                           dc.b $00
-[0000b8f3] 000207e5                           dc.b $00
-[0000b8f4] 000207e6                           dc.b $00
-[0000b8f5] 000207e7                           dc.b $00
-[0000b8f6] 000207e8                           dc.b $00
-[0000b8f7] 000207e9                           dc.b $00
-[0000b8f8] 000207ea                           dc.b $00
-[0000b8f9] 000207eb                           dc.b $00
-[0000b8fa] 000207ec                           dc.b $00
-[0000b8fb] 000207ed                           dc.b $00
-[0000b8fc] 000207ee                           dc.b $00
-[0000b8fd] 000207ef                           dc.b $00
-[0000b8fe] 000207f0                           dc.b $00
-[0000b8ff] 000207f1                           dc.b $00
-[0000b900] 000207f2                           dc.b $00
-[0000b901] 000207f3                           dc.b $00
-[0000b902] 000207f4                           dc.b $00
-[0000b903] 000207f5                           dc.b $00
-[0000b904] 000207f6                           dc.b $00
-[0000b905] 000207f7                           dc.b $00
-[0000b906] 000207f8                           dc.b $00
-[0000b907] 000207f9                           dc.b $00
-[0000b908] 000207fa                           dc.b $00
-[0000b909] 000207fb                           dc.b $00
-[0000b90a] 000207fc                           dc.b $00
-[0000b90b] 000207fd                           dc.b $00
-[0000b90c] 000207fe                           dc.b $00
-[0000b90d] 000207ff                           dc.b $00
-[0000b90e] 00020800                           dc.b $00
-[0000b90f] 00020801                           dc.b $00
-[0000b910] 00020802                           dc.b $00
-[0000b911] 00020803                           dc.b $00
-[0000b912] 00020804                           dc.b $00
-[0000b913] 00020805                           dc.b $00
-[0000b914] 00020806                           dc.b $00
-[0000b915] 00020807                           dc.b $00
-[0000b916] 00020808                           dc.b $00
-[0000b917] 00020809                           dc.b $00
-[0000b918] 0002080a                           dc.b $00
-[0000b919] 0002080b                           dc.b $00
-[0000b91a] 0002080c                           dc.b $00
-[0000b91b] 0002080d                           dc.b $00
-[0000b91c] 0002080e                           dc.b $00
-[0000b91d] 0002080f                           dc.b $00
-[0000b91e] 00020810                           dc.b $00
-[0000b91f] 00020811                           dc.b $00
-[0000b920] 00020812                           dc.b $00
-[0000b921] 00020813                           dc.b $00
-[0000b922] 00020814                           dc.b $00
-[0000b923] 00020815                           dc.b $00
-[0000b924] 00020816                           dc.b $00
-[0000b925] 00020817                           dc.b $00
-[0000b926] 00020818                           dc.b $00
-[0000b927] 00020819                           dc.b $00
-[0000b928] 0002081a                           dc.b $00
-[0000b929] 0002081b                           dc.b $00
-[0000b92a] 0002081c                           dc.b $00
-[0000b92b] 0002081d                           dc.b $00
-[0000b92c] 0002081e                           dc.b $00
-[0000b92d] 0002081f                           dc.b $00
-[0000b92e] 00020820                           dc.b $00
-[0000b92f] 00020821                           dc.b $00
-[0000b930] 00020822                           dc.b $00
-[0000b931] 00020823                           dc.b $00
-[0000b932] 00020824                           dc.b $00
-[0000b933] 00020825                           dc.b $00
-[0000b934] 00020826                           dc.b $00
-[0000b935] 00020827                           dc.b $00
-[0000b936] 00020828                           dc.b $00
-[0000b937] 00020829                           dc.b $00
-[0000b938] 0002082a                           dc.b $00
-[0000b939] 0002082b                           dc.b $00
-[0000b93a] 0002082c                           dc.b $00
-[0000b93b] 0002082d                           dc.b $00
-[0000b93c] 0002082e                           dc.b $00
-[0000b93d] 0002082f                           dc.b $00
-[0000b93e] 00020830                           dc.b $00
-[0000b93f] 00020831                           dc.b $00
-[0000b940] 00020832                           dc.b $00
-[0000b941] 00020833                           dc.b $00
-[0000b942] 00020834                           dc.b $00
-[0000b943] 00020835                           dc.b $00
-[0000b944] 00020836                           dc.b $00
-[0000b945] 00020837                           dc.b $00
-[0000b946] 00020838                           dc.b $00
-[0000b947] 00020839                           dc.b $00
-[0000b948] 0002083a                           dc.b $00
-[0000b949] 0002083b                           dc.b $00
-[0000b94a] 0002083c                           dc.b $00
-[0000b94b] 0002083d                           dc.b $00
-[0000b94c] 0002083e                           dc.b $00
-[0000b94d] 0002083f                           dc.b $00
-[0000b94e] 00020840                           dc.b $00
-[0000b94f] 00020841                           dc.b $00
-[0000b950] 00020842                           dc.b $00
-[0000b951] 00020843                           dc.b $00
-[0000b952] 00020844                           dc.b $00
-[0000b953] 00020845                           dc.b $00
-[0000b954] 00020846                           dc.b $00
-[0000b955] 00020847                           dc.b $00
-[0000b956] 00020848                           dc.b $00
-[0000b957] 00020849                           dc.b $00
-[0000b958] 0002084a                           dc.b $00
-[0000b959] 0002084b                           dc.b $00
-[0000b95a] 0002084c                           dc.b $00
-[0000b95b] 0002084d                           dc.b $00
-[0000b95c] 0002084e                           dc.b $00
-[0000b95d] 0002084f                           dc.b $00
-[0000b95e] 00020850                           dc.b $00
-[0000b95f] 00020851                           dc.b $00
-[0000b960] 00020852                           dc.b $00
-[0000b961] 00020853                           dc.b $00
-[0000b962] 00020854                           dc.b $00
-[0000b963] 00020855                           dc.b $00
-[0000b964] 00020856                           dc.b $00
-[0000b965] 00020857                           dc.b $00
-[0000b966] 00020858                           dc.b $00
-[0000b967] 00020859                           dc.b $00
-[0000b968] 0002085a                           dc.b $00
-[0000b969] 0002085b                           dc.b $00
-[0000b96a] 0002085c                           dc.b $00
-[0000b96b] 0002085d                           dc.b $00
-[0000b96c] 0002085e                           dc.b $00
-[0000b96d] 0002085f                           dc.b $00
-[0000b96e] 00020860                           dc.b $00
-[0000b96f] 00020861                           dc.b $00
-[0000b970] 00020862                           dc.b $00
-[0000b971] 00020863                           dc.b $00
-[0000b972] 00020864                           dc.b $00
-[0000b973] 00020865                           dc.b $00
-[0000b974] 00020866                           dc.b $00
-[0000b975] 00020867                           dc.b $00
-[0000b976] 00020868                           dc.b $00
-[0000b977] 00020869                           dc.b $00
-[0000b978] 0002086a                           dc.b $00
-[0000b979] 0002086b                           dc.b $00
-[0000b97a] 0002086c                           dc.b $00
-[0000b97b] 0002086d                           dc.b $00
-[0000b97c] 0002086e                           dc.b $00
-[0000b97d] 0002086f                           dc.b $00
-[0000b97e] 00020870                           dc.b $00
-[0000b97f] 00020871                           dc.b $00
-[0000b980] 00020872                           dc.b $00
-[0000b981] 00020873                           dc.b $00
-[0000b982] 00020874                           dc.b $00
-[0000b983] 00020875                           dc.b $00
-[0000b984] 00020876                           dc.b $00
-[0000b985] 00020877                           dc.b $00
-[0000b986] 00020878                           dc.b $00
-[0000b987] 00020879                           dc.b $00
-[0000b988] 0002087a                           dc.b $00
-[0000b989] 0002087b                           dc.b $00
-[0000b98a] 0002087c                           dc.b $00
-[0000b98b] 0002087d                           dc.b $00
-[0000b98c] 0002087e                           dc.b $00
-[0000b98d] 0002087f                           dc.b $00
-[0000b98e] 00020880                           dc.b $00
-[0000b98f] 00020881                           dc.b $00
-[0000b990] 00020882                           dc.b $00
-[0000b991] 00020883                           dc.b $00
-[0000b992] 00020884                           dc.b $00
-[0000b993] 00020885                           dc.b $00
-[0000b994] 00020886                           dc.b $00
-[0000b995] 00020887                           dc.b $00
-[0000b996] 00020888                           dc.b $00
-[0000b997] 00020889                           dc.b $00
-[0000b998] 0002088a                           dc.b $00
-[0000b999] 0002088b                           dc.b $00
-[0000b99a] 0002088c                           dc.b $00
-[0000b99b] 0002088d                           dc.b $00
-[0000b99c] 0002088e                           dc.b $00
-[0000b99d] 0002088f                           dc.b $00
-[0000b99e] 00020890                           dc.b $00
-[0000b99f] 00020891                           dc.b $00
-[0000b9a0] 00020892                           dc.b $00
-[0000b9a1] 00020893                           dc.b $00
-[0000b9a2] 00020894                           dc.b $00
-[0000b9a3] 00020895                           dc.b $00
-[0000b9a4] 00020896                           dc.b $00
-[0000b9a5] 00020897                           dc.b $00
-[0000b9a6] 00020898                           dc.b $00
-[0000b9a7] 00020899                           dc.b $00
-[0000b9a8] 0002089a                           dc.b $00
-[0000b9a9] 0002089b                           dc.b $00
-[0000b9aa] 0002089c                           dc.b $00
-[0000b9ab] 0002089d                           dc.b $00
-[0000b9ac] 0002089e                           dc.b $00
-[0000b9ad] 0002089f                           dc.b $00
-[0000b9ae] 000208a0                           dc.b $00
-[0000b9af] 000208a1                           dc.b $00
-[0000b9b0] 000208a2                           dc.b $00
-[0000b9b1] 000208a3                           dc.b $00
-[0000b9b2] 000208a4                           dc.b $00
-[0000b9b3] 000208a5                           dc.b $00
-[0000b9b4] 000208a6                           dc.b $00
-[0000b9b5] 000208a7                           dc.b $00
-[0000b9b6] 000208a8                           dc.b $00
-[0000b9b7] 000208a9                           dc.b $00
-[0000b9b8] 000208aa                           dc.b $00
-[0000b9b9] 000208ab                           dc.b $00
-[0000b9ba] 000208ac                           dc.b $00
-[0000b9bb] 000208ad                           dc.b $00
-[0000b9bc] 000208ae                           dc.b $00
-[0000b9bd] 000208af                           dc.b $00
-[0000b9be] 000208b0                           dc.b $00
-[0000b9bf] 000208b1                           dc.b $00
-[0000b9c0] 000208b2                           dc.b $00
-[0000b9c1] 000208b3                           dc.b $00
-[0000b9c2] 000208b4                           dc.b $00
-[0000b9c3] 000208b5                           dc.b $00
-[0000b9c4] 000208b6                           dc.b $00
-[0000b9c5] 000208b7                           dc.b $00
-[0000b9c6] 000208b8                           dc.b $00
-[0000b9c7] 000208b9                           dc.b $00
-[0000b9c8] 000208ba                           dc.b $00
-[0000b9c9] 000208bb                           dc.b $00
-[0000b9ca] 000208bc                           dc.b $00
-[0000b9cb] 000208bd                           dc.b $00
-[0000b9cc] 000208be                           dc.b $00
-[0000b9cd] 000208bf                           dc.b $00
-[0000b9ce] 000208c0                           dc.b $00
-[0000b9cf] 000208c1                           dc.b $00
-[0000b9d0] 000208c2                           dc.b $00
-[0000b9d1] 000208c3                           dc.b $00
-[0000b9d2] 000208c4                           dc.b $00
-[0000b9d3] 000208c5                           dc.b $00
-[0000b9d4] 000208c6                           dc.b $00
-[0000b9d5] 000208c7                           dc.b $00
-[0000b9d6] 000208c8                           dc.b $00
-[0000b9d7] 000208c9                           dc.b $00
-[0000b9d8] 000208ca                           dc.b $00
-[0000b9d9] 000208cb                           dc.b $00
-[0000b9da] 000208cc                           dc.b $00
-[0000b9db] 000208cd                           dc.b $00
-[0000b9dc] 000208ce                           dc.b $00
-[0000b9dd] 000208cf                           dc.b $00
-[0000b9de] 000208d0                           dc.b $00
-[0000b9df] 000208d1                           dc.b $00
-[0000b9e0] 000208d2                           dc.b $00
-[0000b9e1] 000208d3                           dc.b $00
-[0000b9e2] 000208d4                           dc.b $00
-[0000b9e3] 000208d5                           dc.b $00
-[0000b9e4] 000208d6                           dc.b $00
-[0000b9e5] 000208d7                           dc.b $00
-[0000b9e6] 000208d8                           dc.b $00
-[0000b9e7] 000208d9                           dc.b $00
-[0000b9e8] 000208da                           dc.b $00
-[0000b9e9] 000208db                           dc.b $00
-[0000b9ea] 000208dc                           dc.b $00
-[0000b9eb] 000208dd                           dc.b $00
-[0000b9ec] 000208de                           dc.b $00
-[0000b9ed] 000208df                           dc.b $00
-[0000b9ee] 000208e0                           dc.b 'too many spaces',0
-[0000b9fe] 000208f0                           dc.w $0366
-[0000ba00] 000208f2                           dc.w $6172
-[0000ba02] 000208f4                           dc.b $00
-[0000ba03] 000208f5                           dc.b $00
-[0000ba04] 000208f6                           dc.w $2a34
-[0000ba06] 000208f8                           dc.w $21e2
-[0000ba08] 000208fa                           dc.b $00
-[0000ba09] 000208fb                           dc.b 'unknown #pragma',0
-[0000ba19] 0002090b                           dc.b 'bad #pragma space',0
-[0000ba2b] 0002091d                           dc.b $05
-[0000ba2c] 0002091e                           dc.b 'space',0
-[0000ba32] 00020924                           dc.b 'bad #pragma debug',0
-[0000ba44] 00020936                           dc.w $026f
-[0000ba46] 00020938                           dc.w $6e00
-[0000ba48] 0002093a                           dc.w $036f
-[0000ba4a] 0002093c                           dc.w $6666
-[0000ba4c] 0002093e                           dc.b $00
-[0000ba4d] 0002093f                           dc.b $05
-[0000ba4e] 00020940                           dc.b 'debug',0
-[0000ba54] 00020946                           dc.b $00
-[0000ba55] 00020947                           dc.b $00
-[0000ba56] 00020948                           dc.b $00
-[0000ba57] 00020949                           dc.b $00
-[0000ba58] 0002094a 00003a70                  dc.l $00003a70 ; no symbol found
-[0000ba5c] 0002094e                           dc.b $00
-[0000ba5d] 0002094f                           dc.b $00
-[0000ba5e] 00020950                           dc.b $00
-[0000ba5f] 00020951                           dc.b $1d
-[0000ba60] 00020952 000039ba                  dc.l $000039ba ; no symbol found
-[0000ba64] 00020956                           dc.b $00
-[0000ba65] 00020957                           dc.b $00
-[0000ba66] 00020958                           dc.b $00
-[0000ba67] 00020959                           dc.b $13
-[0000ba68] 0002095a 00003968                  dc.l $00003968 ; no symbol found
-[0000ba6c] 0002095e                           dc.b $00
-[0000ba6d] 0002095f                           dc.b $00
-[0000ba6e] 00020960                           dc.b $00
-[0000ba6f] 00020961                           dc.b $14
-[0000ba70] 00020962 000038de                  dc.l $000038de ; no symbol found
-[0000ba74] 00020966                           dc.b $00
-[0000ba75] 00020967                           dc.b $00
-[0000ba76] 00020968                           dc.b $00
-[0000ba77] 00020969                           dc.b $fe
-[0000ba78] 0002096a                           dc.b $00
-[0000ba79] 0002096b                           dc.b $00
-[0000ba7a] 0002096c                           dc.b $00
-[0000ba7b] 0002096d                           dc.b $00
-[0000ba7c] 0002096e 00003a90                  dc.l $00003a90 ; no symbol found
-[0000ba80] 00020972 00003b3a                  dc.l $00003b3a ; no symbol found
-[0000ba84] 00020976                           dc.b $00
-[0000ba85] 00020977                           dc.b $00
-[0000ba86] 00020978                           dc.b $00
-[0000ba87] 00020979                           dc.b $17
-[0000ba88] 0002097a 00003b26                  dc.l $00003b26 ; no symbol found
-[0000ba8c] 0002097e                           dc.b $00
-[0000ba8d] 0002097f                           dc.b $00
-[0000ba8e] 00020980                           dc.b $00
-[0000ba8f] 00020981                           dc.b $19
-[0000ba90] 00020982 00003b26                  dc.l $00003b26 ; no symbol found
-[0000ba94] 00020986                           dc.b $00
-[0000ba95] 00020987                           dc.b $00
-[0000ba96] 00020988                           dc.b $00
-[0000ba97] 00020989                           dc.b $15
-[0000ba98] 0002098a 00003b26                  dc.l $00003b26 ; no symbol found
-[0000ba9c] 0002098e                           dc.b $00
-[0000ba9d] 0002098f                           dc.b $00
-[0000ba9e] 00020990                           dc.b $00
-[0000ba9f] 00020991                           dc.b $1a
-[0000baa0] 00020992 00003b26                  dc.l $00003b26 ; no symbol found
-[0000baa4] 00020996                           dc.b $00
-[0000baa5] 00020997                           dc.b $00
-[0000baa6] 00020998                           dc.b $00
-[0000baa7] 00020999                           dc.b $16
-[0000baa8] 0002099a 00003b26                  dc.l $00003b26 ; no symbol found
-[0000baac] 0002099e                           dc.b $00
-[0000baad] 0002099f                           dc.b $00
-[0000baae] 000209a0                           dc.b $00
-[0000baaf] 000209a1                           dc.b $1b
-[0000bab0] 000209a2 00003b26                  dc.l $00003b26 ; no symbol found
-[0000bab4] 000209a6                           dc.b $00
-[0000bab5] 000209a7                           dc.b $00
-[0000bab6] 000209a8                           dc.b $00
-[0000bab7] 000209a9                           dc.b $18
-[0000bab8] 000209aa 00003ae4                  dc.l $00003ae4 ; no symbol found
-[0000babc] 000209ae                           dc.b $00
-[0000babd] 000209af                           dc.b $00
-[0000babe] 000209b0                           dc.b $00
-[0000babf] 000209b1                           dc.b $12
-[0000bac0] 000209b2 00003ac8                  dc.l $00003ac8 ; no symbol found
-[0000bac4] 000209b6                           dc.b $00
-[0000bac5] 000209b7                           dc.b $00
-[0000bac6] 000209b8                           dc.b $00
-[0000bac7] 000209b9                           dc.b $11
-[0000bac8] 000209ba 00003ac8                  dc.l $00003ac8 ; no symbol found
-[0000bacc] 000209be                           dc.b $00
-[0000bacd] 000209bf                           dc.b $00
-[0000bace] 000209c0                           dc.b $00
-[0000bacf] 000209c1                           dc.b $10
-[0000bad0] 000209c2 00003ac8                  dc.l $00003ac8 ; no symbol found
-[0000bad4] 000209c6                           dc.b $00
-[0000bad5] 000209c7                           dc.b $00
-[0000bad6] 000209c8                           dc.b $00
-[0000bad7] 000209c9                           dc.b $1e
-[0000bad8] 000209ca                           dc.b $00
-[0000bad9] 000209cb                           dc.b $00
-[0000bada] 000209cc                           dc.b $00
-[0000badb] 000209cd                           dc.b $00
-[0000badc] 000209ce 00003b96                  dc.l $00003b96 ; no symbol found
-[0000bae0] 000209d2                           dc.b '!BAD CHAR',0
-[0000baea] 000209dc                           dc.w $060a
-[0000baec] 000209de                           dc.w $0b01
-[0000baee] 000209e0                           dc.w $0509
-[0000baf0] 000209e2                           dc.w $3a08
-[0000baf2] 000209e4                           dc.b $00
-[0000baf3] 000209e5                           dc.b $00
-[0000baf4] 000209e6 00020a30                  dc.l $00020a30 ; no symbol found
-[0000baf8] 000209ea 00020a2c                  dc.l $00020a2c ; no symbol found
-[0000bafc] 000209ee 00020a28                  dc.l $00020a28 ; no symbol found
-[0000bb00] 000209f2 00020a24                  dc.l $00020a24 ; no symbol found
-[0000bb04] 000209f6 00020a20                  dc.l $00020a20 ; no symbol found
-[0000bb08] 000209fa 00020a1c                  dc.l $00020a1c ; no symbol found
-[0000bb0c] 000209fe 00020a14                  dc.l $00020a14 ; no symbol found
-[0000bb10] 00020a02 00020a10                  dc.l $00020a10 ; no symbol found
-[0000bb14] 00020a06 00020a0a                  dc.l $00020a0a ; no symbol found
-[0000bb18] 00020a0a                           dc.w $033f
-[0000bb1a] 00020a0c                           dc.w $3f3f
-[0000bb1c] 00020a0e                           dc.b $00
-[0000bb1d] 00020a0f                           dc.b $00
-[0000bb1e] 00020a10                           dc.w $015d
-[0000bb20] 00020a12                           dc.b $00
-[0000bb21] 00020a13                           dc.b $00
-[0000bb22] 00020a14                           dc.w $0577
-[0000bb24] 00020a16                           dc.b 'hile',0
-[0000bb29] 00020a1b                           dc.b $00
-[0000bb2a] 00020a1c                           dc.w $017d
-[0000bb2c] 00020a1e                           dc.b $00
-[0000bb2d] 00020a1f                           dc.b $00
-[0000bb2e] 00020a20                           dc.w $017d
-[0000bb30] 00020a22                           dc.b $00
-[0000bb31] 00020a23                           dc.b $00
-[0000bb32] 00020a24                           dc.w $013a
-[0000bb34] 00020a26                           dc.b $00
-[0000bb35] 00020a27                           dc.b $00
-[0000bb36] 00020a28                           dc.w $013b
-[0000bb38] 00020a2a                           dc.b $00
-[0000bb39] 00020a2b                           dc.b $00
-[0000bb3a] 00020a2c                           dc.w $0129
-[0000bb3c] 00020a2e                           dc.b $00
-[0000bb3d] 00020a2f                           dc.b $00
-[0000bb3e] 00020a30                           dc.w $0128
-[0000bb40] 00020a32                           dc.b $00
-[0000bb41] 00020a33                           dc.b $00
-[0000bb42] 00020a34                           dc.b 'missing',0
-[0000bb4a] 00020a3c                           dc.b '!EOF',0
-[0000bb4f] 00020a41                           dc.b $00
-[0000bb50] 00020a42                           dc.w $0a00
-[0000bb52] 00020a44                           dc.w $2000
-[0000bb54] 00020a46                           dc.w $0900
-[0000bb56] 00020a48                           dc.w $3a00
-[0000bb58] 00020a4a                           dc.w $2000
-[0000bb5a] 00020a4c                           dc.b '#error ',0
-[0000bb62] 00020a54                           dc.b $00
-[0000bb63] 00020a55                           dc.b $00
-[0000bb64] 00020a56                           dc.b $00
-[0000bb65] 00020a57                           dc.b $00
-[0000bb66] 00020a58                           dc.b $00
-[0000bb67] 00020a59                           dc.b $00
-[0000bb68] 00020a5a                           dc.b $00
-[0000bb69] 00020a5b                           dc.b $00
-[0000bb6a] 00020a5c                           dc.b $00
-[0000bb6b] 00020a5d                           dc.b $00
-[0000bb6c] 00020a5e                           dc.b $00
-[0000bb6d] 00020a5f                           dc.b $00
-[0000bb6e] 00020a60                           dc.b $00
-[0000bb6f] 00020a61                           dc.b $00
-[0000bb70] 00020a62                           dc.b $00
-[0000bb71] 00020a63                           dc.b $00
-[0000bb72] 00020a64                           dc.b $00
-[0000bb73] 00020a65                           dc.b $00
-[0000bb74] 00020a66                           dc.b $00
-[0000bb75] 00020a67                           dc.b $00
-[0000bb76] 00020a68                           dc.b $00
-[0000bb77] 00020a69                           dc.b $00
-[0000bb78] 00020a6a                           dc.b $00
-[0000bb79] 00020a6b                           dc.b $00
-[0000bb7a] 00020a6c                           dc.b $00
-[0000bb7b] 00020a6d                           dc.b $00
-[0000bb7c] 00020a6e                           dc.b $00
-[0000bb7d] 00020a6f                           dc.b $00
-[0000bb7e] 00020a70                           dc.b $00
-[0000bb7f] 00020a71                           dc.b $00
-[0000bb80] 00020a72                           dc.b $00
-[0000bb81] 00020a73                           dc.b $00
-[0000bb82] 00020a74                           dc.b $00
-[0000bb83] 00020a75                           dc.b $00
-[0000bb84] 00020a76                           dc.b $00
-[0000bb85] 00020a77                           dc.b $00
-[0000bb86] 00020a78                           dc.b $00
-[0000bb87] 00020a79                           dc.b $00
-[0000bb88] 00020a7a                           dc.b $00
-[0000bb89] 00020a7b                           dc.b $00
-[0000bb8a] 00020a7c                           dc.b $00
-[0000bb8b] 00020a7d                           dc.b $00
-[0000bb8c] 00020a7e                           dc.b $00
-[0000bb8d] 00020a7f                           dc.b $00
-[0000bb8e] 00020a80                           dc.b $00
-[0000bb8f] 00020a81                           dc.b $00
-[0000bb90] 00020a82                           dc.b $00
-[0000bb91] 00020a83                           dc.b $00
-[0000bb92] 00020a84                           dc.b $00
-[0000bb93] 00020a85                           dc.b $00
-[0000bb94] 00020a86                           dc.b $00
-[0000bb95] 00020a87                           dc.b $00
-[0000bb96] 00020a88                           dc.b $00
-[0000bb97] 00020a89                           dc.b $00
-[0000bb98] 00020a8a                           dc.b $00
-[0000bb99] 00020a8b                           dc.b $00
-[0000bb9a] 00020a8c                           dc.b $00
-[0000bb9b] 00020a8d                           dc.b $00
-[0000bb9c] 00020a8e                           dc.b $00
-[0000bb9d] 00020a8f                           dc.b $00
-[0000bb9e] 00020a90                           dc.b $00
-[0000bb9f] 00020a91                           dc.b $00
-[0000bba0] 00020a92                           dc.b $00
-[0000bba1] 00020a93                           dc.b $00
-[0000bba2] 00020a94                           dc.b $00
-[0000bba3] 00020a95                           dc.b $00
-[0000bba4] 00020a96                           dc.b $00
-[0000bba5] 00020a97                           dc.b $00
-[0000bba6] 00020a98                           dc.b $00
-[0000bba7] 00020a99                           dc.b $00
-[0000bba8] 00020a9a                           dc.b $00
-[0000bba9] 00020a9b                           dc.b $00
-[0000bbaa] 00020a9c                           dc.b $00
-[0000bbab] 00020a9d                           dc.b $00
-[0000bbac] 00020a9e                           dc.b $00
-[0000bbad] 00020a9f                           dc.b $00
-[0000bbae] 00020aa0                           dc.b $00
-[0000bbaf] 00020aa1                           dc.b $00
-[0000bbb0] 00020aa2                           dc.b $00
-[0000bbb1] 00020aa3                           dc.b $00
-[0000bbb2] 00020aa4                           dc.b $00
-[0000bbb3] 00020aa5                           dc.b $00
-[0000bbb4] 00020aa6                           dc.b $00
-[0000bbb5] 00020aa7                           dc.b $00
-[0000bbb6] 00020aa8                           dc.b $00
-[0000bbb7] 00020aa9                           dc.b $00
-[0000bbb8] 00020aaa                           dc.b $00
-[0000bbb9] 00020aab                           dc.b $00
-[0000bbba] 00020aac                           dc.b $00
-[0000bbbb] 00020aad                           dc.b $00
-[0000bbbc] 00020aae                           dc.b $00
-[0000bbbd] 00020aaf                           dc.b $00
-[0000bbbe] 00020ab0                           dc.b $00
-[0000bbbf] 00020ab1                           dc.b $00
-[0000bbc0] 00020ab2                           dc.b $00
-[0000bbc1] 00020ab3                           dc.b $00
-[0000bbc2] 00020ab4                           dc.b $00
-[0000bbc3] 00020ab5                           dc.b $00
-[0000bbc4] 00020ab6                           dc.b $00
-[0000bbc5] 00020ab7                           dc.b $00
-[0000bbc6] 00020ab8                           dc.b $00
-[0000bbc7] 00020ab9                           dc.b $00
-[0000bbc8] 00020aba                           dc.b $00
-[0000bbc9] 00020abb                           dc.b $00
-[0000bbca] 00020abc                           dc.b $00
-[0000bbcb] 00020abd                           dc.b $00
-[0000bbcc] 00020abe                           dc.b $00
-[0000bbcd] 00020abf                           dc.b $00
-[0000bbce] 00020ac0                           dc.b $00
-[0000bbcf] 00020ac1                           dc.b $00
-[0000bbd0] 00020ac2                           dc.b $00
-[0000bbd1] 00020ac3                           dc.b $00
-[0000bbd2] 00020ac4                           dc.b $00
-[0000bbd3] 00020ac5                           dc.b $00
-[0000bbd4] 00020ac6                           dc.b $00
-[0000bbd5] 00020ac7                           dc.b $00
-[0000bbd6] 00020ac8                           dc.b $00
-[0000bbd7] 00020ac9                           dc.b $00
-[0000bbd8] 00020aca                           dc.b $00
-[0000bbd9] 00020acb                           dc.b $00
-[0000bbda] 00020acc                           dc.b $00
-[0000bbdb] 00020acd                           dc.b $00
-[0000bbdc] 00020ace                           dc.b $00
-[0000bbdd] 00020acf                           dc.b $00
-[0000bbde] 00020ad0                           dc.b $00
-[0000bbdf] 00020ad1                           dc.b $00
-[0000bbe0] 00020ad2                           dc.b $00
-[0000bbe1] 00020ad3                           dc.b $00
-[0000bbe2] 00020ad4                           dc.b $00
-[0000bbe3] 00020ad5                           dc.b $00
-[0000bbe4] 00020ad6                           dc.b $00
-[0000bbe5] 00020ad7                           dc.b $00
-[0000bbe6] 00020ad8                           dc.b $00
-[0000bbe7] 00020ad9                           dc.b $00
-[0000bbe8] 00020ada                           dc.b $00
-[0000bbe9] 00020adb                           dc.b $00
-[0000bbea] 00020adc                           dc.b $00
-[0000bbeb] 00020add                           dc.b $00
-[0000bbec] 00020ade                           dc.b $00
-[0000bbed] 00020adf                           dc.b $00
-[0000bbee] 00020ae0                           dc.b $00
-[0000bbef] 00020ae1                           dc.b $00
-[0000bbf0] 00020ae2                           dc.b $00
-[0000bbf1] 00020ae3                           dc.b $00
-[0000bbf2] 00020ae4                           dc.b $00
-[0000bbf3] 00020ae5                           dc.b $00
-[0000bbf4] 00020ae6                           dc.b $00
-[0000bbf5] 00020ae7                           dc.b $00
-[0000bbf6] 00020ae8                           dc.b $00
-[0000bbf7] 00020ae9                           dc.b $00
-[0000bbf8] 00020aea                           dc.b $00
-[0000bbf9] 00020aeb                           dc.b $00
-[0000bbfa] 00020aec                           dc.b $00
-[0000bbfb] 00020aed                           dc.b $00
-[0000bbfc] 00020aee                           dc.b $00
-[0000bbfd] 00020aef                           dc.b $00
-[0000bbfe] 00020af0                           dc.b $00
-[0000bbff] 00020af1                           dc.b $00
-[0000bc00] 00020af2                           dc.b $00
-[0000bc01] 00020af3                           dc.b $00
-[0000bc02] 00020af4                           dc.b $00
-[0000bc03] 00020af5                           dc.b $00
-[0000bc04] 00020af6                           dc.b $00
-[0000bc05] 00020af7                           dc.b $00
-[0000bc06] 00020af8                           dc.b $00
-[0000bc07] 00020af9                           dc.b $00
-[0000bc08] 00020afa                           dc.b $00
-[0000bc09] 00020afb                           dc.b $00
-[0000bc0a] 00020afc                           dc.b $00
-[0000bc0b] 00020afd                           dc.b $00
-[0000bc0c] 00020afe                           dc.b $00
-[0000bc0d] 00020aff                           dc.b $00
-[0000bc0e] 00020b00                           dc.b $00
-[0000bc0f] 00020b01                           dc.b $00
-[0000bc10] 00020b02                           dc.b $00
-[0000bc11] 00020b03                           dc.b $00
-[0000bc12] 00020b04                           dc.b $00
-[0000bc13] 00020b05                           dc.b $00
-[0000bc14] 00020b06                           dc.b $00
-[0000bc15] 00020b07                           dc.b $00
-[0000bc16] 00020b08                           dc.b $00
-[0000bc17] 00020b09                           dc.b $00
-[0000bc18] 00020b0a                           dc.b $00
-[0000bc19] 00020b0b                           dc.b $00
-[0000bc1a] 00020b0c                           dc.b $00
-[0000bc1b] 00020b0d                           dc.b $00
-[0000bc1c] 00020b0e                           dc.b $00
-[0000bc1d] 00020b0f                           dc.b $00
-[0000bc1e] 00020b10                           dc.b $00
-[0000bc1f] 00020b11                           dc.b $00
-[0000bc20] 00020b12                           dc.b $00
-[0000bc21] 00020b13                           dc.b $00
-[0000bc22] 00020b14                           dc.b $00
-[0000bc23] 00020b15                           dc.b $00
-[0000bc24] 00020b16                           dc.b $00
-[0000bc25] 00020b17                           dc.b $00
-[0000bc26] 00020b18                           dc.b $00
-[0000bc27] 00020b19                           dc.b $00
-[0000bc28] 00020b1a                           dc.b $00
-[0000bc29] 00020b1b                           dc.b $00
-[0000bc2a] 00020b1c                           dc.b $00
-[0000bc2b] 00020b1d                           dc.b $00
-[0000bc2c] 00020b1e                           dc.b $00
-[0000bc2d] 00020b1f                           dc.b $00
-[0000bc2e] 00020b20                           dc.b $00
-[0000bc2f] 00020b21                           dc.b $00
-[0000bc30] 00020b22                           dc.b $00
-[0000bc31] 00020b23                           dc.b $00
-[0000bc32] 00020b24                           dc.b $00
-[0000bc33] 00020b25                           dc.b $00
-[0000bc34] 00020b26                           dc.b $00
-[0000bc35] 00020b27                           dc.b $00
-[0000bc36] 00020b28                           dc.b $00
-[0000bc37] 00020b29                           dc.b $00
-[0000bc38] 00020b2a                           dc.b $00
-[0000bc39] 00020b2b                           dc.b $00
-[0000bc3a] 00020b2c                           dc.b $00
-[0000bc3b] 00020b2d                           dc.b $00
-[0000bc3c] 00020b2e                           dc.b $00
-[0000bc3d] 00020b2f                           dc.b $00
-[0000bc3e] 00020b30                           dc.b $00
-[0000bc3f] 00020b31                           dc.b $00
-[0000bc40] 00020b32                           dc.b $00
-[0000bc41] 00020b33                           dc.b $00
-[0000bc42] 00020b34                           dc.b $00
-[0000bc43] 00020b35                           dc.b $00
-[0000bc44] 00020b36                           dc.b $00
-[0000bc45] 00020b37                           dc.b $00
-[0000bc46] 00020b38                           dc.b $00
-[0000bc47] 00020b39                           dc.b $00
-[0000bc48] 00020b3a                           dc.b $00
-[0000bc49] 00020b3b                           dc.b $00
-[0000bc4a] 00020b3c                           dc.b $00
-[0000bc4b] 00020b3d                           dc.b $00
-[0000bc4c] 00020b3e                           dc.b $00
-[0000bc4d] 00020b3f                           dc.b $00
-[0000bc4e] 00020b40                           dc.b $00
-[0000bc4f] 00020b41                           dc.b $00
-[0000bc50] 00020b42                           dc.b $00
-[0000bc51] 00020b43                           dc.b $00
-[0000bc52] 00020b44                           dc.b $00
-[0000bc53] 00020b45                           dc.b $00
-[0000bc54] 00020b46                           dc.b $00
-[0000bc55] 00020b47                           dc.b $00
-[0000bc56] 00020b48                           dc.b $00
-[0000bc57] 00020b49                           dc.b $00
-[0000bc58] 00020b4a                           dc.b $00
-[0000bc59] 00020b4b                           dc.b $00
-[0000bc5a] 00020b4c                           dc.b $00
-[0000bc5b] 00020b4d                           dc.b $00
-[0000bc5c] 00020b4e                           dc.b $00
-[0000bc5d] 00020b4f                           dc.b $00
-[0000bc5e] 00020b50                           dc.b $00
-[0000bc5f] 00020b51                           dc.b $00
-[0000bc60] 00020b52                           dc.b $00
-[0000bc61] 00020b53                           dc.b $00
-[0000bc62] 00020b54                           dc.b $00
-[0000bc63] 00020b55                           dc.b $00
-[0000bc64] 00020b56                           dc.b 'can',$27,'t write!',0
-[0000bc71] 00020b63                           dc.b $00
+[00020792]                           dc.b $00
+[00020793]                           dc.b $00
+[00020794]                           dc.b $00
+[00020795]                           dc.b $00
+[00020796]                           dc.b $00
+[00020797]                           dc.b $00
+[00020798]                           dc.b $00
+[00020799]                           dc.b $00
+[0002079a]                           dc.b $00
+[0002079b]                           dc.b $00
+[0002079c]                           dc.b $00
+[0002079d]                           dc.b $00
+[0002079e]                           dc.b $00
+[0002079f]                           dc.b $00
+[000207a0]                           dc.b $00
+[000207a1]                           dc.b $00
+[000207a2]                           dc.b '!TOKEN OVERFLOW',0
+[000207b2] 00003324                  dc.l $00003324 ; no symbol found
+[000207b6]                           dc.b $00
+[000207b7]                           dc.b $00
+[000207b8]                           dc.b $00
+[000207b9]                           dc.b $66
+[000207ba] 00003320                  dc.l $00003320 ; no symbol found
+[000207be]                           dc.b $00
+[000207bf]                           dc.b $00
+[000207c0]                           dc.b $00
+[000207c1]                           dc.b $64
+[000207c2] 0000331c                  dc.l $0000331c ; no symbol found
+[000207c6]                           dc.b $00
+[000207c7]                           dc.b $00
+[000207c8]                           dc.b $00
+[000207c9]                           dc.b $70
+[000207ca] 00003300                  dc.l $00003300 ; no symbol found
+[000207ce]                           dc.b $00
+[000207cf]                           dc.b $00
+[000207d0]                           dc.b $00
+[000207d1]                           dc.b $73
+[000207d2]                           dc.b $00
+[000207d3]                           dc.b $00
+[000207d4]                           dc.b $00
+[000207d5]                           dc.b $00
+[000207d6] 00003302                  dc.l $00003302 ; no symbol found
+[000207da]                           dc.b $00
+[000207db]                           dc.b $00
+[000207dc]                           dc.b $00
+[000207dd]                           dc.b $00
+[000207de]                           dc.b $00
+[000207df]                           dc.b $00
+[000207e0]                           dc.b $00
+[000207e1]                           dc.b $00
+[000207e2]                           dc.b $00
+[000207e3]                           dc.b $00
+[000207e4]                           dc.b $00
+[000207e5]                           dc.b $00
+[000207e6]                           dc.b $00
+[000207e7]                           dc.b $00
+[000207e8]                           dc.b $00
+[000207e9]                           dc.b $00
+[000207ea]                           dc.b $00
+[000207eb]                           dc.b $00
+[000207ec]                           dc.b $00
+[000207ed]                           dc.b $00
+[000207ee]                           dc.b $00
+[000207ef]                           dc.b $00
+[000207f0]                           dc.b $00
+[000207f1]                           dc.b $00
+[000207f2]                           dc.b $00
+[000207f3]                           dc.b $00
+[000207f4]                           dc.b $00
+[000207f5]                           dc.b $00
+[000207f6]                           dc.b $00
+[000207f7]                           dc.b $00
+[000207f8]                           dc.b $00
+[000207f9]                           dc.b $00
+[000207fa]                           dc.b $00
+[000207fb]                           dc.b $00
+[000207fc]                           dc.b $00
+[000207fd]                           dc.b $00
+[000207fe]                           dc.b $00
+[000207ff]                           dc.b $00
+[00020800]                           dc.b $00
+[00020801]                           dc.b $00
+[00020802]                           dc.b $00
+[00020803]                           dc.b $00
+[00020804]                           dc.b $00
+[00020805]                           dc.b $00
+[00020806]                           dc.b $00
+[00020807]                           dc.b $00
+[00020808]                           dc.b $00
+[00020809]                           dc.b $00
+[0002080a]                           dc.b $00
+[0002080b]                           dc.b $00
+[0002080c]                           dc.b $00
+[0002080d]                           dc.b $00
+[0002080e]                           dc.b $00
+[0002080f]                           dc.b $00
+[00020810]                           dc.b $00
+[00020811]                           dc.b $00
+[00020812]                           dc.b $00
+[00020813]                           dc.b $00
+[00020814]                           dc.b $00
+[00020815]                           dc.b $00
+[00020816]                           dc.b $00
+[00020817]                           dc.b $00
+[00020818]                           dc.b $00
+[00020819]                           dc.b $00
+[0002081a]                           dc.b $00
+[0002081b]                           dc.b $00
+[0002081c]                           dc.b $00
+[0002081d]                           dc.b $00
+[0002081e]                           dc.b $00
+[0002081f]                           dc.b $00
+[00020820]                           dc.b $00
+[00020821]                           dc.b $00
+[00020822]                           dc.b $00
+[00020823]                           dc.b $00
+[00020824]                           dc.b $00
+[00020825]                           dc.b $00
+[00020826]                           dc.b $00
+[00020827]                           dc.b $00
+[00020828]                           dc.b $00
+[00020829]                           dc.b $00
+[0002082a]                           dc.b $00
+[0002082b]                           dc.b $00
+[0002082c]                           dc.b $00
+[0002082d]                           dc.b $00
+[0002082e]                           dc.b $00
+[0002082f]                           dc.b $00
+[00020830]                           dc.b $00
+[00020831]                           dc.b $00
+[00020832]                           dc.b $00
+[00020833]                           dc.b $00
+[00020834]                           dc.b $00
+[00020835]                           dc.b $00
+[00020836]                           dc.b $00
+[00020837]                           dc.b $00
+[00020838]                           dc.b $00
+[00020839]                           dc.b $00
+[0002083a]                           dc.b $00
+[0002083b]                           dc.b $00
+[0002083c]                           dc.b $00
+[0002083d]                           dc.b $00
+[0002083e]                           dc.b $00
+[0002083f]                           dc.b $00
+[00020840]                           dc.b $00
+[00020841]                           dc.b $00
+[00020842]                           dc.b $00
+[00020843]                           dc.b $00
+[00020844]                           dc.b $00
+[00020845]                           dc.b $00
+[00020846]                           dc.b $00
+[00020847]                           dc.b $00
+[00020848]                           dc.b $00
+[00020849]                           dc.b $00
+[0002084a]                           dc.b $00
+[0002084b]                           dc.b $00
+[0002084c]                           dc.b $00
+[0002084d]                           dc.b $00
+[0002084e]                           dc.b $00
+[0002084f]                           dc.b $00
+[00020850]                           dc.b $00
+[00020851]                           dc.b $00
+[00020852]                           dc.b $00
+[00020853]                           dc.b $00
+[00020854]                           dc.b $00
+[00020855]                           dc.b $00
+[00020856]                           dc.b $00
+[00020857]                           dc.b $00
+[00020858]                           dc.b $00
+[00020859]                           dc.b $00
+[0002085a]                           dc.b $00
+[0002085b]                           dc.b $00
+[0002085c]                           dc.b $00
+[0002085d]                           dc.b $00
+[0002085e]                           dc.b $00
+[0002085f]                           dc.b $00
+[00020860]                           dc.b $00
+[00020861]                           dc.b $00
+[00020862]                           dc.b $00
+[00020863]                           dc.b $00
+[00020864]                           dc.b $00
+[00020865]                           dc.b $00
+[00020866]                           dc.b $00
+[00020867]                           dc.b $00
+[00020868]                           dc.b $00
+[00020869]                           dc.b $00
+[0002086a]                           dc.b $00
+[0002086b]                           dc.b $00
+[0002086c]                           dc.b $00
+[0002086d]                           dc.b $00
+[0002086e]                           dc.b $00
+[0002086f]                           dc.b $00
+[00020870]                           dc.b $00
+[00020871]                           dc.b $00
+[00020872]                           dc.b $00
+[00020873]                           dc.b $00
+[00020874]                           dc.b $00
+[00020875]                           dc.b $00
+[00020876]                           dc.b $00
+[00020877]                           dc.b $00
+[00020878]                           dc.b $00
+[00020879]                           dc.b $00
+[0002087a]                           dc.b $00
+[0002087b]                           dc.b $00
+[0002087c]                           dc.b $00
+[0002087d]                           dc.b $00
+[0002087e]                           dc.b $00
+[0002087f]                           dc.b $00
+[00020880]                           dc.b $00
+[00020881]                           dc.b $00
+[00020882]                           dc.b $00
+[00020883]                           dc.b $00
+[00020884]                           dc.b $00
+[00020885]                           dc.b $00
+[00020886]                           dc.b $00
+[00020887]                           dc.b $00
+[00020888]                           dc.b $00
+[00020889]                           dc.b $00
+[0002088a]                           dc.b $00
+[0002088b]                           dc.b $00
+[0002088c]                           dc.b $00
+[0002088d]                           dc.b $00
+[0002088e]                           dc.b $00
+[0002088f]                           dc.b $00
+[00020890]                           dc.b $00
+[00020891]                           dc.b $00
+[00020892]                           dc.b $00
+[00020893]                           dc.b $00
+[00020894]                           dc.b $00
+[00020895]                           dc.b $00
+[00020896]                           dc.b $00
+[00020897]                           dc.b $00
+[00020898]                           dc.b $00
+[00020899]                           dc.b $00
+[0002089a]                           dc.b $00
+[0002089b]                           dc.b $00
+[0002089c]                           dc.b $00
+[0002089d]                           dc.b $00
+[0002089e]                           dc.b $00
+[0002089f]                           dc.b $00
+[000208a0]                           dc.b $00
+[000208a1]                           dc.b $00
+[000208a2]                           dc.b $00
+[000208a3]                           dc.b $00
+[000208a4]                           dc.b $00
+[000208a5]                           dc.b $00
+[000208a6]                           dc.b $00
+[000208a7]                           dc.b $00
+[000208a8]                           dc.b $00
+[000208a9]                           dc.b $00
+[000208aa]                           dc.b $00
+[000208ab]                           dc.b $00
+[000208ac]                           dc.b $00
+[000208ad]                           dc.b $00
+[000208ae]                           dc.b $00
+[000208af]                           dc.b $00
+[000208b0]                           dc.b $00
+[000208b1]                           dc.b $00
+[000208b2]                           dc.b $00
+[000208b3]                           dc.b $00
+[000208b4]                           dc.b $00
+[000208b5]                           dc.b $00
+[000208b6]                           dc.b $00
+[000208b7]                           dc.b $00
+[000208b8]                           dc.b $00
+[000208b9]                           dc.b $00
+[000208ba]                           dc.b $00
+[000208bb]                           dc.b $00
+[000208bc]                           dc.b $00
+[000208bd]                           dc.b $00
+[000208be]                           dc.b $00
+[000208bf]                           dc.b $00
+[000208c0]                           dc.b $00
+[000208c1]                           dc.b $00
+[000208c2]                           dc.b $00
+[000208c3]                           dc.b $00
+[000208c4]                           dc.b $00
+[000208c5]                           dc.b $00
+[000208c6]                           dc.b $00
+[000208c7]                           dc.b $00
+[000208c8]                           dc.b $00
+[000208c9]                           dc.b $00
+[000208ca]                           dc.b $00
+[000208cb]                           dc.b $00
+[000208cc]                           dc.b $00
+[000208cd]                           dc.b $00
+[000208ce]                           dc.b $00
+[000208cf]                           dc.b $00
+[000208d0]                           dc.b $00
+[000208d1]                           dc.b $00
+[000208d2]                           dc.b $00
+[000208d3]                           dc.b $00
+[000208d4]                           dc.b $00
+[000208d5]                           dc.b $00
+[000208d6]                           dc.b $00
+[000208d7]                           dc.b $00
+[000208d8]                           dc.b $00
+[000208d9]                           dc.b $00
+[000208da]                           dc.b $00
+[000208db]                           dc.b $00
+[000208dc]                           dc.b $00
+[000208dd]                           dc.b $00
+[000208de]                           dc.b $00
+[000208df]                           dc.b $00
+[000208e0]                           dc.b 'too many spaces',0
+[000208f0]                           dc.w $0366
+[000208f2]                           dc.w $6172
+[000208f4]                           dc.b $00
+[000208f5]                           dc.b $00
+[000208f6]                           dc.w $2a34
+[000208f8]                           dc.w $21e2
+[000208fa]                           dc.b $00
+[000208fb]                           dc.b 'unknown #pragma',0
+[0002090b]                           dc.b 'bad #pragma space',0
+[0002091d]                           dc.b $05
+[0002091e]                           dc.b 'space',0
+[00020924]                           dc.b 'bad #pragma debug',0
+[00020936]                           dc.w $026f
+[00020938]                           dc.w $6e00
+[0002093a]                           dc.w $036f
+[0002093c]                           dc.w $6666
+[0002093e]                           dc.b $00
+[0002093f]                           dc.b $05
+[00020940]                           dc.b 'debug',0
+[00020946]                           dc.b $00
+[00020947]                           dc.b $00
+[00020948]                           dc.b $00
+[00020949]                           dc.b $00
+[0002094a] 00003a70                  dc.l $00003a70 ; no symbol found
+[0002094e]                           dc.b $00
+[0002094f]                           dc.b $00
+[00020950]                           dc.b $00
+[00020951]                           dc.b $1d
+[00020952] 000039ba                  dc.l $000039ba ; no symbol found
+[00020956]                           dc.b $00
+[00020957]                           dc.b $00
+[00020958]                           dc.b $00
+[00020959]                           dc.b $13
+[0002095a] 00003968                  dc.l $00003968 ; no symbol found
+[0002095e]                           dc.b $00
+[0002095f]                           dc.b $00
+[00020960]                           dc.b $00
+[00020961]                           dc.b $14
+[00020962] 000038de                  dc.l $000038de ; no symbol found
+[00020966]                           dc.b $00
+[00020967]                           dc.b $00
+[00020968]                           dc.b $00
+[00020969]                           dc.b $fe
+[0002096a]                           dc.b $00
+[0002096b]                           dc.b $00
+[0002096c]                           dc.b $00
+[0002096d]                           dc.b $00
+[0002096e] 00003a90                  dc.l $00003a90 ; no symbol found
+[00020972] 00003b3a                  dc.l $00003b3a ; no symbol found
+[00020976]                           dc.b $00
+[00020977]                           dc.b $00
+[00020978]                           dc.b $00
+[00020979]                           dc.b $17
+[0002097a] 00003b26                  dc.l $00003b26 ; no symbol found
+[0002097e]                           dc.b $00
+[0002097f]                           dc.b $00
+[00020980]                           dc.b $00
+[00020981]                           dc.b $19
+[00020982] 00003b26                  dc.l $00003b26 ; no symbol found
+[00020986]                           dc.b $00
+[00020987]                           dc.b $00
+[00020988]                           dc.b $00
+[00020989]                           dc.b $15
+[0002098a] 00003b26                  dc.l $00003b26 ; no symbol found
+[0002098e]                           dc.b $00
+[0002098f]                           dc.b $00
+[00020990]                           dc.b $00
+[00020991]                           dc.b $1a
+[00020992] 00003b26                  dc.l $00003b26 ; no symbol found
+[00020996]                           dc.b $00
+[00020997]                           dc.b $00
+[00020998]                           dc.b $00
+[00020999]                           dc.b $16
+[0002099a] 00003b26                  dc.l $00003b26 ; no symbol found
+[0002099e]                           dc.b $00
+[0002099f]                           dc.b $00
+[000209a0]                           dc.b $00
+[000209a1]                           dc.b $1b
+[000209a2] 00003b26                  dc.l $00003b26 ; no symbol found
+[000209a6]                           dc.b $00
+[000209a7]                           dc.b $00
+[000209a8]                           dc.b $00
+[000209a9]                           dc.b $18
+[000209aa] 00003ae4                  dc.l $00003ae4 ; no symbol found
+[000209ae]                           dc.b $00
+[000209af]                           dc.b $00
+[000209b0]                           dc.b $00
+[000209b1]                           dc.b $12
+[000209b2] 00003ac8                  dc.l $00003ac8 ; no symbol found
+[000209b6]                           dc.b $00
+[000209b7]                           dc.b $00
+[000209b8]                           dc.b $00
+[000209b9]                           dc.b $11
+[000209ba] 00003ac8                  dc.l $00003ac8 ; no symbol found
+[000209be]                           dc.b $00
+[000209bf]                           dc.b $00
+[000209c0]                           dc.b $00
+[000209c1]                           dc.b $10
+[000209c2] 00003ac8                  dc.l $00003ac8 ; no symbol found
+[000209c6]                           dc.b $00
+[000209c7]                           dc.b $00
+[000209c8]                           dc.b $00
+[000209c9]                           dc.b $1e
+[000209ca]                           dc.b $00
+[000209cb]                           dc.b $00
+[000209cc]                           dc.b $00
+[000209cd]                           dc.b $00
+[000209ce] 00003b96                  dc.l $00003b96 ; no symbol found
+[000209d2]                           dc.b '!BAD CHAR',0
+[000209dc]                           dc.w $060a
+[000209de]                           dc.w $0b01
+[000209e0]                           dc.w $0509
+[000209e2]                           dc.w $3a08
+[000209e4]                           dc.b $00
+[000209e5]                           dc.b $00
+[000209e6] 00020a30                  dc.l $00020a30 ; no symbol found
+[000209ea] 00020a2c                  dc.l $00020a2c ; no symbol found
+[000209ee] 00020a28                  dc.l $00020a28 ; no symbol found
+[000209f2] 00020a24                  dc.l $00020a24 ; no symbol found
+[000209f6] 00020a20                  dc.l $00020a20 ; no symbol found
+[000209fa] 00020a1c                  dc.l $00020a1c ; no symbol found
+[000209fe] 00020a14                  dc.l $00020a14 ; no symbol found
+[00020a02] 00020a10                  dc.l $00020a10 ; no symbol found
+[00020a06] 00020a0a                  dc.l $00020a0a ; no symbol found
+[00020a0a]                           dc.w $033f
+[00020a0c]                           dc.w $3f3f
+[00020a0e]                           dc.b $00
+[00020a0f]                           dc.b $00
+[00020a10]                           dc.w $015d
+[00020a12]                           dc.b $00
+[00020a13]                           dc.b $00
+[00020a14]                           dc.w $0577
+[00020a16]                           dc.b 'hile',0
+[00020a1b]                           dc.b $00
+[00020a1c]                           dc.w $017d
+[00020a1e]                           dc.b $00
+[00020a1f]                           dc.b $00
+[00020a20]                           dc.w $017d
+[00020a22]                           dc.b $00
+[00020a23]                           dc.b $00
+[00020a24]                           dc.w $013a
+[00020a26]                           dc.b $00
+[00020a27]                           dc.b $00
+[00020a28]                           dc.w $013b
+[00020a2a]                           dc.b $00
+[00020a2b]                           dc.b $00
+[00020a2c]                           dc.w $0129
+[00020a2e]                           dc.b $00
+[00020a2f]                           dc.b $00
+[00020a30]                           dc.w $0128
+[00020a32]                           dc.b $00
+[00020a33]                           dc.b $00
+[00020a34]                           dc.b 'missing',0
+[00020a3c]                           dc.b '!EOF',0
+[00020a41]                           dc.b $00
+[00020a42]                           dc.w $0a00
+[00020a44]                           dc.w $2000
+[00020a46]                           dc.w $0900
+[00020a48]                           dc.w $3a00
+[00020a4a]                           dc.w $2000
+[00020a4c]                           dc.b '#error ',0
+[00020a54]                           dc.b $00
+[00020a55]                           dc.b $00
+[00020a56]                           dc.b $00
+[00020a57]                           dc.b $00
+[00020a58]                           dc.b $00
+[00020a59]                           dc.b $00
+[00020a5a]                           dc.b $00
+[00020a5b]                           dc.b $00
+[00020a5c]                           dc.b $00
+[00020a5d]                           dc.b $00
+[00020a5e]                           dc.b $00
+[00020a5f]                           dc.b $00
+[00020a60]                           dc.b $00
+[00020a61]                           dc.b $00
+[00020a62]                           dc.b $00
+[00020a63]                           dc.b $00
+[00020a64]                           dc.b $00
+[00020a65]                           dc.b $00
+[00020a66]                           dc.b $00
+[00020a67]                           dc.b $00
+[00020a68]                           dc.b $00
+[00020a69]                           dc.b $00
+[00020a6a]                           dc.b $00
+[00020a6b]                           dc.b $00
+[00020a6c]                           dc.b $00
+[00020a6d]                           dc.b $00
+[00020a6e]                           dc.b $00
+[00020a6f]                           dc.b $00
+[00020a70]                           dc.b $00
+[00020a71]                           dc.b $00
+[00020a72]                           dc.b $00
+[00020a73]                           dc.b $00
+[00020a74]                           dc.b $00
+[00020a75]                           dc.b $00
+[00020a76]                           dc.b $00
+[00020a77]                           dc.b $00
+[00020a78]                           dc.b $00
+[00020a79]                           dc.b $00
+[00020a7a]                           dc.b $00
+[00020a7b]                           dc.b $00
+[00020a7c]                           dc.b $00
+[00020a7d]                           dc.b $00
+[00020a7e]                           dc.b $00
+[00020a7f]                           dc.b $00
+[00020a80]                           dc.b $00
+[00020a81]                           dc.b $00
+[00020a82]                           dc.b $00
+[00020a83]                           dc.b $00
+[00020a84]                           dc.b $00
+[00020a85]                           dc.b $00
+[00020a86]                           dc.b $00
+[00020a87]                           dc.b $00
+[00020a88]                           dc.b $00
+[00020a89]                           dc.b $00
+[00020a8a]                           dc.b $00
+[00020a8b]                           dc.b $00
+[00020a8c]                           dc.b $00
+[00020a8d]                           dc.b $00
+[00020a8e]                           dc.b $00
+[00020a8f]                           dc.b $00
+[00020a90]                           dc.b $00
+[00020a91]                           dc.b $00
+[00020a92]                           dc.b $00
+[00020a93]                           dc.b $00
+[00020a94]                           dc.b $00
+[00020a95]                           dc.b $00
+[00020a96]                           dc.b $00
+[00020a97]                           dc.b $00
+[00020a98]                           dc.b $00
+[00020a99]                           dc.b $00
+[00020a9a]                           dc.b $00
+[00020a9b]                           dc.b $00
+[00020a9c]                           dc.b $00
+[00020a9d]                           dc.b $00
+[00020a9e]                           dc.b $00
+[00020a9f]                           dc.b $00
+[00020aa0]                           dc.b $00
+[00020aa1]                           dc.b $00
+[00020aa2]                           dc.b $00
+[00020aa3]                           dc.b $00
+[00020aa4]                           dc.b $00
+[00020aa5]                           dc.b $00
+[00020aa6]                           dc.b $00
+[00020aa7]                           dc.b $00
+[00020aa8]                           dc.b $00
+[00020aa9]                           dc.b $00
+[00020aaa]                           dc.b $00
+[00020aab]                           dc.b $00
+[00020aac]                           dc.b $00
+[00020aad]                           dc.b $00
+[00020aae]                           dc.b $00
+[00020aaf]                           dc.b $00
+[00020ab0]                           dc.b $00
+[00020ab1]                           dc.b $00
+[00020ab2]                           dc.b $00
+[00020ab3]                           dc.b $00
+[00020ab4]                           dc.b $00
+[00020ab5]                           dc.b $00
+[00020ab6]                           dc.b $00
+[00020ab7]                           dc.b $00
+[00020ab8]                           dc.b $00
+[00020ab9]                           dc.b $00
+[00020aba]                           dc.b $00
+[00020abb]                           dc.b $00
+[00020abc]                           dc.b $00
+[00020abd]                           dc.b $00
+[00020abe]                           dc.b $00
+[00020abf]                           dc.b $00
+[00020ac0]                           dc.b $00
+[00020ac1]                           dc.b $00
+[00020ac2]                           dc.b $00
+[00020ac3]                           dc.b $00
+[00020ac4]                           dc.b $00
+[00020ac5]                           dc.b $00
+[00020ac6]                           dc.b $00
+[00020ac7]                           dc.b $00
+[00020ac8]                           dc.b $00
+[00020ac9]                           dc.b $00
+[00020aca]                           dc.b $00
+[00020acb]                           dc.b $00
+[00020acc]                           dc.b $00
+[00020acd]                           dc.b $00
+[00020ace]                           dc.b $00
+[00020acf]                           dc.b $00
+[00020ad0]                           dc.b $00
+[00020ad1]                           dc.b $00
+[00020ad2]                           dc.b $00
+[00020ad3]                           dc.b $00
+[00020ad4]                           dc.b $00
+[00020ad5]                           dc.b $00
+[00020ad6]                           dc.b $00
+[00020ad7]                           dc.b $00
+[00020ad8]                           dc.b $00
+[00020ad9]                           dc.b $00
+[00020ada]                           dc.b $00
+[00020adb]                           dc.b $00
+[00020adc]                           dc.b $00
+[00020add]                           dc.b $00
+[00020ade]                           dc.b $00
+[00020adf]                           dc.b $00
+[00020ae0]                           dc.b $00
+[00020ae1]                           dc.b $00
+[00020ae2]                           dc.b $00
+[00020ae3]                           dc.b $00
+[00020ae4]                           dc.b $00
+[00020ae5]                           dc.b $00
+[00020ae6]                           dc.b $00
+[00020ae7]                           dc.b $00
+[00020ae8]                           dc.b $00
+[00020ae9]                           dc.b $00
+[00020aea]                           dc.b $00
+[00020aeb]                           dc.b $00
+[00020aec]                           dc.b $00
+[00020aed]                           dc.b $00
+[00020aee]                           dc.b $00
+[00020aef]                           dc.b $00
+[00020af0]                           dc.b $00
+[00020af1]                           dc.b $00
+[00020af2]                           dc.b $00
+[00020af3]                           dc.b $00
+[00020af4]                           dc.b $00
+[00020af5]                           dc.b $00
+[00020af6]                           dc.b $00
+[00020af7]                           dc.b $00
+[00020af8]                           dc.b $00
+[00020af9]                           dc.b $00
+[00020afa]                           dc.b $00
+[00020afb]                           dc.b $00
+[00020afc]                           dc.b $00
+[00020afd]                           dc.b $00
+[00020afe]                           dc.b $00
+[00020aff]                           dc.b $00
+[00020b00]                           dc.b $00
+[00020b01]                           dc.b $00
+[00020b02]                           dc.b $00
+[00020b03]                           dc.b $00
+[00020b04]                           dc.b $00
+[00020b05]                           dc.b $00
+[00020b06]                           dc.b $00
+[00020b07]                           dc.b $00
+[00020b08]                           dc.b $00
+[00020b09]                           dc.b $00
+[00020b0a]                           dc.b $00
+[00020b0b]                           dc.b $00
+[00020b0c]                           dc.b $00
+[00020b0d]                           dc.b $00
+[00020b0e]                           dc.b $00
+[00020b0f]                           dc.b $00
+[00020b10]                           dc.b $00
+[00020b11]                           dc.b $00
+[00020b12]                           dc.b $00
+[00020b13]                           dc.b $00
+[00020b14]                           dc.b $00
+[00020b15]                           dc.b $00
+[00020b16]                           dc.b $00
+[00020b17]                           dc.b $00
+[00020b18]                           dc.b $00
+[00020b19]                           dc.b $00
+[00020b1a]                           dc.b $00
+[00020b1b]                           dc.b $00
+[00020b1c]                           dc.b $00
+[00020b1d]                           dc.b $00
+[00020b1e]                           dc.b $00
+[00020b1f]                           dc.b $00
+[00020b20]                           dc.b $00
+[00020b21]                           dc.b $00
+[00020b22]                           dc.b $00
+[00020b23]                           dc.b $00
+[00020b24]                           dc.b $00
+[00020b25]                           dc.b $00
+[00020b26]                           dc.b $00
+[00020b27]                           dc.b $00
+[00020b28]                           dc.b $00
+[00020b29]                           dc.b $00
+[00020b2a]                           dc.b $00
+[00020b2b]                           dc.b $00
+[00020b2c]                           dc.b $00
+[00020b2d]                           dc.b $00
+[00020b2e]                           dc.b $00
+[00020b2f]                           dc.b $00
+[00020b30]                           dc.b $00
+[00020b31]                           dc.b $00
+[00020b32]                           dc.b $00
+[00020b33]                           dc.b $00
+[00020b34]                           dc.b $00
+[00020b35]                           dc.b $00
+[00020b36]                           dc.b $00
+[00020b37]                           dc.b $00
+[00020b38]                           dc.b $00
+[00020b39]                           dc.b $00
+[00020b3a]                           dc.b $00
+[00020b3b]                           dc.b $00
+[00020b3c]                           dc.b $00
+[00020b3d]                           dc.b $00
+[00020b3e]                           dc.b $00
+[00020b3f]                           dc.b $00
+[00020b40]                           dc.b $00
+[00020b41]                           dc.b $00
+[00020b42]                           dc.b $00
+[00020b43]                           dc.b $00
+[00020b44]                           dc.b $00
+[00020b45]                           dc.b $00
+[00020b46]                           dc.b $00
+[00020b47]                           dc.b $00
+[00020b48]                           dc.b $00
+[00020b49]                           dc.b $00
+[00020b4a]                           dc.b $00
+[00020b4b]                           dc.b $00
+[00020b4c]                           dc.b $00
+[00020b4d]                           dc.b $00
+[00020b4e]                           dc.b $00
+[00020b4f]                           dc.b $00
+[00020b50]                           dc.b $00
+[00020b51]                           dc.b $00
+[00020b52]                           dc.b $00
+[00020b53]                           dc.b $00
+[00020b54]                           dc.b $00
+[00020b55]                           dc.b $00
+[00020b56]                           dc.b 'can',$27,'t write!',0
+[00020b63]                           dc.b $00
 _iregs:
-[0000bc72] 00020b64                           dc.w 28
+[00020b64]                           dc.w 28
 _aflag:
-[0000bc74] 00020b66                           dc.l 0
+[00020b66]                           dc.l 0
 _cflag:
-[0000bc78] 00020b6a                           dc.l 0
+[00020b6a]                           dc.l 0
 _dbflag:
-[0000bc7c] 00020b6e                           dc.l 0
+[00020b6e]                           dc.l 0
 _deadflag:
-[0000bc80] 00020b72                           dc.l 0
+[00020b72]                           dc.l 0
 _errflag:
-[0000bc84] 00020b76                           dc.l 0
+[00020b76]                           dc.l 0
 _laxflag:
-[0000bc88] 00020b7a                           dc.l 0
+[00020b7a]                           dc.l 0
 _lflag:
-[0000bc8c] 00020b7e                           dc.l 0
+[00020b7e]                           dc.l 0
 _lregflag:
-[0000bc90] 00020b82                           dc.l 0
+[00020b82]                           dc.l 0
 _mflag:
-[0000bc94] 00020b86                           dc.l 0
+[00020b86]                           dc.l 0
 _oldflag:
-[0000bc98] 00020b8a                           dc.l 0
+[00020b8a]                           dc.l 0
 _stdflag:
-[0000bc9c] 00020b8e                           dc.l 0
+[00020b8e]                           dc.l 0
 _strictfl:
-[0000bca0] 00020b92                           dc.l 0
+[00020b92]                           dc.l 0
 _romstrin:
-[0000bca4] 00020b96                           dc.l 0
+[00020b96]                           dc.l 0
 _uflag:
-[0000bca8] 00020b9a                           dc.l 0
+[00020b9a]                           dc.l 0
 _bndef:
-[0000bcac] 00020b9e                           dc.l 0
+[00020b9e]                           dc.l 1
 _model:
-[0000bcb0] 00020ba2                           dc.l 's'
+[00020ba2]                           dc.l 's'
 _nlen:
-[0000bcb4] 00020ba6                           dc.l 31
+[00020ba6]                           dc.l 31
 _maxint:
-[0000bcb8] 00020baa                           dc.l 0
+[00020baa]                           dc.l 0
 _minint:
-[0000bcbc] 00020bae                           dc.l 0
+[00020bae]                           dc.l 0
 _dcbyte:
-[0000bcc0] 00020bb2                           dc.b $00
+[00020bb2]                           dc.b $00
 _regbyte:
-[0000bcc1] 00020bb3                           dc.b $00
+[00020bb3]                           dc.b $00
 _mainbuff:
-[0000bcc2] 00020bb4                           ds.b 128
+[00020bb4]                           ds.b 128
 _errbuf:
-[0000bd42] 00020c34                           ds.b 128
+[00020c34]                           ds.b 128
 _p1p2ioct:
-[0000bdc2] 00020cb4                           dc.l 1
+[00020cb4]                           dc.l 1
 _p1err:
-[0000bdc6] 00020cb8                           dc.l 0
+[00020cb8]                           dc.l 0
 _pperr:
-[0000bdca] 00020cbc                           dc.l 0
+[00020cbc]                           dc.l 0
 __pname:
-[0000bdce] 00020cc0 00020cc4                  dc.l $00020cc4 ; no symbol found
-[0000bdd2] 00020cc4                           dc.w $7031
-[0000bdd4] 00020cc6                           dc.b $00
-[0000bdd5] 00020cc7                           dc.b $00
+[00020cc0] 00020cc4                  dc.l $00020cc4 ; no symbol found
+[00020cc4]                           dc.w $7031
+[00020cc6]                           dc.b $00
+[00020cc7]                           dc.b $00
 _errfd:
-[0000bdd6] 00020cc8                           dc.w 2
+[00020cc8]                           dc.w 2
 _ofile:
-[0000bdd8] 00020cca                           dc.l 0
+[00020cca]                           dc.l 0
 _nerrors:
-[0000bddc] 00020cce                           dc.w 0
+[00020cce]                           dc.w 0
 _infile:
-[0000bdde] 00020cd0                           dc.l 0
+[00020cd0]                           dc.l 0
 _lineno:
-[0000bde2] 00020cd4                           dc.w 0
+[00020cd4]                           dc.w 0
 _outfd:
-[0000bde4] 00020cd6                           dc.w 1
+[00020cd6]                           dc.w 1
 _dummyatt:
-[0000bde6] 00020cd8                           dc.b $00
-[0000bde7] 00020cd9                           dc.b $00
-[0000bde8] 00020cda                           dc.b $00
-[0000bde9] 00020cdb                           dc.b $00
-[0000bdea] 00020cdc                           dc.b $00
-[0000bdeb] 00020cdd                           dc.b $00
-[0000bdec] 00020cde                           dc.b $00
-[0000bded] 00020cdf                           dc.b $00
-[0000bdee] 00020ce0                           dc.w $ff00
-[0000bdf0] 00020ce2                           dc.b $00
-[0000bdf1] 00020ce3                           dc.b $00
-[0000bdf2] 00020ce4                           dc.b $00
-[0000bdf3] 00020ce5                           dc.b $00
-[0000bdf4] 00020ce6                           dc.b $00
-[0000bdf5] 00020ce7                           dc.b $00
-[0000bdf6] 00020ce8                           dc.b $00
-[0000bdf7] 00020ce9                           dc.b $00
+[00020cd8]                           dc.b $00
+[00020cd9]                           dc.b $00
+[00020cda]                           dc.b $00
+[00020cdb]                           dc.b $00
+[00020cdc]                           dc.b $00
+[00020cdd]                           dc.b $00
+[00020cde]                           dc.b $00
+[00020cdf]                           dc.b $00
+[00020ce0]                           dc.w $ff00
+[00020ce2]                           dc.b $00
+[00020ce3]                           dc.b $00
+[00020ce4]                           dc.b $00
+[00020ce5]                           dc.b $00
+[00020ce6]                           dc.b $00
+[00020ce7]                           dc.b $00
+[00020ce8]                           dc.b $00
+[00020ce9]                           dc.b $00
 _attlist:
-[0000bdf8] 00020cea 00020cd8                  dc.l $00020cd8 ; no symbol found
+[00020cea] 00020cd8                  dc.l _dummyatt
 _gblat:
-[0000bdfc] 00020cee 00020cd8                  dc.l $00020cd8 ; no symbol found
+[00020cee] 00020cd8                  dc.l _dummyatt
 _badsym:
-[0000be00] 00020cf2                           dc.b $00
-[0000be01] 00020cf3                           dc.b $00
-[0000be02] 00020cf4                           dc.b $00
-[0000be03] 00020cf5                           dc.b $00
-[0000be04] 00020cf6                           dc.b $00
-[0000be05] 00020cf7                           dc.b $00
-[0000be06] 00020cf8                           dc.b $00
-[0000be07] 00020cf9                           dc.b $00
-[0000be08] 00020cfa                           dc.b $00
-[0000be09] 00020cfb                           dc.b $00
-[0000be0a] 00020cfc                           dc.b $00
-[0000be0b] 00020cfd                           dc.b $00
-[0000be0c] 00020cfe                           dc.b $00
-[0000be0d] 00020cff                           dc.b $00
-[0000be0e] 00020d00                           dc.b $00
-[0000be0f] 00020d01                           dc.b $00
-[0000be10] 00020d02                           dc.b $00
-[0000be11] 00020d03                           dc.b $00
+[00020cf2]                           dc.b $00
+[00020cf3]                           dc.b $00
+[00020cf4]                           dc.b $00
+[00020cf5]                           dc.b $00
+[00020cf6]                           dc.b $00
+[00020cf7]                           dc.b $00
+[00020cf8]                           dc.b $00
+[00020cf9]                           dc.b $00
+[00020cfa]                           dc.b $00
+[00020cfb]                           dc.b $00
+[00020cfc]                           dc.b $00
+[00020cfd]                           dc.b $00
+[00020cfe]                           dc.b $00
+[00020cff]                           dc.b $00
+[00020d00]                           dc.b $00
+[00020d01]                           dc.b $00
+[00020d02]                           dc.b $00
+[00020d03]                           dc.b $00
 _tentsym:
-[0000be12] 00020d04                           dc.b $00
-[0000be13] 00020d05                           dc.b $00
-[0000be14] 00020d06                           dc.b $00
-[0000be15] 00020d07                           dc.b $00
-[0000be16] 00020d08                           dc.b $00
-[0000be17] 00020d09                           dc.b $00
-[0000be18] 00020d0a                           dc.b $00
-[0000be19] 00020d0b                           dc.b $00
-[0000be1a] 00020d0c                           dc.b $00
-[0000be1b] 00020d0d                           dc.b $00
-[0000be1c] 00020d0e                           dc.b $00
-[0000be1d] 00020d0f                           dc.b $00
-[0000be1e] 00020d10                           dc.b $00
-[0000be1f] 00020d11                           dc.b $00
-[0000be20] 00020d12                           dc.b $00
-[0000be21] 00020d13                           dc.b $00
-[0000be22] 00020d14                           dc.b $00
-[0000be23] 00020d15                           dc.b $00
+[00020d04]                           dc.b $00
+[00020d05]                           dc.b $00
+[00020d06]                           dc.b $00
+[00020d07]                           dc.b $00
+[00020d08]                           dc.b $00
+[00020d09]                           dc.b $00
+[00020d0a]                           dc.b $00
+[00020d0b]                           dc.b $00
+[00020d0c]                           dc.b $00
+[00020d0d]                           dc.b $00
+[00020d0e]                           dc.b $00
+[00020d0f]                           dc.b $00
+[00020d10]                           dc.b $00
+[00020d11]                           dc.b $00
+[00020d12]                           dc.b $00
+[00020d13]                           dc.b $00
+[00020d14]                           dc.b $00
+[00020d15]                           dc.b $00
 _gblsym:
-[0000be24] 00020d16                           dc.b $00
-[0000be25] 00020d17                           dc.b $00
-[0000be26] 00020d18                           dc.b $00
-[0000be27] 00020d19                           dc.b $00
+[00020d16]                           dc.b $00
+[00020d17]                           dc.b $00
+[00020d18]                           dc.b $00
+[00020d19]                           dc.b $00
 _lbltab:
-[0000be28] 00020d1a                           dc.b $00
-[0000be29] 00020d1b                           dc.b $00
-[0000be2a] 00020d1c                           dc.b $00
-[0000be2b] 00020d1d                           dc.b $00
+[00020d1a]                           dc.b $00
+[00020d1b]                           dc.b $00
+[00020d1c]                           dc.b $00
+[00020d1d]                           dc.b $00
 _littab:
-[0000be2c] 00020d1e                           dc.b $00
-[0000be2d] 00020d1f                           dc.b $00
-[0000be2e] 00020d20                           dc.b $00
-[0000be2f] 00020d21                           dc.b $00
+[00020d1e]                           dc.b $00
+[00020d1f]                           dc.b $00
+[00020d20]                           dc.b $00
+[00020d21]                           dc.b $00
 _mostab:
-[0000be30] 00020d22                           dc.b $00
-[0000be31] 00020d23                           dc.b $00
-[0000be32] 00020d24                           dc.b $00
-[0000be33] 00020d25                           dc.b $00
+[00020d22]                           dc.b $00
+[00020d23]                           dc.b $00
+[00020d24]                           dc.b $00
+[00020d25]                           dc.b $00
 _spacetab:
-[0000be34] 00020d26                           dc.b $00
-[0000be35] 00020d27                           dc.b $00
-[0000be36] 00020d28                           dc.b $00
-[0000be37] 00020d29                           dc.b $00
+[00020d26]                           dc.b $00
+[00020d27]                           dc.b $00
+[00020d28]                           dc.b $00
+[00020d29]                           dc.b $00
 _symend:
-[0000be38] 00020d2a                           dc.b $00
-[0000be39] 00020d2b                           dc.b $00
-[0000be3a] 00020d2c                           dc.b $00
-[0000be3b] 00020d2d                           dc.b $00
+[00020d2a]                           dc.b $00
+[00020d2b]                           dc.b $00
+[00020d2c]                           dc.b $00
+[00020d2d]                           dc.b $00
 _symtab:
-[0000be3c] 00020d2e                           dc.b $00
-[0000be3d] 00020d2f                           dc.b $00
-[0000be3e] 00020d30                           dc.b $00
-[0000be3f] 00020d31                           dc.b $00
+[00020d2e]                           dc.b $00
+[00020d2f]                           dc.b $00
+[00020d30]                           dc.b $00
+[00020d31]                           dc.b $00
 _exlist:
-[0000be40] 00020d32                           dc.b $00
-[0000be41] 00020d33                           dc.b $00
-[0000be42] 00020d34                           dc.b $00
-[0000be43] 00020d35                           dc.b $00
-[0000be44] 00020d36                           dc.b '$3/0=9+(>758<'
-[0000be51] 00020d43                           dc.b $0c
-[0000be52] 00020d44                           dc.w $3b3f
-[0000be54] 00020d46                           dc.b $00
-[0000be55] 00020d47                           dc.b $00
-[0000be56] 00020d48                           dc.b $00
-[0000be57] 00020d49                           dc.b $01
-[0000be58] 00020d4a                           dc.b $00
-[0000be59] 00020d4b                           dc.b $08
-[0000be5a] 00020d4c                           dc.b $00
-[0000be5b] 00020d4d                           dc.b $10
-[0000be5c] 00020d4e                           dc.b $00
-[0000be5d] 00020d4f                           dc.b $20
-[0000be5e] 00020d50                           dc.b $00
-[0000be5f] 00020d51                           dc.b $02
-[0000be60] 00020d52                           dc.b $00
-[0000be61] 00020d53                           dc.b $04
-[0000be62] 00020d54                           dc.b $00
-[0000be63] 00020d55                           dc.b $40
-[0000be64] 00020d56                           dc.b $00
-[0000be65] 00020d57                           dc.b $80
-[0000be66] 00020d58                           dc.w $0100
-[0000be68] 00020d5a                           dc.w $0200
-[0000be6a] 00020d5c                           dc.w $0200
-[0000be6c] 00020d5e                           dc.w $0200
-[0000be6e] 00020d60                           dc.w $0200
-[0000be70] 00020d62                           dc.b $00
-[0000be71] 00020d63                           dc.b $00
-[0000be72] 00020d64                           dc.w $0400
-[0000be74] 00020d66                           dc.w $0800
+[00020d32]                           dc.b $00
+[00020d33]                           dc.b $00
+[00020d34]                           dc.b $00
+[00020d35]                           dc.b $00
+[00020d36]                           dc.b '$3/0=9+(>758<'
+[00020d43]                           dc.b $0c
+[00020d44]                           dc.w $3b3f
+[00020d46]                           dc.b $00
+[00020d47]                           dc.b $00
+[00020d48]                           dc.b $00
+[00020d49]                           dc.b $01
+[00020d4a]                           dc.b $00
+[00020d4b]                           dc.b $08
+[00020d4c]                           dc.b $00
+[00020d4d]                           dc.b $10
+[00020d4e]                           dc.b $00
+[00020d4f]                           dc.b $20
+[00020d50]                           dc.b $00
+[00020d51]                           dc.b $02
+[00020d52]                           dc.b $00
+[00020d53]                           dc.b $04
+[00020d54]                           dc.b $00
+[00020d55]                           dc.b $40
+[00020d56]                           dc.b $00
+[00020d57]                           dc.b $80
+[00020d58]                           dc.w $0100
+[00020d5a]                           dc.w $0200
+[00020d5c]                           dc.w $0200
+[00020d5e]                           dc.w $0200
+[00020d60]                           dc.w $0200
+[00020d62]                           dc.b $00
+[00020d63]                           dc.b $00
+[00020d64]                           dc.w $0400
+[00020d66]                           dc.w $0800
 _atchar:
-[0000be76] 00020d68                           dc.b $00
-[0000be77] 00020d69                           dc.b $00
-[0000be78] 00020d6a                           dc.b $00
-[0000be79] 00020d6b                           dc.b $00
-[0000be7a] 00020d6c                           dc.b $00
-[0000be7b] 00020d6d                           dc.b $00
-[0000be7c] 00020d6e                           dc.b $00
-[0000be7d] 00020d6f                           dc.b $00
-[0000be7e] 00020d70                           dc.w $0800
-[0000be80] 00020d72                           dc.b $00
-[0000be81] 00020d73                           dc.b $00
-[0000be82] 00020d74                           dc.b $00
-[0000be83] 00020d75                           dc.b $00
-[0000be84] 00020d76                           dc.b $00
-[0000be85] 00020d77                           dc.b $00
-[0000be86] 00020d78                           dc.b $00
-[0000be87] 00020d79                           dc.b $00
+[00020d68]                           dc.b $00
+[00020d69]                           dc.b $00
+[00020d6a]                           dc.b $00
+[00020d6b]                           dc.b $00
+[00020d6c]                           dc.b $00
+[00020d6d]                           dc.b $00
+[00020d6e]                           dc.b $00
+[00020d6f]                           dc.b $00
+[00020d70]                           dc.w $0800
+[00020d72]                           dc.b $00
+[00020d73]                           dc.b $00
+[00020d74]                           dc.b $00
+[00020d75]                           dc.b $00
+[00020d76]                           dc.b $00
+[00020d77]                           dc.b $00
+[00020d78]                           dc.b $00
+[00020d79]                           dc.b $00
 _atichar:
-[0000be88] 00020d7a                           dc.b $00
-[0000be89] 00020d7b                           dc.b $00
-[0000be8a] 00020d7c                           dc.b $00
-[0000be8b] 00020d7d                           dc.b $00
-[0000be8c] 00020d7e                           dc.b $00
-[0000be8d] 00020d7f                           dc.b $00
-[0000be8e] 00020d80                           dc.b $00
-[0000be8f] 00020d81                           dc.b $00
-[0000be90] 00020d82                           dc.w $0900
-[0000be92] 00020d84                           dc.b $00
-[0000be93] 00020d85                           dc.b $00
-[0000be94] 00020d86                           dc.b $00
-[0000be95] 00020d87                           dc.b $00
-[0000be96] 00020d88                           dc.b $00
-[0000be97] 00020d89                           dc.b $00
-[0000be98] 00020d8a                           dc.b $00
-[0000be99] 00020d8b                           dc.b $00
+[00020d7a]                           dc.b $00
+[00020d7b]                           dc.b $00
+[00020d7c]                           dc.b $00
+[00020d7d]                           dc.b $00
+[00020d7e]                           dc.b $00
+[00020d7f]                           dc.b $00
+[00020d80]                           dc.b $00
+[00020d81]                           dc.b $00
+[00020d82]                           dc.w $0900
+[00020d84]                           dc.b $00
+[00020d85]                           dc.b $00
+[00020d86]                           dc.b $00
+[00020d87]                           dc.b $00
+[00020d88]                           dc.b $00
+[00020d89]                           dc.b $00
+[00020d8a]                           dc.b $00
+[00020d8b]                           dc.b $00
 _atuchar:
-[0000be9a] 00020d8c                           dc.b $00
-[0000be9b] 00020d8d                           dc.b $00
-[0000be9c] 00020d8e                           dc.b $00
-[0000be9d] 00020d8f                           dc.b $00
-[0000be9e] 00020d90                           dc.b $00
-[0000be9f] 00020d91                           dc.b $00
-[0000bea0] 00020d92                           dc.b $00
-[0000bea1] 00020d93                           dc.b $00
-[0000bea2] 00020d94                           dc.w $0a00
-[0000bea4] 00020d96                           dc.b $00
-[0000bea5] 00020d97                           dc.b $00
-[0000bea6] 00020d98                           dc.b $00
-[0000bea7] 00020d99                           dc.b $00
-[0000bea8] 00020d9a                           dc.b $00
-[0000bea9] 00020d9b                           dc.b $00
-[0000beaa] 00020d9c                           dc.b $00
-[0000beab] 00020d9d                           dc.b $00
+[00020d8c]                           dc.b $00
+[00020d8d]                           dc.b $00
+[00020d8e]                           dc.b $00
+[00020d8f]                           dc.b $00
+[00020d90]                           dc.b $00
+[00020d91]                           dc.b $00
+[00020d92]                           dc.b $00
+[00020d93]                           dc.b $00
+[00020d94]                           dc.w $0a00
+[00020d96]                           dc.b $00
+[00020d97]                           dc.b $00
+[00020d98]                           dc.b $00
+[00020d99]                           dc.b $00
+[00020d9a]                           dc.b $00
+[00020d9b]                           dc.b $00
+[00020d9c]                           dc.b $00
+[00020d9d]                           dc.b $00
 _atshort:
-[0000beac] 00020d9e                           dc.b $00
-[0000bead] 00020d9f                           dc.b $00
-[0000beae] 00020da0                           dc.b $00
-[0000beaf] 00020da1                           dc.b $00
-[0000beb0] 00020da2                           dc.b $00
-[0000beb1] 00020da3                           dc.b $00
-[0000beb2] 00020da4                           dc.b $00
-[0000beb3] 00020da5                           dc.b $00
-[0000beb4] 00020da6                           dc.w $1000
-[0000beb6] 00020da8                           dc.b $00
-[0000beb7] 00020da9                           dc.b $00
-[0000beb8] 00020daa                           dc.b $00
-[0000beb9] 00020dab                           dc.b $00
-[0000beba] 00020dac                           dc.b $00
-[0000bebb] 00020dad                           dc.b $00
-[0000bebc] 00020dae                           dc.b $00
-[0000bebd] 00020daf                           dc.b $00
+[00020d9e]                           dc.b $00
+[00020d9f]                           dc.b $00
+[00020da0]                           dc.b $00
+[00020da1]                           dc.b $00
+[00020da2]                           dc.b $00
+[00020da3]                           dc.b $00
+[00020da4]                           dc.b $00
+[00020da5]                           dc.b $00
+[00020da6]                           dc.w $1000
+[00020da8]                           dc.b $00
+[00020da9]                           dc.b $00
+[00020daa]                           dc.b $00
+[00020dab]                           dc.b $00
+[00020dac]                           dc.b $00
+[00020dad]                           dc.b $00
+[00020dae]                           dc.b $00
+[00020daf]                           dc.b $00
 _atushort:
-[0000bebe] 00020db0                           dc.b $00
-[0000bebf] 00020db1                           dc.b $00
-[0000bec0] 00020db2                           dc.b $00
-[0000bec1] 00020db3                           dc.b $00
-[0000bec2] 00020db4                           dc.b $00
-[0000bec3] 00020db5                           dc.b $00
-[0000bec4] 00020db6                           dc.b $00
-[0000bec5] 00020db7                           dc.b $00
-[0000bec6] 00020db8                           dc.w $1100
-[0000bec8] 00020dba                           dc.b $00
-[0000bec9] 00020dbb                           dc.b $00
-[0000beca] 00020dbc                           dc.b $00
-[0000becb] 00020dbd                           dc.b $00
-[0000becc] 00020dbe                           dc.b $00
-[0000becd] 00020dbf                           dc.b $00
-[0000bece] 00020dc0                           dc.b $00
-[0000becf] 00020dc1                           dc.b $00
+[00020db0]                           dc.b $00
+[00020db1]                           dc.b $00
+[00020db2]                           dc.b $00
+[00020db3]                           dc.b $00
+[00020db4]                           dc.b $00
+[00020db5]                           dc.b $00
+[00020db6]                           dc.b $00
+[00020db7]                           dc.b $00
+[00020db8]                           dc.w $1100
+[00020dba]                           dc.b $00
+[00020dbb]                           dc.b $00
+[00020dbc]                           dc.b $00
+[00020dbd]                           dc.b $00
+[00020dbe]                           dc.b $00
+[00020dbf]                           dc.b $00
+[00020dc0]                           dc.b $00
+[00020dc1]                           dc.b $00
 _atint:
-[0000bed0] 00020dc2                           dc.b $00
-[0000bed1] 00020dc3                           dc.b $00
-[0000bed2] 00020dc4                           dc.b $00
-[0000bed3] 00020dc5                           dc.b $00
-[0000bed4] 00020dc6                           dc.b $00
-[0000bed5] 00020dc7                           dc.b $00
-[0000bed6] 00020dc8                           dc.b $00
-[0000bed7] 00020dc9                           dc.b $00
-[0000bed8] 00020dca                           dc.w $1800
-[0000beda] 00020dcc                           dc.b $00
-[0000bedb] 00020dcd                           dc.b $00
-[0000bedc] 00020dce                           dc.b $00
-[0000bedd] 00020dcf                           dc.b $00
-[0000bede] 00020dd0                           dc.b $00
-[0000bedf] 00020dd1                           dc.b $00
-[0000bee0] 00020dd2                           dc.b $00
-[0000bee1] 00020dd3                           dc.b $00
+[00020dc2]                           dc.b $00
+[00020dc3]                           dc.b $00
+[00020dc4]                           dc.b $00
+[00020dc5]                           dc.b $00
+[00020dc6]                           dc.b $00
+[00020dc7]                           dc.b $00
+[00020dc8]                           dc.b $00
+[00020dc9]                           dc.b $00
+[00020dca]                           dc.w $1800
+[00020dcc]                           dc.b $00
+[00020dcd]                           dc.b $00
+[00020dce]                           dc.b $00
+[00020dcf]                           dc.b $00
+[00020dd0]                           dc.b $00
+[00020dd1]                           dc.b $00
+[00020dd2]                           dc.b $00
+[00020dd3]                           dc.b $00
 _atunsign:
-[0000bee2] 00020dd4                           dc.b $00
-[0000bee3] 00020dd5                           dc.b $00
-[0000bee4] 00020dd6                           dc.b $00
-[0000bee5] 00020dd7                           dc.b $00
-[0000bee6] 00020dd8                           dc.b $00
-[0000bee7] 00020dd9                           dc.b $00
-[0000bee8] 00020dda                           dc.b $00
-[0000bee9] 00020ddb                           dc.b $00
-[0000beea] 00020ddc                           dc.w $1a00
-[0000beec] 00020dde                           dc.b $00
-[0000beed] 00020ddf                           dc.b $00
-[0000beee] 00020de0                           dc.b $00
-[0000beef] 00020de1                           dc.b $00
-[0000bef0] 00020de2                           dc.b $00
-[0000bef1] 00020de3                           dc.b $00
-[0000bef2] 00020de4                           dc.b $00
-[0000bef3] 00020de5                           dc.b $00
+[00020dd4]                           dc.b $00
+[00020dd5]                           dc.b $00
+[00020dd6]                           dc.b $00
+[00020dd7]                           dc.b $00
+[00020dd8]                           dc.b $00
+[00020dd9]                           dc.b $00
+[00020dda]                           dc.b $00
+[00020ddb]                           dc.b $00
+[00020ddc]                           dc.w $1a00
+[00020dde]                           dc.b $00
+[00020ddf]                           dc.b $00
+[00020de0]                           dc.b $00
+[00020de1]                           dc.b $00
+[00020de2]                           dc.b $00
+[00020de3]                           dc.b $00
+[00020de4]                           dc.b $00
+[00020de5]                           dc.b $00
 _atlong:
-[0000bef4] 00020de6                           dc.b $00
-[0000bef5] 00020de7                           dc.b $00
-[0000bef6] 00020de8                           dc.b $00
-[0000bef7] 00020de9                           dc.b $00
-[0000bef8] 00020dea                           dc.b $00
-[0000bef9] 00020deb                           dc.b $00
-[0000befa] 00020dec                           dc.b $00
-[0000befb] 00020ded                           dc.b $00
-[0000befc] 00020dee                           dc.w $2000
-[0000befe] 00020df0                           dc.b $00
-[0000beff] 00020df1                           dc.b $00
-[0000bf00] 00020df2                           dc.b $00
-[0000bf01] 00020df3                           dc.b $00
-[0000bf02] 00020df4                           dc.b $00
-[0000bf03] 00020df5                           dc.b $00
-[0000bf04] 00020df6                           dc.b $00
-[0000bf05] 00020df7                           dc.b $00
+[00020de6]                           dc.b $00
+[00020de7]                           dc.b $00
+[00020de8]                           dc.b $00
+[00020de9]                           dc.b $00
+[00020dea]                           dc.b $00
+[00020deb]                           dc.b $00
+[00020dec]                           dc.b $00
+[00020ded]                           dc.b $00
+[00020dee]                           dc.w $2000
+[00020df0]                           dc.b $00
+[00020df1]                           dc.b $00
+[00020df2]                           dc.b $00
+[00020df3]                           dc.b $00
+[00020df4]                           dc.b $00
+[00020df5]                           dc.b $00
+[00020df6]                           dc.b $00
+[00020df7]                           dc.b $00
 _atulong:
-[0000bf06] 00020df8                           dc.b $00
-[0000bf07] 00020df9                           dc.b $00
-[0000bf08] 00020dfa                           dc.b $00
-[0000bf09] 00020dfb                           dc.b $00
-[0000bf0a] 00020dfc                           dc.b $00
-[0000bf0b] 00020dfd                           dc.b $00
-[0000bf0c] 00020dfe                           dc.b $00
-[0000bf0d] 00020dff                           dc.b $00
-[0000bf0e] 00020e00                           dc.w $2100
-[0000bf10] 00020e02                           dc.b $00
-[0000bf11] 00020e03                           dc.b $00
-[0000bf12] 00020e04                           dc.b $00
-[0000bf13] 00020e05                           dc.b $00
-[0000bf14] 00020e06                           dc.b $00
-[0000bf15] 00020e07                           dc.b $00
-[0000bf16] 00020e08                           dc.b $00
-[0000bf17] 00020e09                           dc.b $00
+[00020df8]                           dc.b $00
+[00020df9]                           dc.b $00
+[00020dfa]                           dc.b $00
+[00020dfb]                           dc.b $00
+[00020dfc]                           dc.b $00
+[00020dfd]                           dc.b $00
+[00020dfe]                           dc.b $00
+[00020dff]                           dc.b $00
+[00020e00]                           dc.w $2100
+[00020e02]                           dc.b $00
+[00020e03]                           dc.b $00
+[00020e04]                           dc.b $00
+[00020e05]                           dc.b $00
+[00020e06]                           dc.b $00
+[00020e07]                           dc.b $00
+[00020e08]                           dc.b $00
+[00020e09]                           dc.b $00
 _atfloat:
-[0000bf18] 00020e0a                           dc.b $00
-[0000bf19] 00020e0b                           dc.b $00
-[0000bf1a] 00020e0c                           dc.b $00
-[0000bf1b] 00020e0d                           dc.b $00
-[0000bf1c] 00020e0e                           dc.b $00
-[0000bf1d] 00020e0f                           dc.b $00
-[0000bf1e] 00020e10                           dc.b $00
-[0000bf1f] 00020e11                           dc.b $00
-[0000bf20] 00020e12                           dc.w $2800
-[0000bf22] 00020e14                           dc.b $00
-[0000bf23] 00020e15                           dc.b $00
-[0000bf24] 00020e16                           dc.b $00
-[0000bf25] 00020e17                           dc.b $00
-[0000bf26] 00020e18                           dc.b $00
-[0000bf27] 00020e19                           dc.b $00
-[0000bf28] 00020e1a                           dc.b $00
-[0000bf29] 00020e1b                           dc.b $00
+[00020e0a]                           dc.b $00
+[00020e0b]                           dc.b $00
+[00020e0c]                           dc.b $00
+[00020e0d]                           dc.b $00
+[00020e0e]                           dc.b $00
+[00020e0f]                           dc.b $00
+[00020e10]                           dc.b $00
+[00020e11]                           dc.b $00
+[00020e12]                           dc.w $2800
+[00020e14]                           dc.b $00
+[00020e15]                           dc.b $00
+[00020e16]                           dc.b $00
+[00020e17]                           dc.b $00
+[00020e18]                           dc.b $00
+[00020e19]                           dc.b $00
+[00020e1a]                           dc.b $00
+[00020e1b]                           dc.b $00
 _atdouble:
-[0000bf2a] 00020e1c                           dc.b $00
-[0000bf2b] 00020e1d                           dc.b $00
-[0000bf2c] 00020e1e                           dc.b $00
-[0000bf2d] 00020e1f                           dc.b $00
-[0000bf2e] 00020e20                           dc.b $00
-[0000bf2f] 00020e21                           dc.b $00
-[0000bf30] 00020e22                           dc.b $00
-[0000bf31] 00020e23                           dc.b $00
-[0000bf32] 00020e24                           dc.w $2900
-[0000bf34] 00020e26                           dc.b $00
-[0000bf35] 00020e27                           dc.b $00
-[0000bf36] 00020e28                           dc.b $00
-[0000bf37] 00020e29                           dc.b $00
-[0000bf38] 00020e2a                           dc.b $00
-[0000bf39] 00020e2b                           dc.b $00
-[0000bf3a] 00020e2c                           dc.b $00
-[0000bf3b] 00020e2d                           dc.b $00
+[00020e1c]                           dc.b $00
+[00020e1d]                           dc.b $00
+[00020e1e]                           dc.b $00
+[00020e1f]                           dc.b $00
+[00020e20]                           dc.b $00
+[00020e21]                           dc.b $00
+[00020e22]                           dc.b $00
+[00020e23]                           dc.b $00
+[00020e24]                           dc.w $2900
+[00020e26]                           dc.b $00
+[00020e27]                           dc.b $00
+[00020e28]                           dc.b $00
+[00020e29]                           dc.b $00
+[00020e2a]                           dc.b $00
+[00020e2b]                           dc.b $00
+[00020e2c]                           dc.b $00
+[00020e2d]                           dc.b $00
 _atldoubl:
-[0000bf3c] 00020e2e                           dc.b $00
-[0000bf3d] 00020e2f                           dc.b $00
-[0000bf3e] 00020e30                           dc.b $00
-[0000bf3f] 00020e31                           dc.b $00
-[0000bf40] 00020e32                           dc.b $00
-[0000bf41] 00020e33                           dc.b $00
-[0000bf42] 00020e34                           dc.b $00
-[0000bf43] 00020e35                           dc.b $00
-[0000bf44] 00020e36                           dc.w $2a00
-[0000bf46] 00020e38                           dc.b $00
-[0000bf47] 00020e39                           dc.b $00
-[0000bf48] 00020e3a                           dc.b $00
-[0000bf49] 00020e3b                           dc.b $00
-[0000bf4a] 00020e3c                           dc.b $00
-[0000bf4b] 00020e3d                           dc.b $00
-[0000bf4c] 00020e3e                           dc.b $00
-[0000bf4d] 00020e3f                           dc.b $00
+[00020e2e]                           dc.b $00
+[00020e2f]                           dc.b $00
+[00020e30]                           dc.b $00
+[00020e31]                           dc.b $00
+[00020e32]                           dc.b $00
+[00020e33]                           dc.b $00
+[00020e34]                           dc.b $00
+[00020e35]                           dc.b $00
+[00020e36]                           dc.w $2a00
+[00020e38]                           dc.b $00
+[00020e39]                           dc.b $00
+[00020e3a]                           dc.b $00
+[00020e3b]                           dc.b $00
+[00020e3c]                           dc.b $00
+[00020e3d]                           dc.b $00
+[00020e3e]                           dc.b $00
+[00020e3f]                           dc.b $00
 _atvoid:
-[0000bf4e] 00020e40                           dc.b $00
-[0000bf4f] 00020e41                           dc.b $00
-[0000bf50] 00020e42                           dc.b $00
-[0000bf51] 00020e43                           dc.b $00
-[0000bf52] 00020e44                           dc.b $00
-[0000bf53] 00020e45                           dc.b $00
-[0000bf54] 00020e46                           dc.b $00
-[0000bf55] 00020e47                           dc.b $00
-[0000bf56] 00020e48                           dc.w $5000
-[0000bf58] 00020e4a                           dc.b $00
-[0000bf59] 00020e4b                           dc.b $00
-[0000bf5a] 00020e4c                           dc.b $00
-[0000bf5b] 00020e4d                           dc.b $00
-[0000bf5c] 00020e4e                           dc.b $00
-[0000bf5d] 00020e4f                           dc.b $00
-[0000bf5e] 00020e50                           dc.b $00
-[0000bf5f] 00020e51                           dc.b $00
+[00020e40]                           dc.b $00
+[00020e41]                           dc.b $00
+[00020e42]                           dc.b $00
+[00020e43]                           dc.b $00
+[00020e44]                           dc.b $00
+[00020e45]                           dc.b $00
+[00020e46]                           dc.b $00
+[00020e47]                           dc.b $00
+[00020e48]                           dc.w $5000
+[00020e4a]                           dc.b $00
+[00020e4b]                           dc.b $00
+[00020e4c]                           dc.b $00
+[00020e4d]                           dc.b $00
+[00020e4e]                           dc.b $00
+[00020e4f]                           dc.b $00
+[00020e50]                           dc.b $00
+[00020e51]                           dc.b $00
 _byulong:
-[0000bf60] 00020e52                           dc.b $00
-[0000bf61] 00020e53                           dc.b $00
-[0000bf62] 00020e54                           dc.b $00
-[0000bf63] 00020e55                           dc.b $00
+[00020e52]                           dc.b $00
+[00020e53]                           dc.b $00
+[00020e54]                           dc.b $00
+[00020e55]                           dc.b $00
 _byunsign:
-[0000bf64] 00020e56                           dc.b $00
-[0000bf65] 00020e57                           dc.b $00
-[0000bf66] 00020e58                           dc.b $00
-[0000bf67] 00020e59                           dc.b $00
+[00020e56]                           dc.b $00
+[00020e57]                           dc.b $00
+[00020e58]                           dc.b $00
+[00020e59]                           dc.b $00
 _legals:
-[0000bf68] 00020e5a                           dc.b $00
-[0000bf69] 00020e5b                           dc.b $01
-[0000bf6a] 00020e5c                           dc.b $00
-[0000bf6b] 00020e5d                           dc.b $03
-[0000bf6c] 00020e5e                           dc.b $00
-[0000bf6d] 00020e5f                           dc.b $05
-[0000bf6e] 00020e60                           dc.b $00
-[0000bf6f] 00020e61                           dc.b $08
-[0000bf70] 00020e62                           dc.b $00
-[0000bf71] 00020e63                           dc.b $1a
-[0000bf72] 00020e64                           dc.b $00
-[0000bf73] 00020e65                           dc.b $1c
-[0000bf74] 00020e66                           dc.b $00
-[0000bf75] 00020e67                           dc.b $18
-[0000bf76] 00020e68                           dc.b $00
-[0000bf77] 00020e69                           dc.b $0a
-[0000bf78] 00020e6a                           dc.b $00
-[0000bf79] 00020e6b                           dc.b $0c
-[0000bf7a] 00020e6c                           dc.b $00
-[0000bf7b] 00020e6d                           dc.b $00
-[0000bf7c] 00020e6e                           dc.b $00
-[0000bf7d] 00020e6f                           dc.b $10
-[0000bf7e] 00020e70                           dc.b $00
-[0000bf7f] 00020e71                           dc.b $02
-[0000bf80] 00020e72                           dc.b $00
-[0000bf81] 00020e73                           dc.b $12
-[0000bf82] 00020e74                           dc.b $00
-[0000bf83] 00020e75                           dc.b $04
-[0000bf84] 00020e76                           dc.b $00
-[0000bf85] 00020e77                           dc.b $14
-[0000bf86] 00020e78                           dc.b $00
-[0000bf87] 00020e79                           dc.b $20
-[0000bf88] 00020e7a                           dc.b $00
-[0000bf89] 00020e7b                           dc.b $22
-[0000bf8a] 00020e7c                           dc.b $00
-[0000bf8b] 00020e7d                           dc.b $24
-[0000bf8c] 00020e7e                           dc.b $00
-[0000bf8d] 00020e7f                           dc.b $32
-[0000bf8e] 00020e80                           dc.b $00
-[0000bf8f] 00020e81                           dc.b $34
-[0000bf90] 00020e82                           dc.b $00
-[0000bf91] 00020e83                           dc.b $30
-[0000bf92] 00020e84                           dc.b $00
-[0000bf93] 00020e85                           dc.b $40
-[0000bf94] 00020e86                           dc.b $00
-[0000bf95] 00020e87                           dc.b $80
-[0000bf96] 00020e88                           dc.b $00
-[0000bf97] 00020e89                           dc.b $a0
-[0000bf98] 00020e8a                           dc.w $0100
-[0000bf9a] 00020e8c                           dc.w $0200
-[0000bf9c] 00020e8e                           dc.w $8000
+[00020e5a]                           dc.b $00
+[00020e5b]                           dc.b $01
+[00020e5c]                           dc.b $00
+[00020e5d]                           dc.b $03
+[00020e5e]                           dc.b $00
+[00020e5f]                           dc.b $05
+[00020e60]                           dc.b $00
+[00020e61]                           dc.b $08
+[00020e62]                           dc.b $00
+[00020e63]                           dc.b $1a
+[00020e64]                           dc.b $00
+[00020e65]                           dc.b $1c
+[00020e66]                           dc.b $00
+[00020e67]                           dc.b $18
+[00020e68]                           dc.b $00
+[00020e69]                           dc.b $0a
+[00020e6a]                           dc.b $00
+[00020e6b]                           dc.b $0c
+[00020e6c]                           dc.b $00
+[00020e6d]                           dc.b $00
+[00020e6e]                           dc.b $00
+[00020e6f]                           dc.b $10
+[00020e70]                           dc.b $00
+[00020e71]                           dc.b $02
+[00020e72]                           dc.b $00
+[00020e73]                           dc.b $12
+[00020e74]                           dc.b $00
+[00020e75]                           dc.b $04
+[00020e76]                           dc.b $00
+[00020e77]                           dc.b $14
+[00020e78]                           dc.b $00
+[00020e79]                           dc.b $20
+[00020e7a]                           dc.b $00
+[00020e7b]                           dc.b $22
+[00020e7c]                           dc.b $00
+[00020e7d]                           dc.b $24
+[00020e7e]                           dc.b $00
+[00020e7f]                           dc.b $32
+[00020e80]                           dc.b $00
+[00020e81]                           dc.b $34
+[00020e82]                           dc.b $00
+[00020e83]                           dc.b $30
+[00020e84]                           dc.b $00
+[00020e85]                           dc.b $40
+[00020e86]                           dc.b $00
+[00020e87]                           dc.b $80
+[00020e88]                           dc.b $00
+[00020e89]                           dc.b $a0
+[00020e8a]                           dc.w $0100
+[00020e8c]                           dc.w $0200
+[00020e8e]                           dc.w $8000
 _legalatt:
-[0000bf9e] 00020e90 00020d7a                  dc.l $00020d7a ; no symbol found
-[0000bfa2] 00020e94 00020d68                  dc.l $00020d68 ; no symbol found
-[0000bfa6] 00020e98 00020d8c                  dc.l $00020d8c ; no symbol found
-[0000bfaa] 00020e9c 00020d9e                  dc.l $00020d9e ; no symbol found
-[0000bfae] 00020ea0 00020d9e                  dc.l $00020d9e ; no symbol found
-[0000bfb2] 00020ea4 00020db0                  dc.l $00020db0 ; no symbol found
-[0000bfb6] 00020ea8 00020d9e                  dc.l $00020d9e ; no symbol found
-[0000bfba] 00020eac 00020d9e                  dc.l $00020d9e ; no symbol found
-[0000bfbe] 00020eb0 00020db0                  dc.l $00020db0 ; no symbol found
-[0000bfc2] 00020eb4 00020dc2                  dc.l $00020dc2 ; no symbol found
-[0000bfc6] 00020eb8 00020dc2                  dc.l $00020dc2 ; no symbol found
-[0000bfca] 00020ebc 00020dc2                  dc.l $00020dc2 ; no symbol found
-[0000bfce] 00020ec0 00020dc2                  dc.l $00020dc2 ; no symbol found
-[0000bfd2] 00020ec4 00020dd4                  dc.l $00020dd4 ; no symbol found
-[0000bfd6] 00020ec8 00020dd4                  dc.l $00020dd4 ; no symbol found
-[0000bfda] 00020ecc 00020de6                  dc.l $00020de6 ; no symbol found
-[0000bfde] 00020ed0 00020de6                  dc.l $00020de6 ; no symbol found
-[0000bfe2] 00020ed4 00020df8                  dc.l $00020df8 ; no symbol found
-[0000bfe6] 00020ed8 00020de6                  dc.l $00020de6 ; no symbol found
-[0000bfea] 00020edc 00020df8                  dc.l $00020df8 ; no symbol found
-[0000bfee] 00020ee0 00020de6                  dc.l $00020de6 ; no symbol found
-[0000bff2] 00020ee4 00020e0a                  dc.l $00020e0a ; no symbol found
-[0000bff6] 00020ee8 00020e1c                  dc.l $00020e1c ; no symbol found
-[0000bffa] 00020eec 00020e2e                  dc.l $00020e2e ; no symbol found
-[0000bffe] 00020ef0 00020e40                  dc.l $00020e40 ; no symbol found
-[0000c002] 00020ef4                           dc.b $00
-[0000c003] 00020ef5                           dc.b $00
-[0000c004] 00020ef6                           dc.b $00
-[0000c005] 00020ef7                           dc.b $00
-[0000c006] 00020ef8                           dc.b 'illegal type specification',0
-[0000c021] 00020f13                           dc.b $00
-[0000c022] 00020f14                           dc.b 'member conflict',0
-[0000c032] 00020f24                           dc.b 'bad field width',0
-[0000c042] 00020f34                           dc.b 'illegal bitfield',0
-[0000c053] 00020f45                           dc.b 'illegal field',0
-[0000c061] 00020f53                           dc.b 'member redefined',0
-[0000c072] 00020f64                           dc.b 'enumeration constant larger than int',0
-[0000c097] 00020f89                           dc.b 'redeclared enum element',0
-[0000c0af] 00020fa1                           dc.b 'redefined tag',0
-[0000c0bd] 00020faf                           dc.b 'incomplete type',0
-[0000c0cd] 00020fbf                           dc.b $00
-[0000c0ce] 00020fc0                           dc.w $0604
-[0000c0d0] 00020fc2                           dc.b $00
-[0000c0d1] 00020fc3                           dc.b $3b
-[0000c0d2] 00020fc4                           dc.w $3f0c
-[0000c0d4] 00020fc6                           dc.b $00
-[0000c0d5] 00020fc7                           dc.b 'redeclared proto argument',0
-[0000c0ef] 00020fe1                           dc.b 'bad proto argument type',0
-[0000c107] 00020ff9                           dc.b 'bad function argument declaration',0
-[0000c129] 0002101b                           dc.b 'bad (declaration)',0
-[0000c13b] 0002102d                           dc.b 'bad *declaration',0
-[0000c14c] 0002103e 00004b9a                  dc.l $00004b9a ; no symbol found
-[0000c150] 00021042                           dc.b $00
-[0000c151] 00021043                           dc.b $00
-[0000c152] 00021044                           dc.b $00
-[0000c153] 00021045                           dc.b $41
-[0000c154] 00021046 00004b8e                  dc.l $00004b8e ; no symbol found
-[0000c158] 0002104a                           dc.b $00
-[0000c159] 0002104b                           dc.b $00
-[0000c15a] 0002104c                           dc.b $00
-[0000c15b] 0002104d                           dc.b $42
-[0000c15c] 0002104e 00004b82                  dc.l $00004b82 ; no symbol found
-[0000c160] 00021052                           dc.b $00
-[0000c161] 00021053                           dc.b $00
-[0000c162] 00021054                           dc.b $00
-[0000c163] 00021055                           dc.b $40
-[0000c164] 00021056                           dc.b $00
-[0000c165] 00021057                           dc.b $00
-[0000c166] 00021058                           dc.b $00
-[0000c167] 00021059                           dc.b $00
-[0000c168] 0002105a 00004b8c                  dc.l $00004b8c ; no symbol found
-[0000c16c] 0002105e                           dc.b '*4!17',0
-[0000c172] 00021064                           dc.b 'illegal storage class',0
-[0000c188] 0002107a                           dc.b 'repeated type specification',0
-[0000c1a4] 00021096                           dc.w 0
-[0000c1a6] 00021098                           dc.w 4
-[0000c1a8] 0002109a                           dc.w 12
-[0000c1aa] 0002109c                           dc.w 28
-[0000c1ac] 0002109e                           dc.w $081c
-[0000c1ae] 000210a0                           dc.w $181c
-[0000c1b0] 000210a2                           dc.w $381c
-[0000c1b2] 000210a4                           dc.w $389c
+[00020e90] 00020d7a                  dc.l _atichar
+[00020e94] 00020d68                  dc.l _atchar
+[00020e98] 00020d8c                  dc.l _atuchar
+[00020e9c] 00020d9e                  dc.l _atshort
+[00020ea0] 00020d9e                  dc.l _atshort
+[00020ea4] 00020db0                  dc.l _atushort
+[00020ea8] 00020d9e                  dc.l _atshort
+[00020eac] 00020d9e                  dc.l _atshort
+[00020eb0] 00020db0                  dc.l _atushort
+[00020eb4] 00020dc2                  dc.l _atint
+[00020eb8] 00020dc2                  dc.l _atint
+[00020ebc] 00020dc2                  dc.l _atint
+[00020ec0] 00020dc2                  dc.l _atint
+[00020ec4] 00020dd4                  dc.l _atunsign
+[00020ec8] 00020dd4                  dc.l _atunsign
+[00020ecc] 00020de6                  dc.l _atlong
+[00020ed0] 00020de6                  dc.l _atlong
+[00020ed4] 00020df8                  dc.l _atulong
+[00020ed8] 00020de6                  dc.l _atlong
+[00020edc] 00020df8                  dc.l _atulong
+[00020ee0] 00020de6                  dc.l _atlong
+[00020ee4] 00020e0a                  dc.l _atfloat
+[00020ee8] 00020e1c                  dc.l _atdouble
+[00020eec] 00020e2e                  dc.l _atldoubl
+[00020ef0] 00020e40                  dc.l _atvoid
+[00020ef4]                           dc.b $00
+[00020ef5]                           dc.b $00
+[00020ef6]                           dc.b $00
+[00020ef7]                           dc.b $00
+[00020ef8]                           dc.b 'illegal type specification',0
+[00020f13]                           dc.b $00
+[00020f14]                           dc.b 'member conflict',0
+[00020f24]                           dc.b 'bad field width',0
+[00020f34]                           dc.b 'illegal bitfield',0
+[00020f45]                           dc.b 'illegal field',0
+[00020f53]                           dc.b 'member redefined',0
+[00020f64]                           dc.b 'enumeration constant larger than int',0
+[00020f89]                           dc.b 'redeclared enum element',0
+[00020fa1]                           dc.b 'redefined tag',0
+[00020faf]                           dc.b 'incomplete type',0
+[00020fbf]                           dc.b $00
+[00020fc0]                           dc.w $0604
+[00020fc2]                           dc.b $00
+[00020fc3]                           dc.b $3b
+[00020fc4]                           dc.w $3f0c
+[00020fc6]                           dc.b $00
+[00020fc7]                           dc.b 'redeclared proto argument',0
+[00020fe1]                           dc.b 'bad proto argument type',0
+[00020ff9]                           dc.b 'bad function argument declaration',0
+[0002101b]                           dc.b 'bad (declaration)',0
+[0002102d]                           dc.b 'bad *declaration',0
+[0002103e] 00004b9a                  dc.l $00004b9a ; no symbol found
+[00021042]                           dc.b $00
+[00021043]                           dc.b $00
+[00021044]                           dc.b $00
+[00021045]                           dc.b $41
+[00021046] 00004b8e                  dc.l $00004b8e ; no symbol found
+[0002104a]                           dc.b $00
+[0002104b]                           dc.b $00
+[0002104c]                           dc.b $00
+[0002104d]                           dc.b $42
+[0002104e] 00004b82                  dc.l $00004b82 ; no symbol found
+[00021052]                           dc.b $00
+[00021053]                           dc.b $00
+[00021054]                           dc.b $00
+[00021055]                           dc.b $40
+[00021056]                           dc.b $00
+[00021057]                           dc.b $00
+[00021058]                           dc.b $00
+[00021059]                           dc.b $00
+[0002105a] 00004b8c                  dc.l $00004b8c ; no symbol found
+[0002105e]                           dc.b '*4!17',0
+[00021064]                           dc.b 'illegal storage class',0
+[0002107a]                           dc.b 'repeated type specification',0
+[00021096]                           dc.w 0
+[00021098]                           dc.w 4
+[0002109a]                           dc.w 12
+[0002109c]                           dc.w 28
+[0002109e]                           dc.w $081c
+[000210a0]                           dc.w $181c
+[000210a2]                           dc.w $381c
+[000210a4]                           dc.w $389c
 _rbytes:
-[0000c1b4] 000210a6                           dc.l 3
-[0000c1b8] 000210aa 0000568c                  dc.l $0000568c ; no symbol found
-[0000c1bc] 000210ae                           dc.b $00
-[0000c1bd] 000210af                           dc.b $00
-[0000c1be] 000210b0                           dc.b $00
-[0000c1bf] 000210b1                           dc.b $3d
-[0000c1c0] 000210b2 00005654                  dc.l $00005654 ; no symbol found
-[0000c1c4] 000210b6                           dc.b $00
-[0000c1c5] 000210b7                           dc.b $00
-[0000c1c6] 000210b8                           dc.b $00
-[0000c1c7] 000210b9                           dc.b $34
-[0000c1c8] 000210ba 0000563a                  dc.l $0000563a ; no symbol found
-[0000c1cc] 000210be                           dc.b $00
-[0000c1cd] 000210bf                           dc.b $00
-[0000c1ce] 000210c0                           dc.b $00
-[0000c1cf] 000210c1                           dc.b $3c
-[0000c1d0] 000210c2 0000562c                  dc.l $0000562c ; no symbol found
-[0000c1d4] 000210c6                           dc.b $00
-[0000c1d5] 000210c7                           dc.b $00
-[0000c1d6] 000210c8                           dc.b $00
-[0000c1d7] 000210c9                           dc.b $3e
-[0000c1d8] 000210ca 00005606                  dc.l $00005606 ; no symbol found
-[0000c1dc] 000210ce                           dc.b $00
-[0000c1dd] 000210cf                           dc.b $00
-[0000c1de] 000210d0                           dc.b $00
-[0000c1df] 000210d1                           dc.b $2a
-[0000c1e0] 000210d2                           dc.b $00
-[0000c1e1] 000210d3                           dc.b $00
-[0000c1e2] 000210d4                           dc.b $00
-[0000c1e3] 000210d5                           dc.b $00
-[0000c1e4] 000210d6 0000562a                  dc.l $0000562a ; no symbol found
-[0000c1e8] 000210da                           dc.b 'unused static',0
-[0000c1f6] 000210e8                           dc.b 'undefined local function',0
-[0000c20f] 00021101                           dc.b 'bad external syntax',0
-[0000c223] 00021115                           dc.b 'redeclared external',0
-[0000c237] 00021129                           dc.b 'redeclared typedef',0
-[0000c24a] 0002113c                           dc.b 'spdf',0
-[0000c24f] 00021141                           dc.b 'unknown model',0
-[0000c25d] 0002114f                           dc.b 'spdf',0
-[0000c262] 00021154                           dc.b 'bad input file',0
-[0000c271] 00021163                           dc.b 'bad output file',0
-[0000c281] 00021173                           dc.b 'a,b#,c,+dead,+debug,err,lreg,l,model?,m,n#,+old,o*,r#,+std,+strict,sr,strict,u:F <file>',0
-[0000c2d9] 000211cb                           dc.b $00
+[000210a6]                           dc.l 3
+[000210aa] 0000568c                  dc.l $0000568c ; no symbol found
+[000210ae]                           dc.b $00
+[000210af]                           dc.b $00
+[000210b0]                           dc.b $00
+[000210b1]                           dc.b $3d
+[000210b2] 00005654                  dc.l $00005654 ; no symbol found
+[000210b6]                           dc.b $00
+[000210b7]                           dc.b $00
+[000210b8]                           dc.b $00
+[000210b9]                           dc.b $34
+[000210ba] 0000563a                  dc.l $0000563a ; no symbol found
+[000210be]                           dc.b $00
+[000210bf]                           dc.b $00
+[000210c0]                           dc.b $00
+[000210c1]                           dc.b $3c
+[000210c2] 0000562c                  dc.l $0000562c ; no symbol found
+[000210c6]                           dc.b $00
+[000210c7]                           dc.b $00
+[000210c8]                           dc.b $00
+[000210c9]                           dc.b $3e
+[000210ca] 00005606                  dc.l $00005606 ; no symbol found
+[000210ce]                           dc.b $00
+[000210cf]                           dc.b $00
+[000210d0]                           dc.b $00
+[000210d1]                           dc.b $2a
+[000210d2]                           dc.b $00
+[000210d3]                           dc.b $00
+[000210d4]                           dc.b $00
+[000210d5]                           dc.b $00
+[000210d6] 0000562a                  dc.l $0000562a ; no symbol found
+[000210da]                           dc.b 'unused static',0
+[000210e8]                           dc.b 'undefined local function',0
+[00021101]                           dc.b 'bad external syntax',0
+[00021115]                           dc.b 'redeclared external',0
+[00021129]                           dc.b 'redeclared typedef',0
+[0002113c]                           dc.b 'spdf',0
+[00021141]                           dc.b 'unknown model',0
+[0002114f]                           dc.b 'spdf',0
+[00021154]                           dc.b 'bad input file',0
+[00021163]                           dc.b 'bad output file',0
+[00021173]                           dc.b 'a,b#,c,+dead,+debug,err,lreg,l,model?,m,n#,+old,o*,r#,+std,+strict,sr,strict,u:F <file>',0
+[000211cb]                           dc.b $00
 _zeterm:
-[0000c2da] 000211cc                           dc.b $00
-[0000c2db] 000211cd                           dc.b $00
-[0000c2dc] 000211ce                           dc.b $00
-[0000c2dd] 000211cf                           dc.b $00
-[0000c2de] 000211d0                           dc.b $00
-[0000c2df] 000211d1                           dc.b $00
-[0000c2e0] 000211d2                           dc.b $00
-[0000c2e1] 000211d3                           dc.b $00
-[0000c2e2] 000211d4                           dc.b $00
-[0000c2e3] 000211d5                           dc.b $00
-[0000c2e4] 000211d6                           dc.b $00
-[0000c2e5] 000211d7                           dc.b $00
-[0000c2e6] 000211d8                           dc.b $00
-[0000c2e7] 000211d9                           dc.b $00
-[0000c2e8] 000211da                           dc.b $00
-[0000c2e9] 000211db                           dc.b $00
-[0000c2ea] 000211dc                           dc.b $00
-[0000c2eb] 000211dd                           dc.b $00
-[0000c2ec] 000211de                           dc.b $00
-[0000c2ed] 000211df                           dc.b $00
-[0000c2ee] 000211e0                           dc.b $00
-[0000c2ef] 000211e1                           dc.b $00
-[0000c2f0] 000211e2                           dc.b $00
-[0000c2f1] 000211e3                           dc.b $00
-[0000c2f2] 000211e4                           dc.w $949b
-[0000c2f4] 000211e6                           dc.w $9596
-[0000c2f6] 000211e8                           dc.w $8f90
-[0000c2f8] 000211ea                           dc.b $00
-[0000c2f9] 000211eb                           dc.b $9b
-[0000c2fa] 000211ec                           dc.w $9490
-[0000c2fc] 000211ee                           dc.w $8f96
-[0000c2fe] 000211f0                           dc.w $9500
-[0000c300] 000211f2                           dc.w $8a8f
-[0000c302] 000211f4                           dc.w $8d8e
-[0000c304] 000211f6                           dc.w $8887
-[0000c306] 000211f8                           dc.b $00
-[0000c307] 000211f9                           dc.b $00
-[0000c308] 000211fa                           dc.w $fff9
-[0000c30a] 000211fc                           dc.w $fff8
-[0000c30c] 000211fe                           dc.b $00
-[0000c30d] 000211ff                           dc.b $00
-[0000c30e] 00021200                           dc.b $00
-[0000c30f] 00021201                           dc.b $00
-[0000c310] 00021202                           dc.b $00
-[0000c311] 00021203                           dc.b $00
-[0000c312] 00021204                           dc.b $00
-[0000c313] 00021205                           dc.b $00
-[0000c314] 00021206                           dc.b $00
-[0000c315] 00021207                           dc.b $00
-[0000c316] 00021208                           dc.b $00
-[0000c317] 00021209                           dc.b $00
-[0000c318] 0002120a                           dc.b $00
-[0000c319] 0002120b                           dc.b $00
-[0000c31a] 0002120c                           dc.b $00
-[0000c31b] 0002120d                           dc.b $00
-[0000c31c] 0002120e                           dc.b $00
-[0000c31d] 0002120f                           dc.b $00
-[0000c31e] 00021210                           dc.b $00
-[0000c31f] 00021211                           dc.b $00
-[0000c320] 00021212                           dc.b $00
-[0000c321] 00021213                           dc.b $00
-[0000c322] 00021214                           dc.b $00
-[0000c323] 00021215                           dc.b $00
-[0000c324] 00021216                           dc.b $00
-[0000c325] 00021217                           dc.b $00
-[0000c326] 00021218                           dc.b $00
-[0000c327] 00021219                           dc.b $00
-[0000c328] 0002121a                           dc.b $00
-[0000c329] 0002121b                           dc.b $00
-[0000c32a] 0002121c                           dc.b $00
-[0000c32b] 0002121d                           dc.b $00
-[0000c32c] 0002121e                           dc.b $00
-[0000c32d] 0002121f                           dc.b $00
-[0000c32e] 00021220                           dc.b $00
-[0000c32f] 00021221                           dc.b $00
-[0000c330] 00021222                           dc.b $00
-[0000c331] 00021223                           dc.b $00
-[0000c332] 00021224                           dc.b $00
-[0000c333] 00021225                           dc.b $00
-[0000c334] 00021226                           dc.b $00
-[0000c335] 00021227                           dc.b $00
-[0000c336] 00021228 000068aa                  dc.l $000068aa ; no symbol found
-[0000c33a] 0002122c                           dc.b $00
-[0000c33b] 0002122d                           dc.b $00
-[0000c33c] 0002122e                           dc.b $00
-[0000c33d] 0002122f                           dc.b $50
-[0000c33e] 00021230 0000686a                  dc.l $0000686a ; no symbol found
-[0000c342] 00021234                           dc.b $00
-[0000c343] 00021235                           dc.b $00
-[0000c344] 00021236                           dc.b $00
-[0000c345] 00021237                           dc.b $42
-[0000c346] 00021238 0000681a                  dc.l $0000681a ; no symbol found
-[0000c34a] 0002123c                           dc.b $00
-[0000c34b] 0002123d                           dc.b $00
-[0000c34c] 0002123e                           dc.b $00
-[0000c34d] 0002123f                           dc.b $40
-[0000c34e] 00021240 00006806                  dc.l $00006806 ; no symbol found
-[0000c352] 00021244                           dc.b $00
-[0000c353] 00021245                           dc.b $00
-[0000c354] 00021246                           dc.b $00
-[0000c355] 00021247                           dc.b $1a
-[0000c356] 00021248 000067f4                  dc.l $000067f4 ; no symbol found
-[0000c35a] 0002124c                           dc.b $00
-[0000c35b] 0002124d                           dc.b $00
-[0000c35c] 0002124e                           dc.b $00
-[0000c35d] 0002124f                           dc.b $19
-[0000c35e] 00021250 000067e2                  dc.l $000067e2 ; no symbol found
-[0000c362] 00021254                           dc.b $00
-[0000c363] 00021255                           dc.b $00
-[0000c364] 00021256                           dc.b $00
-[0000c365] 00021257                           dc.b $18
-[0000c366] 00021258 000067ce                  dc.l $000067ce ; no symbol found
-[0000c36a] 0002125c                           dc.b $00
-[0000c36b] 0002125d                           dc.b $00
-[0000c36c] 0002125e                           dc.b $00
-[0000c36d] 0002125f                           dc.b $09
-[0000c36e] 00021260                           dc.b $00
-[0000c36f] 00021261                           dc.b $00
-[0000c370] 00021262                           dc.b $00
-[0000c371] 00021263                           dc.b $00
-[0000c372] 00021264 000068b0                  dc.l $000068b0 ; no symbol found
-[0000c376] 00021268 00006a6a                  dc.l $00006a6a ; no symbol found
-[0000c37a] 0002126c                           dc.b $00
-[0000c37b] 0002126d                           dc.b $00
-[0000c37c] 0002126e                           dc.b $00
-[0000c37d] 0002126f                           dc.b $21
-[0000c37e] 00021270 00006a6a                  dc.l $00006a6a ; no symbol found
-[0000c382] 00021274                           dc.b $00
-[0000c383] 00021275                           dc.b $00
-[0000c384] 00021276                           dc.b $00
-[0000c385] 00021277                           dc.b $20
-[0000c386] 00021278 00006a3e                  dc.l $00006a3e ; no symbol found
-[0000c38a] 0002127c                           dc.b $00
-[0000c38b] 0002127d                           dc.b $00
-[0000c38c] 0002127e                           dc.b $00
-[0000c38d] 0002127f                           dc.b $40
-[0000c38e] 00021280 000069e0                  dc.l $000069e0 ; no symbol found
-[0000c392] 00021284                           dc.b $00
-[0000c393] 00021285                           dc.b $00
-[0000c394] 00021286                           dc.b $00
-[0000c395] 00021287                           dc.b $1a
-[0000c396] 00021288 000069e0                  dc.l $000069e0 ; no symbol found
-[0000c39a] 0002128c                           dc.b $00
-[0000c39b] 0002128d                           dc.b $00
-[0000c39c] 0002128e                           dc.b $00
-[0000c39d] 0002128f                           dc.b $18
-[0000c39e] 00021290 000069e0                  dc.l $000069e0 ; no symbol found
-[0000c3a2] 00021294                           dc.b $00
-[0000c3a3] 00021295                           dc.b $00
-[0000c3a4] 00021296                           dc.b $00
-[0000c3a5] 00021297                           dc.b $11
-[0000c3a6] 00021298 000069e0                  dc.l $000069e0 ; no symbol found
-[0000c3aa] 0002129c                           dc.b $00
-[0000c3ab] 0002129d                           dc.b $00
-[0000c3ac] 0002129e                           dc.b $00
-[0000c3ad] 0002129f                           dc.b $10
-[0000c3ae] 000212a0 000069e0                  dc.l $000069e0 ; no symbol found
-[0000c3b2] 000212a4                           dc.b $00
-[0000c3b3] 000212a5                           dc.b $00
-[0000c3b4] 000212a6                           dc.b $00
-[0000c3b5] 000212a7                           dc.b $0a
-[0000c3b6] 000212a8 000069e0                  dc.l $000069e0 ; no symbol found
-[0000c3ba] 000212ac                           dc.b $00
-[0000c3bb] 000212ad                           dc.b $00
-[0000c3bc] 000212ae                           dc.b $00
-[0000c3bd] 000212af                           dc.b $09
-[0000c3be] 000212b0 000069e0                  dc.l $000069e0 ; no symbol found
-[0000c3c2] 000212b4                           dc.b $00
-[0000c3c3] 000212b5                           dc.b $00
-[0000c3c4] 000212b6                           dc.b $00
-[0000c3c5] 000212b7                           dc.b $08
-[0000c3c6] 000212b8                           dc.b $00
-[0000c3c7] 000212b9                           dc.b $00
-[0000c3c8] 000212ba                           dc.b $00
-[0000c3c9] 000212bb                           dc.b $00
-[0000c3ca] 000212bc 00006a8c                  dc.l $00006a8c ; no symbol found
-[0000c3ce] 000212c0                           dc.b $00
-[0000c3cf] 000212c1                           dc.b $00
-[0000c3d0] 000212c2                           dc.b $00
-[0000c3d1] 000212c3                           dc.b $40
-[0000c3d2] 000212c4                           dc.b $00
-[0000c3d3] 000212c5                           dc.b $40
-[0000c3d4] 000212c6                           dc.b $00
-[0000c3d5] 000212c7                           dc.b $00
-[0000c3d6] 000212c8                           dc.b $00
-[0000c3d7] 000212c9                           dc.b $40
-[0000c3d8] 000212ca                           dc.b $00
-[0000c3d9] 000212cb                           dc.b $40
-[0000c3da] 000212cc                           dc.b $00
-[0000c3db] 000212cd                           dc.b $41
-[0000c3dc] 000212ce                           dc.b $00
-[0000c3dd] 000212cf                           dc.b $41
-[0000c3de] 000212d0                           dc.b $00
-[0000c3df] 000212d1                           dc.b $40
-[0000c3e0] 000212d2                           dc.b $00
-[0000c3e1] 000212d3                           dc.b $40
-[0000c3e2] 000212d4                           dc.b $00
-[0000c3e3] 000212d5                           dc.b $c0
-[0000c3e4] 000212d6                           dc.b $00
-[0000c3e5] 000212d7                           dc.b $c0
-[0000c3e6] 000212d8                           dc.b $00
-[0000c3e7] 000212d9                           dc.b $40
-[0000c3e8] 000212da                           dc.b $00
-[0000c3e9] 000212db                           dc.b $c0
-[0000c3ea] 000212dc                           dc.b $00
-[0000c3eb] 000212dd                           dc.b $c0
-[0000c3ec] 000212de                           dc.b $00
-[0000c3ed] 000212df                           dc.b $c0
-[0000c3ee] 000212e0                           dc.b $00
-[0000c3ef] 000212e1                           dc.b $c0
-[0000c3f0] 000212e2                           dc.b $00
-[0000c3f1] 000212e3                           dc.b $c2
-[0000c3f2] 000212e4                           dc.b $00
-[0000c3f3] 000212e5                           dc.b $c0
-[0000c3f4] 000212e6                           dc.b $00
-[0000c3f5] 000212e7                           dc.b $c0
-[0000c3f6] 000212e8                           dc.b $00
-[0000c3f7] 000212e9                           dc.b $c0
-[0000c3f8] 000212ea                           dc.b $00
-[0000c3f9] 000212eb                           dc.b $c0
-[0000c3fa] 000212ec                           dc.b $00
-[0000c3fb] 000212ed                           dc.b $c0
-[0000c3fc] 000212ee                           dc.b $00
-[0000c3fd] 000212ef                           dc.b $c0
-[0000c3fe] 000212f0                           dc.b $00
-[0000c3ff] 000212f1                           dc.b $c0
-[0000c400] 000212f2                           dc.b $00
-[0000c401] 000212f3                           dc.b $c0
-[0000c402] 000212f4                           dc.b $00
-[0000c403] 000212f5                           dc.b $f0
-[0000c404] 000212f6                           dc.b $00
-[0000c405] 000212f7                           dc.b $d0
-[0000c406] 000212f8                           dc.b $00
-[0000c407] 000212f9                           dc.b $ec
-[0000c408] 000212fa                           dc.b $00
-[0000c409] 000212fb                           dc.b $c7
-[0000c40a] 000212fc                           dc.b $00
-[0000c40b] 000212fd                           dc.b $c3
-[0000c40c] 000212fe                           dc.b $00
-[0000c40d] 000212ff                           dc.b $eb
-[0000c40e] 00021300                           dc.b $00
-[0000c40f] 00021301                           dc.b $f3
-[0000c410] 00021302                           dc.b $00
-[0000c411] 00021303                           dc.b $f3
-[0000c412] 00021304                           dc.b $00
-[0000c413] 00021305                           dc.b $d3
-[0000c414] 00021306                           dc.b $00
-[0000c415] 00021307                           dc.b $d3
-[0000c416] 00021308                           dc.b $00
-[0000c417] 00021309                           dc.b $c3
-[0000c418] 0002130a                           dc.b $00
-[0000c419] 0002130b                           dc.b $c3
-[0000c41a] 0002130c                           dc.b $00
-[0000c41b] 0002130d                           dc.b $c3
-[0000c41c] 0002130e                           dc.b $00
-[0000c41d] 0002130f                           dc.b $c3
-[0000c41e] 00021310                           dc.b $00
-[0000c41f] 00021311                           dc.b $e3
-[0000c420] 00021312                           dc.b $00
-[0000c421] 00021313                           dc.b $e3
-[0000c422] 00021314                           dc.b $00
-[0000c423] 00021315                           dc.b $c0
-[0000c424] 00021316                           dc.b $00
-[0000c425] 00021317                           dc.b $c0
-[0000c426] 00021318                           dc.b $00
-[0000c427] 00021319                           dc.b $00
-[0000c428] 0002131a                           dc.b $00
-[0000c429] 0002131b                           dc.b $40
-[0000c42a] 0002131c                           dc.b $00
-[0000c42b] 0002131d                           dc.b $00
-[0000c42c] 0002131e 00006e74                  dc.l $00006e74 ; no symbol found
-[0000c430] 00021322                           dc.b $00
-[0000c431] 00021323                           dc.b $00
-[0000c432] 00021324                           dc.b $00
-[0000c433] 00021325                           dc.b $21
-[0000c434] 00021326 00006e72                  dc.l $00006e72 ; no symbol found
-[0000c438] 0002132a                           dc.b $00
-[0000c439] 0002132b                           dc.b $00
-[0000c43a] 0002132c                           dc.b $00
-[0000c43b] 0002132d                           dc.b $20
-[0000c43c] 0002132e 00006e62                  dc.l $00006e62 ; no symbol found
-[0000c440] 00021332                           dc.b $00
-[0000c441] 00021333                           dc.b $00
-[0000c442] 00021334                           dc.b $00
-[0000c443] 00021335                           dc.b $11
-[0000c444] 00021336 00006e5a                  dc.l $00006e5a ; no symbol found
-[0000c448] 0002133a                           dc.b $00
-[0000c449] 0002133b                           dc.b $00
-[0000c44a] 0002133c                           dc.b $00
-[0000c44b] 0002133d                           dc.b $1a
-[0000c44c] 0002133e 00006e4a                  dc.l $00006e4a ; no symbol found
-[0000c450] 00021342                           dc.b $00
-[0000c451] 00021343                           dc.b $00
-[0000c452] 00021344                           dc.b $00
-[0000c453] 00021345                           dc.b $10
-[0000c454] 00021346 00006e42                  dc.l $00006e42 ; no symbol found
-[0000c458] 0002134a                           dc.b $00
-[0000c459] 0002134b                           dc.b $00
-[0000c45a] 0002134c                           dc.b $00
-[0000c45b] 0002134d                           dc.b $18
-[0000c45c] 0002134e 00006e32                  dc.l $00006e32 ; no symbol found
-[0000c460] 00021352                           dc.b $00
-[0000c461] 00021353                           dc.b $00
-[0000c462] 00021354                           dc.b $00
-[0000c463] 00021355                           dc.b $0a
-[0000c464] 00021356 00006e18                  dc.l $00006e18 ; no symbol found
-[0000c468] 0002135a                           dc.b $00
-[0000c469] 0002135b                           dc.b $00
-[0000c46a] 0002135c                           dc.b $00
-[0000c46b] 0002135d                           dc.b $08
-[0000c46c] 0002135e                           dc.b $00
-[0000c46d] 0002135f                           dc.b $00
-[0000c46e] 00021360                           dc.b $00
-[0000c46f] 00021361                           dc.b $00
-[0000c470] 00021362 00006e76                  dc.l $00006e76 ; no symbol found
-[0000c474] 00021366 00006f40                  dc.l $00006f40 ; no symbol found
-[0000c478] 0002136a                           dc.b $00
-[0000c479] 0002136b                           dc.b $00
-[0000c47a] 0002136c                           dc.b $00
-[0000c47b] 0002136d                           dc.b $9f
-[0000c47c] 0002136e 00006f3c                  dc.l $00006f3c ; no symbol found
-[0000c480] 00021372                           dc.b $00
-[0000c481] 00021373                           dc.b $00
-[0000c482] 00021374                           dc.b $00
-[0000c483] 00021375                           dc.b $8a
-[0000c484] 00021376 00006f3c                  dc.l $00006f3c ; no symbol found
-[0000c488] 0002137a                           dc.b $00
-[0000c489] 0002137b                           dc.b $00
-[0000c48a] 0002137c                           dc.b $00
-[0000c48b] 0002137d                           dc.b $89
-[0000c48c] 0002137e 00006f3c                  dc.l $00006f3c ; no symbol found
-[0000c490] 00021382                           dc.b $00
-[0000c491] 00021383                           dc.b $00
-[0000c492] 00021384                           dc.b $00
-[0000c493] 00021385                           dc.b $92
-[0000c494] 00021386 00006f3c                  dc.l $00006f3c ; no symbol found
-[0000c498] 0002138a                           dc.b $00
-[0000c499] 0002138b                           dc.b $00
-[0000c49a] 0002138c                           dc.b $00
-[0000c49b] 0002138d                           dc.b $86
-[0000c49c] 0002138e 00006f3c                  dc.l $00006f3c ; no symbol found
-[0000c4a0] 00021392                           dc.b $00
-[0000c4a1] 00021393                           dc.b $00
-[0000c4a2] 00021394                           dc.b $00
-[0000c4a3] 00021395                           dc.b $8c
-[0000c4a4] 00021396 00006f3c                  dc.l $00006f3c ; no symbol found
-[0000c4a8] 0002139a                           dc.b $00
-[0000c4a9] 0002139b                           dc.b $00
-[0000c4aa] 0002139c                           dc.b $00
-[0000c4ab] 0002139d                           dc.b $8b
-[0000c4ac] 0002139e 00006f3c                  dc.l $00006f3c ; no symbol found
-[0000c4b0] 000213a2                           dc.b $00
-[0000c4b1] 000213a3                           dc.b $00
-[0000c4b2] 000213a4                           dc.b $00
-[0000c4b3] 000213a5                           dc.b $8e
-[0000c4b4] 000213a6 00006f3c                  dc.l $00006f3c ; no symbol found
-[0000c4b8] 000213aa                           dc.b $00
-[0000c4b9] 000213ab                           dc.b $00
-[0000c4ba] 000213ac                           dc.b $00
-[0000c4bb] 000213ad                           dc.b $88
-[0000c4bc] 000213ae 00006f3c                  dc.l $00006f3c ; no symbol found
-[0000c4c0] 000213b2                           dc.b $00
-[0000c4c1] 000213b3                           dc.b $00
-[0000c4c2] 000213b4                           dc.b $00
-[0000c4c3] 000213b5                           dc.b $a7
-[0000c4c4] 000213b6 00006f3c                  dc.l $00006f3c ; no symbol found
-[0000c4c8] 000213ba                           dc.b $00
-[0000c4c9] 000213bb                           dc.b $00
-[0000c4ca] 000213bc                           dc.b $00
-[0000c4cb] 000213bd                           dc.b $aa
-[0000c4cc] 000213be 00006ed6                  dc.l $00006ed6 ; no symbol found
-[0000c4d0] 000213c2                           dc.b $00
-[0000c4d1] 000213c3                           dc.b $00
-[0000c4d2] 000213c4                           dc.b $00
-[0000c4d3] 000213c5                           dc.b $69
-[0000c4d4] 000213c6 00006ed6                  dc.l $00006ed6 ; no symbol found
-[0000c4d8] 000213ca                           dc.b $00
-[0000c4d9] 000213cb                           dc.b $00
-[0000c4da] 000213cc                           dc.b $00
-[0000c4db] 000213cd                           dc.b $a9
-[0000c4dc] 000213ce                           dc.b $00
-[0000c4dd] 000213cf                           dc.b $00
-[0000c4de] 000213d0                           dc.b $00
-[0000c4df] 000213d1                           dc.b $00
-[0000c4e0] 000213d2 00006f56                  dc.l $00006f56 ; no symbol found
-[0000c4e4] 000213d6 00007728                  dc.l $00007728 ; no symbol found
-[0000c4e8] 000213da                           dc.b $00
-[0000c4e9] 000213db                           dc.b $00
-[0000c4ea] 000213dc                           dc.b $00
-[0000c4eb] 000213dd                           dc.b $60
-[0000c4ec] 000213de 0000769e                  dc.l $0000769e ; no symbol found
-[0000c4f0] 000213e2                           dc.b $00
-[0000c4f1] 000213e3                           dc.b $00
-[0000c4f2] 000213e4                           dc.b $00
-[0000c4f3] 000213e5                           dc.b $9d
-[0000c4f4] 000213e6 00007610                  dc.l $00007610 ; no symbol found
-[0000c4f8] 000213ea                           dc.b $00
-[0000c4f9] 000213eb                           dc.b $00
-[0000c4fa] 000213ec                           dc.b $00
-[0000c4fb] 000213ed                           dc.b $82
-[0000c4fc] 000213ee 000075f8                  dc.l $000075f8 ; no symbol found
-[0000c500] 000213f2                           dc.b $00
-[0000c501] 000213f3                           dc.b $00
-[0000c502] 000213f4                           dc.b $00
-[0000c503] 000213f5                           dc.b $9b
-[0000c504] 000213f6 000075e0                  dc.l $000075e0 ; no symbol found
-[0000c508] 000213fa                           dc.b $00
-[0000c509] 000213fb                           dc.b $00
-[0000c50a] 000213fc                           dc.b $00
-[0000c50b] 000213fd                           dc.b $94
-[0000c50c] 000213fe 00007596                  dc.l $00007596 ; no symbol found
-[0000c510] 00021402                           dc.b $00
-[0000c511] 00021403                           dc.b $00
-[0000c512] 00021404                           dc.b $00
-[0000c513] 00021405                           dc.b $90
-[0000c514] 00021406 0000754c                  dc.l $0000754c ; no symbol found
-[0000c518] 0002140a                           dc.b $00
-[0000c519] 0002140b                           dc.b $00
-[0000c51a] 0002140c                           dc.b $00
-[0000c51b] 0002140d                           dc.b $8f
-[0000c51c] 0002140e 00007502                  dc.l $00007502 ; no symbol found
-[0000c520] 00021412                           dc.b $00
-[0000c521] 00021413                           dc.b $00
-[0000c522] 00021414                           dc.b $00
-[0000c523] 00021415                           dc.b $96
-[0000c524] 00021416 000074b8                  dc.l $000074b8 ; no symbol found
-[0000c528] 0002141a                           dc.b $00
-[0000c529] 0002141b                           dc.b $00
-[0000c52a] 0002141c                           dc.b $00
-[0000c52b] 0002141d                           dc.b $95
-[0000c52c] 0002141e 0000748a                  dc.l $0000748a ; no symbol found
-[0000c530] 00021422                           dc.b $00
-[0000c531] 00021423                           dc.b $00
-[0000c532] 00021424                           dc.b $00
-[0000c533] 00021425                           dc.b $a0
-[0000c534] 00021426 00007478                  dc.l $00007478 ; no symbol found
-[0000c538] 0002142a                           dc.b $00
-[0000c539] 0002142b                           dc.b $00
-[0000c53a] 0002142c                           dc.b $00
-[0000c53b] 0002142d                           dc.b $97
-[0000c53c] 0002142e 0000746c                  dc.l $0000746c ; no symbol found
-[0000c540] 00021432                           dc.b $00
-[0000c541] 00021433                           dc.b $00
-[0000c542] 00021434                           dc.b $00
-[0000c543] 00021435                           dc.b $a3
-[0000c544] 00021436 00007460                  dc.l $00007460 ; no symbol found
-[0000c548] 0002143a                           dc.b $00
-[0000c549] 0002143b                           dc.b $00
-[0000c54a] 0002143c                           dc.b $00
-[0000c54b] 0002143d                           dc.b $9c
-[0000c54c] 0002143e 00007454                  dc.l $00007454 ; no symbol found
-[0000c550] 00021442                           dc.b $00
-[0000c551] 00021443                           dc.b $00
-[0000c552] 00021444                           dc.b $00
-[0000c553] 00021445                           dc.b $c1
-[0000c554] 00021446 00007404                  dc.l $00007404 ; no symbol found
-[0000c558] 0002144a                           dc.b $00
-[0000c559] 0002144b                           dc.b $00
-[0000c55a] 0002144c                           dc.b $00
-[0000c55b] 0002144d                           dc.b $99
-[0000c55c] 0002144e 000073b4                  dc.l $000073b4 ; no symbol found
-[0000c560] 00021452                           dc.b $00
-[0000c561] 00021453                           dc.b $00
-[0000c562] 00021454                           dc.b $00
-[0000c563] 00021455                           dc.b $85
-[0000c564] 00021456 0000735c                  dc.l $0000735c ; no symbol found
-[0000c568] 0002145a                           dc.b $00
-[0000c569] 0002145b                           dc.b $00
-[0000c56a] 0002145c                           dc.b $00
-[0000c56b] 0002145d                           dc.b $e2
-[0000c56c] 0002145e 00007322                  dc.l $00007322 ; no symbol found
-[0000c570] 00021462                           dc.b $00
-[0000c571] 00021463                           dc.b $00
-[0000c572] 00021464                           dc.b $00
-[0000c573] 00021465                           dc.b $d8
-[0000c574] 00021466 0000730e                  dc.l $0000730e ; no symbol found
-[0000c578] 0002146a                           dc.b $00
-[0000c579] 0002146b                           dc.b $00
-[0000c57a] 0002146c                           dc.b $00
-[0000c57b] 0002146d                           dc.b $8b
-[0000c57c] 0002146e 000072be                  dc.l $000072be ; no symbol found
-[0000c580] 00021472                           dc.b $00
-[0000c581] 00021473                           dc.b $00
-[0000c582] 00021474                           dc.b $00
-[0000c583] 00021475                           dc.b $de
-[0000c584] 00021476 00007288                  dc.l $00007288 ; no symbol found
-[0000c588] 0002147a                           dc.b $00
-[0000c589] 0002147b                           dc.b $00
-[0000c58a] 0002147c                           dc.b $00
-[0000c58b] 0002147d                           dc.b $9f
-[0000c58c] 0002147e 0000724e                  dc.l $0000724e ; no symbol found
-[0000c590] 00021482                           dc.b $00
-[0000c591] 00021483                           dc.b $00
-[0000c592] 00021484                           dc.b $00
-[0000c593] 00021485                           dc.b $6c
-[0000c594] 00021486 00007240                  dc.l $00007240 ; no symbol found
-[0000c598] 0002148a                           dc.b $00
-[0000c599] 0002148b                           dc.b $00
-[0000c59a] 0002148c                           dc.b $00
-[0000c59b] 0002148d                           dc.b $43
-[0000c59c] 0002148e 0000722c                  dc.l $0000722c ; no symbol found
-[0000c5a0] 00021492                           dc.b $00
-[0000c5a1] 00021493                           dc.b $00
-[0000c5a2] 00021494                           dc.b $00
-[0000c5a3] 00021495                           dc.b $5a
-[0000c5a4] 00021496 000071fc                  dc.l $000071fc ; no symbol found
-[0000c5a8] 0002149a                           dc.b $00
-[0000c5a9] 0002149b                           dc.b $00
-[0000c5aa] 0002149c                           dc.b $00
-[0000c5ab] 0002149d                           dc.b $6b
-[0000c5ac] 0002149e 000071b2                  dc.l $000071b2 ; no symbol found
-[0000c5b0] 000214a2                           dc.b $00
-[0000c5b1] 000214a3                           dc.b $00
-[0000c5b2] 000214a4                           dc.b $00
-[0000c5b3] 000214a5                           dc.b $66
-[0000c5b4] 000214a6 0000711c                  dc.l $0000711c ; no symbol found
-[0000c5b8] 000214aa                           dc.b $00
-[0000c5b9] 000214ab                           dc.b $00
-[0000c5ba] 000214ac                           dc.b $00
-[0000c5bb] 000214ad                           dc.b $64
-[0000c5bc] 000214ae                           dc.b $00
-[0000c5bd] 000214af                           dc.b $00
-[0000c5be] 000214b0                           dc.b $00
-[0000c5bf] 000214b1                           dc.b $00
-[0000c5c0] 000214b2 0000774a                  dc.l $0000774a ; no symbol found
-[0000c5c4] 000214b6                           dc.b 'illegal side effect',0
-[0000c5d8] 000214ca                           dc.b 'illegal %',0
-[0000c5e2] 000214d4                           dc.b 'illegal /',0
-[0000c5ec] 000214de                           dc.b $00
-[0000c5ed] 000214df                           dc.b $00
-[0000c5ee] 000214e0                           dc.b $00
-[0000c5ef] 000214e1                           dc.b $00
-[0000c5f0] 000214e2                           dc.b $00
-[0000c5f1] 000214e3                           dc.b $00
-[0000c5f2] 000214e4                           dc.b $00
-[0000c5f3] 000214e5                           dc.b $00
+[000211cc]                           dc.b $00
+[000211cd]                           dc.b $00
+[000211ce]                           dc.b $00
+[000211cf]                           dc.b $00
+[000211d0]                           dc.b $00
+[000211d1]                           dc.b $00
+[000211d2]                           dc.b $00
+[000211d3]                           dc.b $00
+[000211d4]                           dc.b $00
+[000211d5]                           dc.b $00
+[000211d6]                           dc.b $00
+[000211d7]                           dc.b $00
+[000211d8]                           dc.b $00
+[000211d9]                           dc.b $00
+[000211da]                           dc.b $00
+[000211db]                           dc.b $00
+[000211dc]                           dc.b $00
+[000211dd]                           dc.b $00
+[000211de]                           dc.b $00
+[000211df]                           dc.b $00
+[000211e0]                           dc.b $00
+[000211e1]                           dc.b $00
+[000211e2]                           dc.b $00
+[000211e3]                           dc.b $00
+[000211e4]                           dc.w $949b
+[000211e6]                           dc.w $9596
+[000211e8]                           dc.w $8f90
+[000211ea]                           dc.b $00
+[000211eb]                           dc.b $9b
+[000211ec]                           dc.w $9490
+[000211ee]                           dc.w $8f96
+[000211f0]                           dc.w $9500
+[000211f2]                           dc.w $8a8f
+[000211f4]                           dc.w $8d8e
+[000211f6]                           dc.w $8887
+[000211f8]                           dc.b $00
+[000211f9]                           dc.b $00
+[000211fa]                           dc.w $fff9
+[000211fc]                           dc.w $fff8
+[000211fe]                           dc.b $00
+[000211ff]                           dc.b $00
+[00021200]                           dc.b $00
+[00021201]                           dc.b $00
+[00021202]                           dc.b $00
+[00021203]                           dc.b $00
+[00021204]                           dc.b $00
+[00021205]                           dc.b $00
+[00021206]                           dc.b $00
+[00021207]                           dc.b $00
+[00021208]                           dc.b $00
+[00021209]                           dc.b $00
+[0002120a]                           dc.b $00
+[0002120b]                           dc.b $00
+[0002120c]                           dc.b $00
+[0002120d]                           dc.b $00
+[0002120e]                           dc.b $00
+[0002120f]                           dc.b $00
+[00021210]                           dc.b $00
+[00021211]                           dc.b $00
+[00021212]                           dc.b $00
+[00021213]                           dc.b $00
+[00021214]                           dc.b $00
+[00021215]                           dc.b $00
+[00021216]                           dc.b $00
+[00021217]                           dc.b $00
+[00021218]                           dc.b $00
+[00021219]                           dc.b $00
+[0002121a]                           dc.b $00
+[0002121b]                           dc.b $00
+[0002121c]                           dc.b $00
+[0002121d]                           dc.b $00
+[0002121e]                           dc.b $00
+[0002121f]                           dc.b $00
+[00021220]                           dc.b $00
+[00021221]                           dc.b $00
+[00021222]                           dc.b $00
+[00021223]                           dc.b $00
+[00021224]                           dc.b $00
+[00021225]                           dc.b $00
+[00021226]                           dc.b $00
+[00021227]                           dc.b $00
+[00021228] 000068aa                  dc.l $000068aa ; no symbol found
+[0002122c]                           dc.b $00
+[0002122d]                           dc.b $00
+[0002122e]                           dc.b $00
+[0002122f]                           dc.b $50
+[00021230] 0000686a                  dc.l $0000686a ; no symbol found
+[00021234]                           dc.b $00
+[00021235]                           dc.b $00
+[00021236]                           dc.b $00
+[00021237]                           dc.b $42
+[00021238] 0000681a                  dc.l $0000681a ; no symbol found
+[0002123c]                           dc.b $00
+[0002123d]                           dc.b $00
+[0002123e]                           dc.b $00
+[0002123f]                           dc.b $40
+[00021240] 00006806                  dc.l $00006806 ; no symbol found
+[00021244]                           dc.b $00
+[00021245]                           dc.b $00
+[00021246]                           dc.b $00
+[00021247]                           dc.b $1a
+[00021248] 000067f4                  dc.l $000067f4 ; no symbol found
+[0002124c]                           dc.b $00
+[0002124d]                           dc.b $00
+[0002124e]                           dc.b $00
+[0002124f]                           dc.b $19
+[00021250] 000067e2                  dc.l $000067e2 ; no symbol found
+[00021254]                           dc.b $00
+[00021255]                           dc.b $00
+[00021256]                           dc.b $00
+[00021257]                           dc.b $18
+[00021258] 000067ce                  dc.l $000067ce ; no symbol found
+[0002125c]                           dc.b $00
+[0002125d]                           dc.b $00
+[0002125e]                           dc.b $00
+[0002125f]                           dc.b $09
+[00021260]                           dc.b $00
+[00021261]                           dc.b $00
+[00021262]                           dc.b $00
+[00021263]                           dc.b $00
+[00021264] 000068b0                  dc.l $000068b0 ; no symbol found
+[00021268] 00006a6a                  dc.l $00006a6a ; no symbol found
+[0002126c]                           dc.b $00
+[0002126d]                           dc.b $00
+[0002126e]                           dc.b $00
+[0002126f]                           dc.b $21
+[00021270] 00006a6a                  dc.l $00006a6a ; no symbol found
+[00021274]                           dc.b $00
+[00021275]                           dc.b $00
+[00021276]                           dc.b $00
+[00021277]                           dc.b $20
+[00021278] 00006a3e                  dc.l $00006a3e ; no symbol found
+[0002127c]                           dc.b $00
+[0002127d]                           dc.b $00
+[0002127e]                           dc.b $00
+[0002127f]                           dc.b $40
+[00021280] 000069e0                  dc.l $000069e0 ; no symbol found
+[00021284]                           dc.b $00
+[00021285]                           dc.b $00
+[00021286]                           dc.b $00
+[00021287]                           dc.b $1a
+[00021288] 000069e0                  dc.l $000069e0 ; no symbol found
+[0002128c]                           dc.b $00
+[0002128d]                           dc.b $00
+[0002128e]                           dc.b $00
+[0002128f]                           dc.b $18
+[00021290] 000069e0                  dc.l $000069e0 ; no symbol found
+[00021294]                           dc.b $00
+[00021295]                           dc.b $00
+[00021296]                           dc.b $00
+[00021297]                           dc.b $11
+[00021298] 000069e0                  dc.l $000069e0 ; no symbol found
+[0002129c]                           dc.b $00
+[0002129d]                           dc.b $00
+[0002129e]                           dc.b $00
+[0002129f]                           dc.b $10
+[000212a0] 000069e0                  dc.l $000069e0 ; no symbol found
+[000212a4]                           dc.b $00
+[000212a5]                           dc.b $00
+[000212a6]                           dc.b $00
+[000212a7]                           dc.b $0a
+[000212a8] 000069e0                  dc.l $000069e0 ; no symbol found
+[000212ac]                           dc.b $00
+[000212ad]                           dc.b $00
+[000212ae]                           dc.b $00
+[000212af]                           dc.b $09
+[000212b0] 000069e0                  dc.l $000069e0 ; no symbol found
+[000212b4]                           dc.b $00
+[000212b5]                           dc.b $00
+[000212b6]                           dc.b $00
+[000212b7]                           dc.b $08
+[000212b8]                           dc.b $00
+[000212b9]                           dc.b $00
+[000212ba]                           dc.b $00
+[000212bb]                           dc.b $00
+[000212bc] 00006a8c                  dc.l $00006a8c ; no symbol found
+[000212c0]                           dc.b $00
+[000212c1]                           dc.b $00
+[000212c2]                           dc.b $00
+[000212c3]                           dc.b $40
+[000212c4]                           dc.b $00
+[000212c5]                           dc.b $40
+[000212c6]                           dc.b $00
+[000212c7]                           dc.b $00
+[000212c8]                           dc.b $00
+[000212c9]                           dc.b $40
+[000212ca]                           dc.b $00
+[000212cb]                           dc.b $40
+[000212cc]                           dc.b $00
+[000212cd]                           dc.b $41
+[000212ce]                           dc.b $00
+[000212cf]                           dc.b $41
+[000212d0]                           dc.b $00
+[000212d1]                           dc.b $40
+[000212d2]                           dc.b $00
+[000212d3]                           dc.b $40
+[000212d4]                           dc.b $00
+[000212d5]                           dc.b $c0
+[000212d6]                           dc.b $00
+[000212d7]                           dc.b $c0
+[000212d8]                           dc.b $00
+[000212d9]                           dc.b $40
+[000212da]                           dc.b $00
+[000212db]                           dc.b $c0
+[000212dc]                           dc.b $00
+[000212dd]                           dc.b $c0
+[000212de]                           dc.b $00
+[000212df]                           dc.b $c0
+[000212e0]                           dc.b $00
+[000212e1]                           dc.b $c0
+[000212e2]                           dc.b $00
+[000212e3]                           dc.b $c2
+[000212e4]                           dc.b $00
+[000212e5]                           dc.b $c0
+[000212e6]                           dc.b $00
+[000212e7]                           dc.b $c0
+[000212e8]                           dc.b $00
+[000212e9]                           dc.b $c0
+[000212ea]                           dc.b $00
+[000212eb]                           dc.b $c0
+[000212ec]                           dc.b $00
+[000212ed]                           dc.b $c0
+[000212ee]                           dc.b $00
+[000212ef]                           dc.b $c0
+[000212f0]                           dc.b $00
+[000212f1]                           dc.b $c0
+[000212f2]                           dc.b $00
+[000212f3]                           dc.b $c0
+[000212f4]                           dc.b $00
+[000212f5]                           dc.b $f0
+[000212f6]                           dc.b $00
+[000212f7]                           dc.b $d0
+[000212f8]                           dc.b $00
+[000212f9]                           dc.b $ec
+[000212fa]                           dc.b $00
+[000212fb]                           dc.b $c7
+[000212fc]                           dc.b $00
+[000212fd]                           dc.b $c3
+[000212fe]                           dc.b $00
+[000212ff]                           dc.b $eb
+[00021300]                           dc.b $00
+[00021301]                           dc.b $f3
+[00021302]                           dc.b $00
+[00021303]                           dc.b $f3
+[00021304]                           dc.b $00
+[00021305]                           dc.b $d3
+[00021306]                           dc.b $00
+[00021307]                           dc.b $d3
+[00021308]                           dc.b $00
+[00021309]                           dc.b $c3
+[0002130a]                           dc.b $00
+[0002130b]                           dc.b $c3
+[0002130c]                           dc.b $00
+[0002130d]                           dc.b $c3
+[0002130e]                           dc.b $00
+[0002130f]                           dc.b $c3
+[00021310]                           dc.b $00
+[00021311]                           dc.b $e3
+[00021312]                           dc.b $00
+[00021313]                           dc.b $e3
+[00021314]                           dc.b $00
+[00021315]                           dc.b $c0
+[00021316]                           dc.b $00
+[00021317]                           dc.b $c0
+[00021318]                           dc.b $00
+[00021319]                           dc.b $00
+[0002131a]                           dc.b $00
+[0002131b]                           dc.b $40
+[0002131c]                           dc.b $00
+[0002131d]                           dc.b $00
+[0002131e] 00006e74                  dc.l $00006e74 ; no symbol found
+[00021322]                           dc.b $00
+[00021323]                           dc.b $00
+[00021324]                           dc.b $00
+[00021325]                           dc.b $21
+[00021326] 00006e72                  dc.l $00006e72 ; no symbol found
+[0002132a]                           dc.b $00
+[0002132b]                           dc.b $00
+[0002132c]                           dc.b $00
+[0002132d]                           dc.b $20
+[0002132e] 00006e62                  dc.l $00006e62 ; no symbol found
+[00021332]                           dc.b $00
+[00021333]                           dc.b $00
+[00021334]                           dc.b $00
+[00021335]                           dc.b $11
+[00021336] 00006e5a                  dc.l $00006e5a ; no symbol found
+[0002133a]                           dc.b $00
+[0002133b]                           dc.b $00
+[0002133c]                           dc.b $00
+[0002133d]                           dc.b $1a
+[0002133e] 00006e4a                  dc.l $00006e4a ; no symbol found
+[00021342]                           dc.b $00
+[00021343]                           dc.b $00
+[00021344]                           dc.b $00
+[00021345]                           dc.b $10
+[00021346] 00006e42                  dc.l $00006e42 ; no symbol found
+[0002134a]                           dc.b $00
+[0002134b]                           dc.b $00
+[0002134c]                           dc.b $00
+[0002134d]                           dc.b $18
+[0002134e] 00006e32                  dc.l $00006e32 ; no symbol found
+[00021352]                           dc.b $00
+[00021353]                           dc.b $00
+[00021354]                           dc.b $00
+[00021355]                           dc.b $0a
+[00021356] 00006e18                  dc.l $00006e18 ; no symbol found
+[0002135a]                           dc.b $00
+[0002135b]                           dc.b $00
+[0002135c]                           dc.b $00
+[0002135d]                           dc.b $08
+[0002135e]                           dc.b $00
+[0002135f]                           dc.b $00
+[00021360]                           dc.b $00
+[00021361]                           dc.b $00
+[00021362] 00006e76                  dc.l $00006e76 ; no symbol found
+[00021366] 00006f40                  dc.l $00006f40 ; no symbol found
+[0002136a]                           dc.b $00
+[0002136b]                           dc.b $00
+[0002136c]                           dc.b $00
+[0002136d]                           dc.b $9f
+[0002136e] 00006f3c                  dc.l $00006f3c ; no symbol found
+[00021372]                           dc.b $00
+[00021373]                           dc.b $00
+[00021374]                           dc.b $00
+[00021375]                           dc.b $8a
+[00021376] 00006f3c                  dc.l $00006f3c ; no symbol found
+[0002137a]                           dc.b $00
+[0002137b]                           dc.b $00
+[0002137c]                           dc.b $00
+[0002137d]                           dc.b $89
+[0002137e] 00006f3c                  dc.l $00006f3c ; no symbol found
+[00021382]                           dc.b $00
+[00021383]                           dc.b $00
+[00021384]                           dc.b $00
+[00021385]                           dc.b $92
+[00021386] 00006f3c                  dc.l $00006f3c ; no symbol found
+[0002138a]                           dc.b $00
+[0002138b]                           dc.b $00
+[0002138c]                           dc.b $00
+[0002138d]                           dc.b $86
+[0002138e] 00006f3c                  dc.l $00006f3c ; no symbol found
+[00021392]                           dc.b $00
+[00021393]                           dc.b $00
+[00021394]                           dc.b $00
+[00021395]                           dc.b $8c
+[00021396] 00006f3c                  dc.l $00006f3c ; no symbol found
+[0002139a]                           dc.b $00
+[0002139b]                           dc.b $00
+[0002139c]                           dc.b $00
+[0002139d]                           dc.b $8b
+[0002139e] 00006f3c                  dc.l $00006f3c ; no symbol found
+[000213a2]                           dc.b $00
+[000213a3]                           dc.b $00
+[000213a4]                           dc.b $00
+[000213a5]                           dc.b $8e
+[000213a6] 00006f3c                  dc.l $00006f3c ; no symbol found
+[000213aa]                           dc.b $00
+[000213ab]                           dc.b $00
+[000213ac]                           dc.b $00
+[000213ad]                           dc.b $88
+[000213ae] 00006f3c                  dc.l $00006f3c ; no symbol found
+[000213b2]                           dc.b $00
+[000213b3]                           dc.b $00
+[000213b4]                           dc.b $00
+[000213b5]                           dc.b $a7
+[000213b6] 00006f3c                  dc.l $00006f3c ; no symbol found
+[000213ba]                           dc.b $00
+[000213bb]                           dc.b $00
+[000213bc]                           dc.b $00
+[000213bd]                           dc.b $aa
+[000213be] 00006ed6                  dc.l $00006ed6 ; no symbol found
+[000213c2]                           dc.b $00
+[000213c3]                           dc.b $00
+[000213c4]                           dc.b $00
+[000213c5]                           dc.b $69
+[000213c6] 00006ed6                  dc.l $00006ed6 ; no symbol found
+[000213ca]                           dc.b $00
+[000213cb]                           dc.b $00
+[000213cc]                           dc.b $00
+[000213cd]                           dc.b $a9
+[000213ce]                           dc.b $00
+[000213cf]                           dc.b $00
+[000213d0]                           dc.b $00
+[000213d1]                           dc.b $00
+[000213d2] 00006f56                  dc.l $00006f56 ; no symbol found
+[000213d6] 00007728                  dc.l $00007728 ; no symbol found
+[000213da]                           dc.b $00
+[000213db]                           dc.b $00
+[000213dc]                           dc.b $00
+[000213dd]                           dc.b $60
+[000213de] 0000769e                  dc.l $0000769e ; no symbol found
+[000213e2]                           dc.b $00
+[000213e3]                           dc.b $00
+[000213e4]                           dc.b $00
+[000213e5]                           dc.b $9d
+[000213e6] 00007610                  dc.l $00007610 ; no symbol found
+[000213ea]                           dc.b $00
+[000213eb]                           dc.b $00
+[000213ec]                           dc.b $00
+[000213ed]                           dc.b $82
+[000213ee] 000075f8                  dc.l $000075f8 ; no symbol found
+[000213f2]                           dc.b $00
+[000213f3]                           dc.b $00
+[000213f4]                           dc.b $00
+[000213f5]                           dc.b $9b
+[000213f6] 000075e0                  dc.l $000075e0 ; no symbol found
+[000213fa]                           dc.b $00
+[000213fb]                           dc.b $00
+[000213fc]                           dc.b $00
+[000213fd]                           dc.b $94
+[000213fe] 00007596                  dc.l $00007596 ; no symbol found
+[00021402]                           dc.b $00
+[00021403]                           dc.b $00
+[00021404]                           dc.b $00
+[00021405]                           dc.b $90
+[00021406] 0000754c                  dc.l $0000754c ; no symbol found
+[0002140a]                           dc.b $00
+[0002140b]                           dc.b $00
+[0002140c]                           dc.b $00
+[0002140d]                           dc.b $8f
+[0002140e] 00007502                  dc.l $00007502 ; no symbol found
+[00021412]                           dc.b $00
+[00021413]                           dc.b $00
+[00021414]                           dc.b $00
+[00021415]                           dc.b $96
+[00021416] 000074b8                  dc.l $000074b8 ; no symbol found
+[0002141a]                           dc.b $00
+[0002141b]                           dc.b $00
+[0002141c]                           dc.b $00
+[0002141d]                           dc.b $95
+[0002141e] 0000748a                  dc.l $0000748a ; no symbol found
+[00021422]                           dc.b $00
+[00021423]                           dc.b $00
+[00021424]                           dc.b $00
+[00021425]                           dc.b $a0
+[00021426] 00007478                  dc.l $00007478 ; no symbol found
+[0002142a]                           dc.b $00
+[0002142b]                           dc.b $00
+[0002142c]                           dc.b $00
+[0002142d]                           dc.b $97
+[0002142e] 0000746c                  dc.l $0000746c ; no symbol found
+[00021432]                           dc.b $00
+[00021433]                           dc.b $00
+[00021434]                           dc.b $00
+[00021435]                           dc.b $a3
+[00021436] 00007460                  dc.l $00007460 ; no symbol found
+[0002143a]                           dc.b $00
+[0002143b]                           dc.b $00
+[0002143c]                           dc.b $00
+[0002143d]                           dc.b $9c
+[0002143e] 00007454                  dc.l $00007454 ; no symbol found
+[00021442]                           dc.b $00
+[00021443]                           dc.b $00
+[00021444]                           dc.b $00
+[00021445]                           dc.b $c1
+[00021446] 00007404                  dc.l $00007404 ; no symbol found
+[0002144a]                           dc.b $00
+[0002144b]                           dc.b $00
+[0002144c]                           dc.b $00
+[0002144d]                           dc.b $99
+[0002144e] 000073b4                  dc.l $000073b4 ; no symbol found
+[00021452]                           dc.b $00
+[00021453]                           dc.b $00
+[00021454]                           dc.b $00
+[00021455]                           dc.b $85
+[00021456] 0000735c                  dc.l $0000735c ; no symbol found
+[0002145a]                           dc.b $00
+[0002145b]                           dc.b $00
+[0002145c]                           dc.b $00
+[0002145d]                           dc.b $e2
+[0002145e] 00007322                  dc.l $00007322 ; no symbol found
+[00021462]                           dc.b $00
+[00021463]                           dc.b $00
+[00021464]                           dc.b $00
+[00021465]                           dc.b $d8
+[00021466] 0000730e                  dc.l $0000730e ; no symbol found
+[0002146a]                           dc.b $00
+[0002146b]                           dc.b $00
+[0002146c]                           dc.b $00
+[0002146d]                           dc.b $8b
+[0002146e] 000072be                  dc.l $000072be ; no symbol found
+[00021472]                           dc.b $00
+[00021473]                           dc.b $00
+[00021474]                           dc.b $00
+[00021475]                           dc.b $de
+[00021476] 00007288                  dc.l $00007288 ; no symbol found
+[0002147a]                           dc.b $00
+[0002147b]                           dc.b $00
+[0002147c]                           dc.b $00
+[0002147d]                           dc.b $9f
+[0002147e] 0000724e                  dc.l $0000724e ; no symbol found
+[00021482]                           dc.b $00
+[00021483]                           dc.b $00
+[00021484]                           dc.b $00
+[00021485]                           dc.b $6c
+[00021486] 00007240                  dc.l $00007240 ; no symbol found
+[0002148a]                           dc.b $00
+[0002148b]                           dc.b $00
+[0002148c]                           dc.b $00
+[0002148d]                           dc.b $43
+[0002148e] 0000722c                  dc.l $0000722c ; no symbol found
+[00021492]                           dc.b $00
+[00021493]                           dc.b $00
+[00021494]                           dc.b $00
+[00021495]                           dc.b $5a
+[00021496] 000071fc                  dc.l $000071fc ; no symbol found
+[0002149a]                           dc.b $00
+[0002149b]                           dc.b $00
+[0002149c]                           dc.b $00
+[0002149d]                           dc.b $6b
+[0002149e] 000071b2                  dc.l $000071b2 ; no symbol found
+[000214a2]                           dc.b $00
+[000214a3]                           dc.b $00
+[000214a4]                           dc.b $00
+[000214a5]                           dc.b $66
+[000214a6] 0000711c                  dc.l $0000711c ; no symbol found
+[000214aa]                           dc.b $00
+[000214ab]                           dc.b $00
+[000214ac]                           dc.b $00
+[000214ad]                           dc.b $64
+[000214ae]                           dc.b $00
+[000214af]                           dc.b $00
+[000214b0]                           dc.b $00
+[000214b1]                           dc.b $00
+[000214b2] 0000774a                  dc.l $0000774a ; no symbol found
+[000214b6]                           dc.b 'illegal side effect',0
+[000214ca]                           dc.b 'illegal %',0
+[000214d4]                           dc.b 'illegal /',0
+[000214de]                           dc.b $00
+[000214df]                           dc.b $00
+[000214e0]                           dc.b $00
+[000214e1]                           dc.b $00
+[000214e2]                           dc.b $00
+[000214e3]                           dc.b $00
+[000214e4]                           dc.b $00
+[000214e5]                           dc.b $00
 _typtab:
-[0000c5f4] 000214e6                           dc.w $0809
-[0000c5f6] 000214e8                           dc.w $0a10
-[0000c5f8] 000214ea                           dc.w $1118
-[0000c5fa] 000214ec                           dc.w $191a
-[0000c5fc] 000214ee                           dc.b ' !()*@',0
-[0000c603] 000214f5                           dc.b $09
+[000214e6]                           dc.w $0809
+[000214e8]                           dc.w $0a10
+[000214ea]                           dc.w $1118
+[000214ec]                           dc.w $191a
+[000214ee]                           dc.b ' !()*@',0
+[000214f5]                           dc.b $09
 _bndtab:
-[0000c604] 000214f6                           dc.b $00
-[0000c605] 000214f7                           dc.b $00
-[0000c606] 000214f8                           dc.b $00
-[0000c607] 000214f9                           dc.b $01
-[0000c608] 000214fa                           dc.w $01ff
-[0000c60a] 000214fc                           dc.w $ffff
-[0000c60c] 000214fe                           dc.w $0202
-[0000c60e] 00021500                           dc.w $0203
-[0000c610] 00021502                           dc.w $03fe
-[0000c612] 00021504                           dc.b $fe
+[000214f6]                           dc.b $00
+[000214f7]                           dc.b $00
+[000214f8]                           dc.b $00
+[000214f9]                           dc.b $01
+[000214fa]                           dc.w $01ff
+[000214fc]                           dc.w $ffff
+[000214fe]                           dc.w $0202
+[00021500]                           dc.w $0203
+[00021502]                           dc.w $03fe
+[00021504]                           dc.b $fe
 _bytab:
-[0000c613] 00021505                           dc.b $01
-[0000c614] 00021506                           dc.w $0101
-[0000c616] 00021508                           dc.w $0202
-[0000c618] 0002150a                           dc.w $ffff
-[0000c61a] 0002150c                           dc.w $ff04
-[0000c61c] 0002150e                           dc.w $0404
-[0000c61e] 00021510                           dc.w $0808
-[0000c620] 00021512                           dc.b $00
-[0000c621] 00021513                           dc.b $00
+[00021505]                           dc.b $01
+[00021506]                           dc.w $0101
+[00021508]                           dc.w $0202
+[0002150a]                           dc.w $ffff
+[0002150c]                           dc.w $ff04
+[0002150e]                           dc.w $0404
+[00021510]                           dc.w $0808
+[00021512]                           dc.b $00
+[00021513]                           dc.b $00
 _ttyptab:
-[0000c622] 00021514 00020d68                  dc.l $00020d68 ; no symbol found
-[0000c626] 00021518 00020d7a                  dc.l $00020d7a ; no symbol found
-[0000c62a] 0002151c 00020d8c                  dc.l $00020d8c ; no symbol found
-[0000c62e] 00021520 00020d9e                  dc.l $00020d9e ; no symbol found
-[0000c632] 00021524 00020db0                  dc.l $00020db0 ; no symbol found
-[0000c636] 00021528 00020dc2                  dc.l $00020dc2 ; no symbol found
-[0000c63a] 0002152c                           dc.b $00
-[0000c63b] 0002152d                           dc.b $00
-[0000c63c] 0002152e                           dc.b $00
-[0000c63d] 0002152f                           dc.b $00
-[0000c63e] 00021530 00020dd4                  dc.l $00020dd4 ; no symbol found
-[0000c642] 00021534 00020de6                  dc.l $00020de6 ; no symbol found
-[0000c646] 00021538 00020df8                  dc.l $00020df8 ; no symbol found
-[0000c64a] 0002153c 00020e0a                  dc.l $00020e0a ; no symbol found
-[0000c64e] 00021540 00020e1c                  dc.l $00020e1c ; no symbol found
-[0000c652] 00021544 00020e2e                  dc.l $00020e2e ; no symbol found
-[0000c656] 00021548                           dc.b $00
-[0000c657] 00021549                           dc.b $00
-[0000c658] 0002154a                           dc.b $00
-[0000c659] 0002154b                           dc.b $00
-[0000c65a] 0002154c                           dc.b $00
-[0000c65b] 0002154d                           dc.b $00
-[0000c65c] 0002154e                           dc.b $00
-[0000c65d] 0002154f                           dc.b $00
+[00021514] 00020d68                  dc.l _atchar
+[00021518] 00020d7a                  dc.l _atichar
+[0002151c] 00020d8c                  dc.l _atuchar
+[00021520] 00020d9e                  dc.l _atshort
+[00021524] 00020db0                  dc.l _atushort
+[00021528] 00020dc2                  dc.l _atint
+[0002152c]                           dc.l 0
+[00021530] 00020dd4                  dc.l _atunsign
+[00021534] 00020de6                  dc.l _atlong
+[00021538] 00020df8                  dc.l _atulong
+[0002153c] 00020e0a                  dc.l _atfloat
+[00021540] 00020e1c                  dc.l _atdouble
+[00021544] 00020e2e                  dc.l _atldoubl
+[00021548]                           dc.l 0
+[0002154c]                           dc.l 0
 _xtab:
-[0000c65e] 00021550                           dc.w $0100
-[0000c660] 00021552                           dc.w $0203
-[0000c662] 00021554                           dc.w $0500
-[0000c664] 00021556                           dc.b $00
-[0000c665] 00021557                           dc.b $00
-[0000c666] 00021558                           dc.w $0608
-[0000c668] 0002155a                           dc.b $09,$0a,$0a,0
-[0000c66c] 0002155e                           dc.b $00
+[00021550]                           dc.w $0100
+[00021552]                           dc.w $0203
+[00021554]                           dc.w $0500
+[00021556]                           dc.b $00
+[00021557]                           dc.b $00
+[00021558]                           dc.w $0608
+[0002155a]                           dc.b $09,$0a,$0a,0
+[0002155e]                           dc.b $00
 _rettab:
-[0000c66d] 0002155f                           dc.b $01
-[0000c66e] 00021560                           dc.w $0101
-[0000c670] 00021562                           dc.w $0101
-[0000c672] 00021564                           dc.w $0101
-[0000c674] 00021566                           dc.w $0103
-[0000c676] 00021568                           dc.w $0340
-[0000c678] 0002156a                           dc.w $4040
-[0000c67a] 0002156c                           dc.w $0101
-[0000c67c] 0002156e 00007836                  dc.l $00007836 ; no symbol found
-[0000c680] 00021572                           dc.b $00
-[0000c681] 00021573                           dc.b $00
-[0000c682] 00021574                           dc.b $00
-[0000c683] 00021575                           dc.b $49
-[0000c684] 00021576 00007836                  dc.l $00007836 ; no symbol found
-[0000c688] 0002157a                           dc.b $00
-[0000c689] 0002157b                           dc.b $00
-[0000c68a] 0002157c                           dc.b $00
-[0000c68b] 0002157d                           dc.b $48
-[0000c68c] 0002157e 0000782c                  dc.l $0000782c ; no symbol found
-[0000c690] 00021582                           dc.b $00
-[0000c691] 00021583                           dc.b $00
-[0000c692] 00021584                           dc.b $00
-[0000c693] 00021585                           dc.b $28
-[0000c694] 00021586 0000782c                  dc.l $0000782c ; no symbol found
-[0000c698] 0002158a                           dc.b $00
-[0000c699] 0002158b                           dc.b $00
-[0000c69a] 0002158c                           dc.b $00
-[0000c69b] 0002158d                           dc.b $29
-[0000c69c] 0002158e 0000782c                  dc.l $0000782c ; no symbol found
-[0000c6a0] 00021592                           dc.b $00
-[0000c6a1] 00021593                           dc.b $00
-[0000c6a2] 00021594                           dc.b $00
-[0000c6a3] 00021595                           dc.b $2a
-[0000c6a4] 00021596                           dc.b $00
-[0000c6a5] 00021597                           dc.b $00
-[0000c6a6] 00021598                           dc.b $00
-[0000c6a7] 00021599                           dc.b $00
-[0000c6a8] 0002159a 0000783e                  dc.l $0000783e ; no symbol found
-[0000c6ac] 0002159e 00007cb0                  dc.l $00007cb0 ; no symbol found
-[0000c6b0] 000215a2                           dc.b $00
-[0000c6b1] 000215a3                           dc.b $00
-[0000c6b2] 000215a4                           dc.b $00
-[0000c6b3] 000215a5                           dc.b $49
-[0000c6b4] 000215a6 00007c6c                  dc.l $00007c6c ; no symbol found
-[0000c6b8] 000215aa                           dc.b $00
-[0000c6b9] 000215ab                           dc.b $00
-[0000c6ba] 000215ac                           dc.b $00
-[0000c6bb] 000215ad                           dc.b $48
-[0000c6bc] 000215ae 00007c3c                  dc.l $00007c3c ; no symbol found
-[0000c6c0] 000215b2                           dc.b $00
-[0000c6c1] 000215b3                           dc.b $00
-[0000c6c2] 000215b4                           dc.b $00
-[0000c6c3] 000215b5                           dc.b $41
-[0000c6c4] 000215b6 00007c1a                  dc.l $00007c1a ; no symbol found
-[0000c6c8] 000215ba                           dc.b $00
-[0000c6c9] 000215bb                           dc.b $00
-[0000c6ca] 000215bc                           dc.b $00
-[0000c6cb] 000215bd                           dc.b $40
-[0000c6cc] 000215be                           dc.b $00
-[0000c6cd] 000215bf                           dc.b $00
-[0000c6ce] 000215c0                           dc.b $00
-[0000c6cf] 000215c1                           dc.b $00
-[0000c6d0] 000215c2 00007d12                  dc.l $00007d12 ; no symbol found
-[0000c6d4] 000215c6                           dc.b 'size too large',0
-[0000c6e3] 000215d5                           dc.b 'size undefined',0
-[0000c6f2] 000215e4                           dc.b 'union size unknown',0
-[0000c705] 000215f7                           dc.b 'structure size unknown',0
-[0000c71c] 0002160e                           dc.b 'array size unknown',0
-[0000c72f] 00021621                           dc.b 'illegal void',0
-[0000c73c] 0002162e 00007df8                  dc.l $00007df8 ; no symbol found
-[0000c740] 00021632                           dc.b $00
-[0000c741] 00021633                           dc.b $00
-[0000c742] 00021634                           dc.b $00
-[0000c743] 00021635                           dc.b $42
-[0000c744] 00021636 00007dde                  dc.l $00007dde ; no symbol found
-[0000c748] 0002163a                           dc.b $00
-[0000c749] 0002163b                           dc.b $00
-[0000c74a] 0002163c                           dc.b $00
-[0000c74b] 0002163d                           dc.b $49
-[0000c74c] 0002163e 00007dde                  dc.l $00007dde ; no symbol found
-[0000c750] 00021642                           dc.b $00
-[0000c751] 00021643                           dc.b $00
-[0000c752] 00021644                           dc.b $00
-[0000c753] 00021645                           dc.b $48
-[0000c754] 00021646 00007dc4                  dc.l $00007dc4 ; no symbol found
-[0000c758] 0002164a                           dc.b $00
-[0000c759] 0002164b                           dc.b $00
-[0000c75a] 0002164c                           dc.b $00
-[0000c75b] 0002164d                           dc.b $41
-[0000c75c] 0002164e 00007d9c                  dc.l $00007d9c ; no symbol found
-[0000c760] 00021652                           dc.b $00
-[0000c761] 00021653                           dc.b $00
-[0000c762] 00021654                           dc.b $00
-[0000c763] 00021655                           dc.b $40
-[0000c764] 00021656                           dc.b $00
-[0000c765] 00021657                           dc.b $00
-[0000c766] 00021658                           dc.b $00
-[0000c767] 00021659                           dc.b $00
-[0000c768] 0002165a 00007dc2                  dc.l $00007dc2 ; no symbol found
-[0000c76c] 0002165e                           dc.b 'dead_',0
-[0000c772] 00021664                           dc.b 'external name conflict',0
-[0000c789] 0002167b                           dc.b $00
-[0000c78a] 0002167c                           dc.b 'illegal argument type',0
-[0000c7a0] 00021692 00008528                  dc.l $00008528 ; no symbol found
-[0000c7a4] 00021696                           dc.b $00
-[0000c7a5] 00021697                           dc.b $00
-[0000c7a6] 00021698                           dc.b $00
-[0000c7a7] 00021699                           dc.b $28
-[0000c7a8] 0002169a 00008520                  dc.l $00008520 ; no symbol found
-[0000c7ac] 0002169e                           dc.b $00
-[0000c7ad] 0002169f                           dc.b $00
-[0000c7ae] 000216a0                           dc.b $00
-[0000c7af] 000216a1                           dc.b $19
-[0000c7b0] 000216a2 00008502                  dc.l $00008502 ; no symbol found
-[0000c7b4] 000216a6                           dc.b $00
-[0000c7b5] 000216a7                           dc.b $00
-[0000c7b6] 000216a8                           dc.b $00
-[0000c7b7] 000216a9                           dc.b $11
-[0000c7b8] 000216aa 000084fa                  dc.l $000084fa ; no symbol found
-[0000c7bc] 000216ae                           dc.b $00
-[0000c7bd] 000216af                           dc.b $00
-[0000c7be] 000216b0                           dc.b $00
-[0000c7bf] 000216b1                           dc.b $10
-[0000c7c0] 000216b2 000084fa                  dc.l $000084fa ; no symbol found
-[0000c7c4] 000216b6                           dc.b $00
-[0000c7c5] 000216b7                           dc.b $00
-[0000c7c6] 000216b8                           dc.b $00
-[0000c7c7] 000216b9                           dc.b $0a
-[0000c7c8] 000216ba 000084fa                  dc.l $000084fa ; no symbol found
-[0000c7cc] 000216be                           dc.b $00
-[0000c7cd] 000216bf                           dc.b $00
-[0000c7ce] 000216c0                           dc.b $00
-[0000c7cf] 000216c1                           dc.b $09
-[0000c7d0] 000216c2 000084fa                  dc.l $000084fa ; no symbol found
-[0000c7d4] 000216c6                           dc.b $00
-[0000c7d5] 000216c7                           dc.b $00
-[0000c7d6] 000216c8                           dc.b $00
-[0000c7d7] 000216c9                           dc.b $08
-[0000c7d8] 000216ca                           dc.b $00
-[0000c7d9] 000216cb                           dc.b $00
-[0000c7da] 000216cc                           dc.b $00
-[0000c7db] 000216cd                           dc.b $00
-[0000c7dc] 000216ce 00008530                  dc.l $00008530 ; no symbol found
-[0000c7e0] 000216d2 0000858a                  dc.l $0000858a ; no symbol found
-[0000c7e4] 000216d6                           dc.b $00
-[0000c7e5] 000216d7                           dc.b $00
-[0000c7e6] 000216d8                           dc.b $00
-[0000c7e7] 000216d9                           dc.b $42
-[0000c7e8] 000216da 0000857c                  dc.l $0000857c ; no symbol found
-[0000c7ec] 000216de                           dc.b $00
-[0000c7ed] 000216df                           dc.b $00
-[0000c7ee] 000216e0                           dc.b $00
-[0000c7ef] 000216e1                           dc.b $41
-[0000c7f0] 000216e2 00008566                  dc.l $00008566 ; no symbol found
-[0000c7f4] 000216e6                           dc.b $00
-[0000c7f5] 000216e7                           dc.b $00
-[0000c7f6] 000216e8                           dc.b $00
-[0000c7f7] 000216e9                           dc.b $40
-[0000c7f8] 000216ea                           dc.b $00
-[0000c7f9] 000216eb                           dc.b $00
-[0000c7fa] 000216ec                           dc.b $00
-[0000c7fb] 000216ed                           dc.b $00
-[0000c7fc] 000216ee 0000857a                  dc.l $0000857a ; no symbol found
-[0000c800] 000216f2                           dc.b $00
-[0000c801] 000216f3                           dc.b $00
-[0000c802] 000216f4                           dc.b $00
-[0000c803] 000216f5                           dc.b $00
-[0000c804] 000216f6 00020dc2                  dc.l $00020dc2 ; no symbol found
-[0000c808] 000216fa                           dc.b $00
-[0000c809] 000216fb                           dc.b $00
-[0000c80a] 000216fc                           dc.b $00
-[0000c80b] 000216fd                           dc.b $00
-[0000c80c] 000216fe                           dc.b $00
-[0000c80d] 000216ff                           dc.b $00
-[0000c80e] 00021700                           dc.b $00
-[0000c80f] 00021701                           dc.b $00
-[0000c810] 00021702                           dc.b $00
-[0000c811] 00021703                           dc.b $00
+[0002155f]                           dc.b $01
+[00021560]                           dc.w $0101
+[00021562]                           dc.w $0101
+[00021564]                           dc.w $0101
+[00021566]                           dc.w $0103
+[00021568]                           dc.w $0340
+[0002156a]                           dc.w $4040
+[0002156c]                           dc.w $0101
+[0002156e] 00007836                  dc.l $00007836 ; no symbol found
+[00021572]                           dc.b $00
+[00021573]                           dc.b $00
+[00021574]                           dc.b $00
+[00021575]                           dc.b $49
+[00021576] 00007836                  dc.l $00007836 ; no symbol found
+[0002157a]                           dc.b $00
+[0002157b]                           dc.b $00
+[0002157c]                           dc.b $00
+[0002157d]                           dc.b $48
+[0002157e] 0000782c                  dc.l $0000782c ; no symbol found
+[00021582]                           dc.b $00
+[00021583]                           dc.b $00
+[00021584]                           dc.b $00
+[00021585]                           dc.b $28
+[00021586] 0000782c                  dc.l $0000782c ; no symbol found
+[0002158a]                           dc.b $00
+[0002158b]                           dc.b $00
+[0002158c]                           dc.b $00
+[0002158d]                           dc.b $29
+[0002158e] 0000782c                  dc.l $0000782c ; no symbol found
+[00021592]                           dc.b $00
+[00021593]                           dc.b $00
+[00021594]                           dc.b $00
+[00021595]                           dc.b $2a
+[00021596]                           dc.b $00
+[00021597]                           dc.b $00
+[00021598]                           dc.b $00
+[00021599]                           dc.b $00
+[0002159a] 0000783e                  dc.l $0000783e ; no symbol found
+[0002159e] 00007cb0                  dc.l $00007cb0 ; no symbol found
+[000215a2]                           dc.b $00
+[000215a3]                           dc.b $00
+[000215a4]                           dc.b $00
+[000215a5]                           dc.b $49
+[000215a6] 00007c6c                  dc.l $00007c6c ; no symbol found
+[000215aa]                           dc.b $00
+[000215ab]                           dc.b $00
+[000215ac]                           dc.b $00
+[000215ad]                           dc.b $48
+[000215ae] 00007c3c                  dc.l $00007c3c ; no symbol found
+[000215b2]                           dc.b $00
+[000215b3]                           dc.b $00
+[000215b4]                           dc.b $00
+[000215b5]                           dc.b $41
+[000215b6] 00007c1a                  dc.l $00007c1a ; no symbol found
+[000215ba]                           dc.b $00
+[000215bb]                           dc.b $00
+[000215bc]                           dc.b $00
+[000215bd]                           dc.b $40
+[000215be]                           dc.b $00
+[000215bf]                           dc.b $00
+[000215c0]                           dc.b $00
+[000215c1]                           dc.b $00
+[000215c2] 00007d12                  dc.l $00007d12 ; no symbol found
+[000215c6]                           dc.b 'size too large',0
+[000215d5]                           dc.b 'size undefined',0
+[000215e4]                           dc.b 'union size unknown',0
+[000215f7]                           dc.b 'structure size unknown',0
+[0002160e]                           dc.b 'array size unknown',0
+[00021621]                           dc.b 'illegal void',0
+[0002162e] 00007df8                  dc.l $00007df8 ; no symbol found
+[00021632]                           dc.b $00
+[00021633]                           dc.b $00
+[00021634]                           dc.b $00
+[00021635]                           dc.b $42
+[00021636] 00007dde                  dc.l $00007dde ; no symbol found
+[0002163a]                           dc.b $00
+[0002163b]                           dc.b $00
+[0002163c]                           dc.b $00
+[0002163d]                           dc.b $49
+[0002163e] 00007dde                  dc.l $00007dde ; no symbol found
+[00021642]                           dc.b $00
+[00021643]                           dc.b $00
+[00021644]                           dc.b $00
+[00021645]                           dc.b $48
+[00021646] 00007dc4                  dc.l $00007dc4 ; no symbol found
+[0002164a]                           dc.b $00
+[0002164b]                           dc.b $00
+[0002164c]                           dc.b $00
+[0002164d]                           dc.b $41
+[0002164e] 00007d9c                  dc.l $00007d9c ; no symbol found
+[00021652]                           dc.b $00
+[00021653]                           dc.b $00
+[00021654]                           dc.b $00
+[00021655]                           dc.b $40
+[00021656]                           dc.b $00
+[00021657]                           dc.b $00
+[00021658]                           dc.b $00
+[00021659]                           dc.b $00
+[0002165a] 00007dc2                  dc.l $00007dc2 ; no symbol found
+[0002165e]                           dc.b 'dead_',0
+[00021664]                           dc.b 'external name conflict',0
+[0002167b]                           dc.b $00
+[0002167c]                           dc.b 'illegal argument type',0
+[00021692] 00008528                  dc.l $00008528 ; no symbol found
+[00021696]                           dc.b $00
+[00021697]                           dc.b $00
+[00021698]                           dc.b $00
+[00021699]                           dc.b $28
+[0002169a] 00008520                  dc.l $00008520 ; no symbol found
+[0002169e]                           dc.b $00
+[0002169f]                           dc.b $00
+[000216a0]                           dc.b $00
+[000216a1]                           dc.b $19
+[000216a2] 00008502                  dc.l $00008502 ; no symbol found
+[000216a6]                           dc.b $00
+[000216a7]                           dc.b $00
+[000216a8]                           dc.b $00
+[000216a9]                           dc.b $11
+[000216aa] 000084fa                  dc.l $000084fa ; no symbol found
+[000216ae]                           dc.b $00
+[000216af]                           dc.b $00
+[000216b0]                           dc.b $00
+[000216b1]                           dc.b $10
+[000216b2] 000084fa                  dc.l $000084fa ; no symbol found
+[000216b6]                           dc.b $00
+[000216b7]                           dc.b $00
+[000216b8]                           dc.b $00
+[000216b9]                           dc.b $0a
+[000216ba] 000084fa                  dc.l $000084fa ; no symbol found
+[000216be]                           dc.b $00
+[000216bf]                           dc.b $00
+[000216c0]                           dc.b $00
+[000216c1]                           dc.b $09
+[000216c2] 000084fa                  dc.l $000084fa ; no symbol found
+[000216c6]                           dc.b $00
+[000216c7]                           dc.b $00
+[000216c8]                           dc.b $00
+[000216c9]                           dc.b $08
+[000216ca]                           dc.b $00
+[000216cb]                           dc.b $00
+[000216cc]                           dc.b $00
+[000216cd]                           dc.b $00
+[000216ce] 00008530                  dc.l $00008530 ; no symbol found
+[000216d2] 0000858a                  dc.l $0000858a ; no symbol found
+[000216d6]                           dc.b $00
+[000216d7]                           dc.b $00
+[000216d8]                           dc.b $00
+[000216d9]                           dc.b $42
+[000216da] 0000857c                  dc.l $0000857c ; no symbol found
+[000216de]                           dc.b $00
+[000216df]                           dc.b $00
+[000216e0]                           dc.b $00
+[000216e1]                           dc.b $41
+[000216e2] 00008566                  dc.l $00008566 ; no symbol found
+[000216e6]                           dc.b $00
+[000216e7]                           dc.b $00
+[000216e8]                           dc.b $00
+[000216e9]                           dc.b $40
+[000216ea]                           dc.b $00
+[000216eb]                           dc.b $00
+[000216ec]                           dc.b $00
+[000216ed]                           dc.b $00
+[000216ee] 0000857a                  dc.l $0000857a ; no symbol found
+[000216f2]                           dc.b $00
+[000216f3]                           dc.b $00
+[000216f4]                           dc.b $00
+[000216f5]                           dc.b $00
+[000216f6] 00020dc2                  dc.l _atint
+[000216fa]                           dc.b $00
+[000216fb]                           dc.b $00
+[000216fc]                           dc.b $00
+[000216fd]                           dc.b $00
+[000216fe]                           dc.b $00
+[000216ff]                           dc.b $00
+[00021700]                           dc.b $00
+[00021701]                           dc.b $00
+[00021702]                           dc.b $00
+[00021703]                           dc.b $00
 _tycodes:
-[0000c812] 00021704                           dc.b $00
-[0000c813] 00021705                           dc.b $00
-[0000c814] 00021706                           dc.b $00
-[0000c815] 00021707                           dc.b $11
-[0000c816] 00021708                           dc.w $0100
-[0000c818] 0002170a                           dc.b $00
-[0000c819] 0002170b                           dc.b $18
-[0000c81a] 0002170c                           dc.b $00
-[0000c81b] 0002170d                           dc.b $18
-[0000c81c] 0002170e                           dc.b $00
-[0000c81d] 0002170f                           dc.b $18
-[0000c81e] 00021710                           dc.b $00
-[0000c81f] 00021711                           dc.b $18
-[0000c820] 00021712                           dc.w $0119
-[0000c822] 00021714                           dc.w $0119
-[0000c824] 00021716                           dc.w $0119
-[0000c826] 00021718                           dc.w $01f9
-[0000c828] 0002171a                           dc.w $01f9
-[0000c82a] 0002171c                           dc.w $0100
-[0000c82c] 0002171e                           dc.w $0690
-[0000c82e] 00021720                           dc.w $0298
-[0000c830] 00021722                           dc.w $06b1
-[0000c832] 00021724                           dc.b $00
-[0000c833] 00021725                           dc.b $f9
-[0000c834] 00021726                           dc.b $00
-[0000c835] 00021727                           dc.b $f9
-[0000c836] 00021728                           dc.b $00
-[0000c837] 00021729                           dc.b $fd
-[0000c838] 0002172a                           dc.b $00
-[0000c839] 0002172b                           dc.b $fd
-[0000c83a] 0002172c                           dc.b $00
-[0000c83b] 0002172d                           dc.b $fb
-[0000c83c] 0002172e                           dc.b $00
-[0000c83d] 0002172f                           dc.b $fb
-[0000c83e] 00021730                           dc.b $00
-[0000c83f] 00021731                           dc.b $fb
-[0000c840] 00021732                           dc.b $00
-[0000c841] 00021733                           dc.b $fb
-[0000c842] 00021734                           dc.b $00
-[0000c843] 00021735                           dc.b $fb
-[0000c844] 00021736                           dc.b $00
-[0000c845] 00021737                           dc.b $fb
-[0000c846] 00021738                           dc.w $01d8
-[0000c848] 0002173a                           dc.w $01d8
-[0000c84a] 0002173c                           dc.w $01dc
-[0000c84c] 0002173e                           dc.w $01dc
-[0000c84e] 00021740                           dc.w $01da
-[0000c850] 00021742                           dc.w $01da
-[0000c852] 00021744                           dc.w $01da
-[0000c854] 00021746                           dc.w $01da
-[0000c856] 00021748                           dc.w $01db
-[0000c858] 0002174a                           dc.w $01db
-[0000c85a] 0002174c                           dc.b $00
-[0000c85b] 0002174d                           dc.b $d8
-[0000c85c] 0002174e                           dc.b $00
-[0000c85d] 0002174f                           dc.b $d8
-[0000c85e] 00021750                           dc.b $00
-[0000c85f] 00021751                           dc.b $d8
-[0000c860] 00021752                           dc.b $00
-[0000c861] 00021753                           dc.b $d8
-[0000c862] 00021754                           dc.b $00
-[0000c863] 00021755                           dc.b $d8
-[0000c864] 00021756                           dc.b $00
-[0000c865] 00021757                           dc.b $d8
-[0000c866] 00021758                           dc.b $00
-[0000c867] 00021759                           dc.b $d8
-[0000c868] 0002175a                           dc.b $00
-[0000c869] 0002175b                           dc.b $d8
-[0000c86a] 0002175c                           dc.b $00
-[0000c86b] 0002175d                           dc.b $21
-[0000c86c] 0002175e                           dc.b $00
-[0000c86d] 0002175f                           dc.b $19
-[0000c86e] 00021760                           dc.b $00
-[0000c86f] 00021761                           dc.b $00
+[00021704]                           dc.b $00
+[00021705]                           dc.b $00
+[00021706]                           dc.b $00
+[00021707]                           dc.b $11
+[00021708]                           dc.w $0100
+[0002170a]                           dc.b $00
+[0002170b]                           dc.b $18
+[0002170c]                           dc.b $00
+[0002170d]                           dc.b $18
+[0002170e]                           dc.b $00
+[0002170f]                           dc.b $18
+[00021710]                           dc.b $00
+[00021711]                           dc.b $18
+[00021712]                           dc.w $0119
+[00021714]                           dc.w $0119
+[00021716]                           dc.w $0119
+[00021718]                           dc.w $01f9
+[0002171a]                           dc.w $01f9
+[0002171c]                           dc.w $0100
+[0002171e]                           dc.w $0690
+[00021720]                           dc.w $0298
+[00021722]                           dc.w $06b1
+[00021724]                           dc.b $00
+[00021725]                           dc.b $f9
+[00021726]                           dc.b $00
+[00021727]                           dc.b $f9
+[00021728]                           dc.b $00
+[00021729]                           dc.b $fd
+[0002172a]                           dc.b $00
+[0002172b]                           dc.b $fd
+[0002172c]                           dc.b $00
+[0002172d]                           dc.b $fb
+[0002172e]                           dc.b $00
+[0002172f]                           dc.b $fb
+[00021730]                           dc.b $00
+[00021731]                           dc.b $fb
+[00021732]                           dc.b $00
+[00021733]                           dc.b $fb
+[00021734]                           dc.b $00
+[00021735]                           dc.b $fb
+[00021736]                           dc.b $00
+[00021737]                           dc.b $fb
+[00021738]                           dc.w $01d8
+[0002173a]                           dc.w $01d8
+[0002173c]                           dc.w $01dc
+[0002173e]                           dc.w $01dc
+[00021740]                           dc.w $01da
+[00021742]                           dc.w $01da
+[00021744]                           dc.w $01da
+[00021746]                           dc.w $01da
+[00021748]                           dc.w $01db
+[0002174a]                           dc.w $01db
+[0002174c]                           dc.b $00
+[0002174d]                           dc.b $d8
+[0002174e]                           dc.b $00
+[0002174f]                           dc.b $d8
+[00021750]                           dc.b $00
+[00021751]                           dc.b $d8
+[00021752]                           dc.b $00
+[00021753]                           dc.b $d8
+[00021754]                           dc.b $00
+[00021755]                           dc.b $d8
+[00021756]                           dc.b $00
+[00021757]                           dc.b $d8
+[00021758]                           dc.b $00
+[00021759]                           dc.b $d8
+[0002175a]                           dc.b $00
+[0002175b]                           dc.b $d8
+[0002175c]                           dc.b $00
+[0002175d]                           dc.b $21
+[0002175e]                           dc.b $00
+[0002175f]                           dc.b $19
+[00021760]                           dc.b $00
+[00021761]                           dc.b $00
 _tyops:
-[0000c870] 00021762                           dc.w $6164
-[0000c872] 00021764                           dc.w $a907
-[0000c874] 00021766                           dc.b 'fkZClm'
-[0000c87a] 0002176c                           dc.w $aaa7
-[0000c87c] 0002176e                           dc.w $69a8
-[0000c87e] 00021770                           dc.w $9f88
-[0000c880] 00021772                           dc.w $8e8b
-[0000c882] 00021774                           dc.w $9187
-[0000c884] 00021776                           dc.w $8c86
-[0000c886] 00021778                           dc.w $928d
-[0000c888] 0002177a                           dc.w $898a
-[0000c88a] 0002177c                           dc.w $ded8
-[0000c88c] 0002177e                           dc.w $e285
-[0000c88e] 00021780                           dc.w $99c1
-[0000c890] 00021782                           dc.w $9ca3
-[0000c892] 00021784                           dc.w $97a0
-[0000c894] 00021786                           dc.w $9596
-[0000c896] 00021788                           dc.w $8f90
-[0000c898] 0002178a                           dc.w $949b
-[0000c89a] 0002178c                           dc.w $829d
-[0000c89c] 0002178e                           dc.w $af60
-[0000c89e] 00021790                           dc.b $00
-[0000c89f] 00021791                           dc.b 'illegal actual argument',0
-[0000c8b7] 000217a9                           dc.b $00
-[0000c8b8] 000217aa                           dc.b 'scalar type required',0
-[0000c8cd] 000217bf                           dc.b $00
-[0000c8ce] 000217c0 00008a10                  dc.l $00008a10 ; no symbol found
-[0000c8d2] 000217c4                           dc.b $00
-[0000c8d3] 000217c5                           dc.b $00
-[0000c8d4] 000217c6                           dc.b $00
-[0000c8d5] 000217c7                           dc.b $8a
-[0000c8d6] 000217c8 00008a0c                  dc.l $00008a0c ; no symbol found
-[0000c8da] 000217cc                           dc.b $00
-[0000c8db] 000217cd                           dc.b $00
-[0000c8dc] 000217ce                           dc.b $00
-[0000c8dd] 000217cf                           dc.b $89
-[0000c8de] 000217d0 00008a08                  dc.l $00008a08 ; no symbol found
-[0000c8e2] 000217d4                           dc.b $00
-[0000c8e3] 000217d5                           dc.b $00
-[0000c8e4] 000217d6                           dc.b $00
-[0000c8e5] 000217d7                           dc.b $8d
-[0000c8e6] 000217d8 00008a04                  dc.l $00008a04 ; no symbol found
-[0000c8ea] 000217dc                           dc.b $00
-[0000c8eb] 000217dd                           dc.b $00
-[0000c8ec] 000217de                           dc.b $00
-[0000c8ed] 000217df                           dc.b $92
-[0000c8ee] 000217e0 00008a02                  dc.l $00008a02 ; no symbol found
-[0000c8f2] 000217e4                           dc.b $00
-[0000c8f3] 000217e5                           dc.b $00
-[0000c8f4] 000217e6                           dc.b $00
-[0000c8f5] 000217e7                           dc.b $86
-[0000c8f6] 000217e8 00008a00                  dc.l $00008a00 ; no symbol found
-[0000c8fa] 000217ec                           dc.b $00
-[0000c8fb] 000217ed                           dc.b $00
-[0000c8fc] 000217ee                           dc.b $00
-[0000c8fd] 000217ef                           dc.b $8c
-[0000c8fe] 000217f0 000089fe                  dc.l $000089fe ; no symbol found
-[0000c902] 000217f4                           dc.b $00
-[0000c903] 000217f5                           dc.b $00
-[0000c904] 000217f6                           dc.b $00
-[0000c905] 000217f7                           dc.b $87
-[0000c906] 000217f8 000089fc                  dc.l $000089fc ; no symbol found
-[0000c90a] 000217fc                           dc.b $00
-[0000c90b] 000217fd                           dc.b $00
-[0000c90c] 000217fe                           dc.b $00
-[0000c90d] 000217ff                           dc.b $91
-[0000c90e] 00021800 000089fa                  dc.l $000089fa ; no symbol found
-[0000c912] 00021804                           dc.b $00
-[0000c913] 00021805                           dc.b $00
-[0000c914] 00021806                           dc.b $00
-[0000c915] 00021807                           dc.b $8b
-[0000c916] 00021808 000089f8                  dc.l $000089f8 ; no symbol found
-[0000c91a] 0002180c                           dc.b $00
-[0000c91b] 0002180d                           dc.b $00
-[0000c91c] 0002180e                           dc.b $00
-[0000c91d] 0002180f                           dc.b $8e
-[0000c91e] 00021810 000089f6                  dc.l $000089f6 ; no symbol found
-[0000c922] 00021814                           dc.b $00
-[0000c923] 00021815                           dc.b $00
-[0000c924] 00021816                           dc.b $00
-[0000c925] 00021817                           dc.b $88
-[0000c926] 00021818 000089f4                  dc.l $000089f4 ; no symbol found
-[0000c92a] 0002181c                           dc.b $00
-[0000c92b] 0002181d                           dc.b $00
-[0000c92c] 0002181e                           dc.b $00
-[0000c92d] 0002181f                           dc.b $69
-[0000c92e] 00021820 000089f2                  dc.l $000089f2 ; no symbol found
-[0000c932] 00021824                           dc.b $00
-[0000c933] 00021825                           dc.b $00
-[0000c934] 00021826                           dc.b $00
-[0000c935] 00021827                           dc.b $a9
-[0000c936] 00021828 000089a4                  dc.l $000089a4 ; no symbol found
-[0000c93a] 0002182c                           dc.b $00
-[0000c93b] 0002182d                           dc.b $00
-[0000c93c] 0002182e                           dc.b $00
-[0000c93d] 0002182f                           dc.b $9f
-[0000c93e] 00021830 00008992                  dc.l $00008992 ; no symbol found
-[0000c942] 00021834                           dc.b $00
-[0000c943] 00021835                           dc.b $00
-[0000c944] 00021836                           dc.b $00
-[0000c945] 00021837                           dc.b $a7
-[0000c946] 00021838 00008978                  dc.l $00008978 ; no symbol found
-[0000c94a] 0002183c                           dc.b $00
-[0000c94b] 0002183d                           dc.b $00
-[0000c94c] 0002183e                           dc.b $00
-[0000c94d] 0002183f                           dc.b $aa
-[0000c94e] 00021840                           dc.b $00
-[0000c94f] 00021841                           dc.b $00
-[0000c950] 00021842                           dc.b $00
-[0000c951] 00021843                           dc.b $00
-[0000c952] 00021844 00008a14                  dc.l $00008a14 ; no symbol found
-[0000c956] 00021848                           dc.b 'useless expression',0
-[0000c969] 0002185b                           dc.b $00
-[0000c96a] 0002185c                           dc.b 'not in table!',0
-[0000c978] 0002186a                           dc.b 'illegal operand type',0
-[0000c98d] 0002187f                           dc.b $00
-[0000c98e] 00021880                           dc.b 'missing argument',0
-[0000c99f] 00021891                           dc.b 'extra argument',0
-[0000c9ae] 000218a0                           dc.b 'illegal return type',0
-[0000c9c2] 000218b4                           dc.b 'function required',0
-[0000c9d4] 000218c6                           dc.b 'unknown member',0
-[0000c9e3] 000218d5                           dc.b 'illegal selection',0
-[0000c9f5] 000218e7                           dc.b $00
-[0000c9f6] 000218e8                           dc.b 'type conflict in conditional',0
-[0000ca13] 00021905                           dc.b $00
-[0000ca14] 00021906 00009c3e                  dc.l $00009c3e ; no symbol found
-[0000ca18] 0002190a                           dc.b $00
-[0000ca19] 0002190b                           dc.b $00
-[0000ca1a] 0002190c                           dc.b $00
-[0000ca1b] 0002190d                           dc.b $9b
-[0000ca1c] 0002190e 00009c3e                  dc.l $00009c3e ; no symbol found
-[0000ca20] 00021912                           dc.b $00
-[0000ca21] 00021913                           dc.b $00
-[0000ca22] 00021914                           dc.b $00
-[0000ca23] 00021915                           dc.b $94
-[0000ca24] 00021916 00009c0c                  dc.l $00009c0c ; no symbol found
-[0000ca28] 0002191a                           dc.b $00
-[0000ca29] 0002191b                           dc.b $00
-[0000ca2a] 0002191c                           dc.b $00
-[0000ca2b] 0002191d                           dc.b $8f
-[0000ca2c] 0002191e 00009c0c                  dc.l $00009c0c ; no symbol found
-[0000ca30] 00021922                           dc.b $00
-[0000ca31] 00021923                           dc.b $00
-[0000ca32] 00021924                           dc.b $00
-[0000ca33] 00021925                           dc.b $96
-[0000ca34] 00021926 00009c0c                  dc.l $00009c0c ; no symbol found
-[0000ca38] 0002192a                           dc.b $00
-[0000ca39] 0002192b                           dc.b $00
-[0000ca3a] 0002192c                           dc.b $00
-[0000ca3b] 0002192d                           dc.b $90
-[0000ca3c] 0002192e 00009c0c                  dc.l $00009c0c ; no symbol found
-[0000ca40] 00021932                           dc.b $00
-[0000ca41] 00021933                           dc.b $00
-[0000ca42] 00021934                           dc.b $00
-[0000ca43] 00021935                           dc.b $95
-[0000ca44] 00021936 00009b04                  dc.l $00009b04 ; no symbol found
-[0000ca48] 0002193a                           dc.b $00
-[0000ca49] 0002193b                           dc.b $00
-[0000ca4a] 0002193c                           dc.b $00
-[0000ca4b] 0002193d                           dc.b $d8
-[0000ca4c] 0002193e 00009a78                  dc.l $00009a78 ; no symbol found
-[0000ca50] 00021942                           dc.b $00
-[0000ca51] 00021943                           dc.b $00
-[0000ca52] 00021944                           dc.b $00
-[0000ca53] 00021945                           dc.b $de
-[0000ca54] 00021946 00009a14                  dc.l $00009a14 ; no symbol found
-[0000ca58] 0002194a                           dc.b $00
-[0000ca59] 0002194b                           dc.b $00
-[0000ca5a] 0002194c                           dc.b $00
-[0000ca5b] 0002194d                           dc.b $8b
-[0000ca5c] 0002194e 00009a14                  dc.l $00009a14 ; no symbol found
-[0000ca60] 00021952                           dc.b $00
-[0000ca61] 00021953                           dc.b $00
-[0000ca62] 00021954                           dc.b $00
-[0000ca63] 00021955                           dc.b $8e
-[0000ca64] 00021956 00009a14                  dc.l $00009a14 ; no symbol found
-[0000ca68] 0002195a                           dc.b $00
-[0000ca69] 0002195b                           dc.b $00
-[0000ca6a] 0002195c                           dc.b $00
-[0000ca6b] 0002195d                           dc.b $a7
-[0000ca6c] 0002195e 00009a14                  dc.l $00009a14 ; no symbol found
-[0000ca70] 00021962                           dc.b $00
-[0000ca71] 00021963                           dc.b $00
-[0000ca72] 00021964                           dc.b $00
-[0000ca73] 00021965                           dc.b $aa
-[0000ca74] 00021966 000099f2                  dc.l $000099f2 ; no symbol found
-[0000ca78] 0002196a                           dc.b $00
-[0000ca79] 0002196b                           dc.b $00
-[0000ca7a] 0002196c                           dc.b $00
-[0000ca7b] 0002196d                           dc.b $88
-[0000ca7c] 0002196e 000099ec                  dc.l $000099ec ; no symbol found
-[0000ca80] 00021972                           dc.b $00
-[0000ca81] 00021973                           dc.b $00
-[0000ca82] 00021974                           dc.b $00
-[0000ca83] 00021975                           dc.b $af
-[0000ca84] 00021976 000099e2                  dc.l $000099e2 ; no symbol found
-[0000ca88] 0002197a                           dc.b $00
-[0000ca89] 0002197b                           dc.b $00
-[0000ca8a] 0002197c                           dc.b $00
-[0000ca8b] 0002197d                           dc.b $9f
-[0000ca8c] 0002197e 000099ce                  dc.l $000099ce ; no symbol found
-[0000ca90] 00021982                           dc.b $00
-[0000ca91] 00021983                           dc.b $00
-[0000ca92] 00021984                           dc.b $00
-[0000ca93] 00021985                           dc.b $a8
-[0000ca94] 00021986 0000999e                  dc.l $0000999e ; no symbol found
-[0000ca98] 0002198a                           dc.b $00
-[0000ca99] 0002198b                           dc.b $00
-[0000ca9a] 0002198c                           dc.b $00
-[0000ca9b] 0002198d                           dc.b $6d
-[0000ca9c] 0002198e 0000999e                  dc.l $0000999e ; no symbol found
-[0000caa0] 00021992                           dc.b $00
-[0000caa1] 00021993                           dc.b $00
-[0000caa2] 00021994                           dc.b $00
-[0000caa3] 00021995                           dc.b $6c
-[0000caa4] 00021996 0000997e                  dc.l $0000997e ; no symbol found
-[0000caa8] 0002199a                           dc.b $00
-[0000caa9] 0002199b                           dc.b $00
-[0000caaa] 0002199c                           dc.b $00
-[0000caab] 0002199d                           dc.b $43
-[0000caac] 0002199e 0000993c                  dc.l $0000993c ; no symbol found
-[0000cab0] 000219a2                           dc.b $00
-[0000cab1] 000219a3                           dc.b $00
-[0000cab2] 000219a4                           dc.b $00
-[0000cab3] 000219a5                           dc.b $6b
-[0000cab4] 000219a6 000098a2                  dc.l $000098a2 ; no symbol found
-[0000cab8] 000219aa                           dc.b $00
-[0000cab9] 000219ab                           dc.b $00
-[0000caba] 000219ac                           dc.b $00
-[0000cabb] 000219ad                           dc.b $66
-[0000cabc] 000219ae 00009892                  dc.l $00009892 ; no symbol found
-[0000cac0] 000219b2                           dc.b $00
-[0000cac1] 000219b3                           dc.b $00
-[0000cac2] 000219b4                           dc.b $00
-[0000cac3] 000219b5                           dc.b $07
-[0000cac4] 000219b6 00009888                  dc.l $00009888 ; no symbol found
-[0000cac8] 000219ba                           dc.b $00
-[0000cac9] 000219bb                           dc.b $00
-[0000caca] 000219bc                           dc.b $00
-[0000cacb] 000219bd                           dc.b $69
-[0000cacc] 000219be 00009888                  dc.l $00009888 ; no symbol found
-[0000cad0] 000219c2                           dc.b $00
-[0000cad1] 000219c3                           dc.b $00
-[0000cad2] 000219c4                           dc.b $00
-[0000cad3] 000219c5                           dc.b $a9
-[0000cad4] 000219c6 00009712                  dc.l $00009712 ; no symbol found
-[0000cad8] 000219ca                           dc.b $00
-[0000cad9] 000219cb                           dc.b $00
-[0000cada] 000219cc                           dc.b $00
-[0000cadb] 000219cd                           dc.b $64
-[0000cadc] 000219ce 000096da                  dc.l $000096da ; no symbol found
-[0000cae0] 000219d2                           dc.b $00
-[0000cae1] 000219d3                           dc.b $00
-[0000cae2] 000219d4                           dc.b $00
-[0000cae3] 000219d5                           dc.b $61
-[0000cae4] 000219d6 0000969a                  dc.l $0000969a ; no symbol found
-[0000cae8] 000219da                           dc.b $00
-[0000cae9] 000219db                           dc.b $00
-[0000caea] 000219dc                           dc.b $00
-[0000caeb] 000219dd                           dc.b $00
-[0000caec] 000219de                           dc.b $00
-[0000caed] 000219df                           dc.b $00
-[0000caee] 000219e0                           dc.b $00
-[0000caef] 000219e1                           dc.b $00
-[0000caf0] 000219e2 000096c6                  dc.l $000096c6 ; no symbol found
-[0000caf4] 000219e6                           dc.b 'illegal comparison',0
-[0000cb07] 000219f9                           dc.b 'illegal +=',0
-[0000cb12] 00021a04                           dc.b 'illegal assignment',0
-[0000cb25] 00021a17                           dc.b 'arithmetic type required',0
-[0000cb3e] 00021a30                           dc.b 'integer type required',0
-[0000cb54] 00021a46                           dc.b 'illegal indirection',0
-[0000cb68] 00021a5a                           dc.b 'illegal cast',0
-[0000cb75] 00021a67                           dc.b 'illegal &',0
-[0000cb7f] 00021a71                           dc.b 'undeclared',0
-[0000cb8a] 00021a7c                           dc.b 'const modified',0
-[0000cb99] 00021a8b                           dc.b 'lvalue required',0
-[0000cba9] 00021a9b                           dc.b $00
-[0000cbaa] 00021a9c                           dc.b 'illegal unsigned compare',0
-[0000cbc3] 00021ab5                           dc.b $00
-[0000cbc4] 00021ab6                           dc.w $0a00
-[0000cbc6] 00021ab8                           dc.w $5d00
-[0000cbc8] 00021aba                           dc.w $2000
-[0000cbca] 00021abc                           dc.w $5e00
-[0000cbcc] 00021abe                           dc.w $2000
-[0000cbce] 00021ac0                           dc.w $2d5b
-[0000cbd0] 00021ac2                           dc.b $00
-[0000cbd1] 00021ac3                           dc.b $00
-[0000cbd2] 00021ac4 0000a1f2                  dc.l $0000a1f2 ; no symbol found
-[0000cbd6] 00021ac8                           dc.b $00
-[0000cbd7] 00021ac9                           dc.b $00
-[0000cbd8] 00021aca                           dc.b $00
-[0000cbd9] 00021acb                           dc.b $3e
-[0000cbda] 00021acc 0000a190                  dc.l $0000a190 ; no symbol found
-[0000cbde] 00021ad0                           dc.b $00
-[0000cbdf] 00021ad1                           dc.b $00
-[0000cbe0] 00021ad2                           dc.b $00
-[0000cbe1] 00021ad3                           dc.b $00
-[0000cbe2] 00021ad4 0000a190                  dc.l $0000a190 ; no symbol found
-[0000cbe6] 00021ad8                           dc.b $00
-[0000cbe7] 00021ad9                           dc.b $00
-[0000cbe8] 00021ada                           dc.b $00
-[0000cbe9] 00021adb                           dc.b $3a
-[0000cbea] 00021adc 0000a190                  dc.l $0000a190 ; no symbol found
-[0000cbee] 00021ae0                           dc.b $00
-[0000cbef] 00021ae1                           dc.b $00
-[0000cbf0] 00021ae2                           dc.b $00
-[0000cbf1] 00021ae3                           dc.b $2c
-[0000cbf2] 00021ae4 0000a106                  dc.l $0000a106 ; no symbol found
-[0000cbf6] 00021ae8                           dc.b $00
-[0000cbf7] 00021ae9                           dc.b $00
-[0000cbf8] 00021aea                           dc.b $00
-[0000cbf9] 00021aeb                           dc.b $23
-[0000cbfa] 00021aec 0000a0ca                  dc.l $0000a0ca ; no symbol found
-[0000cbfe] 00021af0                           dc.b $00
-[0000cbff] 00021af1                           dc.b $00
-[0000cc00] 00021af2                           dc.b $00
-[0000cc01] 00021af3                           dc.b $3f
-[0000cc02] 00021af4 0000a05a                  dc.l $0000a05a ; no symbol found
-[0000cc06] 00021af8                           dc.b $00
-[0000cc07] 00021af9                           dc.b $00
-[0000cc08] 00021afa                           dc.b $00
-[0000cc09] 00021afb                           dc.b $2a
-[0000cc0a] 00021afc                           dc.b $00
-[0000cc0b] 00021afd                           dc.b $00
-[0000cc0c] 00021afe                           dc.b $00
-[0000cc0d] 00021aff                           dc.b $00
-[0000cc0e] 00021b00 0000a29a                  dc.l $0000a29a ; no symbol found
-[0000cc12] 00021b04                           dc.b 'help',0
-[0000cc17] 00021b09                           dc.b $2d
-[0000cc18] 00021b0a                           dc.b $00
-[0000cc19] 00021b0b                           dc.b $2d
-[0000cc1a] 00021b0c                           dc.w $2d00
-[0000cc1c] 00021b0e                           dc.w $0a09
-[0000cc1e] 00021b10                           dc.b $00
-[0000cc1f] 00021b11                           dc.b $00
-[0000cc20] 00021b12                           dc.w $2000
-[0000cc22] 00021b14                           dc.b 'usage: ',0
-[0000cc2a] 00021b1c                           dc.w $080c
-[0000cc2c] 00021b1e                           dc.w $0a0d
-[0000cc2e] 00021b20                           dc.w $090b
-[0000cc30] 00021b22                           dc.b $00
-[0000cc31] 00021b23                           dc.b 'bfnrtv',0
-[0000cc38] 00021b2a                           dc.b '/tmp/t',0
-[0000cc3f] 00021b31                           dc.b 'pppp',0
-[0000cc44] 00021b36                           dc.b $00
-[0000cc45] 00021b37                           dc.b $00
-[0000cc46] 00021b38                           dc.b $00
-[0000cc47] 00021b39                           dc.b $00
-[0000cc48] 00021b3a                           dc.b $00
-[0000cc49] 00021b3b                           dc.b $00
-[0000cc4a] 00021b3c                           dc.b $00
-[0000cc4b] 00021b3d                           dc.b $00
-[0000cc4c] 00021b3e                           dc.b $00
-[0000cc4d] 00021b3f                           dc.b $00
-[0000cc4e] 00021b40                           dc.b $00
-[0000cc4f] 00021b41                           dc.b $00
-[0000cc50] 00021b42                           dc.b $00
-[0000cc51] 00021b43                           dc.b $00
-[0000cc52] 00021b44                           dc.b $00
-[0000cc53] 00021b45                           dc.b $00
-[0000cc54] 00021b46                           dc.b 'bad free call',0
+[00021762]                           dc.w $6164
+[00021764]                           dc.w $a907
+[00021766]                           dc.b 'fkZClm'
+[0002176c]                           dc.w $aaa7
+[0002176e]                           dc.w $69a8
+[00021770]                           dc.w $9f88
+[00021772]                           dc.w $8e8b
+[00021774]                           dc.w $9187
+[00021776]                           dc.w $8c86
+[00021778]                           dc.w $928d
+[0002177a]                           dc.w $898a
+[0002177c]                           dc.w $ded8
+[0002177e]                           dc.w $e285
+[00021780]                           dc.w $99c1
+[00021782]                           dc.w $9ca3
+[00021784]                           dc.w $97a0
+[00021786]                           dc.w $9596
+[00021788]                           dc.w $8f90
+[0002178a]                           dc.w $949b
+[0002178c]                           dc.w $829d
+[0002178e]                           dc.w $af60
+[00021790]                           dc.b $00
+[00021791]                           dc.b 'illegal actual argument',0
+[000217a9]                           dc.b $00
+[000217aa]                           dc.b 'scalar type required',0
+[000217bf]                           dc.b $00
+[000217c0] 00008a10                  dc.l $00008a10 ; no symbol found
+[000217c4]                           dc.b $00
+[000217c5]                           dc.b $00
+[000217c6]                           dc.b $00
+[000217c7]                           dc.b $8a
+[000217c8] 00008a0c                  dc.l $00008a0c ; no symbol found
+[000217cc]                           dc.b $00
+[000217cd]                           dc.b $00
+[000217ce]                           dc.b $00
+[000217cf]                           dc.b $89
+[000217d0] 00008a08                  dc.l $00008a08 ; no symbol found
+[000217d4]                           dc.b $00
+[000217d5]                           dc.b $00
+[000217d6]                           dc.b $00
+[000217d7]                           dc.b $8d
+[000217d8] 00008a04                  dc.l $00008a04 ; no symbol found
+[000217dc]                           dc.b $00
+[000217dd]                           dc.b $00
+[000217de]                           dc.b $00
+[000217df]                           dc.b $92
+[000217e0] 00008a02                  dc.l $00008a02 ; no symbol found
+[000217e4]                           dc.b $00
+[000217e5]                           dc.b $00
+[000217e6]                           dc.b $00
+[000217e7]                           dc.b $86
+[000217e8] 00008a00                  dc.l $00008a00 ; no symbol found
+[000217ec]                           dc.b $00
+[000217ed]                           dc.b $00
+[000217ee]                           dc.b $00
+[000217ef]                           dc.b $8c
+[000217f0] 000089fe                  dc.l $000089fe ; no symbol found
+[000217f4]                           dc.b $00
+[000217f5]                           dc.b $00
+[000217f6]                           dc.b $00
+[000217f7]                           dc.b $87
+[000217f8] 000089fc                  dc.l $000089fc ; no symbol found
+[000217fc]                           dc.b $00
+[000217fd]                           dc.b $00
+[000217fe]                           dc.b $00
+[000217ff]                           dc.b $91
+[00021800] 000089fa                  dc.l $000089fa ; no symbol found
+[00021804]                           dc.b $00
+[00021805]                           dc.b $00
+[00021806]                           dc.b $00
+[00021807]                           dc.b $8b
+[00021808] 000089f8                  dc.l $000089f8 ; no symbol found
+[0002180c]                           dc.b $00
+[0002180d]                           dc.b $00
+[0002180e]                           dc.b $00
+[0002180f]                           dc.b $8e
+[00021810] 000089f6                  dc.l $000089f6 ; no symbol found
+[00021814]                           dc.b $00
+[00021815]                           dc.b $00
+[00021816]                           dc.b $00
+[00021817]                           dc.b $88
+[00021818] 000089f4                  dc.l $000089f4 ; no symbol found
+[0002181c]                           dc.b $00
+[0002181d]                           dc.b $00
+[0002181e]                           dc.b $00
+[0002181f]                           dc.b $69
+[00021820] 000089f2                  dc.l $000089f2 ; no symbol found
+[00021824]                           dc.b $00
+[00021825]                           dc.b $00
+[00021826]                           dc.b $00
+[00021827]                           dc.b $a9
+[00021828] 000089a4                  dc.l $000089a4 ; no symbol found
+[0002182c]                           dc.b $00
+[0002182d]                           dc.b $00
+[0002182e]                           dc.b $00
+[0002182f]                           dc.b $9f
+[00021830] 00008992                  dc.l $00008992 ; no symbol found
+[00021834]                           dc.b $00
+[00021835]                           dc.b $00
+[00021836]                           dc.b $00
+[00021837]                           dc.b $a7
+[00021838] 00008978                  dc.l $00008978 ; no symbol found
+[0002183c]                           dc.b $00
+[0002183d]                           dc.b $00
+[0002183e]                           dc.b $00
+[0002183f]                           dc.b $aa
+[00021840]                           dc.b $00
+[00021841]                           dc.b $00
+[00021842]                           dc.b $00
+[00021843]                           dc.b $00
+[00021844] 00008a14                  dc.l $00008a14 ; no symbol found
+[00021848]                           dc.b 'useless expression',0
+[0002185b]                           dc.b $00
+[0002185c]                           dc.b 'not in table!',0
+[0002186a]                           dc.b 'illegal operand type',0
+[0002187f]                           dc.b $00
+[00021880]                           dc.b 'missing argument',0
+[00021891]                           dc.b 'extra argument',0
+[000218a0]                           dc.b 'illegal return type',0
+[000218b4]                           dc.b 'function required',0
+[000218c6]                           dc.b 'unknown member',0
+[000218d5]                           dc.b 'illegal selection',0
+[000218e7]                           dc.b $00
+[000218e8]                           dc.b 'type conflict in conditional',0
+[00021905]                           dc.b $00
+[00021906] 00009c3e                  dc.l $00009c3e ; no symbol found
+[0002190a]                           dc.b $00
+[0002190b]                           dc.b $00
+[0002190c]                           dc.b $00
+[0002190d]                           dc.b $9b
+[0002190e] 00009c3e                  dc.l $00009c3e ; no symbol found
+[00021912]                           dc.b $00
+[00021913]                           dc.b $00
+[00021914]                           dc.b $00
+[00021915]                           dc.b $94
+[00021916] 00009c0c                  dc.l $00009c0c ; no symbol found
+[0002191a]                           dc.b $00
+[0002191b]                           dc.b $00
+[0002191c]                           dc.b $00
+[0002191d]                           dc.b $8f
+[0002191e] 00009c0c                  dc.l $00009c0c ; no symbol found
+[00021922]                           dc.b $00
+[00021923]                           dc.b $00
+[00021924]                           dc.b $00
+[00021925]                           dc.b $96
+[00021926] 00009c0c                  dc.l $00009c0c ; no symbol found
+[0002192a]                           dc.b $00
+[0002192b]                           dc.b $00
+[0002192c]                           dc.b $00
+[0002192d]                           dc.b $90
+[0002192e] 00009c0c                  dc.l $00009c0c ; no symbol found
+[00021932]                           dc.b $00
+[00021933]                           dc.b $00
+[00021934]                           dc.b $00
+[00021935]                           dc.b $95
+[00021936] 00009b04                  dc.l $00009b04 ; no symbol found
+[0002193a]                           dc.b $00
+[0002193b]                           dc.b $00
+[0002193c]                           dc.b $00
+[0002193d]                           dc.b $d8
+[0002193e] 00009a78                  dc.l $00009a78 ; no symbol found
+[00021942]                           dc.b $00
+[00021943]                           dc.b $00
+[00021944]                           dc.b $00
+[00021945]                           dc.b $de
+[00021946] 00009a14                  dc.l $00009a14 ; no symbol found
+[0002194a]                           dc.b $00
+[0002194b]                           dc.b $00
+[0002194c]                           dc.b $00
+[0002194d]                           dc.b $8b
+[0002194e] 00009a14                  dc.l $00009a14 ; no symbol found
+[00021952]                           dc.b $00
+[00021953]                           dc.b $00
+[00021954]                           dc.b $00
+[00021955]                           dc.b $8e
+[00021956] 00009a14                  dc.l $00009a14 ; no symbol found
+[0002195a]                           dc.b $00
+[0002195b]                           dc.b $00
+[0002195c]                           dc.b $00
+[0002195d]                           dc.b $a7
+[0002195e] 00009a14                  dc.l $00009a14 ; no symbol found
+[00021962]                           dc.b $00
+[00021963]                           dc.b $00
+[00021964]                           dc.b $00
+[00021965]                           dc.b $aa
+[00021966] 000099f2                  dc.l $000099f2 ; no symbol found
+[0002196a]                           dc.b $00
+[0002196b]                           dc.b $00
+[0002196c]                           dc.b $00
+[0002196d]                           dc.b $88
+[0002196e] 000099ec                  dc.l $000099ec ; no symbol found
+[00021972]                           dc.b $00
+[00021973]                           dc.b $00
+[00021974]                           dc.b $00
+[00021975]                           dc.b $af
+[00021976] 000099e2                  dc.l $000099e2 ; no symbol found
+[0002197a]                           dc.b $00
+[0002197b]                           dc.b $00
+[0002197c]                           dc.b $00
+[0002197d]                           dc.b $9f
+[0002197e] 000099ce                  dc.l $000099ce ; no symbol found
+[00021982]                           dc.b $00
+[00021983]                           dc.b $00
+[00021984]                           dc.b $00
+[00021985]                           dc.b $a8
+[00021986] 0000999e                  dc.l $0000999e ; no symbol found
+[0002198a]                           dc.b $00
+[0002198b]                           dc.b $00
+[0002198c]                           dc.b $00
+[0002198d]                           dc.b $6d
+[0002198e] 0000999e                  dc.l $0000999e ; no symbol found
+[00021992]                           dc.b $00
+[00021993]                           dc.b $00
+[00021994]                           dc.b $00
+[00021995]                           dc.b $6c
+[00021996] 0000997e                  dc.l $0000997e ; no symbol found
+[0002199a]                           dc.b $00
+[0002199b]                           dc.b $00
+[0002199c]                           dc.b $00
+[0002199d]                           dc.b $43
+[0002199e] 0000993c                  dc.l $0000993c ; no symbol found
+[000219a2]                           dc.b $00
+[000219a3]                           dc.b $00
+[000219a4]                           dc.b $00
+[000219a5]                           dc.b $6b
+[000219a6] 000098a2                  dc.l $000098a2 ; no symbol found
+[000219aa]                           dc.b $00
+[000219ab]                           dc.b $00
+[000219ac]                           dc.b $00
+[000219ad]                           dc.b $66
+[000219ae] 00009892                  dc.l $00009892 ; no symbol found
+[000219b2]                           dc.b $00
+[000219b3]                           dc.b $00
+[000219b4]                           dc.b $00
+[000219b5]                           dc.b $07
+[000219b6] 00009888                  dc.l $00009888 ; no symbol found
+[000219ba]                           dc.b $00
+[000219bb]                           dc.b $00
+[000219bc]                           dc.b $00
+[000219bd]                           dc.b $69
+[000219be] 00009888                  dc.l $00009888 ; no symbol found
+[000219c2]                           dc.b $00
+[000219c3]                           dc.b $00
+[000219c4]                           dc.b $00
+[000219c5]                           dc.b $a9
+[000219c6] 00009712                  dc.l $00009712 ; no symbol found
+[000219ca]                           dc.b $00
+[000219cb]                           dc.b $00
+[000219cc]                           dc.b $00
+[000219cd]                           dc.b $64
+[000219ce] 000096da                  dc.l $000096da ; no symbol found
+[000219d2]                           dc.b $00
+[000219d3]                           dc.b $00
+[000219d4]                           dc.b $00
+[000219d5]                           dc.b $61
+[000219d6] 0000969a                  dc.l $0000969a ; no symbol found
+[000219da]                           dc.b $00
+[000219db]                           dc.b $00
+[000219dc]                           dc.b $00
+[000219dd]                           dc.b $00
+[000219de]                           dc.b $00
+[000219df]                           dc.b $00
+[000219e0]                           dc.b $00
+[000219e1]                           dc.b $00
+[000219e2] 000096c6                  dc.l $000096c6 ; no symbol found
+[000219e6]                           dc.b 'illegal comparison',0
+[000219f9]                           dc.b 'illegal +=',0
+[00021a04]                           dc.b 'illegal assignment',0
+[00021a17]                           dc.b 'arithmetic type required',0
+[00021a30]                           dc.b 'integer type required',0
+[00021a46]                           dc.b 'illegal indirection',0
+[00021a5a]                           dc.b 'illegal cast',0
+[00021a67]                           dc.b 'illegal &',0
+[00021a71]                           dc.b 'undeclared',0
+[00021a7c]                           dc.b 'const modified',0
+[00021a8b]                           dc.b 'lvalue required',0
+[00021a9b]                           dc.b $00
+[00021a9c]                           dc.b 'illegal unsigned compare',0
+[00021ab5]                           dc.b $00
+[00021ab6]                           dc.w $0a00
+[00021ab8]                           dc.w $5d00
+[00021aba]                           dc.w $2000
+[00021abc]                           dc.w $5e00
+[00021abe]                           dc.w $2000
+[00021ac0]                           dc.w $2d5b
+[00021ac2]                           dc.b $00
+[00021ac3]                           dc.b $00
+[00021ac4] 0000a1f2                  dc.l $0000a1f2 ; no symbol found
+[00021ac8]                           dc.b $00
+[00021ac9]                           dc.b $00
+[00021aca]                           dc.b $00
+[00021acb]                           dc.b $3e
+[00021acc] 0000a190                  dc.l $0000a190 ; no symbol found
+[00021ad0]                           dc.b $00
+[00021ad1]                           dc.b $00
+[00021ad2]                           dc.b $00
+[00021ad3]                           dc.b $00
+[00021ad4] 0000a190                  dc.l $0000a190 ; no symbol found
+[00021ad8]                           dc.b $00
+[00021ad9]                           dc.b $00
+[00021ada]                           dc.b $00
+[00021adb]                           dc.b $3a
+[00021adc] 0000a190                  dc.l $0000a190 ; no symbol found
+[00021ae0]                           dc.b $00
+[00021ae1]                           dc.b $00
+[00021ae2]                           dc.b $00
+[00021ae3]                           dc.b $2c
+[00021ae4] 0000a106                  dc.l $0000a106 ; no symbol found
+[00021ae8]                           dc.b $00
+[00021ae9]                           dc.b $00
+[00021aea]                           dc.b $00
+[00021aeb]                           dc.b $23
+[00021aec] 0000a0ca                  dc.l $0000a0ca ; no symbol found
+[00021af0]                           dc.b $00
+[00021af1]                           dc.b $00
+[00021af2]                           dc.b $00
+[00021af3]                           dc.b $3f
+[00021af4] 0000a05a                  dc.l $0000a05a ; no symbol found
+[00021af8]                           dc.b $00
+[00021af9]                           dc.b $00
+[00021afa]                           dc.b $00
+[00021afb]                           dc.b $2a
+[00021afc]                           dc.b $00
+[00021afd]                           dc.b $00
+[00021afe]                           dc.b $00
+[00021aff]                           dc.b $00
+[00021b00] 0000a29a                  dc.l $0000a29a ; no symbol found
+[00021b04]                           dc.b 'help',0
+[00021b09]                           dc.b $2d
+[00021b0a]                           dc.b $00
+[00021b0b]                           dc.b $2d
+[00021b0c]                           dc.w $2d00
+[00021b0e]                           dc.w $0a09
+[00021b10]                           dc.b $00
+[00021b11]                           dc.b $00
+[00021b12]                           dc.w $2000
+[00021b14]                           dc.b 'usage: ',0
+[00021b1c]                           dc.w $080c
+[00021b1e]                           dc.w $0a0d
+[00021b20]                           dc.w $090b
+[00021b22]                           dc.b $00
+[00021b23]                           dc.b 'bfnrtv',0
+[00021b2a]                           dc.b '/tmp/t',0
+[00021b31]                           dc.b 'pppp',0
+[00021b36]                           dc.b $00
+[00021b37]                           dc.b $00
+[00021b38]                           dc.b $00
+[00021b39]                           dc.b $00
+[00021b3a]                           dc.b $00
+[00021b3b]                           dc.b $00
+[00021b3c]                           dc.b $00
+[00021b3d]                           dc.b $00
+[00021b3e]                           dc.b $00
+[00021b3f]                           dc.b $00
+[00021b40]                           dc.b $00
+[00021b41]                           dc.b $00
+[00021b42]                           dc.b $00
+[00021b43]                           dc.b $00
+[00021b44]                           dc.b $00
+[00021b45]                           dc.b $00
+[00021b46]                           dc.b 'bad free call',0
 __memerr:
-[0000cc62] 00021b54 00021b58                  dc.l $00021b58 ; no symbol found
-[0000cc66] 00021b58                           dc.b 'no memory',0
-[0000cc70] 00021b62 00021b9c                  dc.l _end
+[00021b54] 00021b58                  dc.l $00021b58 ; no symbol found
+[00021b58]                           dc.b 'no memory',0
+[00021b62] 00021b9c                  dc.l _end
 __stop:
-[0000cc74] 00021b66                           dc.b $00
-[0000cc75] 00021b67                           dc.b $00
-[0000cc76] 00021b68                           dc.b $00
-[0000cc77] 00021b69                           dc.b $01
-[0000cc78] 00021b6a                           dc.b $00
-[0000cc79] 00021b6b                           dc.b $00
-[0000cc7a] 00021b6c                           dc.b $00
-[0000cc7b] 00021b6d                           dc.b $00
-[0000cc7c] 00021b6e 00021b72                  dc.l $00021b72 ; no symbol found
-[0000cc80] 00021b72                           dc.b 'unchecked condition',0
+[00021b66]                           dc.b $00
+[00021b67]                           dc.b $00
+[00021b68]                           dc.b $00
+[00021b69]                           dc.b $01
+[00021b6a]                           dc.b $00
+[00021b6b]                           dc.b $00
+[00021b6c]                           dc.b $00
+[00021b6d]                           dc.b $00
+[00021b6e] 00021b72                  dc.l $00021b72 ; no symbol found
+[00021b72]                           dc.b 'unchecked condition',0
 _writerr:
-[0000cc94] 00021b86 00021b8a                  dc.l $00021b8a ; no symbol found
-[0000cc98] 00021b8a                           dc.b 'write error',0
-[0000cca4] 00021b96                           dc.w $0a00
-[0000cca6] 00021b98                           dc.w $3a20
-[0000cca8] 00021b9a                           dc.b $00
-[0000cca9] 00021b9b                           dc.b $00
+[00021b86] 00021b8a                  dc.l $00021b8a ; no symbol found
+[00021b8a]                           dc.b 'write error',0
+[00021b96]                           dc.w $0a00
+[00021b98]                           dc.w $3a20
+[00021b9a]                           dc.b $00
+[00021b9b]                           dc.b $00
 ;
 00000000 T start
 00000080 T _exit
@@ -18877,2783 +18868,99 @@ _writerr:
 0000aff8 T a.repk
 0000b0c8 T _error
 0000b106 T _write
-0000b10e D __data
-0000b180 D _environ
-0000b184 D _errno
-0000b188 D __paths
-0000b3cc D _freeexpr
-0000b5ae D _regset
-0000b5b0 D _autoff
-0000b5b4 D _dbline
-0000b5b6 D _dbfilab
-0000b5b8 D _dbfulab
-0000b5ba D _dbfvlab
-0000b5bc D _rat
-0000b5c0 D _caseterm
-0000b5d8 D _rterm
-0000b88a D _noname
-0000b88c D _ntoks
-0000b88e D _tokstk
-0000b8a0 D _spaces
-0000bc72 D _iregs
-0000bc74 D _aflag
-0000bc78 D _cflag
-0000bc7c D _dbflag
-0000bc80 D _deadflag
-0000bc84 D _errflag
-0000bc88 D _laxflag
-0000bc8c D _lflag
-0000bc90 D _lregflag
-0000bc94 D _mflag
-0000bc98 D _oldflag
-0000bc9c D _stdflag
-0000bca0 D _strictfl
-0000bca4 D _romstrin
-0000bca8 D _uflag
-0000bcac D _bndef
-0000bcb0 D _model
-0000bcb4 D _nlen
-0000bcb8 D _maxint
-0000bcbc D _minint
-0000bcc0 D _dcbyte
-0000bcc1 D _regbyte
-0000bcc2 D _mainbuff
-0000bd42 D _errbuf
-0000bdc2 D _p1p2ioct
-0000bdc6 D _p1err
-0000bdca D _pperr
-0000bdce D __pname
-0000bdd6 D _errfd
-0000bdd8 D _ofile
-0000bddc D _nerrors
-0000bdde D _infile
-0000bde2 D _lineno
-0000bde4 D _outfd
-0000bde6 D _dummyatt
-0000bdf8 D _attlist
-0000bdfc D _gblat
-0000be00 D _badsym
-0000be12 D _tentsym
-0000be24 D _gblsym
-0000be28 D _lbltab
-0000be2c D _littab
-0000be30 D _mostab
-0000be34 D _spacetab
-0000be38 D _symend
-0000be3c D _symtab
-0000be40 D _exlist
-0000be76 D _atchar
-0000be88 D _atichar
-0000be9a D _atuchar
-0000beac D _atshort
-0000bebe D _atushort
-0000bed0 D _atint
-0000bee2 D _atunsign
-0000bef4 D _atlong
-0000bf06 D _atulong
-0000bf18 D _atfloat
-0000bf2a D _atdouble
-0000bf3c D _atldoubl
-0000bf4e D _atvoid
-0000bf60 D _byulong
-0000bf64 D _byunsign
-0000bf68 D _legals
-0000bf9e D _legalatt
-0000c2da D _zeterm
-0000c5f4 D _typtab
-0000c604 D _bndtab
-0000c613 D _bytab
-0000c622 D _ttyptab
-0000c65e D _xtab
-0000c66d D _rettab
-0000c812 D _tycodes
-0000c870 D _tyops
-0000cc62 D __memerr
-0000cc74 D __stop
-0000cc94 D _writerr
-00021b9c B _end
-;
-; a.out Relocations:
-00000016: 0000c73c
-00000026: 0000c73c
-00000040: 0000c73c
-00000046: 0000c73c
-0000004c: 00000000
-00000058: 0000c73c
-00000062: 0000c73c
-0000006a: 0000f3b2
-0000006e: 0000c73c
-00000074: 00000000
-0000007c: 00000000
-00000082: 0000c73c
-00000088: 00000000
-000000ac: 0000c73c
-000000b4: 0000c73c
-000000be: 0000c73c
-000000f0: 0000c73c
-000000f6: 00000000
-00000102: 00000000
-0000010e: 00000000
-00000122: 0000c73c
-00000128: 00000000
-00000156: 00000000
-0000018a: 0000c73c
-000001ac: 00000000
-00000206: 0000c73c
-00000210: 0000c73c
-00000216: 0000c73c
-0000021c: 00000000
-0000025c: 00000000
-00000270: 00000000
-00000292: 0000c73c
-00000298: 00000000
-000002b0: 00000000
-000002e4: 00000000
-000002fe: 00000000
-00000348: 0000c73c
-00000356: 00000000
-00000388: 00000000
-00000396: 00000000
-000003a6: 00000000
-000003ca: 0000c73c
-000003d0: 00000000
-0000040e: 00000000
-00000424: 00000000
-0000042e: 00000000
-00000438: 0000c73c
-0000044c: 00000000
-0000045e: 00000000
-00000488: 0000c73c
-0000048e: 00000000
-0000049e: 0000c73c
-000004a8: 00000000
-000004de: 00000000
-00000502: 00000000
-00000516: 00000000
-0000051e: 00000000
-00000528: 0000c73c
-0000052e: 00000000
-00000536: 00000000
-00000540: 0000c73c
-00000546: 00000000
-0000054e: 0000c73c
-0000057a: 0000c73c
-000005a8: 0000c73c
-000005c4: 00000000
-000005d8: 00000000
-000005ee: 00000000
-00000608: 0000c73c
-00000614: 00000000
-00000626: 00000000
-0000063a: 00000000
-0000064a: 0000c73c
-00000650: 00000000
-0000069e: 00000000
-000006b0: 00000000
-000006c8: 0000c73c
-000006ce: 00000000
-000006e0: 00000000
-000006f0: 00000000
-00000706: 00000000
-00000718: 00000000
-00000730: 0000c73c
-00000736: 00000000
-0000075e: 00000000
-00000778: 00000000
-00000792: 00000000
-0000079e: 00000000
-000007b0: 00000000
-000007c2: 00000000
-000007e0: 00000000
-000007f0: 0000c73c
-000007f6: 00000000
-00000804: 00000000
-00000818: 00000000
-00000828: 0000c73c
-0000082e: 00000000
-0000083c: 0000c73c
-00000842: 00000000
-0000084a: 0000c73c
-0000086e: 0000c73c
-00000876: 0000c73c
-0000087c: 00000000
-0000088c: 0000c73c
-00000894: 0000c73c
-0000089e: 0000c73c
-000008a6: 0000c73c
-000008b2: 00000000
-000008c2: 00000000
-000008ce: 00000000
-000008dc: 0000c73c
-000008e2: 00000000
-000008ea: 0000c73c
-000008f0: 0000c73c
-00000900: 00000000
-00000906: 0000c73c
-0000090c: 0000c73c
-00000918: 00000000
-00000924: 0000c73c
-0000092e: 00000000
-00000934: 0000c73c
-0000093e: 00000000
-00000964: 00000000
-0000098c: 00000000
-000009ac: 00000000
-000009d8: 00000000
-00000a22: 00000000
-00000a6c: 00000000
-00000a7a: 00000000
-00000a98: 0000c73c
-00000aae: 00000000
-00000ac2: 00000000
-00000acc: 0000c73c
-00000ad2: 00000000
-00000b12: 0000c73c
-00000b20: 00000000
-00000b70: 00000000
-00000b82: 00000000
-00000b8c: 0000c73c
-00000b92: 00000000
-00000bae: 0000c73c
-00000bb4: 00000000
-00000bbc: 0000c73c
-00000bc6: 00000000
-00000bce: 00000000
-00000bd6: 00000000
-00000bde: 00000000
-00000bee: 0000c73c
-00000bf4: 00000000
-00000bfc: 0000c73c
-00000c06: 00000000
-00000c0e: 00000000
-00000c16: 00000000
-00000c1e: 00000000
-00000c34: 00000000
-00000c4a: 00000000
-00000c64: 0000c73c
-00000c6a: 00000000
-00000c8a: 00000000
-00000c9a: 00000000
-00000caa: 00000000
-00000cc0: 00000000
-00000cd8: 00000000
-00000ce4: 0000c73c
-00000cea: 00000000
-00000cf4: 0000c73c
-00000d12: 00000000
-00000d22: 00000000
-00000d36: 0000c73c
-00000d42: 00000000
-00000d50: 0000c73c
-00000d62: 00000000
-00000d6e: 0000c73c
-00000d78: 00000000
-00000d8c: 00000000
-00000d9a: 00000000
-00000db6: 00000000
-00000dca: 00000000
-00000ddc: 00000000
-00000dec: 00000000
-00000e10: 00000000
-00000e32: 00000000
-00000e52: 0000c73c
-00000e5c: 00000000
-00000e74: 00000000
-00000e80: 0000c73c
-00000e88: 00000000
-00000ea4: 00000000
-00000ebc: 0000c73c
-00000ec2: 00000000
-00000f58: 0000c73c
-00000f5e: 00000000
-00000f66: 0000c73c
-00000f9c: 0000c73c
-00000fa2: 00000000
-00000fae: 0000c73c
-00000fc4: 0000c73c
-00000fd4: 00000000
-00000ff6: 0000c73c
-00000ffc: 00000000
-00001006: 0000c73c
-00001068: 00000000
-00001076: 0000c73c
-0000107c: 00000000
-0000108e: 00000000
-000010a8: 00000000
-000010be: 0000c73c
-000010ee: 00000000
-000010f8: 00000000
-0000110a: 00000000
-00001112: 0000c73c
-0000111c: 0000c73c
-00001122: 0000c73c
-0000112c: 00000000
-00001136: 00000000
-0000114a: 00000000
-00001156: 0000c73c
-0000115e: 00000000
-00001192: 00000000
-0000119e: 0000c73c
-000011c6: 00000000
-000011dc: 0000c73c
-000011f0: 0000c73c
-000011f8: 0000c73c
-00001200: 00000000
-00001228: 0000c73c
-0000122e: 00000000
-00001238: 0000c73c
-00001244: 00000000
-0000125c: 0000c73c
-00001262: 00000000
-00001296: 00000000
-000012d4: 00000000
-000012e4: 00000000
-0000130c: 00000000
-0000131c: 00000000
-00001326: 0000c73c
-00001336: 00000000
-00001352: 00000000
-00001366: 00000000
-00001374: 0000c73c
-0000137a: 00000000
-00001388: 0000c73c
-0000138e: 00000000
-000013b8: 00000000
-000013c6: 0000c73c
-000013cc: 00000000
-000013e4: 00000000
-000013fc: 00000000
-00001408: 0000c73c
-00001422: 00000000
-00001440: 00000000
-00001468: 00000000
-00001478: 00000000
-00001488: 00000000
-000014b2: 00000000
-000014c2: 00000000
-000014d2: 00000000
-000014de: 0000c73c
-000014e4: 00000000
-000014ea: 0000c73c
-00001504: 00000000
-0000151a: 0000c73c
-00001520: 00000000
-0000153e: 0000c73c
-00001544: 00000000
-0000156e: 00000000
-00001582: 00000000
-000015a6: 0000c73c
-000015b8: 0000c73c
-0000160a: 0000c73c
-00001618: 0000c73c
-00001628: 0000c73c
-00001644: 00000000
-00001684: 0000c73c
-0000168a: 00000000
-00001694: 00000000
-000016be: 00000000
-000016c8: 00000000
-000016e2: 00000000
-000016f0: 0000c73c
-000016f8: 00000000
-000016fe: 0000c73c
-00001704: 00000000
-00001732: 00000000
-0000175e: 00000000
-0000177c: 00000000
-0000178c: 00000000
-000017a6: 0000c73c
-000017b0: 00000000
-000017c4: 00000000
-000017d2: 00000000
-000017e0: 00000000
-000017ea: 0000c73c
-000017f0: 00000000
-000017fa: 0000c73c
-00001804: 00000000
-0000180c: 0000c73c
-00001812: 0000c73c
-0000181c: 00000000
-0000182a: 00000000
-0000183c: 00000000
-00001848: 00000000
-00001856: 00000000
-0000185e: 0000c73c
-00001864: 0000c73c
-0000186e: 00000000
-00001898: 0000c73c
-000018a2: 00000000
-000018b6: 00000000
-000018d0: 00000000
-000018dc: 0000c73c
-000018e2: 00000000
-000018ec: 0000c73c
-000018f8: 0000c73c
-00001904: 0000c73c
-0000190a: 00000000
-00001914: 0000c73c
-0000191a: 0000c73c
-00001924: 00000000
-00001938: 00000000
-00001944: 0000c73c
-0000194c: 0000c73c
-00001956: 00000000
-00001960: 0000c73c
-0000196a: 00000000
-0000197c: 00000000
-0000198a: 00000000
-00001998: 00000000
-000019a4: 00000000
-000019ae: 0000c73c
-000019b8: 00000000
-000019c0: 0000c73c
-000019cc: 00000000
-000019dc: 0000c73c
-000019e4: 0000c73c
-000019ec: 0000c73c
-00001a00: 00000000
-00001a08: 0000c73c
-00001a12: 0000c73c
-00001a18: 0000c73c
-00001a2a: 0000c73c
-00001a30: 00000000
-00001a46: 0000c73c
-00001a74: 0000c73c
-00001a7a: 00000000
-00001a84: 0000c73c
-00001a90: 0000c73c
-00001a9a: 00000000
-00001aa0: 0000c73c
-00001aaa: 0000c73c
-00001ab6: 0000c73c
-00001abc: 00000000
-00001ac6: 0000c73c
-00001acc: 0000c73c
-00001ad6: 00000000
-00001ae0: 0000c73c
-00001ae6: 0000c73c
-00001af6: 00000000
-00001b0a: 0000c73c
-00001b18: 00000000
-00001b2c: 0000c73c
-00001b34: 00000000
-00001b4c: 0000c73c
-00001b52: 00000000
-00001b5c: 0000c73c
-00001b86: 0000c73c
-00001b8e: 00000000
-00001ba2: 00000000
-00001bb0: 0000c73c
-00001bb8: 0000c73c
-00001bd0: 0000c73c
-00001bd8: 00000000
-00001be2: 0000c73c
-00001bf6: 0000c73c
-00001c08: 00000000
-00001c28: 00000000
-00001c34: 0000c73c
-00001c3a: 00000000
-00001c54: 0000c73c
-00001c5a: 00000000
-00001c64: 0000c73c
-00001c6a: 00000000
-00001ca4: 00000000
-00001cd8: 0000c73c
-00001ce0: 00000000
-00001d38: 0000c73c
-00001d40: 00000000
-00001d62: 0000c73c
-00001d68: 00000000
-00001d70: 0000c73c
-00001d82: 0000c73c
-00001d8a: 0000c73c
-00001d9c: 0000c73c
-00001da4: 0000c73c
-00001db2: 0000c73c
-00001dba: 0000c73c
-00001dc2: 0000c73c
-00001dca: 0000c73c
-00001dd4: 0000c73c
-00001df8: 00000000
-00001e0c: 00000000
-00001e52: 0000c73c
-00001e5e: 0000c73c
-00001e6c: 00000000
-00001e7c: 0000c73c
-00001e86: 00000000
-00001e96: 0000c73c
-00001e9c: 00000000
-00001eaa: 0000c73c
-00001eb2: 00000000
-00001ebe: 00000000
-00001ecc: 00000000
-00001ef6: 00000000
-00001f12: 00000000
-00001f3c: 0000c73c
-00001f46: 00000000
-00001f62: 00000000
-00001f8c: 00000000
-00001fba: 0000c73c
-00001ff2: 0000c73c
-00002012: 00000000
-0000204c: 00000000
-00002054: 0000c73c
-0000205c: 00000000
-0000206e: 0000c73c
-00002074: 00000000
-0000207e: 0000c73c
-00002094: 00000000
-000020a6: 0000c73c
-000020ac: 00000000
-000020b8: 00000000
-000020d2: 00000000
-00002160: 0000c73c
-0000216a: 00000000
-0000217e: 00000000
-00002198: 00000000
-000021a0: 0000c73c
-000021aa: 00000000
-000021ba: 0000c73c
-000021c0: 0000c73c
-000021c8: 0000c73c
-000021dc: 0000c73c
-000021ee: 0000c73c
-000021f6: 00000000
-000021fc: 0000c73c
-00002208: 0000c73c
-0000220e: 00000000
-00002218: 00000000
-00002230: 00000000
-00002244: 0000c73c
-0000224a: 00000000
-00002252: 0000c73c
-00002264: 0000c73c
-00002272: 0000c73c
-0000227a: 0000c73c
-00002282: 0000c73c
-0000228a: 00000000
-0000229a: 00000000
-000022a6: 0000c73c
-000022b4: 0000c73c
-000022ba: 0000c73c
-000022c0: 00000000
-000022c8: 0000c73c
-000022d2: 00000000
-000022d8: 0000c73c
-000022dc: 0000c73c
-000022e6: 0000c73c
-000022ec: 00000000
-000022f4: 0000c73c
-0000232c: 0000c73c
-00002332: 00000000
-0000235e: 00000000
-0000237a: 00000000
-00002386: 00000000
-000023a2: 0000c73c
-000023aa: 0000c73c
-000023b0: 0000c73c
-000023b8: 0000c73c
-000023be: 00000000
-000023ca: 0000c73c
-000023d0: 00000000
-000023d8: 0000c73c
-000023de: 0000c73c
-000023e4: 00000000
-000023f2: 00000000
-000023fa: 0000c73c
-00002400: 0000c73c
-00002406: 0000c73c
-0000240c: 00000000
-00002414: 0000c73c
-00002418: 0000c73c
-00002422: 00000000
-0000242e: 0000c73c
-00002432: 0000c73c
-0000243e: 00000000
-00002446: 0000c73c
-0000244c: 0000c73c
-00002452: 0000c73c
-00002458: 00000000
-00002460: 0000c73c
-00002464: 0000c73c
-0000246a: 00000000
-00002478: 00000000
-00002480: 0000c73c
-00002488: 0000c73c
-0000248e: 00000000
-00002498: 0000c73c
-0000249e: 0000c73c
-000024a8: 0000c73c
-000024b0: 0000c73c
-000024b6: 00000000
-000024bc: 0000c73c
-000024c2: 0000c73c
-000024c6: 0000c73c
-000024d2: 0000c73c
-000024d8: 0000c73c
-000024ea: 0000c73c
-000024f0: 0000c73c
-000024fe: 00000000
-00002504: 0000c73c
-0000250c: 0000c73c
-00002512: 0000c73c
-00002518: 0000c73c
-0000251e: 00000000
-00002526: 0000c73c
-0000252a: 0000c73c
-00002530: 0000c73c
-00002540: 00000000
-00002548: 0000c73c
-00002550: 0000c73c
-00002558: 0000c73c
-0000255e: 00000000
-00002564: 00000000
-0000256c: 00000000
-00002572: 0000c73c
-0000257e: 0000c73c
-0000258e: 00000000
-0000259c: 0000c73c
-000025ac: 0000c73c
-000025b2: 0000c73c
-000025b8: 00000000
-000025c8: 0000c73c
-000025d0: 00000000
-000025da: 0000c73c
-000025e2: 00000000
-000025f4: 0000c73c
-000025fa: 00000000
-0000260e: 00000000
-00002620: 00000000
-0000263c: 0000c73c
-00002642: 00000000
-0000264a: 0000c73c
-00002664: 00000000
-00002670: 00000000
-0000267a: 00000000
-00002698: 00000000
-000026ae: 00000000
-000026d4: 00000000
-000026de: 00000000
-000026e6: 00000000
-000026f6: 00000000
-00002702: 00000000
-0000270c: 00000000
-0000273e: 00000000
-0000274a: 00000000
-00002752: 00000000
-00002760: 00000000
-00002772: 00000000
-00002792: 00000000
-0000279c: 00000000
-000027bc: 00000000
-000027c6: 00000000
-000027d2: 00000000
-000027e6: 00000000
-000027f0: 00000000
-000027fe: 00000000
-00002808: 00000000
-00002810: 00000000
-00002818: 00000000
-00002828: 00000000
-00002832: 00000000
-0000283c: 00000000
-0000284c: 00000000
-0000285a: 00000000
-00002866: 00000000
-0000286c: 0000c73c
-00002872: 0000c73c
-0000287e: 00000000
-0000288c: 00000000
-000028a2: 00000000
-000028aa: 0000c73c
-000028b6: 00000000
-000028e4: 00000000
-00002900: 00000000
-0000290a: 0000c73c
-00002910: 00000000
-0000291a: 00000000
-00002936: 00000000
-00002940: 0000c73c
-00002946: 00000000
-00002950: 00000000
-00002962: 00000000
-00002970: 0000c73c
-00002976: 00000000
-00002982: 0000c73c
-00002988: 00000000
-00002990: 00000000
-0000299a: 00000000
-000029a6: 0000c73c
-000029ac: 0000c73c
-000029b4: 0000c73c
-000029c2: 00000000
-000029d0: 0000c73c
-000029d6: 00000000
-000029e4: 0000c73c
-000029ea: 00000000
-000029f4: 0000c73c
-000029fa: 00000000
-00002a04: 0000c73c
-00002a0a: 0000c73c
-00002a10: 00000000
-00002a28: 00000000
-00002a34: 0000c73c
-00002a3c: 00000000
-00002a46: 0000c73c
-00002a4e: 00000000
-00002a5a: 00000000
-00002a6a: 00000000
-00002a7a: 0000c73c
-00002a80: 0000c73c
-00002a86: 0000c73c
-00002a8e: 0000c73c
-00002a94: 0000c73c
-00002a9e: 00000000
-00002aac: 00000000
-00002ab2: 0000c73c
-00002ac2: 0000c73c
-00002ac8: 00000000
-00002ad6: 00000000
-00002ae0: 0000c73c
-00002ae4: 0000c73c
-00002aea: 0000c73c
-00002af0: 00000000
-00002af8: 0000c73c
-00002b00: 0000c73c
-00002b14: 0000c73c
-00002b28: 0000c73c
-00002b2c: 0000c73c
-00002b34: 0000c73c
-00002b3a: 00000000
-00002b46: 0000c73c
-00002b4c: 00000000
-00002b56: 00000000
-00002b68: 00000000
-00002b74: 00000000
-00002b94: 0000c73c
-00002b9c: 0000c73c
-00002bb2: 0000c73c
-00002bb8: 00000000
-00002bc2: 0000c73c
-00002bc8: 00000000
-00002bda: 00000000
-00002be0: 0000c73c
-00002be8: 0000c73c
-00002bee: 0000c73c
-00002bfa: 0000c73c
-00002c04: 0000c73c
-00002c0a: 00000000
-00002c16: 00000000
-00002c24: 00000000
-00002c2e: 00000000
-00002c3e: 0000c73c
-00002c44: 00000000
-00002c6e: 00000000
-00002c88: 0000c73c
-00002c8c: 0000c73c
-00002c92: 0000c73c
-00002c96: 0000c73c
-00002c9c: 0000c73c
-00002ca0: 0000c73c
-00002cc0: 00000000
-00002cd4: 00000000
-00002cec: 00000000
-00002cfe: 0000c73c
-00002d04: 00000000
-00002d18: 00000000
-00002d26: 00000000
-00002d34: 00000000
-00002d48: 0000c73c
-00002d4e: 00000000
-00002d6e: 00000000
-00002d80: 00000000
-00002dd2: 0000c73c
-00002de6: 0000c73c
-00002dec: 00000000
-00002e32: 00000000
-00002e9a: 0000c73c
-00002ea0: 00000000
-00002eae: 0000c73c
-00002eb4: 0000c73c
-00002eba: 00000000
-00002ec0: 0000c73c
-00002ec6: 0000c73c
-00002ecc: 00000000
-00002edc: 0000c73c
-00002ee2: 00000000
-00002ef4: 0000c73c
-00002ef8: 0000c73c
-00002efe: 0000c73c
-00002f02: 0000c73c
-00002f08: 0000c73c
-00002f12: 0000c73c
-00002f1a: 0000c73c
-00002f20: 00000000
-00002f26: 0000c73c
-00002f72: 00000000
-00002f84: 00000000
-00002fb2: 0000c73c
-00002fc0: 0000c73c
-00002fc6: 00000000
-00002fd8: 0000c73c
-00002fde: 00000000
-00002fea: 00000000
-00002ffa: 00000000
-00003018: 00000000
-0000302a: 0000c73c
-00003030: 00000000
-00003042: 0000c73c
-00003052: 00000000
-00003064: 0000c73c
-0000306a: 00000000
-00003078: 00000000
-0000308c: 00000000
-0000309c: 0000c73c
-000030cc: 0000c73c
-000030d2: 00000000
-0000312a: 0000c73c
-00003134: 00000000
-00003154: 00000000
-0000317c: 00000000
-00003188: 0000c73c
-00003190: 00000000
-00003196: 0000c73c
-0000319c: 00000000
-000031aa: 00000000
-000031d6: 0000c73c
-000031e0: 0000c73c
-000031e8: 0000c73c
-000031f8: 0000c73c
-000031fe: 0000c73c
-00003206: 0000c73c
-0000320e: 0000c73c
-00003222: 00000000
-0000322a: 0000c73c
-00003234: 0000c73c
-0000323a: 0000c73c
-0000324c: 0000c73c
-00003252: 00000000
-0000325a: 0000c73c
-0000325e: 0000c73c
-00003274: 00000000
-0000327a: 0000c73c
-0000328c: 0000c73c
-000032d4: 0000c73c
-000032e8: 0000c73c
-000032ee: 00000000
-000032fa: 00000000
-0000330a: 0000c73c
-00003312: 00000000
-00003320: 00000000
-00003338: 0000c73c
-0000333e: 0000c73c
-00003348: 0000c73c
-00003360: 00000000
-0000337c: 0000c73c
-00003382: 00000000
-000033b2: 0000c73c
-000033bc: 00000000
-000033fa: 00000000
-00003444: 00000000
-0000346c: 00000000
-0000347e: 00000000
-00003496: 00000000
-000034ba: 0000c73c
-000034ce: 0000c73c
-000034d8: 0000c73c
-000034e4: 00000000
-000034ee: 0000c73c
-000034f4: 00000000
-00003500: 0000c73c
-00003506: 00000000
-0000350e: 00000000
-0000357e: 0000c73c
-000035a8: 0000c73c
-000035b8: 0000c73c
-000035be: 0000c73c
-000035c4: 00000000
-000035d8: 0000c73c
-00003608: 00000000
-0000363e: 0000c73c
-00003648: 0000c73c
-00003650: 00000000
-00003658: 0000c73c
-00003662: 0000c73c
-00003670: 00000000
-00003680: 0000c73c
-0000368a: 00000000
-000036ac: 00000000
-000036b6: 0000c73c
-000036be: 00000000
-000036dc: 0000c73c
-000036e2: 00000000
-000036ea: 0000c73c
-000036f2: 0000c73c
-00003706: 00000000
-0000370e: 0000c73c
-00003718: 0000c73c
-0000371e: 0000c73c
-00003736: 00000000
-00003766: 0000c73c
-0000376e: 0000c73c
-00003774: 0000c73c
-0000377a: 0000c73c
-0000378c: 00000000
-0000379a: 00000000
-000037a2: 0000c73c
-000037c8: 0000c73c
-000037d4: 0000c73c
-000037da: 0000c73c
-000037e8: 00000000
-000037f2: 0000c73c
-000037fa: 00000000
-00003810: 00000000
-00003824: 00000000
-00003842: 0000c73c
-0000385a: 00000000
-0000387e: 00000000
-000038a0: 00000000
-000038c8: 00000000
-000038d6: 00000000
-000038e4: 00000000
-00003900: 0000c73c
-0000390a: 00000000
-00003912: 0000c73c
-00003922: 00000000
-0000393a: 00000000
-0000394c: 0000c73c
-00003956: 00000000
-00003968: 00000000
-0000397a: 0000c73c
-00003984: 00000000
-00003998: 0000c73c
-000039a2: 00000000
-000039b2: 0000c73c
-000039be: 0000c73c
-000039c4: 00000000
-000039f4: 0000c73c
-000039fe: 0000c73c
-00003a0c: 0000c73c
-00003a16: 00000000
-00003a28: 0000c73c
-00003a2e: 00000000
-00003a6c: 0000c73c
-00003a72: 00000000
-00003b00: 0000c73c
-00003b22: 0000c73c
-00003b56: 0000c73c
-00003b5c: 00000000
-00003b74: 0000c73c
-00003b78: 0000c73c
-00003b7e: 0000c73c
-00003b86: 00000000
-00003b8e: 0000c73c
-00003b94: 0000c73c
-00003b9e: 0000c73c
-00003ba4: 0000c73c
-00003bb0: 0000c73c
-00003bb6: 0000c73c
-00003bbc: 0000c73c
-00003be6: 0000c73c
-00003bee: 0000c73c
-00003bf4: 0000c73c
-00003bfa: 0000c73c
-00003c16: 0000c73c
-00003c1c: 00000000
-00003c22: 0000c73c
-00003c42: 0000c73c
-00003c4a: 0000c73c
-00003c52: 0000c73c
-00003c5a: 0000c73c
-00003c76: 0000c73c
-00003c82: 0000c73c
-00003c8a: 0000c73c
-00003ca4: 00000000
-00003cac: 0000c73c
-00003cb6: 0000c73c
-00003cbc: 0000c73c
-00003cda: 00000000
-00003cea: 0000c73c
-00003cf0: 00000000
-00003cf8: 0000c73c
-00003d06: 0000c73c
-00003d10: 0000c73c
-00003d1a: 0000c73c
-00003d26: 0000c73c
-00003d2e: 0000c73c
-00003d40: 00000000
-00003d4a: 0000c73c
-00003d54: 0000c73c
-00003d5a: 0000c73c
-00003d6c: 0000c73c
-00003d72: 00000000
-00003d7c: 0000c73c
-00003d86: 0000c73c
-00003d90: 0000c73c
-00003d96: 0000c73c
-00003d9e: 0000c73c
-00003da4: 0000c73c
-00003daa: 0000c73c
-00003dc8: 00000000
-00003dd0: 0000c73c
-00003de4: 00000000
-00003e10: 0000c73c
-00003e18: 0000c73c
-00003e20: 0000c73c
-00003e2e: 00000000
-00003e38: 0000c73c
-00003e3e: 00000000
-00003e46: 0000c73c
-00003e4c: 0000c73c
-00003e54: 0000c73c
-00003e66: 00000000
-00003e70: 0000c73c
-00003e7a: 0000c73c
-00003e80: 0000c73c
-00003e96: 00000000
-00003ea0: 0000c73c
-00003eaa: 0000c73c
-00003eb2: 0000c73c
-00003ebc: 0000c73c
-00003ef6: 0000c73c
-00003efc: 00000000
-00003f04: 0000c73c
-00003f0e: 0000c73c
-00003f1e: 0000c73c
-00003f26: 0000c73c
-00003f2c: 0000c73c
-00003f32: 0000c73c
-00003f50: 00000000
-00003f58: 0000c73c
-00003f76: 0000c73c
-00003f7e: 0000c73c
-00003fa6: 0000c73c
-00003fd0: 00000000
-00004012: 0000c73c
-00004018: 00000000
-00004020: 00000000
-0000409c: 0000c73c
-000040a2: 00000000
-000040ae: 0000c73c
-000040b6: 0000c73c
-000040bc: 00000000
-000040dc: 0000c73c
-000040e4: 0000c73c
-000040f0: 0000c73c
-000040fc: 00000000
-00004112: 0000c73c
-0000411c: 0000c73c
-00004126: 0000c73c
-0000412c: 0000c73c
-00004134: 0000c73c
-0000413a: 0000c73c
-00004140: 0000c73c
-00004146: 0000c73c
-0000414c: 00000000
-0000415a: 0000c73c
-00004160: 0000c73c
-0000416a: 00000000
-000041d0: 0000c73c
-000041d6: 0000c73c
-000041e0: 00000000
-000041ea: 0000c73c
-00004202: 0000c73c
-0000420a: 0000c73c
-0000421e: 00000000
-00004226: 0000c73c
-00004230: 0000c73c
-00004236: 0000c73c
-00004244: 0000c73c
-0000424a: 00000000
-0000425c: 00000000
-0000426c: 0000c73c
-00004272: 00000000
-0000427a: 0000c73c
-000042ac: 0000c73c
-000042b6: 00000000
-0000430e: 0000c73c
-0000431a: 0000c73c
-00004324: 0000c73c
-0000432a: 0000c73c
-00004334: 00000000
-0000433c: 0000c73c
-00004348: 0000c73c
-00004354: 00000000
-0000435a: 0000c73c
-00004360: 0000c73c
-0000436a: 0000c73c
-00004370: 0000c73c
-000043e8: 0000c73c
-00004400: 0000c73c
-00004414: 0000c73c
-00004426: 0000c73c
-0000442c: 00000000
-00004432: 0000c73c
-0000444c: 0000c73c
-00004476: 0000c73c
-000044c8: 00000000
-000044d8: 00000000
-000044e4: 0000c73c
-000044ea: 00000000
-000044f0: 0000c73c
-00004512: 00000000
-00004538: 0000c73c
-0000453e: 0000c73c
-00004548: 00000000
-0000455e: 0000c73c
-00004580: 00000000
-0000458a: 00000000
-00004598: 0000c73c
-000045a2: 00000000
-000045ce: 00000000
-000045dc: 0000c73c
-000045e6: 00000000
-00004620: 00000000
-0000463c: 0000c73c
-00004642: 00000000
-00004662: 00000000
-00004672: 00000000
-0000468e: 00000000
-000046b8: 00000000
-000046c8: 0000c73c
-000046ce: 0000c73c
-000046d8: 00000000
-000046ea: 0000c73c
-000046f0: 00000000
-00004706: 00000000
-00004718: 00000000
-00004726: 00000000
-00004732: 0000c73c
-00004742: 0000c73c
-0000474e: 0000c73c
-00004754: 00000000
-000047a2: 0000c73c
-000047aa: 00000000
-000047c0: 00000000
-000047d2: 00000000
-000047e4: 00000000
-000047f8: 0000c73c
-000047fe: 0000c73c
-00004804: 00000000
-0000481a: 00000000
-0000482a: 0000c73c
-00004830: 00000000
-0000484c: 00000000
-00004870: 0000c73c
-00004876: 00000000
-00004880: 00000000
-000048aa: 0000c73c
-000048b0: 00000000
-000048bc: 00000000
-000048de: 0000c73c
-000048e4: 00000000
-00004960: 00000000
-00004974: 00000000
-0000498e: 00000000
-000049a0: 00000000
-000049ac: 0000c73c
-000049ea: 0000c73c
-000049f4: 00000000
-00004a0c: 00000000
-00004a22: 0000c73c
-00004a2c: 00000000
-00004a44: 00000000
-00004a62: 0000c73c
-00004a68: 00000000
-00004a9e: 0000c73c
-00004aa6: 0000c73c
-00004aea: 00000000
-00004afc: 0000c73c
-00004b02: 00000000
-00004b16: 00000000
-00004b32: 00000000
-00004b42: 00000000
-00004b5c: 00000000
-00004b7c: 0000c73c
-00004b82: 00000000
-00004b8a: 0000c73c
-00004b92: 00000000
-00004bc6: 00000000
-00004bda: 00000000
-00004bfe: 00000000
-00004c10: 00000000
-00004c1a: 0000c73c
-00004c22: 00000000
-00004c3e: 0000c73c
-00004c44: 00000000
-00004c4c: 0000c73c
-00004c54: 00000000
-00004c62: 00000000
-00004c70: 00000000
-00004c9c: 0000c73c
-00004ca6: 00000000
-00004cb0: 0000c73c
-00004cb6: 00000000
-00004ce8: 00000000
-00004cfc: 00000000
-00004d12: 00000000
-00004d28: 00000000
-00004d3a: 00000000
-00004d5c: 00000000
-00004d68: 00000000
-00004d8a: 00000000
-00004dba: 00000000
-00004dce: 00000000
-00004dda: 0000c73c
-00004de0: 00000000
-00004dfa: 0000c73c
-00004e04: 00000000
-00004e22: 00000000
-00004e30: 00000000
-00004e50: 00000000
-00004e62: 00000000
-00004e6c: 00000000
-00004e7c: 00000000
-00004e8c: 0000c73c
-00004ea2: 00000000
-00004ebe: 00000000
-00004ec8: 00000000
-00004ed6: 0000c73c
-00004edc: 00000000
-00004f08: 00000000
-00004f20: 0000c73c
-00004f26: 00000000
-00004f42: 00000000
-00004f52: 00000000
-00004f60: 00000000
-00004f6c: 00000000
-00004fc2: 0000c73c
-00004fc8: 00000000
-0000501a: 00000000
-00005034: 00000000
-00005050: 00000000
-00005094: 00000000
-000050de: 00000000
-00005120: 00000000
-0000514a: 00000000
-000051b4: 00000000
-000051c6: 0000c73c
-000051cc: 00000000
-000051d4: 0000c73c
-000051da: 00000000
-000051f0: 00000000
-00005224: 00000000
-0000525e: 00000000
-0000526e: 0000c73c
-00005278: 00000000
-000052a8: 00000000
-000052d4: 00000000
-00005306: 0000c73c
-0000530c: 00000000
-00005376: 0000c73c
-0000537c: 00000000
-00005388: 0000c73c
-0000539a: 0000c73c
-000053a0: 00000000
-000053c4: 0000c73c
-000053ca: 00000000
-000053d4: 0000c73c
-000053d8: 0000c73c
-000053e6: 0000c73c
-000053ec: 00000000
-000053f6: 0000c73c
-000053fa: 0000c73c
-00005404: 0000c73c
-0000540a: 00000000
-00005412: 0000c73c
-00005418: 0000c73c
-0000541e: 0000c73c
-00005424: 0000c73c
-0000542a: 0000c73c
-00005430: 0000c73c
-00005436: 0000c73c
-0000543c: 0000c73c
-00005442: 0000c73c
-00005448: 0000c73c
-0000544e: 0000c73c
-00005454: 0000c73c
-0000545a: 0000c73c
-00005460: 0000c73c
-00005466: 0000c73c
-0000546c: 0000c73c
-00005472: 0000c73c
-00005478: 0000c73c
-0000547e: 0000c73c
-00005484: 0000c73c
-0000548a: 0000c73c
-00005490: 0000c73c
-00005496: 0000c73c
-0000549c: 0000c73c
-000054aa: 00000000
-000054b8: 0000c73c
-000054be: 00000000
-000054c6: 0000c73c
-000054d0: 0000c73c
-000054d6: 00000000
-000054de: 0000c73c
-000054e4: 0000c73c
-000054fa: 0000c73c
-00005500: 0000c73c
-00005516: 0000c73c
-0000551c: 0000c73c
-00005526: 0000c73c
-00005530: 0000c73c
-0000553a: 0000c73c
-00005544: 0000c73c
-0000554c: 0000c73c
-00005556: 0000c73c
-0000555c: 0000c73c
-00005562: 0000c73c
-0000556a: 0000c73c
-00005570: 0000c73c
-00005580: 0000c73c
-00005586: 00000000
-00005590: 0000c73c
-00005598: 0000c73c
-0000559e: 00000000
-000055a6: 00000000
-000055ac: 0000c73c
-000055bc: 0000c73c
-000055c2: 00000000
-000055cc: 0000c73c
-000055d4: 0000c73c
-000055da: 0000c73c
-000055e0: 00000000
-000055ea: 00000000
-000055f4: 0000c73c
-00005604: 00000000
-00005616: 00000000
-00005624: 0000c73c
-0000562a: 00000000
-00005632: 00000000
-00005640: 00000000
-00005648: 0000c73c
-00005650: 0000c73c
-00005664: 00000000
-0000566c: 0000c73c
-00005676: 0000c73c
-0000567c: 0000c73c
-0000568e: 0000c73c
-0000569c: 0000c73c
-000056a6: 0000c73c
-000056b2: 0000c73c
-000056bc: 0000c73c
-000056c4: 0000c73c
-000056ca: 0000c73c
-000056d0: 0000c73c
-000056d6: 0000c73c
-000056dc: 00000000
-000056ec: 0000c73c
-000056f2: 00000000
-000056f8: 0000c73c
-000056fe: 0000c73c
-00005704: 00000000
-00005712: 0000c73c
-00005718: 00000000
-0000571e: 0000c73c
-00005726: 0000c73c
-0000572c: 0000c73c
-00005734: 0000c73c
-00005744: 0000c73c
-00005752: 00000000
-0000575a: 0000c73c
-00005764: 0000c73c
-0000576a: 0000c73c
-00005772: 0000c73c
-00005784: 0000c73c
-0000578c: 0000c73c
-00005798: 0000c73c
-0000579e: 0000c73c
-000057a4: 0000c73c
-000057ac: 0000c73c
-000057bc: 0000c73c
-000057ca: 00000000
-000057d2: 0000c73c
-000057dc: 0000c73c
-000057e2: 0000c73c
-000057ea: 0000c73c
-00005802: 00000000
-00005808: 0000c73c
-00005814: 00000000
-00005820: 0000c73c
-00005824: 0000c73c
-0000584c: 0000c73c
-0000586e: 0000c73c
-00005878: 00000000
-00005886: 0000c73c
-0000588e: 00000000
-00005896: 0000c73c
-0000589e: 0000c73c
-000058b0: 0000c73c
-000058b6: 00000000
-000058d4: 0000c73c
-000058fc: 0000c73c
-00005902: 00000000
-00005938: 0000c73c
-0000596a: 0000c73c
-00005996: 00000000
-000059dc: 00000000
-000059ee: 0000c73c
-000059f4: 00000000
-000059fc: 0000c73c
-00005a06: 00000000
-00005a1a: 0000c73c
-00005a20: 00000000
-00005a4a: 00000000
-00005a64: 00000000
-00005a72: 0000c73c
-00005a78: 00000000
-00005a80: 0000c73c
-00005a8c: 00000000
-00005a9a: 00000000
-00005aa4: 00000000
-00005aca: 00000000
-00005ad6: 00000000
-00005af2: 00000000
-00005b02: 00000000
-00005b18: 00000000
-00005b28: 0000c73c
-00005b2e: 00000000
-00005b42: 00000000
-00005b52: 0000c73c
-00005b62: 00000000
-00005b7c: 00000000
-00005b86: 00000000
-00005b94: 0000c73c
-00005ba4: 00000000
-00005bb4: 00000000
-00005bc4: 00000000
-00005bce: 00000000
-00005bde: 00000000
-00005be8: 00000000
-00005c0a: 0000c73c
-00005c10: 00000000
-00005c20: 00000000
-00005c28: 0000c73c
-00005c3e: 00000000
-00005c50: 0000c73c
-00005c56: 00000000
-00005c62: 0000c73c
-00005c6c: 00000000
-00005c74: 0000c73c
-00005c7e: 00000000
-00005c8a: 00000000
-00005c92: 0000c73c
-00005c9a: 0000c73c
-00005cc0: 0000c73c
-00005cca: 00000000
-00005cea: 0000c73c
-00005cf2: 0000c73c
-00005d06: 0000c73c
-00005d0e: 0000c73c
-00005d3c: 00000000
-00005d44: 0000c73c
-00005d4e: 0000c73c
-00005d54: 0000c73c
-00005d8e: 00000000
-00005da0: 00000000
-00005dc4: 00000000
-00005dd0: 00000000
-00005ddc: 0000c73c
-00005de4: 0000c73c
-00005df8: 00000000
-00005e00: 0000c73c
-00005e0a: 0000c73c
-00005e10: 0000c73c
-00005e26: 00000000
-00005e3c: 0000c73c
-00005e44: 0000c73c
-00005e58: 00000000
-00005e60: 0000c73c
-00005e6a: 0000c73c
-00005e70: 0000c73c
-00005e86: 00000000
-00005e92: 0000c73c
-00005e98: 00000000
-00005eb4: 0000c73c
-00005ebc: 0000c73c
-00005ee6: 00000000
-00005eee: 0000c73c
-00005ef8: 0000c73c
-00005efe: 0000c73c
-00005f2a: 0000c73c
-00005f32: 0000c73c
-00005f4c: 00000000
-00005f54: 0000c73c
-00005f5e: 0000c73c
-00005f64: 0000c73c
-00005f88: 00000000
-00005f9c: 00000000
-00005fae: 0000c73c
-00005fb6: 0000c73c
-00005fca: 00000000
-00005fd2: 0000c73c
-00005fdc: 0000c73c
-00005fe2: 0000c73c
-00005ffc: 0000c73c
-00006010: 0000c73c
-00006018: 0000c73c
-0000602c: 00000000
-00006034: 0000c73c
-0000603e: 0000c73c
-00006044: 0000c73c
-00006052: 0000c73c
-0000605a: 0000c73c
-0000606a: 00000000
-00006072: 0000c73c
-0000607c: 0000c73c
-00006082: 0000c73c
-0000608e: 0000c73c
-000060ac: 00000000
-000060c0: 00000000
-000060ce: 0000c73c
-000060dc: 00000000
-000060f6: 00000000
-00006104: 0000c73c
-00006118: 00000000
-00006124: 00000000
-00006136: 0000c73c
-0000613e: 0000c73c
-00006152: 00000000
-0000615a: 0000c73c
-00006164: 0000c73c
-0000616a: 0000c73c
-0000617e: 00000000
-00006196: 00000000
-000061a4: 0000c73c
-000061b2: 00000000
-000061c6: 00000000
-000061d0: 0000c73c
-000061d8: 0000c73c
-000061ec: 00000000
-000061f4: 0000c73c
-000061fe: 0000c73c
-00006204: 0000c73c
-00006212: 0000c73c
-0000621a: 0000c73c
-00006234: 00000000
-0000623c: 0000c73c
-00006246: 0000c73c
-0000624c: 0000c73c
-0000626a: 00000000
-00006286: 0000c73c
-0000628e: 0000c73c
-000062a2: 00000000
-000062aa: 0000c73c
-000062b4: 0000c73c
-000062ba: 0000c73c
-000062d8: 00000000
-000062e4: 00000000
-000062f0: 00000000
-00006312: 00000000
-0000631c: 0000c73c
-00006324: 0000c73c
-00006338: 00000000
-00006340: 0000c73c
-0000634a: 0000c73c
-00006350: 0000c73c
-0000635e: 0000c73c
-00006366: 0000c73c
-0000637e: 00000000
-00006386: 0000c73c
-00006390: 0000c73c
-00006396: 0000c73c
-000063b2: 00000000
-000063d4: 00000000
-000063de: 0000c73c
-000063e6: 0000c73c
-000063f8: 0000c73c
-000063fe: 00000000
-00006408: 0000c73c
-0000641c: 00000000
-00006424: 0000c73c
-0000642e: 0000c73c
-00006434: 0000c73c
-00006440: 0000c73c
-00006446: 00000000
-00006450: 0000c73c
-00006474: 00000000
-00006480: 00000000
-0000648a: 00000000
-000064be: 00000000
-0000650c: 00000000
-0000653a: 00000000
-0000654c: 0000c73c
-00006552: 00000000
-00006568: 0000c73c
-0000657c: 0000c73c
-000065a8: 0000c73c
-000065c0: 00000000
-000065ec: 0000c73c
-000065f4: 0000c73c
-00006608: 00000000
-00006610: 0000c73c
-0000661a: 0000c73c
-00006620: 0000c73c
-00006662: 00000000
-00006672: 00000000
-0000669e: 00000000
-000066be: 00000000
-000066e4: 00000000
-000066ee: 0000c73c
-000066f6: 0000c73c
-0000670a: 00000000
-00006712: 0000c73c
-0000671c: 0000c73c
-00006722: 0000c73c
-00006738: 00000000
-00006742: 00000000
-000067fc: 0000c73c
-00006802: 00000000
-0000680c: 0000c73c
-00006836: 0000c73c
-0000684e: 00000000
-0000686e: 0000c73c
-00006876: 0000c73c
-0000688a: 00000000
-00006892: 0000c73c
-0000689c: 0000c73c
-000068a2: 0000c73c
-000068b8: 00000000
-000068c4: 0000c73c
-000068ca: 00000000
-000068e6: 0000c73c
-000068ec: 00000000
-000068f6: 0000c73c
-000068fe: 0000c73c
-00006906: 0000c73c
-0000690c: 0000c73c
-00006912: 00000000
-0000691a: 00000000
-00006928: 0000c73c
-00006930: 0000c73c
-0000694a: 00000000
-00006952: 0000c73c
-0000695c: 0000c73c
-00006962: 0000c73c
-00006986: 00000000
-00006994: 00000000
-000069aa: 0000c73c
-000069ba: 0000c73c
-000069d0: 0000c73c
-000069da: 0000c73c
-000069e0: 0000c73c
-000069ea: 00000000
-000069f2: 0000c73c
-000069fe: 0000c73c
-00006a04: 0000c73c
-00006a0a: 00000000
-00006a14: 00000000
-00006a1c: 0000c73c
-00006a22: 0000c73c
-00006a2c: 0000c73c
-00006a32: 0000c73c
-00006a68: 0000c73c
-00006a72: 0000c73c
-00006ad8: 0000c73c
-00006b28: 0000c73c
-00006b30: 0000c73c
-00006b44: 00000000
-00006b4c: 0000c73c
-00006b56: 0000c73c
-00006b5c: 0000c73c
-00006b6a: 0000c73c
-00006b72: 0000c73c
-00006b94: 00000000
-00006b9c: 0000c73c
-00006ba6: 0000c73c
-00006bac: 0000c73c
-00006bd6: 0000c73c
-00006bde: 0000c73c
-00006bf2: 00000000
-00006bfa: 0000c73c
-00006c04: 0000c73c
-00006c0a: 0000c73c
-00006c26: 0000c73c
-00006c2e: 0000c73c
-00006c42: 00000000
-00006c4a: 0000c73c
-00006c54: 0000c73c
-00006c5a: 0000c73c
-00006c70: 00000000
-00006c88: 0000c73c
-00006c90: 0000c73c
-00006ca4: 00000000
-00006cac: 0000c73c
-00006cb6: 0000c73c
-00006cbc: 0000c73c
-00006cd6: 00000000
-00006cee: 00000000
-00006cfe: 00000000
-00006d26: 0000c73c
-00006d30: 00000000
-00006d64: 0000c73c
-00006d6c: 0000c73c
-00006d80: 00000000
-00006d88: 0000c73c
-00006d92: 0000c73c
-00006d98: 0000c73c
-00006da6: 0000c73c
-00006dae: 0000c73c
-00006dc8: 00000000
-00006dd0: 0000c73c
-00006dda: 0000c73c
-00006de0: 0000c73c
-00006dfa: 00000000
-00006e28: 0000c73c
-00006e30: 0000c73c
-00006e42: 0000c73c
-00006e48: 00000000
-00006e6c: 00000000
-00006e74: 0000c73c
-00006e7e: 0000c73c
-00006e84: 0000c73c
-00006e90: 0000c73c
-00006e96: 00000000
-00006eca: 00000000
-00006ede: 0000c73c
-00006ee6: 0000c73c
-00006efa: 00000000
-00006f02: 0000c73c
-00006f0c: 0000c73c
-00006f12: 0000c73c
-00006f20: 0000c73c
-00006f28: 0000c73c
-00006f36: 0000c73c
-00006f3c: 00000000
-00006f4a: 00000000
-00006f52: 0000c73c
-00006f5c: 0000c73c
-00006f62: 0000c73c
-00006f6a: 0000c73c
-00006f70: 00000000
-00006f96: 00000000
-00006fac: 00000000
-00006fd2: 00000000
-00006fe8: 00000000
-00007024: 00000000
-00007062: 00000000
-0000706a: 0000c73c
-00007072: 0000c73c
-00007086: 00000000
-0000708e: 0000c73c
-00007098: 0000c73c
-0000709e: 0000c73c
-000070e4: 00000000
-000070f0: 00000000
-0000712a: 0000c73c
-00007132: 0000c73c
-0000714e: 00000000
-00007156: 0000c73c
-00007160: 0000c73c
-00007166: 0000c73c
-00007180: 00000000
-0000718c: 00000000
-000071be: 00000000
-000071ca: 0000c73c
-000071d2: 0000c73c
-000071e4: 00000000
-000071ee: 0000c73c
-000071f8: 0000c73c
-000071fe: 0000c73c
-0000720c: 0000c73c
-00007214: 0000c73c
-00007224: 00000000
-0000722c: 0000c73c
-00007236: 0000c73c
-0000723c: 0000c73c
-00007248: 0000c73c
-00007250: 0000c73c
-00007260: 00000000
-00007268: 0000c73c
-00007272: 0000c73c
-00007278: 0000c73c
-00007284: 0000c73c
-0000728c: 0000c73c
-0000729e: 00000000
-000072a8: 0000c73c
-000072b2: 0000c73c
-000072b8: 0000c73c
-000072d0: 00000000
-000072de: 00000000
-00007312: 00000000
-0000731c: 0000c73c
-00007324: 0000c73c
-00007340: 00000000
-00007348: 0000c73c
-00007352: 0000c73c
-00007358: 0000c73c
-00007378: 00000000
-00007380: 0000c73c
-00007388: 0000c73c
-000073a4: 00000000
-000073ac: 0000c73c
-000073b6: 0000c73c
-000073bc: 0000c73c
-00007408: 0000c73c
-00007412: 0000c73c
-0000741c: 0000c73c
-00007424: 0000c73c
-0000743c: 00000000
-00007444: 0000c73c
-0000744e: 0000c73c
-00007454: 0000c73c
-00007470: 00000000
-0000747c: 0000c73c
-00007484: 0000c73c
-000074aa: 00000000
-000074b2: 0000c73c
-000074bc: 0000c73c
-000074c2: 0000c73c
-000074f2: 0000c73c
-000074fa: 0000c73c
-00007508: 0000c73c
-00007540: 00000000
-00007548: 0000c73c
-00007552: 0000c73c
-00007558: 0000c73c
-00007560: 0000c73c
-000075ce: 0000c73c
-000075d4: 00000000
-000075de: 0000c73c
-000075f4: 0000c73c
-000075fc: 0000c73c
-00007618: 00000000
-00007620: 0000c73c
-0000762a: 0000c73c
-00007630: 0000c73c
-00007650: 00000000
-00007662: 0000c73c
-00007668: 00000000
-0000766e: 0000c73c
-00007686: 0000c73c
-0000769a: 0000c73c
-000076ae: 0000c73c
-000076e6: 00000000
-0000773e: 00000000
-00007750: 0000c73c
-00007758: 0000c73c
-00007770: 00000000
-00007778: 0000c73c
-00007782: 0000c73c
-00007788: 0000c73c
-000077bc: 00000000
-000077d2: 0000c73c
-000077da: 0000c73c
-000077f8: 00000000
-00007800: 0000c73c
-0000780a: 0000c73c
-00007810: 0000c73c
-0000782a: 0000c73c
-00007832: 0000c73c
-00007850: 00000000
-00007858: 0000c73c
-00007862: 0000c73c
-00007868: 0000c73c
-00007896: 00000000
-000078aa: 00000000
-000078ce: 0000c73c
-000078d6: 0000c73c
-000078ea: 00000000
-000078f2: 0000c73c
-000078fc: 0000c73c
-00007902: 0000c73c
-0000791e: 0000c73c
-00007926: 0000c73c
-0000793a: 00000000
-00007942: 0000c73c
-0000794c: 0000c73c
-00007952: 0000c73c
-00007964: 00000000
-000079c4: 00000000
-00007a06: 00000000
-00007a4a: 00000000
-00007a6e: 0000c73c
-00007a74: 00000000
-00007a86: 00000000
-00007ac6: 00000000
-00007ad2: 00000000
-00007af4: 00000000
-00007b50: 00000000
-00007b7a: 00000000
-00007b86: 00000000
-00007b98: 00000000
-00007bae: 00000000
-00007bf0: 00000000
-00007c0e: 00000000
-00007c46: 00000000
-00007c54: 0000c73c
-00007c94: 00000000
-00007d12: 00000000
-00007d4a: 0000c73c
-00007d58: 0000c73c
-00007d5e: 00000000
-00007d88: 0000c73c
-00007da0: 0000c73c
-00007dfa: 00000000
-00007e1c: 00000000
-00007ed4: 0000c73c
-00007eda: 00000000
-00007ee2: 00000000
-00007fcc: 0000c73c
-00007fd2: 00000000
-00007fde: 0000c73c
-00008026: 00000000
-0000803e: 00000000
-0000805c: 00000000
-00008084: 00000000
-000080b4: 00000000
-000080e2: 00000000
-000080fe: 00000000
-00008112: 0000c73c
-00008118: 00000000
-0000812c: 0000c73c
-00008132: 00000000
-00008148: 0000c73c
-0000817a: 0000c73c
-000081c0: 0000c73c
-00008212: 00000000
-00008258: 00000000
-0000827c: 00000000
-00008314: 00000000
-00008324: 00000000
-00008330: 00000000
-0000835c: 00000000
-000083a2: 00000000
-000083fe: 00000000
-00008440: 00000000
-00008484: 0000c73c
-0000848a: 00000000
-000084ac: 00000000
-000084be: 00000000
-000084d4: 0000c73c
-000084da: 00000000
-000084fc: 00000000
-0000850e: 00000000
-000086dc: 00000000
-000086f4: 00000000
-00008704: 0000c73c
-0000871e: 0000c73c
-00008758: 00000000
-0000876a: 00000000
-00008784: 00000000
-000087ac: 0000c73c
-000087e2: 00000000
-000087fc: 0000c73c
-00008802: 00000000
-000088b2: 0000c73c
-000088b8: 00000000
-00008944: 00000000
-00008990: 0000c73c
-00008996: 00000000
-000089a0: 0000c73c
-000089b6: 0000c73c
-000089d4: 0000c73c
-000089f0: 0000c73c
-000089fc: 0000c73c
-00008a74: 0000c73c
-00008a7c: 0000c73c
-00008a82: 0000c73c
-00008a88: 0000c73c
-00008a8e: 0000c73c
-00008a96: 0000c73c
-00008aa0: 00000000
-00008aaa: 0000c73c
-00008ad8: 0000c73c
-00008ae0: 0000c73c
-00008ae6: 0000c73c
-00008aec: 0000c73c
-00008af2: 0000c73c
-00008afa: 0000c73c
-00008b04: 00000000
-00008b0e: 0000c73c
-00008b52: 00000000
-00008b6e: 00000000
-00008bc4: 0000c73c
-00008bcc: 0000c73c
-00008bd2: 0000c73c
-00008bd8: 0000c73c
-00008bde: 0000c73c
-00008be6: 0000c73c
-00008bf0: 00000000
-00008bfa: 0000c73c
-00008c1a: 0000c73c
-00008c6e: 0000c73c
-00008c80: 0000c73c
-00008c86: 00000000
-00008c90: 0000c73c
-00008ca8: 0000c73c
-00008cba: 0000c73c
-00008cd0: 0000c73c
-00008ce2: 0000c73c
-00008ce8: 00000000
-00008cee: 0000c73c
-00008d16: 0000c73c
-00008d32: 00000000
-00008d4c: 0000c73c
-00008d90: 0000c73c
-00008de6: 0000c73c
-00008e02: 00000000
-00008e18: 0000c73c
-00008e1e: 0000c73c
-00008e2e: 0000c73c
-00008e34: 0000c73c
-00008e96: 0000c73c
-00008e9c: 00000000
-00008fa8: 0000c73c
-00008fb0: 0000c73c
-00008fb6: 0000c73c
-00008fbe: 00000000
-00008fc6: 0000c73c
-00008fcc: 0000c73c
-00008fd4: 0000c73c
-00009048: 00000000
-0000907a: 0000c73c
-00009086: 00000000
-000090ea: 00000000
-00009118: 00000000
-00009132: 0000c73c
-00009192: 00000000
-000091a4: 0000c73c
-000091de: 00000000
-0000920c: 00000000
-0000922c: 00000000
-0000924c: 00000000
-0000926a: 00000000
-00009284: 00000000
-00009290: 00000000
-000092a4: 0000c73c
-000092aa: 00000000
-000092b4: 0000c73c
-000092c4: 00000000
-000092d6: 00000000
-000092e2: 00000000
-000092fa: 0000c73c
-00009300: 00000000
-00009306: 0000c73c
-00009322: 0000c73c
-00009334: 0000c73c
-000093bc: 0000c73c
-000093c2: 00000000
-000093ca: 00000000
-000093e4: 0000c73c
-000093ec: 0000c73c
-0000942e: 00000000
-0000943e: 0000c73c
-00009444: 00000000
-0000945a: 0000c73c
-00009462: 0000c73c
-00009482: 0000c73c
-000094ec: 0000c73c
-00009552: 0000c73c
-00009558: 00000000
-00009564: 0000c73c
-0000956c: 0000c73c
-00009580: 0000c73c
-00009588: 0000c73c
-0000960a: 00000000
-0000961e: 00000000
-0000967a: 00000000
-0000968e: 00000000
-0000972a: 00000000
-00009750: 00000000
-00009766: 00000000
-000097a6: 0000c73c
-000097ac: 0000c73c
-000097c4: 0000c73c
-000097e8: 0000c73c
-000097ee: 0000c73c
-0000985e: 0000c73c
-00009868: 0000c73c
-00009872: 0000c73c
-00009888: 0000c73c
-000098ac: 0000c73c
-000098b4: 0000c73c
-000098bc: 0000c73c
-000098de: 00000000
-00009940: 0000c73c
-0000996e: 0000c73c
-00009974: 00000000
-0000997e: 0000c73c
-00009a02: 0000c73c
-00009a08: 00000000
-00009a0e: 0000c73c
-00009a16: 0000c73c
-00009a1e: 0000c73c
-00009a26: 0000c73c
-00009a34: 0000c73c
-00009a3c: 0000c73c
-00009a62: 0000c73c
-00009a68: 00000000
-00009ae2: 0000c73c
-00009aee: 00000000
-00009b0a: 0000c73c
-00009b30: 0000c73c
-00009b4a: 0000c73c
-00009b7c: 0000c73c
-00009bc4: 0000c73c
-00009bfc: 0000c73c
-00009c46: 0000c73c
-00009c4c: 00000000
-00009c56: 0000c73c
-00009c90: 00000000
-00009c9c: 00000000
-00009ca8: 0000c73c
-00009cae: 00000000
-00009cbc: 00000000
-00009cd2: 00000000
-00009d2e: 00000000
-00009d52: 00000000
-00009d68: 0000c73c
-00009d8a: 00000000
-00009d94: 00000000
-00009da4: 0000c73c
-00009dae: 00000000
-00009dc2: 00000000
-00009dce: 00000000
-00009dda: 00000000
-00009de6: 00000000
-00009df4: 0000c73c
-00009e0c: 00000000
-00009e1c: 00000000
-00009e9a: 00000000
-00009ede: 0000c73c
-00009f02: 00000000
-00009f0e: 00000000
-00009f48: 0000c73c
-00009f4e: 00000000
-00009f54: 0000c73c
-00009fb6: 0000c73c
-00009fbc: 00000000
-0000a064: 0000c73c
-0000a06c: 0000c73c
-0000a072: 00000000
-0000a0ea: 0000c73c
-0000a0f4: 00000000
-0000a102: 0000c73c
-0000a108: 00000000
-0000a128: 00000000
-0000a136: 0000c73c
-0000a140: 00000000
-0000a15e: 00000000
-0000a174: 0000c73c
-0000a17c: 0000c73c
-0000a184: 0000c73c
-0000a18e: 00000000
-0000a1cc: 00000000
-0000a1da: 00000000
-0000a1f0: 0000c73c
-0000a1f6: 00000000
-0000a20c: 0000c73c
-0000a212: 00000000
-0000a220: 0000c73c
-0000a226: 00000000
-0000a238: 0000c73c
-0000a23e: 00000000
-0000a24a: 0000c73c
-0000a282: 0000c73c
-0000a28a: 0000c73c
-0000a2b0: 00000000
-0000a2c4: 00000000
-0000a2d4: 00000000
-0000a2ec: 00000000
-0000a2f6: 00000000
-0000a308: 00000000
-0000a354: 00000000
-0000a394: 00000000
-0000a3b6: 00000000
-0000a3c6: 00000000
-0000a3dc: 00000000
-0000a3f0: 00000000
-0000a422: 00000000
-0000a446: 00000000
-0000a486: 00000000
-0000a4de: 0000c73c
-0000a4e6: 0000c73c
-0000a4ea: 0000c73c
-0000a4f0: 0000c73c
-0000a4f8: 0000c73c
-0000a500: 0000c73c
-0000a50c: 00000000
-0000a52e: 0000c73c
-0000a53a: 0000c73c
-0000a54c: 00000000
-0000a55a: 0000c73c
-0000a562: 00000000
-0000a5ac: 00000000
-0000a5ec: 0000c73c
-0000a5f2: 00000000
-0000a5fa: 0000c73c
-0000a600: 00000000
-0000a606: 0000c73c
-0000a684: 00000000
-0000a69e: 00000000
-0000a6bc: 0000c73c
-0000a6c2: 00000000
-0000a6ea: 00000000
-0000a704: 00000000
-0000a726: 0000c73c
-0000a72c: 00000000
-0000a778: 0000c73c
-0000a780: 0000c73c
-0000a7c0: 0000c73c
-0000a7e6: 00000000
-0000a7f0: 0000c73c
-0000a80c: 00000000
-0000a816: 0000c73c
-0000a81c: 00000000
-0000a82e: 00000000
-0000a840: 0000c73c
-0000a846: 00000000
-0000a84e: 0000c73c
-0000a864: 0000c73c
-0000a86e: 00000000
-0000a880: 00000000
-0000a89e: 00000000
-0000a8e4: 00000000
-0000a912: 00000000
-0000a938: 00000000
-0000a95a: 00000000
-0000a970: 00000000
-0000a994: 00000000
-0000a9bc: 00000000
-0000aa0e: 00000000
-0000aa46: 00000000
-0000aa54: 00000000
-0000aa62: 00000000
-0000aa70: 00000000
-0000aa84: 00000000
-0000aa90: 0000c73c
-0000aa98: 0000c73c
-0000aa9e: 00000000
-0000aac2: 00000000
-0000aad6: 00000000
-0000aaee: 00000000
-0000ab06: 00000000
-0000ab1e: 00000000
-0000ab68: 0000c73c
-0000ab6e: 00000000
-0000ab7a: 0000c73c
-0000ac4e: 0000c73c
-0000ac54: 00000000
-0000ac82: 0000c73c
-0000ac88: 00000000
-0000acc0: 0000c73c
-0000acc6: 00000000
-0000acd6: 0000c73c
-0000acdc: 00000000
-0000ace4: 0000c73c
-0000ad00: 0000c73c
-0000ad28: 00000000
-0000ad38: 00000000
-0000ae16: 00000000
-0000ae2e: 00000000
-0000ae4a: 00000000
-0000ae90: 00000000
-0000aea2: 00000000
-0000aebe: 0000c73c
-0000aec4: 00000000
-0000af0a: 00000000
-0000af88: 0000c73c
-0000af8e: 00000000
-0000af94: 0000c73c
-0000afb0: 0000c73c
-0000afb6: 00000000
-0000afc4: 00000000
-0000afe6: 00000000
-0000aff2: 0000c73c
-0000aff8: 00000000
-0000b006: 00000000
-0000b016: 00000000
-0000b022: 0000c73c
-0000b028: 00000000
-0000b068: 0000c73c
-0000b06e: 00000000
-0000b08c: 00000000
-0000b0cc: 0000c73c
-0000b0d2: 00000000
-0000b0f0: 00000000
-0000b118: 00000000
-0000b17c: 00000000
-0000b1ce: 00000000
-0000b1da: 0000c73c
-0000b1e8: 00000000
-0000b206: 00000000
-0000b212: 0000c73c
-0000b218: 00000000
-0000b23e: 0000c73c
-0000b246: 0000c73c
-0000b28c: 00000000
-0000b29a: 00000000
-0000b2b6: 00000000
-0000b2c6: 00000000
-0000b30c: 00000000
-0000b34e: 0000c73c
-0000b354: 00000000
-0000b368: 00000000
-0000b396: 0000c73c
-0000b3a0: 00000000
-0000b3bc: 00000000
-0000b3ce: 0000c73c
-0000b3d4: 00000000
-0000b420: 00000000
-0000b444: 00000000
-0000b44c: 0000c73c
-0000b460: 00000000
-0000b4a4: 00000000
-0000b4c2: 00000000
-0000b4d4: 0000c73c
-0000b4de: 00000000
-0000b4ea: 00000000
-0000b4fc: 0000c73c
-0000b506: 00000000
-0000b534: 0000c73c
-0000b53e: 00000000
-0000b550: 0000c73c
-0000b55a: 00000000
-0000b57a: 0000c73c
-0000b584: 00000000
-0000b59e: 0000c73c
-0000b5a8: 00000000
-0000b5be: 00000000
-0000b5f6: 0000c73c
-0000b5fe: 00000000
-0000b628: 0000c73c
-0000b630: 00000000
-0000b662: 0000c73c
-0000b668: 00000000
-0000b67e: 00000000
-0000b6ce: 0000c73c
-0000b708: 0000c73c
-0000b70e: 00000000
-0000b760: 00000000
-0000b7a8: 00000000
-0000b7e6: 00000000
-0000b7f2: 00000000
-0000b818: 00000000
-0000b8cc: 00000000
-0000b9da: 00000000
-0000b9f0: 0000c73c
-0000b9f8: 00000000
-0000ba68: 00000000
-0000ba80: 00000000
-0000bb12: 00000000
-0000bb18: 0000c73c
-0000bb1e: 00000000
-0000bb28: 00000000
-0000bb3c: 00000000
-0000bb58: 00000000
-0000bb5e: 0000c73c
-0000bb64: 00000000
-0000bb8c: 00000000
-0000bc14: 00000000
-0000bc4c: 00000000
-0000bc68: 00000000
-0000bc76: 00000000
-0000bd2a: 00000000
-0000bd30: 00000000
-0000bd4a: 00000000
-0000bd7a: 00000000
-0000bea2: 00000000
-0000beba: 0000c73c
-0000bec2: 00000000
-0000bed8: 0000c73c
-0000beec: 0000c73c
-0000bf6a: 00000000
-0000bf7c: 0000c73c
-0000bf84: 00000000
-0000bfba: 0000c73c
-0000bfda: 0000c73c
-0000bfe6: 0000c73c
-0000c014: 0000c73c
-0000c01c: 0000c73c
-0000c024: 0000c73c
-0000c02c: 0000c73c
-0000c034: 0000c73c
-0000c040: 00000000
-0000c04c: 0000c73c
-0000c054: 0000c73c
-0000c068: 00000000
-0000c086: 0000c73c
-0000c08e: 0000c73c
-0000c096: 0000c73c
-0000c09c: 0000c73c
-0000c0b2: 0000c73c
-0000c0be: 00000000
-0000c0ee: 0000c73c
-0000c0f6: 0000c73c
-0000c100: 00000000
-0000c104: 0000c73c
-0000c10a: 0000c73c
-0000c112: 00000000
-0000c126: 0000c73c
-0000c132: 0000c73c
-0000c13a: 0000c73c
-0000c142: 0000c73c
-0000c14a: 0000c73c
-0000c158: 0000c73c
-0000c360: 00000000
-0000c454: 00000000
-0000c482: 00000000
-0000c490: 00000000
-0000c4ae: 0000c73c
-0000c4c8: 0000c73c
-0000c4ce: 0000c73c
-0000c4d4: 0000c73c
-0000c4dc: 0000c73c
-0000c4e0: 0000c73c
-0000c4fc: 00000000
-0000c50a: 0000c73c
-0000c512: 00000000
-0000c558: 0000c73c
-0000c57a: 0000c73c
-0000c5bc: 0000c73c
-0000c5c6: 00000000
-0000c5d0: 0000c73c
-0000c604: 0000c73c
-0000c6e8: 00000000
-0000c6fc: 0000c73c
-0000c706: 00000000
-0000c720: 00000000
-0000c72c: 00000000
-0000c7b6: 0000c73c
-0000c7ba: 00000000
-0000c836: 00000000
-0000c83e: 00000000
-0000c846: 00000000
-0000c84e: 00000000
-0000c856: 00000000
-0000c85e: 00000000
-0000c866: 00000000
-0000c86e: 00000000
-0000c876: 00000000
-0000c87e: 00000000
-0000c886: 00000000
-0000c88e: 00000000
-0000c896: 00000000
-0000c89e: 00000000
-0000c8aa: 00000000
-0000c9f4: 00000000
-0000c9fc: 00000000
-0000ca04: 00000000
-0000ca0c: 00000000
-0000ca14: 00000000
-0000ca1c: 00000000
-0000ca24: 00000000
-0000ca2c: 00000000
-0000ca34: 00000000
-0000ca3c: 00000000
-0000ca48: 00000000
-0000ca78: 00000000
-0000ca80: 00000000
-0000ca88: 00000000
-0000ca90: 00000000
-0000ca98: 00000000
-0000caa0: 00000000
-0000caa8: 00000000
-0000cab0: 00000000
-0000cab8: 00000000
-0000cac0: 00000000
-0000cac8: 00000000
-0000cad0: 00000000
-0000cad8: 00000000
-0000cae0: 00000000
-0000cae8: 00000000
-0000caf0: 00000000
-0000caf8: 00000000
-0000cb00: 00000000
-0000cb08: 00000000
-0000cb10: 00000000
-0000cb18: 00000000
-0000cb20: 00000000
-0000cb2c: 00000000
-0000cb44: 00000000
-0000cb4c: 00000000
-0000cb54: 00000000
-0000cb5c: 00000000
-0000cb64: 00000000
-0000cb6c: 00000000
-0000cb78: 00000000
-0000cb90: 0000c73c
-0000cb94: 0000c73c
-0000cb98: 0000c73c
-0000cb9c: 0000c73c
-0000cba0: 0000c73c
-0000cba4: 0000c73c
-0000cba8: 0000c73c
-0000cbac: 0000c73c
-0000cbb0: 0000c73c
-0000cbb4: 0000c73c
-0000cbb8: 0000c73c
-0000cbbc: 0000c73c
-0000cc20: 0000c73c
-0000cc26: 0000c73c
-0000cc38: 0000c73c
-0000cc80: 00000000
-0000cc88: 00000000
-0000cc90: 00000000
-0000cc98: 00000000
-0000cca0: 00000000
-0000ccac: 00000000
-0000ccce: 00000000
-0000ccd6: 00000000
-0000cce2: 00000000
-0000cce6: 00000000
-0000ccee: 00000000
-0000ccf6: 00000000
-0000ccfe: 00000000
-0000cd06: 00000000
-0000cd0e: 00000000
-0000cd16: 00000000
-0000cd1e: 00000000
-0000cd26: 00000000
-0000cd2e: 00000000
-0000cd36: 00000000
-0000cd42: 00000000
-0000cf0c: 00000000
-0000cf14: 00000000
-0000cf1c: 00000000
-0000cf24: 00000000
-0000cf30: 00000000
-0000cf9e: 00000000
-0000cfa6: 00000000
-0000cfae: 00000000
-0000cfb6: 00000000
-0000cfc2: 00000000
-0000cfc6: 00000000
-0000cfce: 00000000
-0000cfd6: 00000000
-0000cfde: 00000000
-0000cfe6: 00000000
-0000cfee: 00000000
-0000cff6: 00000000
-0000cffe: 00000000
-0000d006: 00000000
-0000d00e: 00000000
-0000d016: 00000000
-0000d022: 00000000
-0000d03a: 0000c73c
-0000d03e: 0000c73c
-0000d042: 0000c73c
-0000d046: 0000c73c
-0000d04a: 0000c73c
-0000d04e: 0000c73c
-0000d052: 0000c73c
-0000d056: 0000c73c
-0000d05a: 0000c73c
-0000d218: 0000c73c
-0000d248: 0000c73c
-0000d24c: 0000c73c
-0000e41a: 0000c73c
-0000e41e: 0000c73c
-0000e422: 0000c73c
-0000e426: 0000c73c
-0000e42a: 0000c73c
-0000e42e: 0000c73c
-0000e432: 0000c73c
-0000e436: 0000c73c
-0000e43a: 0000c73c
-0000e43e: 0000c73c
-0000e442: 0000c73c
-0000e446: 0000c73c
-0000e44a: 0000c73c
-0000e44e: 0000c73c
-0000e452: 0000c73c
-0000e456: 0000c73c
-0000e45a: 0000c73c
-0000e45e: 0000c73c
-0000e462: 0000c73c
-0000e466: 0000c73c
-0000e46a: 0000c73c
-0000e46e: 0000c73c
-0000e472: 0000c73c
-0000e476: 0000c73c
-0000e47a: 0000c73c
-0000e5c8: 00000000
-0000e5d0: 00000000
-0000e5d8: 00000000
-0000e5e4: 00000000
-0000e634: 00000000
-0000e63c: 00000000
-0000e644: 00000000
-0000e64c: 00000000
-0000e654: 00000000
-0000e660: 00000000
-0000e9f0: 00000000
-0000e9f8: 00000000
-0000ea00: 00000000
-0000ea08: 00000000
-0000ea10: 00000000
-0000ea18: 00000000
-0000ea20: 00000000
-0000ea2c: 00000000
-0000eaba: 00000000
-0000eac2: 00000000
-0000eaca: 00000000
-0000ead2: 00000000
-0000eada: 00000000
-0000eae2: 00000000
-0000eaea: 00000000
-0000eaf2: 00000000
-0000eafe: 00000000
-0000eb02: 00000000
-0000eb0a: 00000000
-0000eb12: 00000000
-0000eb1a: 00000000
-0000eb22: 00000000
-0000eb2a: 00000000
-0000eb32: 00000000
-0000eb3a: 00000000
-0000eb42: 00000000
-0000eb4a: 00000000
-0000eb52: 00000000
-0000eb5a: 00000000
-0000eb62: 00000000
-0000eb6e: 00000000
-0000eb72: 00000000
-0000eb7a: 00000000
-0000eb82: 00000000
-0000eb8a: 00000000
-0000eb92: 00000000
-0000eb9a: 00000000
-0000eba2: 00000000
-0000ebaa: 00000000
-0000ebb2: 00000000
-0000ebba: 00000000
-0000ebc2: 00000000
-0000ebca: 00000000
-0000ebd2: 00000000
-0000ebda: 00000000
-0000ebe2: 00000000
-0000ebea: 00000000
-0000ebf2: 00000000
-0000ebfa: 00000000
-0000ec02: 00000000
-0000ec0a: 00000000
-0000ec12: 00000000
-0000ec1a: 00000000
-0000ec22: 00000000
-0000ec2a: 00000000
-0000ec32: 00000000
-0000ec3a: 00000000
-0000ec42: 00000000
-0000ec4a: 00000000
-0000ec52: 00000000
-0000ec5e: 00000000
-0000ecc0: 0000c73c
-0000ecc4: 0000c73c
-0000ecc8: 0000c73c
-0000eccc: 0000c73c
-0000ecd0: 0000c73c
-0000ecd4: 0000c73c
-0000ecdc: 0000c73c
-0000ece0: 0000c73c
-0000ece4: 0000c73c
-0000ece8: 0000c73c
-0000ecec: 0000c73c
-0000ecf0: 0000c73c
-0000ed1a: 00000000
-0000ed22: 00000000
-0000ed2a: 00000000
-0000ed32: 00000000
-0000ed3a: 00000000
-0000ed46: 00000000
-0000ed4a: 00000000
-0000ed52: 00000000
-0000ed5a: 00000000
-0000ed62: 00000000
-0000ed6e: 00000000
-0000edde: 00000000
-0000ede6: 00000000
-0000edee: 00000000
-0000edf6: 00000000
-0000edfe: 00000000
-0000ee0a: 00000000
-0000ee26: 00000000
-0000ee2e: 00000000
-0000ee36: 00000000
-0000ee3e: 00000000
-0000ee46: 00000000
-0000ee4e: 00000000
-0000ee5a: 00000000
-0000ee84: 00000000
-0000ee8c: 00000000
-0000ee94: 00000000
-0000ee9c: 00000000
-0000eea4: 00000000
-0000eeac: 00000000
-0000eeb4: 00000000
-0000eebc: 00000000
-0000eec4: 00000000
-0000eecc: 00000000
-0000eed8: 00000000
-0000eee6: 00000000
-0000eeee: 00000000
-0000eef6: 00000000
-0000eefe: 00000000
-0000ef06: 00000000
-0000ef0e: 00000000
-0000ef16: 00000000
-0000ef22: 00000000
-0000ef26: 00000000
-0000ef2e: 00000000
-0000ef36: 00000000
-0000ef42: 00000000
-0000ef4a: 0000c73c
-0000f018: 00000000
-0000f020: 00000000
-0000f028: 00000000
-0000f030: 00000000
-0000f038: 00000000
-0000f040: 00000000
-0000f048: 00000000
-0000f050: 00000000
-0000f058: 00000000
-0000f060: 00000000
-0000f068: 00000000
-0000f070: 00000000
-0000f078: 00000000
-0000f080: 00000000
-0000f088: 00000000
-0000f090: 00000000
-0000f09c: 00000000
-0000f15e: 00000000
-0000f166: 00000000
-0000f16e: 00000000
-0000f176: 00000000
-0000f17e: 00000000
-0000f186: 00000000
-0000f18e: 00000000
-0000f196: 00000000
-0000f19e: 00000000
-0000f1a6: 00000000
-0000f1ae: 00000000
-0000f1b6: 00000000
-0000f1be: 00000000
-0000f1c6: 00000000
-0000f1ce: 00000000
-0000f1d6: 00000000
-0000f1de: 00000000
-0000f1e6: 00000000
-0000f1ee: 00000000
-0000f1f6: 00000000
-0000f1fe: 00000000
-0000f206: 00000000
-0000f20e: 00000000
-0000f216: 00000000
-0000f21e: 00000000
-0000f226: 00000000
-0000f22e: 00000000
-0000f23a: 00000000
-0000f31c: 00000000
-0000f324: 00000000
-0000f32c: 00000000
-0000f334: 00000000
-0000f33c: 00000000
-0000f344: 00000000
-0000f34c: 00000000
-0000f358: 00000000
-0000f386: 00000000
-0000f38a: 0000f3b2
-0000f396: 0000c73c
-0000f3ae: 00000000
+
+00020000 D __data
+00020072 D _environ
+00020076 D _errno
+0002007a D __paths
+000202be D _freeexpr
+000204a0 D _regset
+000204a2 D _autoff
+000204a6 D _dbline
+000204a8 D _dbfilab
+000204aa D _dbfulab
+000204ac D _dbfvlab
+000204ae D _rat
+000204b2 D _caseterm
+000204ca D _rterm
+0002077c D _noname
+0002077e D _ntoks
+00020780 D _tokstk
+00020792 D _spaces
+00020b64 D _iregs
+00020b66 D _aflag
+00020b6a D _cflag
+00020b6e D _dbflag
+00020b72 D _deadflag
+00020b76 D _errflag
+00020b7a D _laxflag
+00020b7e D _lflag
+00020b82 D _lregflag
+00020b86 D _mflag
+00020b8a D _oldflag
+00020b8e D _stdflag
+00020b92 D _strictfl
+00020b96 D _romstrin
+00020b9a D _uflag
+00020b9e D _bndef
+00020ba2 D _model
+00020ba6 D _nlen
+00020baa D _maxint
+00020bae D _minint
+00020bb2 D _dcbyte
+00020bb3 D _regbyte
+00020bb4 D _mainbuff
+00020c34 D _errbuf
+00020cb4 D _p1p2ioct
+00020cb8 D _p1err
+00020cbc D _pperr
+00020cc0 D __pname
+00020cc8 D _errfd
+00020cca D _ofile
+00020cce D _nerrors
+00020cd0 D _infile
+00020cd4 D _lineno
+00020cd6 D _outfd
+00020cd8 D _dummyatt
+00020cea D _attlist
+00020cee D _gblat
+00020cf2 D _badsym
+00020d04 D _tentsym
+00020d16 D _gblsym
+00020d1a D _lbltab
+00020d1e D _littab
+00020d22 D _mostab
+00020d26 D _spacetab
+00020d2a D _symend
+00020d2e D _symtab
+00020d32 D _exlist
+00020d68 D _atchar
+00020d7a D _atichar
+00020d8c D _atuchar
+00020d9e D _atshort
+00020db0 D _atushort
+00020dc2 D _atint
+00020dd4 D _atunsign
+00020de6 D _atlong
+00020df8 D _atulong
+00020e0a D _atfloat
+00020e1c D _atdouble
+00020e2e D _atldoubl
+00020e40 D _atvoid
+00020e52 D _byulong
+00020e56 D _byunsign
+00020e5a D _legals
+00020e90 D _legalatt
+000211cc D _zeterm
+000214e6 D _typtab
+000214f6 D _bndtab
+00021505 D _bytab
+00021514 D _ttyptab
+00021550 D _xtab
+0002155f D _rettab
+00021704 D _tycodes
+00021762 D _tyops
+00021b54 D __memerr
+00021b66 D __stop
+00021b86 D _writerr
+00036a8e B _end

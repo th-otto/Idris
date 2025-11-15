@@ -22,6 +22,8 @@ P2OBJ = p2expr.o p2fmov.o p2gen.o p2jump.o p2main.o p2subs.o p2tab.o q2dbug.o ut
 p2: $(P2OBJ)
 	$(CC) $(CFLAGS) -o $@ $(P2OBJ) $(LDFLAGS)
 
+$(P2OBJ): p2.h ../ihdrs/int2.h ../ihdrs/int12.h ../ihdrs/int012.h
+
 util.o: util.c ../util/util.c
 getflags.o: getflags.c ../util/getflags.c
 
