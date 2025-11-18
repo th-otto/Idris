@@ -808,7 +808,6 @@ TLIST *stotl(char *s, BOOL *in_comment)
 	TLIST *qs;
 	BOOL comment_flag;
 	
-/* XXX */
 	if (in_comment == NULL)
 	{
 		in_comment = &comment_flag;

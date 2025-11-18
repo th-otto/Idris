@@ -81,6 +81,8 @@ extern char *mapfile;
 extern int argc;
 extern int lineno;
 extern char **argv;
+extern int lastln;
+extern BOOL cplusflag;
 
 
 TLIST *getex(BOOL flag);

@@ -2489,7 +2489,6 @@ _putfile_4:
 	move.w     (a2),_lastln
 	bra.s      _putfile_3
 
-; todo: cplusflag
 _putls:
 	link       a6,#-4
 	movem.l    d0/d5/a3-a5,-(a7)
@@ -2965,7 +2964,6 @@ _getln_4:
 	unlk       a6
 	rts
 
-; todo: cplusflag
 _main:
 	link       a6,#-2
 	movem.l    d0/a5,-(a7)

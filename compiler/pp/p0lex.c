@@ -346,7 +346,6 @@ void putcode(const char *fmt, ...)
 }
 
 
-/* XXX V3.2 different */
 void putfile(void)
 {
 	if (xflag && pincl != NULL && pflag && (!inincl || liflag) && pasline == 0)
@@ -358,7 +357,6 @@ void putfile(void)
 			putcode("ccp", LIFILE, (int)strlen(pincl->fname), pincl->fname);
 	} else
 	{
-#if 0
 		/* new in V 3.2 */
 		if (cplusflag && pincl && pflag && !xflag)
 		{
@@ -369,7 +367,6 @@ void putfile(void)
 			}
 			lastln = pincl->nline;
 		}
-#endif
 	}
 }
 
@@ -426,6 +423,12 @@ void putls(TLIST *p)
 
 	if (!xflag)
 	{
+		if (cplusflag && pincl && lastln + 1 != pincl->nline)
+		{
+			pflag = TRUE;
+			putfile();
+		}
+		lastln = pincl->nline;
 		pquote = 0;
 		for (q = p; q; q = q->next)
 		{

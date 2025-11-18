@@ -43,6 +43,9 @@ char *iprefix = "|";
 char *mapfile = NULL;
 const char *_pname = "pp";
 int pasline = 0;
+int lastln = 0;
+BOOL cplusflag = FALSE;
+
 
 /*	FILE CONTROL:
 	argc = no of file args left
@@ -134,23 +137,23 @@ static size_t getln(INCL *pi, char *buf, size_t maxlen)
 /*
  * get an included line, as a token list
  */
-/* XXX V3.2 different */
-#define LINEBUFSIZE BUFSIZ
+#define LINEBUFSIZE 4096
 static TLIST *getinl(BOOL contline)
 {
 	size_t n;
-	static char *linebuf;
+	static char linebuf[LINEBUFSIZE];
 	static size_t bufstart;
 	static BOOL in_comment;
 
-	if (linebuf == NULL)
-		linebuf = xmalloc(LINEBUFSIZE);
 	if (!contline)
 		bufstart = 0;
 	for (;;)
 	{
 		if (!pincl)
+		{
 			pincl = nxtfile();
+			putfile();
+		}
 		if (!pincl)
 			return NULL;
 		if ((n = getln(pincl, linebuf + bufstart, LINEBUFSIZE - bufstart)) != 0)
@@ -312,11 +315,9 @@ static void putns(TLIST *p)
 			INCL *incl;
 			
 			ptline();
-#if 0 /* XXX v3.2 */
 			pflag = TRUE;
 			lastln = 0;
 			putfile();
-#endif
 			incl = xmalloc(sizeof(*pincl));
 			incl->next = pincl;
 			incl->fname = fname;
@@ -325,9 +326,7 @@ static void putns(TLIST *p)
 			pincl = incl;
 			pflag = TRUE;
 			++inincl;
-#if 0 /* XXX v3.2 */
 			putfile();
-#endif
 		}
 		break;
 	case PLINE:
@@ -487,8 +486,8 @@ int main(int ac, char **av)
 	argc = ac;
 	errfd = stderr;
 	outfd = stdout;
-	getflags(&argc, &argv, "d*>err,i*,+lincl,+map*,+old,o*,+pas,p?,+std,s?,x:F <files>",
-		&pdefs, &errflag, &iprefix, &liflag, &mapfile, &oldflag, &ofile, &pasflag, &pchar, &stdflag, &schar, &xflag);
+	getflags(&argc, &argv, "+cplus,d*>err,i*,+lincl,+map*,+old,o*,+pas,p?,+std,s?,x:F <files>",
+		&cplusflag, &pdefs, &errflag, &iprefix, &liflag, &mapfile, &oldflag, &ofile, &pasflag, &pchar, &stdflag, &schar, &xflag);
 	if (ofile)
 	{
 		if ((outfd = fopen(ofile, xflag ? "wb" : "w")) == NULL)
